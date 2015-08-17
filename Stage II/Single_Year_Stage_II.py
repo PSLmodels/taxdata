@@ -13,6 +13,10 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     print("Preparing coefficient matrix...")
 
+    # the first half of this function (with all of the np.where statements)
+    # might be amenable to refactoring to a numba function, could improve
+    # readability
+
     s006 = np.where(puf.e02400>0,
                     puf.s006*Stage_I_factors[year]["APOPSNR"]/100,
                     puf.s006*Stage_I_factors[year]["ARETS"]/100)
@@ -130,6 +134,9 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     temp = [INTEREST,DIVIDEND, BIZ_INCOME, BIZ_LOSS, CAP_GAIN, ANNUITY_PENSION, SCH_E_INCOME, SCH_E_LOSS, SS_INCOME, UNEMPLOYMENT_COMP,
             WAGE_1,WAGE_2, WAGE_3,WAGE_4, WAGE_5, WAGE_6, WAGE_7,WAGE_8,WAGE_9, WAGE_10, WAGE_11, WAGE_12]
+
+    # how is 'b' different from 'temp'?
+    # could also do  'b = list(temp)'
     for m in temp:
         b.append(m)
 

@@ -3,6 +3,7 @@
 
 import numpy as np
 import pandas as pd
+# see comments on 'df' from Stage I
 from pandas import DataFrame as df
 from cylp.cy import CyClpSimplex
 from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
@@ -11,6 +12,7 @@ from Single_Year_Stage_II import Single_Year_Stage_II
 
 # Import PUF, and results from Stage I
 
+#probably want to just say 'puf.csv' or something user must configure
 puf = pd.read_csv("/Users/Amy/Documents/puf.csv")
 Stage_I_factors = df.from_csv("Stage_I_factors.csv", index_col = 0)
 Stage_II_targets = df.from_csv("Stage_II_targets.csv", index_col= 0)
