@@ -1,7 +1,12 @@
+# Recommend not having a space in the name of this file
 
 # coding: utf-8
 
+# This is a non-standard thing to do. Often you see 'df' as the generic name
+# for a DataFrame, not as the name for the DataFrame class. The standard thing
+# would be 'from pandas import DataFrame'
 from pandas import DataFrame as df
+
 import pandas as pd
 
 
@@ -12,6 +17,7 @@ import pandas as pd
 # - [Historical estimates from 2000 to 2010](http://www.census.gov/popest/data/intercensal/national/nat2010.html)
 
 #projection 2014+
+# Here you would usually see pd.read_csv, but this looks like it works just as well
 pop_projection = df.from_csv("NP2014_D1.csv", index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) & (pop_projection.race == 0)
                                 & (pop_projection.origin == 0)]
@@ -23,9 +29,16 @@ pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 #estimates 2010-2014
 historical1 = pd.read_csv("NC-EST2014-AGESEX-RES.csv")
 historical1 = historical1[historical1.SEX == 0]
+# in the following line and throughout, the standard way to pass keyword args is with
+# no space between the equal sign, e.g. 'axis=1'. Assignment statements typically
+# leave space
 historical1 = historical1.drop(['SEX', 'CENSUS2010POP', 'ESTIMATESBASE2010'],axis = 1)
 
+# These ages (19, 65, 999) could be extracted to constants at the top
+# of the file. Prevents the 'magic number' phenomenon where you are
+# reading code and just come across various magic numbers
 pop_dep1 = historical1[historical1.AGE<=19].sum()
+# sometimes use see people use the 'inplace=True' flag on drop. Just a heads up
 pop_dep1 = pop_dep1.drop(['AGE'],axis = 0)
 
 pop_snr1 = historical1[(historical1.AGE>=65)&(historical1.AGE<999)].sum()
@@ -40,16 +53,25 @@ historical2 = historical2[(historical2.MONTH==7)&(historical2.YEAR>=2008)&(histo
 historical2 = historical2.drop(historical2.columns[4:],axis = 1)
 historical2 = historical2.drop(historical2.columns[0],axis = 1)
 
+# Here I would recomment splitting these operations over multiple lines using
+# the &= operator, so something like
+# a = b & c
+# a &= d
+# a &= e
+# instead of a = b & c & d & e
 pop_dep2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE <=19)].sum(),historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE <=19)].sum()]
 pop_snr2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE >=65) & (historical2.AGE < 999)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE >=65) & (historical2.AGE < 999)].sum()]
 total_pop2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE == 999)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE == 999)].sum() ]
 
 
 #combine the estimates of 08-14 with the projection data
+# the 'df' as an indicator that we are making new DataFrames is distracting here
 POP_DEP = pd.concat([df(pop_dep2),df(pop_dep1),df(pop_projection[pop_projection.columns[1:21]].sum(axis = 1))])
 POP_SNR = pd.concat([df(pop_snr2),df(pop_snr1),df(pop_projection[pop_projection.columns[66:]].sum(axis = 1))])
 TOTAL_POP = pd.concat([df(total_pop2), df(total_pop1.values.transpose()),df(pop_projection.total_pop.values)])
 
+#could also do:
+# Stage_II_targets = DataFrame(TOTAL_POP, columns=['TOTAL_POP'])
 #Stage_II_targets stores all targets later used in Stage II
 Stage_II_targets = df(TOTAL_POP)
 Stage_II_targets.columns = ['TOTAL_POP']
