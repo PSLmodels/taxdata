@@ -4,9 +4,10 @@
 from pandas import DataFrame
 import pandas as pd
 
-# define constants
-
-
+# define constants for the number refers total population, dependent age upper limit and senior lower limit
+totes = 999
+dep = 19
+senior = 65
 
 # Import Census projection on population:
 # 
@@ -28,13 +29,13 @@ historical1 = pd.read_csv("NC-EST2014-AGESEX-RES.csv")
 historical1 = historical1[historical1.SEX == 0]
 historical1 = historical1.drop(['SEX', 'CENSUS2010POP', 'ESTIMATESBASE2010'],axis=1)
 
-pop_dep1 = historical1[historical1.AGE<=19].sum()
+pop_dep1 = historical1[historical1.AGE<=dep].sum()
 pop_dep1 = pop_dep1.drop(['AGE'],axis=0)
 
-pop_snr1 = historical1[(historical1.AGE>=65)&(historical1.AGE<999)].sum()
+pop_snr1 = historical1[(historical1.AGE>=senior)&(historical1.AGE<totes)].sum()
 pop_snr1 = pop_snr1.drop(['AGE'], axis=0)
 
-total_pop1 = historical1[historical1.AGE==999]
+total_pop1 = historical1[historical1.AGE==totes]
 total_pop1 = total_pop1.drop(['AGE'], axis=1)
 
 #estimates 2008-2009
@@ -43,9 +44,9 @@ historical2 = historical2[(historical2.MONTH==7)&(historical2.YEAR>=2008)&(histo
 historical2 = historical2.drop(historical2.columns[4:],axis = 1)
 historical2 = historical2.drop(historical2.columns[0],axis = 1)
 
-pop_dep2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE <=19)].sum(),historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE <=19)].sum()]
-pop_snr2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE >=65) & (historical2.AGE < 999)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE >=65) & (historical2.AGE < 999)].sum()]
-total_pop2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE == 999)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE == 999)].sum() ]
+pop_dep2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE <=dep)].sum(),historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE <=dep)].sum()]
+pop_snr2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum()]
+total_pop2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE == totes)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE == totes)].sum() ]
 
 
 #combine the estimates of 08-14 with the projection data
