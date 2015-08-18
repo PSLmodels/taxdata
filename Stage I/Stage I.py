@@ -44,13 +44,24 @@ historical2 = historical2[(historical2.MONTH==7)&(historical2.YEAR>=2008)&(histo
 historical2 = historical2.drop(historical2.columns[4:],axis = 1)
 historical2 = historical2.drop(historical2.columns[0],axis = 1)
 
-pop_dep2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE <=dep)].sum(),
-            historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE <=dep)].sum()]
-pop_snr2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum(),
-            historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum()]
-total_pop2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE == totes)].sum(),
-              historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE == totes)].sum()]
+year08under19 = (historical2.YEAR ==2008) & (historical2.AGE <=dep)
+year09under19 = (historical2.YEAR ==2009) & (historical2.AGE <=dep)
+pop_dep2 = []
+pop_dep2.append(historical2.TOT_POP[year08under19].sum())
+pop_dep2.append(historical2.TOT_POP[year09under19].sum())
 
+
+year08over65 = (historical2.YEAR ==2008) & (historical2.AGE >=senior) & (historical2.AGE < totes)
+year09over65 = (historical2.YEAR ==2009) & (historical2.AGE >=senior) & (historical2.AGE < totes)
+pop_snr2 = []
+pop_snr2.append(historical2.TOT_POP[year08over65].sum())
+pop_snr2.append(historical2.TOT_POP[year09over65].sum())
+
+year08total = (historical2.YEAR ==2008) & (historical2.AGE == totes)
+year09total = (historical2.YEAR ==2009) & (historical2.AGE == totes)
+total_pop2 = []
+total_pop2.append(historical2.TOT_POP[year08total].sum())
+total_pop2.append(historical2.TOT_POP[year09total].sum())
 
 #combine the estimates of 08-14 with the projection data
 POP_DEP = pd.concat([DataFrame(pop_dep2),DataFrame(pop_dep1),DataFrame(pop_projection[pop_projection.columns[1:21]].sum(axis=1))])
