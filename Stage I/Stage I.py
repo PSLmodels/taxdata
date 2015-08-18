@@ -44,9 +44,12 @@ historical2 = historical2[(historical2.MONTH==7)&(historical2.YEAR>=2008)&(histo
 historical2 = historical2.drop(historical2.columns[4:],axis = 1)
 historical2 = historical2.drop(historical2.columns[0],axis = 1)
 
-pop_dep2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE <=dep)].sum(),historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE <=dep)].sum()]
-pop_snr2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum()]
-total_pop2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE == totes)].sum(), historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE == totes)].sum() ]
+pop_dep2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE <=dep)].sum(),
+            historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE <=dep)].sum()]
+pop_snr2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum(),
+            historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE >=senior) & (historical2.AGE < totes)].sum()]
+total_pop2 = [historical2.TOT_POP[(historical2.YEAR ==2008) & (historical2.AGE == totes)].sum(),
+              historical2.TOT_POP[(historical2.YEAR ==2009) & (historical2.AGE == totes)].sum()]
 
 
 #combine the estimates of 08-14 with the projection data
