@@ -130,9 +130,7 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
             WAGE_1,WAGE_2, WAGE_3,WAGE_4, WAGE_5, WAGE_6,
             WAGE_7,WAGE_8,WAGE_9, WAGE_10, WAGE_11, WAGE_12]
     
-    b = []
-    for m in temp:
-        b.append(m)
+    b = list(temp)
 
     targets = CyLPArray(b)
     print("Targets for year ", year, " is ", targets)
