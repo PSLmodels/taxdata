@@ -1,7 +1,6 @@
 
 import numpy as np
 import pandas as pd
-from pandas import DataFrame as df
 from cylp.cy import CyClpSimplex
 from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
 
@@ -71,14 +70,11 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     APOPN = Stage_I_factors[year]["APOPN"]
 
-    b = []
-
-    b.append(Stage_II_targets[year]['Single']-single_return.sum())
-    b.append(Stage_II_targets[year]['Joint']-joint_return.sum())
-    b.append(Stage_II_targets[year]['HH']-hh_return.sum())
-    b.append(Stage_II_targets[year]['SS_return']-return_w_SS.sum())
-
-    b.append(Stage_II_targets[year]['Dep_return'] -  dependent_exempt_num.sum())
+    Single = Stage_II_targets[year]['Single']-single_return.sum()
+    Joint = Stage_II_targets[year]['Joint']-joint_return.sum()
+    HH = Stage_II_targets[year]['HH']-hh_return.sum()
+    SS_return = Stage_II_targets[year]['SS_return']-return_w_SS.sum()
+    Dep_return = Stage_II_targets[year]['Dep_return'] -  dependent_exempt_num.sum()
 
     AINTS = Stage_I_factors[year]["AINTS"]
     INTEREST = Stage_II_targets[year]['INTS']*APOPN/AINTS*1000-interest.sum()
@@ -128,8 +124,13 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
 
 
-    temp = [INTEREST,DIVIDEND, BIZ_INCOME, BIZ_LOSS, CAP_GAIN, ANNUITY_PENSION, SCH_E_INCOME, SCH_E_LOSS, SS_INCOME, UNEMPLOYMENT_COMP,
-            WAGE_1,WAGE_2, WAGE_3,WAGE_4, WAGE_5, WAGE_6, WAGE_7,WAGE_8,WAGE_9, WAGE_10, WAGE_11, WAGE_12]
+    temp = [Single, Joint, HH, SS_return, Dep_return,
+            INTEREST,DIVIDEND, BIZ_INCOME, BIZ_LOSS, CAP_GAIN, ANNUITY_PENSION,
+            SCH_E_INCOME, SCH_E_LOSS, SS_INCOME, UNEMPLOYMENT_COMP,
+            WAGE_1,WAGE_2, WAGE_3,WAGE_4, WAGE_5, WAGE_6,
+            WAGE_7,WAGE_8,WAGE_9, WAGE_10, WAGE_11, WAGE_12]
+    
+    b = []
     for m in temp:
         b.append(m)
 
