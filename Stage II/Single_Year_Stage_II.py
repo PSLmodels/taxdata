@@ -12,8 +12,8 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
 
     print("Preparing coefficient matrix...")
-    apopsnr = Stage_I_factors[year]["APOPSNR"] * np.ones(length)
-    arets = Stage_I_factors[year]["ARETS"] * np.ones(length)
+    apopsnr = pd.Series([Stage_I_factors[year]["APOPSNR"]] * length)
+    arets = pd.Series([Stage_I_factors[year]["ARETS"]] * length)
 
     # Set up the matrix
     One_half_LHS = np.vstack(blow_up(puf.e00100, puf.e00200, puf.e00300, puf.e00600, puf.e00900, puf.e01000,
