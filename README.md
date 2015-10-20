@@ -2,7 +2,7 @@
 
 - The first component of this taxdata repo is the extrapolation routine of IRS Public Use File. This procedure extrapolates the tax data input from one year, currently 2008 and soon to be 2009, to
 all the years on the budget window, using external economic projections. These extrapolated data can be used for federal individual income tax calculations and revenue projections.
-    - You can find a brief description of the currently methodology [here](https://github.com/OpenSourcePolicyCenter/taxdata/blob/master/docs/info/ExtrapolationMethodology.pdf)
+    - You can find a brief description of the currently methodology [here](https://github.com/open-source-economics/taxdata/blob/master/docs/info/Extrapolation_description.pdf)
     - Previously, the extrapolation routine was coded in SAS, fortran and Excel. The scripts can be found [here](https://www.dropbox.com/sh/llaisso557ppf3f/AABexU9ELw5BHpNB3fVRuFxEa?dl=0).
     - This routine now has been translated into python.
 - The extrapolation includes two stages, Stage I and Stage II. The python scripts for the two stages are respectively in the folders with those names.
