@@ -132,6 +132,8 @@ def remove_unused_variables(data):
                         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
                         'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'}
     data = data.drop(UNUSED_READ_VARS, 1)
+
+    data = data.replace('            ', 0)
     return data
 
 def transform_variables_to_09(data):
