@@ -14,6 +14,7 @@ This script transforms the raw csv file in several ways as described below.
 # pylint: disable=invalid-name
 
 
+import argparse
 import sys
 import pandas
 
@@ -22,9 +23,18 @@ def main():
     """
     Contains all the logic of the puf-cps-processing.py script.
     """
+    parser = argparse.ArgumentParser(
+        prog='python puf-cps-processing.csv',
+    )
 
+    parser.add_argument('INPUT',
+                        help=('INPUT is name of required CSV file that contained'
+                              'data from original PUF or cps-matched PUF. '))
+                              
+    args = parser.parse_args()
+    
     # (*) Read unprocessed puf-cps.csv file into a Pandas Dataframe
-    data = pandas.read_csv('cps-puf.csv')
+    data = pandas.read_csv(args.INPUT)
     
     # check the PUF year
     if max(data['flpdyr']) == 2008:
