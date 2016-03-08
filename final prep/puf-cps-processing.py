@@ -17,6 +17,7 @@ This script transforms the raw csv file in several ways as described below.
 import argparse
 import sys
 import pandas
+import numpy
 
 
 def main():
@@ -133,7 +134,7 @@ def remove_unused_variables(data):
                         'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'}
     data = data.drop(UNUSED_READ_VARS, 1)
 
-    data = data.replace('            ', 0)
+    data = data.fillna(value=0)
     return data
 
 def transform_variables_to_09(data):
