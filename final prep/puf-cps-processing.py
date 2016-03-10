@@ -14,20 +14,50 @@ This script transforms the raw csv file in several ways as described below.
 # pylint: disable=invalid-name
 
 
+import argparse
 import sys
 import pandas
+import numpy
 
 
 def main():
     """
     Contains all the logic of the puf-cps-processing.py script.
     """
+    parser = argparse.ArgumentParser(
+        prog='python puf-cps-processing.csv',
+    )
 
+    parser.add_argument('INPUT',
+                        help=('INPUT is name of required CSV file that contained'
+                              'data from original PUF or cps-matched PUF. '))
+                              
+    args = parser.parse_args()
+    
     # (*) Read unprocessed puf-cps.csv file into a Pandas Dataframe
-    data = pandas.read_csv('cps-puf.csv')
-
+    data = pandas.read_csv(args.INPUT)
+    
+    # check the PUF year
+    if max(data['flpdyr']) == 2008:
+        data = transform_variables_to_09(data)
+    else:
+        data = remove_unused_variables(data)
 
     # (A) Make recid variable be a unique integer key:
+    data = creat_new_recid(data)
+
+    # (B) Make several variable names be uppercase as in SOI PUF:
+    data = capitalize_var_names(data)
+
+    # (*) Write processed data to the final puf.csv file
+    data.to_csv('puf.csv', index=False)
+
+    return 0
+# end of main function code
+
+
+def creat_new_recid(data):
+
     #     The recid (key) for each record is not unique after CPS match
     #     because (1) original SOI PUF records were split in some cases,
     #     and (2) non-filers were added from the CPS.
@@ -36,10 +66,10 @@ def main():
     #     otherwise, differentiate duplicates by numbering them with
     #     increment integers starting from zero), and (2) setting recid for
     #     all CPS non-filers to integers beginning with 4000000.
-
+    
     # sort all the records based on old recid
-    sorted_dta = data.sort(columns='recid')
-
+    sorted_dta = data.sort_values(by='recid')
+    
     # count how many duplicates each old recid has
     # and save the dup count for each record
     seq = sorted_dta.index
@@ -62,45 +92,81 @@ def main():
     # replace the old recid with the new one
     data['recid'] = new_recid
 
-    # (B) Make several variable names be uppercase as in SOI PUF:
+    return data
+
+def capitalize_var_names(data):
     renames = {
-        'agir1': 'AGIR1',
         'dsi': 'DSI',
-        'efi': 'EFI',
         'eic': 'EIC',
-        'elect': 'ELECT',
         'fded': 'FDED',
         'flpdyr': 'FLPDYR',
-        'flpdmo': 'FLPDMO',
-        'ie': 'IE',
         'mars': 'MARS',
         'midr': 'MIDR',
-        'prep': 'PREP',
-        'schb': 'SCHB',
-        'schcf': 'SCHCF',
-        'sche': 'SCHE',
-        'tform': 'TFORM',
-        'txst': 'TXST',
-        'xfpt': 'XFPT',
-        'xfst': 'XFST',
-        'xocah': 'XOCAH',
-        'xocawh': 'XOCAWH',
-        'xoodep': 'XOODEP',
-        'xopar': 'XOPAR',
         'xtot': 'XTOT',
         'recid': 'RECID',
-        'wsamp': 'WSAMP',
-        'txrt': 'TXRT',
         'agerange': 'AGERANGE',
     }
     data = data.rename(columns=renames)
+    return data
 
-    # (*) Write processed data to the final puf.csv file
-    data.to_csv('puf.csv', index=False)
+def remove_unused_variables(data):
+    data['s006'] = data['matched_weight'] * 100
+    UNUSED_READ_VARS = {'agir1', 'efi', 'elect', 'flpdmo',
+                        'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
+                        'n20', 'n25', 'n30', 'prep', 'schb', 'schcf', 'sche',
+                        'tform', 'ie', 'txst', 'xfpt', 'xfst',
+                        'xocah', 'xocawh', 'xoodep', 'xopar',
+                        'gender','earnsplit','agedp1', 'agedp2', 'agedp3',
+                        's008', 's009', 'wsamp', 'txrt', 'matched_weight',
+                        'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
+                        'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
+                        'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
+                        'e11582', 'e11583', 'e25920', 's27860', 'e10960', 'e59720',
+                        'e87550', 'e26190', 'e53317', 'e53410', 'e04600', 'e26390',
+                        'e15250', 'p65300', 'p25350', 'e06500', 'e10300', 'e26170',
+                        'e26400', 'e11400', 'p25700', 'e01500', 'e04250', 'e07150',
+                        'e59680', 'e24570', 'e11570', 'e53300', 'e10605', 'e22320',
+                        'e26160', 'e22370', 'e53240', 'p25380', 'e10700', 'e09600',
+                        'e06200', 'e24560', 'p61850', 'e25980', 'e53280', 'e25850',
+                        'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
+                        'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
+                        'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
+                        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'}
+    data = data.drop(UNUSED_READ_VARS, 1)
 
-    return 0
-# end of main function code
+    data = data.fillna(value=0)
+    return data
 
+def transform_variables_to_09(data):
+    data['e18400'] = data['e18425'] + data['e18450']
+
+    # drop unused variables only existing in 08 PUF
+    UNUSED = {'e18425', 'e18450', 'e25370', 'e25380', 'state',
+              'e87500', 'e87510', 'e87520', 'e87540'}
+    data = data.drop(UNUSED, 1)
+
+    UNUSED_READ_VARS = {'agir1', 'efi', 'elect', 'flpdmo',
+                        'f3800', 'f8582', 'f8606',
+                        'n20', 'n25', 'prep', 'schb', 'schcf', 'sche',
+                        'tform', 'ie', 'txst', 'xfpt', 'xfst',
+                        'xocah', 'xocawh', 'xoodep', 'xopar',
+                        's008', 's009', 'wsamp', 'txrt',
+                        'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
+                        'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
+                        'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
+                        'e11582', 'e11583', 'e25920', 's27860', 'e59720',
+                        'e87550', 'e26190', 'e53317', 'e53410', 'e04600', 'e26390',
+                        'p65300', 'p25350', 'e06500', 'e10300', 'e26170',
+                        'e26400', 'e11400', 'p25700', 'e01500', 'e04250', 'e07150',
+                        'e59680', 'e24570', 'e11570', 'e53300', 'e10605', 'e22320',
+                        'e26160', 'e22370', 'e53240', 'e10700', 'e09600',
+                        'e06200', 'e24560', 'p61850', 'e25980', 'e53280', 'e25850',
+                        'e25820', 'e68000', 'e26110', 'e58950', 'e26180',
+                        'e04800', 'e06000', 't27800', 'e06300', 'e59700',
+                        'e26100', 'e05200', 'e82200', 'e25860', 'e07220',
+                        'e11900', 'e25960', 'p27895', 'e12200'}
+    data = data.drop(UNUSED_READ_VARS,1)
+    return data
 
 if __name__ == '__main__':
     sys.exit(main())
