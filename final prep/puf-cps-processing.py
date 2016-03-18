@@ -25,7 +25,7 @@ def main():
     Contains all the logic of the puf-cps-processing.py script.
     """
     parser = argparse.ArgumentParser(
-        prog='python puf-cps-processing.csv',
+        prog='python puf-cps-processing.py',
     )
 
     parser.add_argument('INPUT',
