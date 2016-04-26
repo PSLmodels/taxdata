@@ -17,7 +17,7 @@ This script transforms the raw csv file in several ways as described below.
 import argparse
 import sys
 import pandas
-import numpy
+import numpy as np
 
 
 def main():
@@ -41,6 +41,7 @@ def main():
     if max(data['flpdyr']) == 2008:
         data = transform_variables_to_09(data)
     else:
+        data = age_consistency(data)
         data = remove_unused_variables(data)
 
     # (A) Make recid variable be a unique integer key:
@@ -94,6 +95,21 @@ def creat_new_recid(data):
 
     return data
 
+def age_consistency(data):
+    
+    data['age_head'] = np.where(data['agerange'] == 0,
+                                data['age_head'],
+                                (data['agerange'] + 1 - data['dsi']) * 10)
+                                
+    data['age_spouse'] = np.where(data['agerange'] == 0,
+                                  data['age_spouse'],
+                                  (data['agerange'] + 1 - data['dsi']) * 10)
+    
+    data['age_head'] = np.where(data['age_head'] == 0, 1, data['age_head'])
+    data['age_spouse'] = np.where(data['age_spouse'] == 0, 1, data['age_spouse'])
+    
+    return data
+
 def capitalize_var_names(data):
     renames = {
         'dsi': 'DSI',
@@ -104,7 +120,6 @@ def capitalize_var_names(data):
         'midr': 'MIDR',
         'xtot': 'XTOT',
         'recid': 'RECID',
-        'agerange': 'AGERANGE',
     }
     data = data.rename(columns=renames)
     return data
@@ -115,7 +130,7 @@ def remove_unused_variables(data):
                         'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
                         'n20', 'n25', 'n30', 'prep', 'schb', 'schcf', 'sche',
                         'tform', 'ie', 'txst', 'xfpt', 'xfst',
-                        'xocah', 'xocawh', 'xoodep', 'xopar',
+                        'xocah', 'xocawh', 'xoodep', 'xopar', 'agerange',
                         'gender','earnsplit','agedp1', 'agedp2', 'agedp3',
                         's008', 's009', 'wsamp', 'txrt', 'matched_weight',
                         'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
