@@ -102,6 +102,8 @@ def age_consistency(data):
     Construct age_head and age_spouse from agerange if available;
     otherwise use CPS values of age_head and age_spouse.
     """
+    # set random-number-generator seed so that always get same random_integers
+    np.random.seed(seed=123456789)
     # generate random integers to smooth age distribution in agerange
     shape = data['age_head'].shape
     agefuzz8 = np.random.random_integers(0, 8, size=shape)
