@@ -42,7 +42,6 @@ def main():
         data = transform_2008_varnames_to_2009_varnames(data)
     else:  # if PUF year is 2009+
         data = age_consistency(data)
-        data = remove_unused_variables(data)
 
     # (A) Make recid variable be a unique integer key:
     data = create_new_recid(data)
@@ -75,6 +74,10 @@ def main():
     data['e00900s'] = one_minus_earnings_split * data['e00900']
     data['e02100p'] = earnings_split * data['e02100']
     data['e02100s'] = one_minus_earnings_split * data['e02100']
+
+    # (E) Remove variables not expected by Tax-Calculator
+    if max_flpdyr >= 2009:
+        data = remove_unused_variables(data)
 
     # (*) Write processed data to the final puf.csv file
     data.to_csv('puf.csv', index=False)
@@ -257,14 +260,15 @@ def remove_unused_variables(data):
     """
     data['s006'] = data['matched_weight'] * 100
 
-    UNUSED_READ_VARS = {
-        'agir1', 'efi', 'elect', 'flpdmo',
+    UNUSED_READ_VARS = [
+        'agir1', 'efi', 'elect', 'flpdmo', 'wage_head', 'wage_spouse',
         'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
         'n20', 'n25', 'n30', 'prep', 'schb', 'schcf', 'sche',
         'tform', 'ie', 'txst', 'xfpt', 'xfst',
         'xocah', 'xocawh', 'xoodep', 'xopar', 'agerange',
         'gender', 'earnsplit', 'agedp1', 'agedp2', 'agedp3',
         's008', 's009', 'wsamp', 'txrt', 'matched_weight',
+        'e00100', 'e20800', 'e21040', 'e62100',
         'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
         'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
         'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
@@ -278,7 +282,7 @@ def remove_unused_variables(data):
         'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
         'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
-        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'}
+        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200']
     data = data.drop(UNUSED_READ_VARS, 1)
 
     data = data.fillna(value=0)
