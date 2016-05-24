@@ -268,6 +268,8 @@ def remove_unused_variables(data):
         'xocah', 'xocawh', 'xoodep', 'xopar', 'agerange',
         'gender', 'earnsplit', 'agedp1', 'agedp2', 'agedp3',
         's008', 's009', 'wsamp', 'txrt', 'matched_weight',
+        'e01000', 'e03260', 'e09400', 'e24516', 'e62720', 'e62730',
+        'e62740', 'e05100', 'e05800', 'e08800', 'e15360',
         'e00100', 'e20800', 'e21040', 'e62100',
         'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
         'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
