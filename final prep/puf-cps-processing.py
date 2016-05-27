@@ -1,7 +1,7 @@
 """
 puf-cps-processing.py transforms puf-cps.csv into final puf.csv file.
 
-COMMAND-LINE USAGE: python puf-cps-processing.py
+COMMAND-LINE USAGE: python puf-cps-processing.py INPUT
 
 This script transforms the raw csv file in several ways as described below.
 """
@@ -37,17 +37,47 @@ def main():
     data = pandas.read_csv(args.INPUT)
 
     # check the PUF year
-    if max(data['flpdyr']) == 2008:
+    max_flpdyr = max(data['flpdyr'])
+    if max_flpdyr == 2008:
         data = transform_2008_varnames_to_2009_varnames(data)
     else:  # if PUF year is 2009+
         data = age_consistency(data)
-        data = remove_unused_variables(data)
 
     # (A) Make recid variable be a unique integer key:
     data = create_new_recid(data)
 
     # (B) Make several variable names be uppercase as in SOI PUF:
     data = capitalize_varnames(data)
+
+    # (C) Impute cmbtp_standard and cmbtp_itemizer variables:
+    data['cmbtp_standard'] = data['e62100'] - data['e00100'] + data['e00700']
+    zero = np.zeros(len(data.index))
+    medical_limit = np.maximum(zero, data['e17500'] -
+                               np.maximum(zero, data['e00100']) * 0.075)
+    med_adj = np.minimum(medical_limit,
+                         0.025 * np.maximum(zero, data['e00100']))
+    stx_adj = np.maximum(zero, data['e18400'])
+    data['cmbtp_itemizer'] = (data['e62100'] - med_adj + data['e00700'] +
+                              data['p04470'] + data['e21040'] - stx_adj -
+                              data['e00100'] - data['e18500'] -
+                              data['e20800'])
+
+    # (D) Split earnings variables into taxpayer (p) and spouse (s) amounts:
+    total = np.where(data['MARS'] == 2,
+                     data['wage_head'] + data['wage_spouse'], 0)
+    earnings_split = np.where(total != 0,
+                              data['wage_head'] / total, 1.)
+    one_minus_earnings_split = 1.0 - earnings_split
+    data['e00200p'] = earnings_split * data['e00200']
+    data['e00200s'] = one_minus_earnings_split * data['e00200']
+    data['e00900p'] = earnings_split * data['e00900']
+    data['e00900s'] = one_minus_earnings_split * data['e00900']
+    data['e02100p'] = earnings_split * data['e02100']
+    data['e02100s'] = one_minus_earnings_split * data['e02100']
+
+    # (E) Remove variables not expected by Tax-Calculator
+    if max_flpdyr >= 2009:
+        data = remove_unused_variables(data)
 
     # (*) Write processed data to the final puf.csv file
     data.to_csv('puf.csv', index=False)
@@ -230,28 +260,31 @@ def remove_unused_variables(data):
     """
     data['s006'] = data['matched_weight'] * 100
 
-    UNUSED_READ_VARS = {
-        'agir1', 'efi', 'elect', 'flpdmo',
+    UNUSED_READ_VARS = [
+        'agir1', 'efi', 'elect', 'flpdmo', 'wage_head', 'wage_spouse',
         'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
         'n20', 'n25', 'n30', 'prep', 'schb', 'schcf', 'sche',
         'tform', 'ie', 'txst', 'xfpt', 'xfst',
         'xocah', 'xocawh', 'xoodep', 'xopar', 'agerange',
         'gender', 'earnsplit', 'agedp1', 'agedp2', 'agedp3',
         's008', 's009', 'wsamp', 'txrt', 'matched_weight',
+        'e01000', 'e03260', 'e09400', 'e24516', 'e62720', 'e62730',
+        'e62740', 'e05100', 'e05800', 'e08800', 'e15360',
+        'e00100', 'e20800', 'e21040', 'e62100',
         'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
         'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
         'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
         'e11582', 'e11583', 'e25920', 's27860', 'e10960', 'e59720',
         'e87550', 'e26190', 'e53317', 'e53410', 'e04600', 'e26390',
         'e15250', 'p65300', 'p25350', 'e06500', 'e10300', 'e26170',
-        'e26400', 'e11400', 'p25700', 'e04250', 'e07150',
+        'e26400', 'e11400', 'p25700', 'e04250', 'e07150', 'e60000',
         'e59680', 'e24570', 'e11570', 'e53300', 'e10605', 'e22320',
         'e26160', 'e22370', 'e53240', 'p25380', 'e10700', 'e09600',
         'e06200', 'e24560', 'p61850', 'e25980', 'e53280', 'e25850',
         'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
         'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
-        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'}
+        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200']
     data = data.drop(UNUSED_READ_VARS, 1)
 
     data = data.fillna(value=0)
