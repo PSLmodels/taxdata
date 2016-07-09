@@ -3,7 +3,7 @@ puf-cps-processing.py transforms puf-cps.csv into final puf.csv file.
 
 COMMAND-LINE USAGE: python puf-cps-processing.py INPUT
 
-This script transforms the raw csv file in several ways as described below.
+This script transforms the INPUT csv file in several ways as described below.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 puf-cps-processing.py
@@ -270,7 +270,8 @@ def remove_unused_variables(data):
         's008', 's009', 'wsamp', 'txrt', 'matched_weight',
         'e01000', 'e03260', 'e09400', 'e24516', 'e62720', 'e62730',
         'e62740', 'e05100', 'e05800', 'e08800', 'e15360',
-        'e00100', 'e20800', 'e21040', 'e62100',
+        'e00100', 'e20800', 'e21040', 'e62100', 'e59560',
+        'e19550', 'e20550', 'e20600', 'e19700', 'e02500', 'e07200',
         'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
         'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
         'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
