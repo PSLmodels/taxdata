@@ -33,7 +33,7 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
     annuity_pension = puf.e01700*s006
     sch_e_income = np.where(puf.e02000>0, puf.e02000, 0)*s006
     sch_e_loss = np.where(puf.e02000<0, -puf.e02000, 0)*s006
-    ss_income = puf.e02400*s006
+    ss_income = np.where(puf.filer == 1, puf.e02400, 0) * s006
     unemployment_comp = puf.e02300*s006
 
 
@@ -50,7 +50,9 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
     wage_9 = np.where((puf.e00100>100000)&(puf.e00100<=200000), puf.e00200,0)*s006
     wage_10 = np.where((puf.e00100>200000)&(puf.e00100<=500000), puf.e00200,0)*s006
     wage_11 = np.where((puf.e00100>500000)&(puf.e00100<=1000000), puf.e00200,0)*s006
-    wage_12 = np.where((puf.e00100>1000000), puf.e00200,0)*s006
+    #wage_12 = np.where((puf.e00100>1000000), puf.e00200,0)*s006
+    wage_12 = np.where((puf.e00100>1000000)&(puf.e00100<=5000000), puf.e00200,0)*s006
+    wage_13 = np.where((puf.e00100>5000000), puf.e00200,0)*s006
 
 
     # Set up the matrix
@@ -59,7 +61,7 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
                               biz_income,biz_loss, cap_gain, annuity_pension,
                               sch_e_income, sch_e_loss, ss_income, unemployment_comp,
                               wage_1, wage_2, wage_3, wage_4, wage_5, wage_6,
-                              wage_7, wage_8, wage_9, wage_10, wage_11, wage_12))
+                              wage_7, wage_8, wage_9, wage_10, wage_11, wage_12, wage_13))
 
 
     # Coefficients for r and s
@@ -124,12 +126,14 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
     WAGE_9 = Stage_II_targets[year]["Wages and Salaries: $100,000 Less Than $200,000"]*APOPN/AWAGE*1000 - wage_9.sum()
     WAGE_10 = Stage_II_targets[year]["Wages and Salaries: $200,000 Less Than $500,000"]*APOPN/AWAGE*1000 - wage_10.sum()
     WAGE_11 = Stage_II_targets[year]["Wages and Salaries: $500,000 Less Than $1 Million"]*APOPN/AWAGE*1000 - wage_11.sum()
-    WAGE_12 = Stage_II_targets[year]["Wages and Salaries: $1 Million and Over"]*APOPN/AWAGE*1000 - wage_12.sum()
+    # WAGE_12 = Stage_II_targets[year]["Wages and Salaries: $1 Million and Over"]*APOPN/AWAGE*1000 - wage_12.sum()
+    WAGE_12 = Stage_II_targets[year]["Wages and Salaries: $1 Million Less Than $5 Million"]*APOPN/AWAGE*1000 - wage_12.sum()
+    WAGE_13 = Stage_II_targets[year]["Wages and Salaries: $5 Million and Over"]*APOPN/AWAGE*1000 - wage_13.sum()
 
 
 
     temp = [INTEREST,DIVIDEND, BIZ_INCOME, BIZ_LOSS, CAP_GAIN, ANNUITY_PENSION, SCH_E_INCOME, SCH_E_LOSS, SS_INCOME, UNEMPLOYMENT_COMP,
-            WAGE_1,WAGE_2, WAGE_3,WAGE_4, WAGE_5, WAGE_6, WAGE_7,WAGE_8,WAGE_9, WAGE_10, WAGE_11, WAGE_12]
+            WAGE_1,WAGE_2, WAGE_3,WAGE_4, WAGE_5, WAGE_6, WAGE_7,WAGE_8,WAGE_9, WAGE_10, WAGE_11, WAGE_12, WAGE_13]
     for m in temp:
         b.append(m)
 
