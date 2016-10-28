@@ -75,7 +75,10 @@ def main():
     data['e02100p'] = earnings_split * data['e02100']
     data['e02100s'] = one_minus_earnings_split * data['e02100']
 
-    # (E) Remove variables not expected by Tax-Calculator
+    # (E) Randomly assign additional dependents to households
+    data = add_dependents(data)
+
+    # (F) Remove variables not expected by Tax-Calculator
     if max_flpdyr >= 2009:
         data = remove_unused_variables(data)
 
@@ -329,6 +332,51 @@ def transform_2008_varnames_to_2009_varnames(data):
     data = data.drop(UNUSED_READ_VARS, 1)
     return data
 
+def add_dependents(data):
+    """
+    Randomly assign fourth under 13 dependent to households with three or
+    more dependents under 13 and randomly assign an elderly dependent
+
+    Decimals used when randomly assigning dependents come from 2014 CPS data.
+    Using the 'hunder15' variable (the closest one available to under13),
+    roughly 1/3 of the number of households with three or more persons under
+    15 had four or more under 15. Looking at those ages 13 and under in the
+    data set, slightly over 1/3 of those in households with three or more
+    under 15 were in households with four or more under 15. The decimal used
+    here is the average of these two numbers.
+
+    Similarly, the number used in elderly dependent assignment is the fraction
+    of those 65 and older that are listed as dependents in the data set.
+    """
+    # Randomly assign fourth dependent to units with at lease three dependents
+    np.random.seed(409)
+    randDep = (list(np.random.rand(len(data.agedp3[(data.agedp3 > 0) &
+                                                   (data.agedp3 <= 2)]))))
+    agedp4 = []
+    for item in data.agedp3:
+        if 0 < item <= 2:
+            x = randDep.pop(0)
+            if x <= .360998:
+                agedp4.append(1)
+            else:
+                agedp4.append(0)
+        else:
+            agedp4.append(0)
+    agedp4 = np.array(agedp4)
+    # Count number of dependents under 13
+    under1 = np.where(((data.agedp1 > 0) & (data.agedp1 <= 2)), 1, 0)
+    under2 = np.where(((data.agedp2 > 0) & (data.agedp2 <= 2)), 1, 0)
+    under3 = np.where(((data.agedp3 > 0) & (data.agedp3 <= 2)), 1, 0)
+    under4 = np.where(agedp4 == 1, 1, 0)
+    nu13 = under1 + under2 + under3 + under4
+    data["nu13"] = nu13
+
+    # Add elderly dependent
+    np.random.seed(1000)
+    elderly = np.array(np.random.rand(len(data.agedp3)))
+    elderly_dependent = np.where(elderly <= 0.000075509, 1, 0)
+    data['elderly_dependent'] = elderly_dependent
+    return data
 
 if __name__ == '__main__':
     sys.exit(main())
