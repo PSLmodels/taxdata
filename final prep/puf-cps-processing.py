@@ -337,7 +337,16 @@ def add_dependents(data):
     Randomly assign fourth under 13 dependent to households with three or
     more dependents under 13 and randomly assign an elderly dependent
 
-    Decimals used when randomly assigning dependents come from 2014 CPS data
+    Decimals used when randomly assigning dependents come from 2014 CPS data.
+    Using the 'hunder15' variable (the closest one available to under13),
+    roughly 1/3 of the number of households with three or more persons under
+    15 had four or more under 15. Looking at those ages 13 and under in the
+    data set, slightly over 1/3 of those in households with three or more
+    under 15 were in households with four or more under 15. The decimal used
+    here is the average of these two numbers.
+
+    Similarly, the number used in elderly dependent assignment is the fraction
+    of those 65 and older that are listed as dependents in the data set.
     """
     # Randomly assign fourth dependent to units with at lease three dependents
     np.random.seed(409)
