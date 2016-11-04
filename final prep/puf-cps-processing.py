@@ -377,7 +377,7 @@ def add_dependents(data):
     elderly_dependent = np.where(elderly <= 0.000075509, 1, 0)
     data['elderly_dependent'] = elderly_dependent
 
-    # Count number of dependents under 5
+    # Count dependents under 5
     age1 = np.where(data.agedp1 == 1, 1, 0)
     age2 = np.where(data.agedp2 == 1, 1, 0)
     age3 = np.where(data.agedp3 == 1, 1, 0)
