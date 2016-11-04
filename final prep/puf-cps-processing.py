@@ -288,7 +288,7 @@ def remove_unused_variables(data):
         'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
         'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
-        'e11070', 'e11550', 'e11580', 'FDED',
+        'e11070', 'e11550', 'e11580', 'p87482', 'FDED',
         'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200']
     data = data.drop(UNUSED_READ_VARS, 1)
 
@@ -376,6 +376,13 @@ def add_dependents(data):
     elderly = np.array(np.random.rand(len(data.agedp3)))
     elderly_dependent = np.where(elderly <= 0.000075509, 1, 0)
     data['elderly_dependent'] = elderly_dependent
+
+    # Count dependents under 5
+    age1 = np.where(data.agedp1 == 1, 1, 0)
+    age2 = np.where(data.agedp2 == 1, 1, 0)
+    age3 = np.where(data.agedp3 == 1, 1, 0)
+    under5 = age1 + age2 + age3
+    data['under5'] = under5
     return data
 
 if __name__ == '__main__':
