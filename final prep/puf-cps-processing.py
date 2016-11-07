@@ -382,7 +382,7 @@ def add_dependents(data):
     age2 = np.where(data.agedp2 == 1, 1, 0)
     age3 = np.where(data.agedp3 == 1, 1, 0)
     under5 = age1 + age2 + age3
-    data['under5'] = under5
+    data['nu5'] = under5
     return data
 
 if __name__ == '__main__':
