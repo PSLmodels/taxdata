@@ -376,6 +376,13 @@ def add_dependents(data):
     elderly = np.array(np.random.rand(len(data.agedp3)))
     elderly_dependent = np.where(elderly <= 0.000075509, 1, 0)
     data['elderly_dependent'] = elderly_dependent
+
+    # Count dependents under 5
+    age1 = np.where(data.agedp1 == 1, 1, 0)
+    age2 = np.where(data.agedp2 == 1, 1, 0)
+    age3 = np.where(data.agedp3 == 1, 1, 0)
+    under5 = age1 + age2 + age3
+    data['nu05'] = under5
     return data
 
 if __name__ == '__main__':
