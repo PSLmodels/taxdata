@@ -49,18 +49,18 @@ def main():
     # (B) Make several variable names be uppercase as in SOI PUF:
     data = capitalize_varnames(data)
 
-    # (C) Impute cmbtp_standard and cmbtp_itemizer variables:
-    data['cmbtp_standard'] = data['e62100'] - data['e00100'] + data['e00700']
+    # (C) Impute cmbtp variable to estimate income on Form 6251 but not in AGI:
+    cmbtp_standard = data['e62100'] - data['e00100'] + data['e00700']
     zero = np.zeros(len(data.index))
     medical_limit = np.maximum(zero, data['e17500'] -
                                np.maximum(zero, data['e00100']) * 0.075)
     med_adj = np.minimum(medical_limit,
                          0.025 * np.maximum(zero, data['e00100']))
     stx_adj = np.maximum(zero, data['e18400'])
-    data['cmbtp_itemizer'] = (data['e62100'] - med_adj + data['e00700'] +
-                              data['p04470'] + data['e21040'] - stx_adj -
-                              data['e00100'] - data['e18500'] -
-                              data['e20800'])
+    cmbtp_itemizer = (cmbtp_standard + data['p04470'] + data['e21040'] -
+                      data['e18500'] - data['e20800'] - stx_adj - med_adj)
+    cmbtp = np.where(data['FDED'] == 1, cmbtp_itemizer, cmbtp_standard)
+    data['cmbtp'] = np.where(data['f6251'] == 1, cmbtp, 0.)
 
     # (D) Split earnings variables into taxpayer (p) and spouse (s) amounts:
     total = np.where(data['MARS'] == 2,
@@ -331,6 +331,7 @@ def transform_2008_varnames_to_2009_varnames(data):
         'e11900', 'e25960', 'p27895', 'e12200'}
     data = data.drop(UNUSED_READ_VARS, 1)
     return data
+
 
 def add_dependents(data):
     """
