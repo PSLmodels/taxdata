@@ -59,7 +59,7 @@ Variables not in 10-year CBO Projections:
         Notes: Projections are taken directly from this chart.
 
     CPIM:
-        Source: BLS
+        Source: BLS Database
         Link: http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth
         Previous: Unknown
         Current: CPIU Data Series ID CUUR0000SA0
