@@ -9,6 +9,10 @@ The year of the file/report the current numbers come from as well as the year of
 file/report used before the most recent update are listed for each variable. These
 will need to be updated with each update of CBO_baseline.
 
+If the updates include projections for years that were not there previously,
+'Stage I.py' and 'CLP_solver_16Years.py' will also need to be updated. Instructions for that
+are also included in this file.
+
 Variables in 10-Year CBO Projections:
     Source: 10-Year Economic Projections (CBO)
     Link: https://www.cbo.gov/about/products/budget-economic-data#4
@@ -78,3 +82,16 @@ Variables not in 10-year CBO Projections:
         Current: March 2016
         Notes: Put the 'Total Benefits' number from the table in terms of billions rather
         than millions of dollars
+
+Updating Stage I.py:
+
+    Increase the final year in the for loop to be one greater than the last year in the
+    updated CBO_baseline file.
+
+Updating CLP_solver_16Year.py:
+
+    Increase the length of the 'z' array to be equal to the new number of years being
+    calculated.
+    Add elements to that array that match these new years in the same format
+    as all other years are in.
+    Add new weight columns to 'z' DataFrame.
