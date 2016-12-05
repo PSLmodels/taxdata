@@ -20,7 +20,7 @@ pop_projection = DataFrame.from_csv("NP2014_D1.csv", index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) & (pop_projection.race == 0)
                                 & (pop_projection.origin == 0)]
 pop_projection = pop_projection.drop(['sex', 'race', 'origin'], axis=1)
-pop_projection = pop_projection.drop(pop_projection.index[11:], axis=0)
+pop_projection = pop_projection.drop(pop_projection.index[13:], axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
@@ -76,7 +76,7 @@ Stage_II_targets.columns = ['TOTAL_POP']
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
-index = list(range(2008,2025))
+index = list(range(2008,2027))
 Stage_II_targets.index = index
 
 
@@ -119,6 +119,8 @@ irs_returns = (DataFrame.from_csv("IRS_return_projection.csv", index_col=0)).tra
 return_growth_rate = irs_returns.pct_change()+1
 return_growth_rate.Returns['2023'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2024'] = return_growth_rate.Returns['2022']
+return_growth_rate.Returns['2025'] = return_growth_rate.Returns['2022']
+return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
 
@@ -127,14 +129,14 @@ return_growth_rate.Returns.index = index
 # Tax-calculator is using 08 PUF.
 
 soi_estimates = (DataFrame.from_csv("SOI_estimates.csv", index_col=0)).transpose()
-historical_index = list(range(2008,2013))
+historical_index = list(range(2008,2015))
 soi_estimates.index = historical_index
 
 
 # Use the yearly growth rates from Census, CBO, and IRS to blow up the 2008 PUF
 
 return_projection = soi_estimates
-for i in range(2012,2024):
+for i in range(2014,2026):
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
