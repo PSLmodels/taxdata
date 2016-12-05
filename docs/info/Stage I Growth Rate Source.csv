@@ -1,0 +1,18 @@
+Number,Raw Targets,Python script var names,Source,,factor
+1,GDP ,GDP,CBO Economic Projections,Gross Domestic Product (GDP),AGDPN
+2,TPY,TPY,CBO Economic Projections,"Income, Personal",ATXPY
+3,Wages,Wages,CBO Economic Projections,Wages and Salaries,AWAGE
+4,Proprietors NFRM,SCHC,CBO Economic Projections,"Proprietors' Icome, Nonfarm, with IVA & CCAdj","ASCHCI, ASCHCL"
+5,Proprietors Farm,SCHF,CBO Economic Projections,"Proprietors' Income, Farm, with IVA & CCAdj",ASCHF
+6,Interest,INTS,CBO Economic Projections,"Interest Income, Personal",AINTS
+7,Dividends,DIVS,CBO Economic Projections,"Dividend Income, Personal",ADIVS
+8,Rental,RENTS,CBO Economic Projections,"Income, Rental, with CCAdj",
+9,Gains,CGNS,CBO Detailed Revenue Projections,Capital Gains Realizations,ACGNS
+10,Corporate Profits,BOOK,CBO Economic Projections,"Profits, Corporate, with IVA & CCAdj","ASCHEI, ASCHEL, ABOOK"
+11,Returns,RETS,IRS Return Prjections,,ARETS
+12,Population (Census Projections),POPN,CESUS Projections of the Populatuib,Population,APOPN
+13,Population 19 and Under,POPDEP,Census,,APOPDEP
+14,OASI Trust Fund - 2014 Trustees Report:Benefits,SOCSEC,"SSA OASI Trust FundOperations of the OASI Trust Fund",Cost: Benefit Payment (Intermediate),ASOCSEC
+15,CPI-U,CPIU,CBO Economic Projections,"Consumer Price Index, all Urban Consumers (CPI-U)",ACPIU
+16,CPI-MC,CPIM,BLS,CPI Medicare,ACPIM
+17,Unemployment Compensation,AUCOMP,CBO Unemployment,Total Benefits (Unemployment Compensation),AUCOMP

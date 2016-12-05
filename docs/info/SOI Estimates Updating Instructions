@@ -1,0 +1,35 @@
+This document provides instructions for updating the 'SOI_estimates.csv' file found in the
+Stage I folder. Updating this file also requires updating Stage I.py to avoid conflict.
+
+Additional instructions adding new targets are also included in this file
+
+The data comes from the individual statistical tables from IRS SOI Tax-Stats:
+www.irs.gov/uac/soi-tax-stats-individual-statistical-tables-by-size-of-adjusted-gross-income
+
+Updates should occur when a new year of data is released. To update the document, open
+SOI_estimates.csv and add a new column for that year.
+
+The table where each variable can be found as well as the column in said table can be
+found in 'Data Source.xlsx'. Most variables are from one column alone, but there are three
+that require adding up the values in multiple columns. The necessary columns are specified
+in the file.
+
+Changes Required in Stage I.py:
+
+    - Update the last year in 'historical_index' to be one greater than the last
+      year in the newly updated SOI_estimates.
+    - Update the first year in the for loop to match the last year in the newly
+      updated SOI_estimates.
+
+Adding New Targets:
+
+    If adding a new target to the list in SOI_estimates, be sure to add its value for all
+    years in the file, not just the latest.
+
+    Changes to Stage I.py:
+        - Add the new target to the list of targets calculated in the for loop
+        - Add the new target to the 'current_year' DataFrame
+
+    Changes to Single_Year_Stage_II.py:
+        - Add code to calculate the target like all other targets currently estimated.
+        - Add target to 'One_half_LHS' and the lists 'b' and 'temp'.
