@@ -200,6 +200,39 @@ Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[2008]
 Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[2008]
 Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2008]
 
+# Rename Stage_II_targets index
+rename = {
+    'TOTAL_POP': 'US Population',
+    'Single': 'Single Returns',
+    'Joint': 'Joint Returns',
+    'HH': 'Head of Household Returns',
+    'SS_return': 'Number of Returns w/ Gross Security Income',
+    'Dep_return': 'Number of Dependent Exemptions',
+    'INTS': 'Taxable Interest Income',
+    'DIVS': 'Ordinary Dividends',
+    'SCHCI': 'Business Income (Schedule C)',
+    'SCHCL': 'Business Loss (Schedule C)',
+    'CGNS': 'Net Capital Gains in AGI',
+    'Pension': 'Taxable Pensions and Annuities',
+    'SCHEI': 'Supplemental Income (Schedule E)',
+    'SCHEL': 'Supplemental Loss (Schedule E)',
+    'SS': 'Gross Social Security Income',
+    'UCOMP': 'Unemployment Compensation',
+    'WAGE_1': 'Wages and Salaries: Zero or Less',
+    'WAGE_2': 'Wages and Salaries: $1 Less Than $10,000',
+    'WAGE_3': 'Wages and Salaries: $10,000 Less Than $20,000',
+    'WAGE_4': 'Wages and Salaries: $20,000 Less Than $30,000',
+    'WAGE_5': 'Wages and Salaries: $30,000 Less Than $40,000',
+    'WAGE_6': 'Wages and Salaries: $40,000 Less Than $50,000',
+    'WAGE_7': 'Wages and Salaries: $50,000 Less Than $75,000',
+    'WAGE_8': 'Wages and Salaries: $75,000 Less Than $100,000',
+    'WAGE_9': 'Wages and Salaries: $100,000 Less Than $200,000',
+    'WAGE_10': 'Wages and Salaries: $200,000 Less Than $500,000',
+    'WAGE_11': 'Wages and Salaries: $500,000 Less Than $1 Million',
+    'WAGE_12': 'Wages and Salaries: $1 Million and Over'
+}
+
+Stage_II_targets.rename(columns=rename, inplace=True)
 
 # First copy saved under the current directory is for taxcalc
 # Second copy save under Stage II directory is for Stage II linear programming
