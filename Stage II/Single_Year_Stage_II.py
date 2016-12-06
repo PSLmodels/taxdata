@@ -33,7 +33,7 @@ def Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year, tol):
     annuity_pension = puf.e01700*s006
     sch_e_income = np.where(puf.e02000>0, puf.e02000, 0)*s006
     sch_e_loss = np.where(puf.e02000<0, -puf.e02000, 0)*s006
-    ss_income = puf.e02400*s006
+    ss_income = np.where(puf.filer == 1, puf.e02400, 0)*s006
     unemployment_comp = puf.e02300*s006
 
 
