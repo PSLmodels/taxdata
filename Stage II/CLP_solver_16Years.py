@@ -20,8 +20,8 @@ z[:,0] = puf.s006
 
 # Start running stage II year by year
 z[:,1] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2010', tol = 0.25)
-z[:,2] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2011', tol = 0.22)
-z[:,3] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2012', tol = 0.45)
+z[:,2] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2011', tol = 0.25)
+z[:,3] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2012', tol = 0.5)
 z[:,4] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2013', tol = 0.45)
 z[:,5] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2014', tol = 0.49)
 z[:,6] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2015', tol = 0.45)
