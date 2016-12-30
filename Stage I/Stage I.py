@@ -202,6 +202,8 @@ Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2008]
 # First copy saved under the current directory is for taxcalc
 # Second copy save under Stage II directory is for Stage II linear programming
 Stage_I_factors.to_csv(path_or_buf  = "Stage_I_factors.csv", float_format ='%.4f')
+Stage_I_factors.to_csv(path_or_buf="../Stage III/Stage_I_factors.csv",
+                       float_format='%.4f')
 Stage_I_factors = Stage_I_factors.transpose()
 Stage_I_factors.to_csv(path_or_buf  = "../Stage II/Stage_I_factors.csv", float_format ='%.4f')
 
