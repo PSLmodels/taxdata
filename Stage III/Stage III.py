@@ -23,9 +23,12 @@ for year in range(2015, 2027):
 factorsDf = pd.DataFrame()
 for year in range(2009, 2027):
     puf.e00300 *= AINTS[year]
+    if year != 2009:
+        int_str = 'INT{}'.format(year - 1)
+        puf.e00300 *= factorsDf[int_str]
     wt_year = 'WT' + str(year)
-    interest = (puf.e00300[puf.e00100 >= 1] *
-                wght[wt_year][puf.e00100 >= 1]).sum()
+    interest = (puf.e00300 *
+                wght[wt_year]).sum()
     goal_dist = pd.Series(interest * distribution_INTS[year])
     ints_0 = np.where(puf.e00100 <= 0,
                       puf.e00300 * wght[wt_year], 0).sum()
@@ -35,25 +38,26 @@ for year in range(2009, 2027):
                       puf.e00300 * wght[wt_year], 0).sum()
     ints_3 = np.where((puf.e00100 >= 100000) & (puf.e00100 < 1e6),
                       puf.e00300 * wght[wt_year], 0).sum()
-    ints_4 = np.where((puf.e00100 >= 1e6) & (puf.e00100 < 1e7),
+    ints_4 = np.where((puf.e00100 >= 1e6),
                       puf.e00300 * wght[wt_year], 0).sum()
-    ints_5 = np.where((puf.e00100 >= 1e7),
-                      puf.e00300 * wght[wt_year], 0).sum()
-    actual_dist = pd.Series([ints_0, ints_1, ints_2, ints_3, ints_4, ints_5],
+    actual_dist = pd.Series([ints_0, ints_1, ints_2, ints_3, ints_4],
                             index=goal_dist.index)
     factors = goal_dist / actual_dist
     adj = np.where(puf.e00100 <= 0,
                    factors['INT_0'],
                    np.where(((puf.e00100 >= 1) & (puf.e00100 < 25000)),
                             factors['INT_1'],
-                            np.where(((puf.e00100 >= 25000) & (puf.e00100 < 100000)),
+                            np.where(((puf.e00100 >= 25000) & (puf.e00100 < 1e5)),
                                      factors['INT_2'],
-                                     np.where(((puf.e00100 >= 100000) & (puf.e00100 < 1e6)),
+                                     np.where(((puf.e00100 >= 1e5) & (puf.e00100 < 1e7)),
                                               factors['INT_3'],
-                                              np.where(((puf.e00100 >= 1e6) & (puf.e00100 < 1e7)),
-                                                       factors['INT_4'],
-                                                       factors['INT_5'])))))
+                                              factors['INT_4']))))
+    new_int = (puf.e00300 *
+                wght[wt_year]).sum()
 
-    factorsDf['INT' + str(year)] = adj
+    factorsDf['INT{}'.format(year)] = adj
 
 factorsDf.to_csv('adjustmentFactors.csv', index=False)
+print goal_dist.sum()
+print actual_dist.sum()
+print factors
