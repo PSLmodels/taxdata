@@ -38,20 +38,27 @@ for year in range(2009, 2027):
                       puf.e00300 * wght[wt_year], 0).sum()
     ints_3 = np.where((puf.e00100 >= 100000) & (puf.e00100 < 1e6),
                       puf.e00300 * wght[wt_year], 0).sum()
-    ints_4 = np.where((puf.e00100 >= 1e6),
+    ints_4 = np.where((puf.e00100 >= 1e6) & (puf.e00100 < 1e7),
                       puf.e00300 * wght[wt_year], 0).sum()
-    actual_dist = pd.Series([ints_0, ints_1, ints_2, ints_3, ints_4],
+    ints_5 = np.where((puf.e00100 >= 1e7),
+                      puf.e00300 * wght[wt_year], 0).sum()
+    actual_dist = pd.Series([ints_0, ints_1, ints_2, ints_3, ints_4, ints_5],
                             index=goal_dist.index)
     factors = goal_dist / actual_dist
     adj = np.where(puf.e00100 <= 0,
                    factors['INT_0'],
                    np.where(((puf.e00100 >= 1) & (puf.e00100 < 25000)),
                             factors['INT_1'],
-                            np.where(((puf.e00100 >= 25000) & (puf.e00100 < 1e5)),
+                            np.where(((puf.e00100 >= 25000) &
+                                      (puf.e00100 < 1e5)),
                                      factors['INT_2'],
-                                     np.where(((puf.e00100 >= 1e5) & (puf.e00100 < 1e7)),
+                                     np.where(((puf.e00100 >= 1e5) &
+                                               (puf.e00100 < 1e6)),
                                               factors['INT_3'],
-                                              factors['INT_4']))))
+                                              np.where((puf.e00100 >= 1e6) &
+                                                       (puf.e00100 < 1e7),
+                                                       factors['INT_4'],
+                                                       factors['INT_5'])))))
     new_int = (puf.e00300 *
                 wght[wt_year]).sum()
 
