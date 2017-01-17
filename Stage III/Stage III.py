@@ -4,6 +4,22 @@ import copy
 
 
 def adjustment(agi, var, var_name, target, weight, blowup):
+    """
+
+    Parameters
+    ----------
+    agi: AGI provided in PUF
+    var: Variable being adjusted
+    var_name: Three letter code to identify variable being adjusted
+    target:
+    weight: Weights file
+    blowup: Blowup factors created in Stage 1 of the extrapolation process
+
+    Returns
+    -------
+    DataFrame of adjustment factors for each year for that variable
+
+    """
 
     # Make a copy of the variable and use to create target totals
     var_copy = copy.copy(var)
@@ -122,6 +138,7 @@ bf = pd.read_csv('StageIFactors_current.csv', index_col=0)
 bf.AINTS = bf.AINTS / bf.APOPN
 bf.AINTS = 1.0 + bf.AINTS.pct_change()
 bf.AINTS[2009] = 1.0357
+
 # Call adjustment function with each variable desired
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
 
