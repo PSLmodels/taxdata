@@ -46,11 +46,10 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     factors_df = pd.DataFrame()
     for year in range(2010, 2027):
 
-        goal_dist = goal_total[year][0] * distribution[year]
+        goal_amts = goal_total[year][0] * distribution[year]
         wt_year = 'WT{}'.format(year)
         s006 = weight[wt_year] * 0.01
         var = var * blowup[year]
-        # print year, '\n', var[:10]
         # Find current total in each bin
         bin_0 = np.where(agi < 0,
                          var * s006, 0).sum()
@@ -91,17 +90,17 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         bin_18 = np.where((agi >= 1e7),
                           var * s006, 0).sum()
         # Create series holding each of the current totals
-        actual_dist = pd.Series([bin_0, bin_1, bin_2, bin_3, bin_4, bin_5,
+        actual_amts = pd.Series([bin_0, bin_1, bin_2, bin_3, bin_4, bin_5,
                                  bin_6, bin_7, bin_8, bin_9, bin_10, bin_11,
                                  bin_12, bin_13, bin_14, bin_15, bin_16,
                                  bin_17, bin_18],
-                                index=goal_dist.index)
+                                index=goal_amts.index)
         factors_index = ['BIN_0', 'BIN_1', 'BIN_2', 'BIN_3', 'BIN_4', 'BIN_5',
                          'BIN_6', 'BIN_7', 'BIN_8', 'BIN_9', 'BIN_10',
                          'BIN_11', 'BIN_12', 'BIN_13', 'BIN_14', 'BIN_15',
                          'BIN_16', 'BIN_17', 'BIN_18']
 
-        factors = pd.Series(goal_dist / actual_dist, index=factors_index)
+        factors = pd.Series(goal_amts / actual_amts, index=factors_index)
 
         adj = pd.Series([0] * len(var))
         adj[agi < 0] = factors['BIN_0']
@@ -132,8 +131,8 @@ def adjustment(agi, var, var_name, target, weight, blowup):
 # Read all necessary files
 puf = pd.read_csv('cps-puf.csv')
 targets = pd.read_csv('Stage III Targets.csv', index_col=0)
-wght = pd.read_csv('WEIGHTS copy.csv')
-bf = pd.read_csv('StageIFactors_current.csv', index_col=0)
+wght = pd.read_csv('WEIGHTS.csv')
+bf = pd.read_csv('Stage_I_factors.csv', index_col=0)
 # Set blowup factors as in TaxCalc
 bf.AINTS = bf.AINTS / bf.APOPN
 bf.AINTS = 1.0 + bf.AINTS.pct_change()
