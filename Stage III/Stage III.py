@@ -145,4 +145,4 @@ ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
 final_factors = pd.concat([ints], axis=1)
 
 # Crate CSV from the final factors
-final_factors.to_csv('adjustmentFactors.csv', index=False)
+final_factors.to_csv('adjustment_factors.csv', index=False)

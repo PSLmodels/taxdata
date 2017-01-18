@@ -41,3 +41,5 @@ z = df(z, columns=['WT2009','WT2010','WT2011','WT2012','WT2013','WT2014',
                    'WT2015','WT2016','WT2017','WT2018','WT2019','WT2020',
                    'WT2021','WT2022','WT2023','WT2024'])
 z.to_csv('WEIGHTS.csv', index = False)
+# Second copy saved in Stage III directory
+z.to_csv(path_or_buf='../Stage III/WEIGHTS/csv', index=False)
