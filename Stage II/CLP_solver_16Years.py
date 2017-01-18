@@ -15,13 +15,13 @@ puf.matched_weight = np.where(puf.filer==1, puf.s006/100, puf.matched_weight/100
 puf.s006 = puf.matched_weight * 100
 
 length = len(puf.s006)
-z = np.empty([length, 16])
+z = np.empty([length, 18])
 z[:,0] = puf.s006
 
 # Start running stage II year by year
 z[:,1] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2010', tol = 0.25)
-z[:,2] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2011', tol = 0.22)
-z[:,3] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2012', tol = 0.45)
+z[:,2] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2011', tol = 0.25)
+z[:,3] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2012', tol = 0.5)
 z[:,4] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2013', tol = 0.45)
 z[:,5] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2014', tol = 0.49)
 z[:,6] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2015', tol = 0.45)
@@ -34,10 +34,12 @@ z[:,12] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2
 z[:,13] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2022', tol = 0.47)
 z[:,14] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2023', tol = 0.45)
 z[:,15] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year = '2024', tol = 0.45)
+z[:,16] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year='2025', tol=.45)
+z[:,17] = Single_Year_Stage_II(puf, Stage_I_factors, Stage_II_targets, year='2026', tol=.45)
 
 
 # Export all weights
 z = df(z, columns=['WT2009','WT2010','WT2011','WT2012','WT2013','WT2014',
                    'WT2015','WT2016','WT2017','WT2018','WT2019','WT2020',
-                   'WT2021','WT2022','WT2023','WT2024'])
+                   'WT2021','WT2022','WT2023','WT2024', 'WT2025', 'WT2026'])
 z.to_csv('WEIGHTS.csv', index = False)

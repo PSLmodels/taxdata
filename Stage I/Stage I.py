@@ -20,7 +20,7 @@ pop_projection = DataFrame.from_csv("NP2014_D1.csv", index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) & (pop_projection.race == 0)
                                 & (pop_projection.origin == 0)]
 pop_projection = pop_projection.drop(['sex', 'race', 'origin'], axis=1)
-pop_projection = pop_projection.drop(pop_projection.index[11:], axis=0)
+pop_projection = pop_projection.drop(pop_projection.index[13:], axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
@@ -76,17 +76,17 @@ Stage_II_targets.columns = ['TOTAL_POP']
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
-index = list(range(2008,2025))
+index = list(range(2008,2027))
 Stage_II_targets.index = index
 
 
 #Calculate Stage I factors base on population tarets
-APOPN = Stage_II_targets.TOTAL_POP/Stage_II_targets.TOTAL_POP[2008]
+APOPN = Stage_II_targets.TOTAL_POP/Stage_II_targets.TOTAL_POP[2009]
 Stage_I_factors = DataFrame(APOPN, index = index)
 Stage_I_factors.columns = ['APOPN']
 
-Stage_I_factors['APOPDEP'] = DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets.POP_DEP[2008],index = index)
-Stage_I_factors['APOPSNR'] = DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2008],index = index)
+Stage_I_factors['APOPDEP'] = DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets.POP_DEP[2009],index = index)
+Stage_I_factors['APOPSNR'] = DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2009],index = index)
 
 
 #yearly growth rates used in Stage I to create Stage I factors
@@ -101,12 +101,12 @@ pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0],axis=0)
 cbo_baseline = (DataFrame.from_csv("CBO_baseline.csv", index_col=0)).transpose()
 cbo_baseline.index = index
 
-Stage_I_factors['AGDPN'] = DataFrame(cbo_baseline.GDP/cbo_baseline.GDP[2008], index = index)
-Stage_I_factors['ATXPY'] = DataFrame(cbo_baseline.TPY/cbo_baseline.TPY[2008], index = index)
-Stage_I_factors['ASCHF'] = DataFrame(cbo_baseline.SCHF/cbo_baseline.SCHF[2008], index = index)
-Stage_I_factors['ABOOK'] = DataFrame(cbo_baseline.BOOK/cbo_baseline.BOOK[2008], index = index)
-Stage_I_factors['ACPIU'] = DataFrame(cbo_baseline.CPIU/cbo_baseline.CPIU[2008], index = index)
-Stage_I_factors['ACPIM'] = DataFrame(cbo_baseline.CPIM/cbo_baseline.CPIM[2008], index = index)
+Stage_I_factors['AGDPN'] = DataFrame(cbo_baseline.GDP/cbo_baseline.GDP[2009], index = index)
+Stage_I_factors['ATXPY'] = DataFrame(cbo_baseline.TPY/cbo_baseline.TPY[2009], index = index)
+Stage_I_factors['ASCHF'] = DataFrame(cbo_baseline.SCHF/cbo_baseline.SCHF[2009], index = index)
+Stage_I_factors['ABOOK'] = DataFrame(cbo_baseline.BOOK/cbo_baseline.BOOK[2009], index = index)
+Stage_I_factors['ACPIU'] = DataFrame(cbo_baseline.CPIU/cbo_baseline.CPIU[2009], index = index)
+Stage_I_factors['ACPIM'] = DataFrame(cbo_baseline.CPIM/cbo_baseline.CPIM[2009], index = index)
 
 cbo_growth_rates = cbo_baseline.pct_change()+1
 cbo_growth_rates = cbo_growth_rates.drop(cbo_growth_rates.index[0], axis=0)
@@ -119,6 +119,8 @@ irs_returns = (DataFrame.from_csv("IRS_return_projection.csv", index_col=0)).tra
 return_growth_rate = irs_returns.pct_change()+1
 return_growth_rate.Returns['2023'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2024'] = return_growth_rate.Returns['2022']
+return_growth_rate.Returns['2025'] = return_growth_rate.Returns['2022']
+return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
 
@@ -127,14 +129,14 @@ return_growth_rate.Returns.index = index
 # Tax-calculator is using 08 PUF.
 
 soi_estimates = (DataFrame.from_csv("SOI_estimates.csv", index_col=0)).transpose()
-historical_index = list(range(2008,2013))
+historical_index = list(range(2008,2015))
 soi_estimates.index = historical_index
 
 
 # Use the yearly growth rates from Census, CBO, and IRS to blow up the 2008 PUF
 
 return_projection = soi_estimates
-for i in range(2012,2024):
+for i in range(2014,2026):
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
@@ -178,26 +180,59 @@ Stage_II_targets = pd.concat([Stage_II_targets,return_projection], axis=1)
 
 # Create all the rest Stage I factors
 total_return = DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1), columns=['ARETS'])
-Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2008]
+Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2009]
 
 
 total_wage = DataFrame(Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1), columns=['AWAGE'])
-Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[2008]
+Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[2009]
 
 
-Stage_I_factors['ASCHCI'] = Stage_II_targets.SCHCI/Stage_II_targets.SCHCI[2008]
-Stage_I_factors['ASCHCL'] = Stage_II_targets.SCHCL/Stage_II_targets.SCHCL[2008]
-Stage_I_factors['ASCHEI'] = Stage_II_targets.SCHEI/Stage_II_targets.SCHEI[2008]
-Stage_I_factors['ASCHEL'] = Stage_II_targets.SCHEL/Stage_II_targets.SCHEL[2008]
+Stage_I_factors['ASCHCI'] = Stage_II_targets.SCHCI/Stage_II_targets.SCHCI[2009]
+Stage_I_factors['ASCHCL'] = Stage_II_targets.SCHCL/Stage_II_targets.SCHCL[2009]
+Stage_I_factors['ASCHEI'] = Stage_II_targets.SCHEI/Stage_II_targets.SCHEI[2009]
+Stage_I_factors['ASCHEL'] = Stage_II_targets.SCHEL/Stage_II_targets.SCHEL[2009]
 
 
-Stage_I_factors['AINTS'] = Stage_II_targets.INTS/Stage_II_targets.INTS[2008]
-Stage_I_factors['ADIVS'] = Stage_II_targets.DIVS/Stage_II_targets.DIVS[2008]
-Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[2008]
+Stage_I_factors['AINTS'] = Stage_II_targets.INTS/Stage_II_targets.INTS[2009]
+Stage_I_factors['ADIVS'] = Stage_II_targets.DIVS/Stage_II_targets.DIVS[2009]
+Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[2009]
 
-Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[2008]
-Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2008]
+Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[2009]
+Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2009]
 
+# Rename Stage_II_targets index
+rename = {
+    'TOTAL_POP': 'US Population',
+    'Single': 'Single Returns',
+    'Joint': 'Joint Returns',
+    'HH': 'Head of Household Returns',
+    'SS_return': 'Number of Returns w/ Gross Security Income',
+    'Dep_return': 'Number of Dependent Exemptions',
+    'INTS': 'Taxable Interest Income',
+    'DIVS': 'Ordinary Dividends',
+    'SCHCI': 'Business Income (Schedule C)',
+    'SCHCL': 'Business Loss (Schedule C)',
+    'CGNS': 'Net Capital Gains in AGI',
+    'Pension': 'Taxable Pensions and Annuities',
+    'SCHEI': 'Supplemental Income (Schedule E)',
+    'SCHEL': 'Supplemental Loss (Schedule E)',
+    'SS': 'Gross Social Security Income',
+    'UCOMP': 'Unemployment Compensation',
+    'WAGE_1': 'Wages and Salaries: Zero or Less',
+    'WAGE_2': 'Wages and Salaries: $1 Less Than $10,000',
+    'WAGE_3': 'Wages and Salaries: $10,000 Less Than $20,000',
+    'WAGE_4': 'Wages and Salaries: $20,000 Less Than $30,000',
+    'WAGE_5': 'Wages and Salaries: $30,000 Less Than $40,000',
+    'WAGE_6': 'Wages and Salaries: $40,000 Less Than $50,000',
+    'WAGE_7': 'Wages and Salaries: $50,000 Less Than $75,000',
+    'WAGE_8': 'Wages and Salaries: $75,000 Less Than $100,000',
+    'WAGE_9': 'Wages and Salaries: $100,000 Less Than $200,000',
+    'WAGE_10': 'Wages and Salaries: $200,000 Less Than $500,000',
+    'WAGE_11': 'Wages and Salaries: $500,000 Less Than $1 Million',
+    'WAGE_12': 'Wages and Salaries: $1 Million and Over'
+}
+
+Stage_II_targets.rename(columns=rename, inplace=True)
 
 # First copy saved under the current directory is for taxcalc
 # Second copy save under Stage II directory is for Stage II linear programming
