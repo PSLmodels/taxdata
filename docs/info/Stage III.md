@@ -13,9 +13,9 @@ stay in reasonable ranges.
 While Stage II does target wage distribution, only the aggregate totals for
 all other income variables are targeted and the resulting distributions of
 those variables can be inconsistent with the distribution of those variables
-may be inconsistent with what publicly available tax data shows. Stage III
-fixes this by applying an adjustment factor to each record in the PUF based on
-the level of AGI in the PUF. The factor is calculated so that it the aggregate
+with what publicly available tax data shows. Stage III fixes this error by
+applying an adjustment factor to each record in the PUF based on
+the level of AGI in the PUF. The factor is calculated so that the aggregate
 value of the variable targeted is not changed, but the distribution more
 accurately reflects the data.
 
@@ -27,23 +27,23 @@ tables to determine the percent of its total is in each AGI bin for 2009-2014
 (see appendix for the bin breakdown). The distribution is assumed to hold at
 2014 levels for the years 2015-2026. These are the goal distributions.
 
-For each year adjustment factors are needed, the variable is extrapolated to
+For each year adjustment factors are needed, the targeted variable is extrapolated to
 that year using the same routine as in Tax-Calculator. The goal bin amounts
 are then found using the goal distributions and aggregate total found in the
 PUF.
 
-The goal bin amounts are are then divided by the actual bin amounts, which are
+The goal bin amounts are divided by the actual bin amounts, which are
 calculated using the AGI variable found in the PUF before final processing, in
 order to find a set of adjustment factors that can be multiplied by each
-record in each AGI bin so that bin total reach their targeted levels. 
+record in each AGI bin so that bin totals reach their targeted levels. 
 
-While this process does benefit from it’s simplicity, there are some
+While this process does benefit from its simplicity, there are some
 trade-offs. 
 
 * Because each record is given a specific factor,  the size of the file
    holding these factors will be large.
-* Because the factor is only being applied to one element of income, any
-   correlation between two types of income will be lost. However, in the case
+* Because the factor is only being applied to one element of income, any possible
+   relationship between two types of income will be lost. However, in the case
    of interest income, there do not appear to be any strong correlations with
    other income items (see appendix).
 

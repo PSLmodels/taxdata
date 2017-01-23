@@ -47,6 +47,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     for year in range(2010, 2027):
 
         goal_amts = goal_total[year][0] * distribution[year]
+        print goal_amts
         wt_year = 'WT{}'.format(year)
         s006 = weight[wt_year] * 0.01
         var = var * blowup[year]
@@ -95,12 +96,15 @@ def adjustment(agi, var, var_name, target, weight, blowup):
                                  bin_12, bin_13, bin_14, bin_15, bin_16,
                                  bin_17, bin_18],
                                 index=goal_amts.index)
+
         factors_index = ['BIN_0', 'BIN_1', 'BIN_2', 'BIN_3', 'BIN_4', 'BIN_5',
                          'BIN_6', 'BIN_7', 'BIN_8', 'BIN_9', 'BIN_10',
                          'BIN_11', 'BIN_12', 'BIN_13', 'BIN_14', 'BIN_15',
                          'BIN_16', 'BIN_17', 'BIN_18']
 
-        factors = pd.Series(goal_amts / actual_amts, index=factors_index)
+        # Find factor for each AGI bin
+        factors = pd.Series(goal_amts / actual_amts)
+        factors.index = factors_index
 
         adj = pd.Series([0] * len(var))
         adj[agi < 0] = factors['BIN_0']
