@@ -152,6 +152,7 @@ for item in var_list:
     if item not in USABLE_READ_VARS:
         drop_vars.append(item)
 data.drop(drop_vars, axis=1, inplace=True)
+data.fillna(0, inplace=True)
 
 # Write processed file to a CSV
 data.to_csv('cps.csv', index=False)
