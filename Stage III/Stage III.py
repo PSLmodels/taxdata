@@ -47,7 +47,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     for year in range(2010, 2027):
 
         goal_amts = goal_total[year][0] * distribution[year]
-        print goal_amts
+
         wt_year = 'WT{}'.format(year)
         s006 = weight[wt_year] * 0.01
         var = var * blowup[year]
