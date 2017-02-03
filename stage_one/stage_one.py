@@ -236,7 +236,10 @@ Stage_II_targets.rename(columns=rename, inplace=True)
 
 # First copy saved under the current directory is for taxcalc
 # Second copy save under Stage II directory is for Stage II linear programming
+# Third copy saved under final prep directory for final prep
 Stage_I_factors.to_csv(path_or_buf  = "Stage_I_factors.csv", float_format ='%.4f')
+Stage_I_factors.to_csv(path_or_buf="../final prep/Stage_I_factors.csv",
+                       float_format='%.4f')
 Stage_I_factors = Stage_I_factors.transpose()
 Stage_I_factors.to_csv(path_or_buf  = "../Stage II/Stage_I_factors.csv", float_format ='%.4f')
 

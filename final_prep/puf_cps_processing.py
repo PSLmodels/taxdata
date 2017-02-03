@@ -1,12 +1,12 @@
 """
-puf-cps-processing.py transforms puf-cps.csv into final puf.csv file.
+puf_cps_processing.py transforms puf-cps.csv into final puf.csv file.
 
-COMMAND-LINE USAGE: python puf-cps-processing.py INPUT
+COMMAND-LINE USAGE: python puf_cps_processing.py INPUT
 
 This script transforms the INPUT csv file in several ways as described below.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 puf-cps-processing.py
+# pep8 --ignore=E402 puf_cps_processing.py
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy xxx.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
@@ -22,10 +22,10 @@ import numpy as np
 
 def main():
     """
-    Contains all the logic of the puf-cps-processing.py script.
+    Contains all the logic of the puf_cps_processing.py script.
     """
     parser = argparse.ArgumentParser(
-        prog='python puf-cps-processing.py',
+        prog='python puf_cps_processing.py',
     )
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
