@@ -238,12 +238,10 @@ Stage_II_targets.rename(columns=rename, inplace=True)
 # Second copy save under Stage II directory is for Stage II linear programming
 # Third copy saved under final prep directory for final prep
 Stage_I_factors.to_csv(path_or_buf  = "Stage_I_factors.csv", float_format ='%.4f')
-Stage_I_factors.to_csv(path_or_buf="../final prep/Stage_I_factors.csv",
-                       float_format='%.4f')
 Stage_I_factors = Stage_I_factors.transpose()
-Stage_I_factors.to_csv(path_or_buf  = "../Stage II/Stage_I_factors.csv", float_format ='%.4f')
+Stage_I_factors.to_csv(path_or_buf  = "../stage_two/Stage_I_factors.csv", float_format ='%.4f')
 
 # Export Stage II targets for stage II
 Stage_II_targets = Stage_II_targets.transpose()
-Stage_II_targets.to_csv(path_or_buf = "../Stage II/Stage_II_targets.csv", float_format ='%.4f')
+Stage_II_targets.to_csv(path_or_buf = "../stage_two/Stage_II_targets.csv", float_format ='%.4f')
 
