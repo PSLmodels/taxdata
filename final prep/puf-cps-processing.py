@@ -16,7 +16,7 @@ This script transforms the INPUT csv file in several ways as described below.
 
 import argparse
 import sys
-import pandas
+import pandas as pd
 import numpy as np
 
 
@@ -34,7 +34,7 @@ def main():
     args = parser.parse_args()
 
     # (*) Read unprocessed puf-cps.csv file into a Pandas Dataframe
-    data = pandas.read_csv(args.INPUT)
+    data = pd.read_csv(args.INPUT)
 
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])
@@ -78,7 +78,10 @@ def main():
     # (E) Randomly assign additional dependents to households
     data = add_dependents(data)
 
-    # (F) Remove variables not expected by Tax-Calculator
+    # (F) Add AGI bin indicator used for adjustment factors
+    data = add_agi_bin(data)
+
+    # (G) Remove variables not expected by Tax-Calculator
     if max_flpdyr >= 2009:
         data = remove_unused_variables(data)
 
@@ -384,6 +387,37 @@ def add_dependents(data):
     age3 = np.where(data.agedp3 == 1, 1, 0)
     under5 = age1 + age2 + age3
     data['nu05'] = under5
+    return data
+
+
+def add_agi_bin(data):
+    """
+    Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
+
+    """
+    agi = pd.Series([0] * len(data.e00100))
+    agi[data.e00100 < 0] = 0
+    agi[(data.e00100 >= 0) & (data.e00100 < 5000)] = 1
+    agi[(data.e00100 >= 5000) & (data.e00100 < 10000)] = 2
+    agi[(data.e00100 >= 10000) & (data.e00100 < 15000)] = 3
+    agi[(data.e00100 >= 15000) & (data.e00100 < 20000)] = 4
+    agi[(data.e00100 >= 20000) & (data.e00100 < 25000)] = 5
+    agi[(data.e00100 >= 25000) & (data.e00100 < 30000)] = 6
+    agi[(data.e00100 >= 30000) & (data.e00100 < 40000)] = 7
+    agi[(data.e00100 >= 40000) & (data.e00100 < 50000)] = 8
+    agi[(data.e00100 >= 50000) & (data.e00100 < 75000)] = 9
+    agi[(data.e00100 >= 75000) & (data.e00100 < 100000)] = 10
+    agi[(data.e00100 >= 100000) & (data.e00100 < 200000)] = 11
+    agi[(data.e00100 >= 200000) & (data.e00100 < 500000)] = 12
+    agi[(data.e00100 >= 500000) & (data.e00100 < 1e6)] = 13
+    agi[(data.e00100 >= 1e6) & (data.e00100 < 1.5e6)] = 14
+    agi[(data.e00100 >= 1.5e6) & (data.e00100 < 2e6)] = 15
+    agi[(data.e00100 >= 2e6) & (data.e00100 < 5e6)] = 16
+    agi[(data.e00100 >= 5e6) & (data.e00100 < 1e7)] = 17
+    agi[(data.e00100 >= 1e7)] = 18
+
+    data['agi_bin'] = agi
+
     return data
 
 if __name__ == '__main__':

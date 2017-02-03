@@ -105,8 +105,10 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         # Find factor for each AGI bin
         factors = pd.Series(goal_amts / actual_amts)
         factors.index = factors_index
+        print factors
 
         adj = pd.Series([0] * len(var))
+        '''
         adj[agi < 0] = factors['BIN_0']
         adj[(agi >= 0) & (agi < 5000)] = factors['BIN_1']
         adj[(agi >= 5000) & (agi < 10000)] = factors['BIN_2']
@@ -126,9 +128,9 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         adj[(agi >= 2e6) & (agi < 5e6)] = factors['BIN_16']
         adj[(agi >= 5e6) & (agi < 1e7)] = factors['BIN_17']
         adj[(agi >= 1e7)] = factors['BIN_18']
-
+        '''
         factors_df['{}{}'.format(var_name, year)] = adj
-        var *= factors_df['{}{}'.format(var_name, year)]
+        # var *= factors_df['{}{}'.format(var_name, year)]
 
     return factors_df
 
