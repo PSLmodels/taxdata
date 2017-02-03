@@ -131,6 +131,8 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         '''
         factors_df['{}{}'.format(var_name, year)] = adj
         # var *= factors_df['{}{}'.format(var_name, year)]
+        # TODO: change how the factors are applied in stage 3 to match how they
+        # would be in TaxCalc. Not doing so causes NaN error
 
     return factors_df
 
