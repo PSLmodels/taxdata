@@ -1,12 +1,12 @@
 """
-puf-cps-processing.py transforms puf-cps.csv into final puf.csv file.
+puf_data_processing.py transforms raw cps-puf-*.csv into final puf.csv file.
 
-COMMAND-LINE USAGE: python puf-cps-processing.py INPUT
+COMMAND-LINE USAGE: python puf_data_processing.py INPUT
 
 This script transforms the INPUT csv file in several ways as described below.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 puf-cps-processing.py
+# pep8 --ignore=E402 puf_data_processing.py
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy xxx.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
@@ -22,18 +22,17 @@ import numpy as np
 
 def main():
     """
-    Contains all the logic of the puf-cps-processing.py script.
+    Contains all the logic of the puf_data_processing.py script.
     """
     parser = argparse.ArgumentParser(
-        prog='python puf-cps-processing.py',
+        prog='python puf_data_processing.py',
     )
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
-                              'contains data from original PUF or '
-                              'CPS-matched PUF.'))
+                              'contains data from original CPS-matched PUF.'))
     args = parser.parse_args()
 
-    # (*) Read unprocessed puf-cps.csv file into a Pandas Dataframe
+    # (*) Read unprocessed INPUT file into a Pandas Dataframe
     data = pandas.read_csv(args.INPUT)
 
     # check the PUF year
@@ -104,9 +103,8 @@ def create_new_recid(data):
 
     # sort all the records based on old recid
     sorted_dta = data.sort_values(by='recid')
-
     # count how many duplicates each old recid has
-    # and save the dup count for each record
+    #   and save the dup count for each record
     seq = sorted_dta.index
     length = len(sorted_dta['recid'])
     count = [0 for _ in range(length)]
@@ -115,18 +113,15 @@ def create_new_recid(data):
         previous = seq[index - 1]
         if sorted_dta['recid'][num] == sorted_dta['recid'][previous]:
             count[num] = count[previous] + 1
-
-    # adding the ending digit for filers and non-filers with the dup count
+    # add the ending digit for filers and non-filers with the dup count
     new_recid = [0 for _ in range(length)]
     for index in range(0, length):
         if data['recid'][index] == 0:
             new_recid[index] = 4000000 + count[index]
         else:
             new_recid[index] = data['recid'][index] * 10 + count[index]
-
     # replace the old recid with the new one
     data['recid'] = new_recid
-
     return data
 
 
@@ -349,6 +344,7 @@ def add_dependents(data):
     Similarly, the number used in elderly dependent assignment is the fraction
     of those 65 and older that are listed as dependents in the data set.
     """
+    # pylint: disable=too-many-locals
     # Randomly assign fourth dependent to units with at lease three dependents
     np.random.seed(409)
     randDep = (list(np.random.rand(len(data.agedp3[(data.agedp3 > 0) &
@@ -371,13 +367,11 @@ def add_dependents(data):
     under4 = np.where(agedp4 == 1, 1, 0)
     nu13 = under1 + under2 + under3 + under4
     data["nu13"] = nu13
-
     # Add elderly dependent
     np.random.seed(1000)
     elderly = np.array(np.random.rand(len(data.agedp3)))
     elderly_dependent = np.where(elderly <= 0.000075509, 1, 0)
     data['elderly_dependent'] = elderly_dependent
-
     # Count dependents under 5
     age1 = np.where(data.agedp1 == 1, 1, 0)
     age2 = np.where(data.agedp2 == 1, 1, 0)
@@ -385,6 +379,7 @@ def add_dependents(data):
     under5 = age1 + age2 + age3
     data['nu05'] = under5
     return data
+
 
 if __name__ == '__main__':
     sys.exit(main())
