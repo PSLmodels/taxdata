@@ -10,7 +10,6 @@ dep = 19
 senior = 65
 
 # Import Census projection on population:
-#
 # - Projection from 2014
 #   <http://www.census.gov/population/projections/data/national/2014/downloadablefiles.html>
 # - Historical estimates from 2010 to 2014
@@ -86,7 +85,7 @@ TOTAL_POP = pd.concat([DataFrame(total_pop2),
                        DataFrame(total_pop1.values.transpose()),
                        DataFrame(pop_projection.total_pop.values)])
 
-# Stage_II_targets stores all targets later used in Stage II
+# Stage_II_targets stores all targets later used in stage2 logic
 Stage_II_targets = DataFrame(TOTAL_POP)
 Stage_II_targets.columns = ['TOTAL_POP']
 
@@ -106,7 +105,6 @@ Stage_I_factors['APOPDEP'] = DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets
                                        index=index)
 Stage_I_factors['APOPSNR'] = DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2009],
                                        index=index)
-
 
 # Specify yearly growth rates used in Stage I to create Stage I factors
 pop_growth_rates = DataFrame(Stage_II_targets.TOTAL_POP.pct_change() + 1.0)
@@ -190,13 +188,13 @@ for i in range(2014, 2026):
                               Wage_6, Wage_7, Wage_8, Wage_9, Wage_10,
                               Wage_11, Wage_12]).transpose()
     current_year.columns = return_projection.columns
-    current_year.index = [i + 1]
+    current_year.index = [i+1]
     return_projection = return_projection.append(current_year)
 
 # Combine the historical data with the newly blow-up data
 Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 
-# Create all the rest Stage I factors
+# Create all the rest of the Stage I factors
 total_return = DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1),
                          columns=['ARETS'])
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2009]
@@ -248,19 +246,18 @@ rename = {
     'WAGE_11': 'Wages and Salaries: $500,000 Less Than $1 Million',
     'WAGE_12': 'Wages and Salaries: $1 Million and Over'
 }
-
 Stage_II_targets.rename(columns=rename, inplace=True)
 
 # Export Stage_I_factors for final preparation and then use by Tax-Calculator
 Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
                        float_format='%.4f')
 
-# Export transpose of Stage_I_factors for use in stage2 weights calculation
+# Export TRANSPOSE of Stage_I_factors for use in stage2 weights calculation
 Stage_I_factors = Stage_I_factors.transpose()
 Stage_I_factors.to_csv(path_or_buf="../Stage II/Stage_I_factors.csv",
                        float_format='%.4f')
 
-# Export Stage II targets for stage2
+# Export Stage_II_targets for use in stage2 weights calculation
 Stage_II_targets = Stage_II_targets.transpose()
 Stage_II_targets.to_csv(path_or_buf="../Stage II/Stage_II_targets.csv",
                         float_format='%.4f')
