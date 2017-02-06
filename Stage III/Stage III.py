@@ -105,31 +105,26 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         # Find factor for each AGI bin
         factors = pd.Series(goal_amts / actual_amts)
         factors.index = factors_index
-        print factors
 
-        adj = pd.Series([0] * len(var))
-        '''
-        adj[agi < 0] = factors['BIN_0']
-        adj[(agi >= 0) & (agi < 5000)] = factors['BIN_1']
-        adj[(agi >= 5000) & (agi < 10000)] = factors['BIN_2']
-        adj[(agi >= 10000) & (agi < 15000)] = factors['BIN_3']
-        adj[(agi >= 15000) & (agi < 20000)] = factors['BIN_4']
-        adj[(agi >= 20000) & (agi < 25000)] = factors['BIN_5']
-        adj[(agi >= 25000) & (agi < 30000)] = factors['BIN_6']
-        adj[(agi >= 30000) & (agi < 40000)] = factors['BIN_7']
-        adj[(agi >= 40000) & (agi < 50000)] = factors['BIN_8']
-        adj[(agi >= 50000) & (agi < 75000)] = factors['BIN_9']
-        adj[(agi >= 75000) & (agi < 100000)] = factors['BIN_10']
-        adj[(agi >= 100000) & (agi < 200000)] = factors['BIN_11']
-        adj[(agi >= 200000) & (agi < 500000)] = factors['BIN_12']
-        adj[(agi >= 500000) & (agi < 1e6)] = factors['BIN_13']
-        adj[(agi >= 1e6) & (agi < 1.5e6)] = factors['BIN_14']
-        adj[(agi >= 1.5e6) & (agi < 2e6)] = factors['BIN_15']
-        adj[(agi >= 2e6) & (agi < 5e6)] = factors['BIN_16']
-        adj[(agi >= 5e6) & (agi < 1e7)] = factors['BIN_17']
-        adj[(agi >= 1e7)] = factors['BIN_18']
-        '''
-        factors_df['{}{}'.format(var_name, year)] = adj
+        var[agi < 0] *= factors['BIN_0']
+        var[(agi >= 0) & (agi < 5000)] *= factors['BIN_1']
+        var[(agi >= 5000) & (agi < 10000)] *= factors['BIN_2']
+        var[(agi >= 10000) & (agi < 15000)] *= factors['BIN_3']
+        var[(agi >= 15000) & (agi < 20000)] *= factors['BIN_4']
+        var[(agi >= 20000) & (agi < 25000)] *= factors['BIN_5']
+        var[(agi >= 25000) & (agi < 30000)] *= factors['BIN_6']
+        var[(agi >= 30000) & (agi < 40000)] *= factors['BIN_7']
+        var[(agi >= 40000) & (agi < 50000)] *= factors['BIN_8']
+        var[(agi >= 50000) & (agi < 75000)] *= factors['BIN_9']
+        var[(agi >= 75000) & (agi < 100000)] *= factors['BIN_10']
+        var[(agi >= 100000) & (agi < 200000)] *= factors['BIN_11']
+        var[(agi >= 200000) & (agi < 500000)] *= factors['BIN_12']
+        var[(agi >= 500000) & (agi < 1e6)] *= factors['BIN_13']
+        var[(agi >= 1e6) & (agi < 1.5e6)] *= factors['BIN_14']
+        var[(agi >= 1.5e6) & (agi < 2e6)] *= factors['BIN_15']
+        var[(agi >= 2e6) & (agi < 5e6)] *= factors['BIN_16']
+        var[(agi >= 5e6) & (agi < 1e7)] *= factors['BIN_17']
+        factors_df['{}{}'.format(var_name, year)] = factors
         # var *= factors_df['{}{}'.format(var_name, year)]
         # TODO: change how the factors are applied in stage 3 to match how they
         # would be in TaxCalc. Not doing so causes NaN error
