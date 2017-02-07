@@ -1,6 +1,3 @@
-# coding: utf-8
-
-from pandas import DataFrame
 import pandas as pd
 
 # define constants for the number refers total population,
@@ -18,7 +15,7 @@ senior = 65
 #   <http://www.census.gov/popest/data/intercensal/national/nat2010.html>
 
 # projection for 2014+
-pop_projection = DataFrame.from_csv("NP2014_D1.csv", index_col='year')
+pop_projection = pd.read_csv("NP2014_D1.csv", index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) &
                                 (pop_projection.race == 0) &
                                 (pop_projection.origin == 0)]
@@ -74,18 +71,18 @@ total_pop2.append(historical2.TOT_POP[year08total].sum())
 total_pop2.append(historical2.TOT_POP[year09total].sum())
 
 # combine data for 2008-2014 with projection data
-POP_DEP = pd.concat([DataFrame(pop_dep2),
-                     DataFrame(pop_dep1),
-                     DataFrame(pop_projection[pop_projection.columns[1:21]].sum(axis=1))])
-POP_SNR = pd.concat([DataFrame(pop_snr2),
-                     DataFrame(pop_snr1),
-                     DataFrame(pop_projection[pop_projection.columns[66:]].sum(axis=1))])
-TOTAL_POP = pd.concat([DataFrame(total_pop2),
-                       DataFrame(total_pop1.values.transpose()),
-                       DataFrame(pop_projection.total_pop.values)])
+POP_DEP = pd.concat([pd.DataFrame(pop_dep2),
+                     pd.DataFrame(pop_dep1),
+                     pd.DataFrame(pop_projection[pop_projection.columns[1:21]].sum(axis=1))])
+POP_SNR = pd.concat([pd.DataFrame(pop_snr2),
+                     pd.DataFrame(pop_snr1),
+                     pd.DataFrame(pop_projection[pop_projection.columns[66:]].sum(axis=1))])
+TOTAL_POP = pd.concat([pd.DataFrame(total_pop2),
+                       pd.DataFrame(total_pop1.values.transpose()),
+                       pd.DataFrame(pop_projection.total_pop.values)])
 
 # create Stage_II_targets to store all targets used in stage2 logic
-Stage_II_targets = DataFrame(TOTAL_POP)
+Stage_II_targets = pd.DataFrame(TOTAL_POP)
 Stage_II_targets.columns = ['TOTAL_POP']
 
 # add number of dependents and number of seniors to Stage_II_targets
@@ -97,45 +94,43 @@ Stage_II_targets.index = index
 
 # calculate Stage_I_factors base on population targets
 APOPN = Stage_II_targets.TOTAL_POP / Stage_II_targets.TOTAL_POP[2009]
-Stage_I_factors = DataFrame(APOPN, index=index)
+Stage_I_factors = pd.DataFrame(APOPN, index=index)
 Stage_I_factors.columns = ['APOPN']
 
-Stage_I_factors['APOPDEP'] = DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets.POP_DEP[2009],
-                                       index=index)
-Stage_I_factors['APOPSNR'] = DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2009],
-                                       index=index)
+Stage_I_factors['APOPDEP'] = pd.DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets.POP_DEP[2009],
+                                          index=index)
+Stage_I_factors['APOPSNR'] = pd.DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2009],
+                                          index=index)
 
 # specify yearly growth rates used in Stage I to create Stage_I_factors
-pop_growth_rates = DataFrame(Stage_II_targets.TOTAL_POP.pct_change() + 1.0)
+pop_growth_rates = pd.DataFrame(Stage_II_targets.TOTAL_POP.pct_change() + 1.0)
 pop_growth_rates['POPDEP'] = Stage_II_targets.POP_DEP.pct_change() + 1.0
 pop_growth_rates['POPSNR'] = Stage_II_targets.POP_SNR.pct_change() + 1.0
 pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0],
                                          axis=0)
 
 # import CBO baseline projection
-cbo_baseline = (DataFrame.from_csv("CBO_baseline.csv",
-                                   index_col=0)).transpose()
+cbo_baseline = pd.read_csv("CBO_baseline.csv", index_col=0)
+cbo_baseline = cbo_baseline.transpose()
 cbo_baseline.index = index
-
-Stage_I_factors['AGDPN'] = DataFrame(cbo_baseline.GDP/cbo_baseline.GDP[2009],
-                                     index=index)
-Stage_I_factors['ATXPY'] = DataFrame(cbo_baseline.TPY/cbo_baseline.TPY[2009],
-                                     index=index)
-Stage_I_factors['ASCHF'] = DataFrame(cbo_baseline.SCHF/cbo_baseline.SCHF[2009],
-                                     index=index)
-Stage_I_factors['ABOOK'] = DataFrame(cbo_baseline.BOOK/cbo_baseline.BOOK[2009],
-                                     index=index)
-Stage_I_factors['ACPIU'] = DataFrame(cbo_baseline.CPIU/cbo_baseline.CPIU[2009],
-                                     index=index)
-Stage_I_factors['ACPIM'] = DataFrame(cbo_baseline.CPIM/cbo_baseline.CPIM[2009],
-                                     index=index)
-
+Stage_I_factors['AGDPN'] = pd.DataFrame(cbo_baseline.GDP/cbo_baseline.GDP[2009],
+                                        index=index)
+Stage_I_factors['ATXPY'] = pd.DataFrame(cbo_baseline.TPY/cbo_baseline.TPY[2009],
+                                        index=index)
+Stage_I_factors['ASCHF'] = pd.DataFrame(cbo_baseline.SCHF/cbo_baseline.SCHF[2009],
+                                        index=index)
+Stage_I_factors['ABOOK'] = pd.DataFrame(cbo_baseline.BOOK/cbo_baseline.BOOK[2009],
+                                        index=index)
+Stage_I_factors['ACPIU'] = pd.DataFrame(cbo_baseline.CPIU/cbo_baseline.CPIU[2009],
+                                        index=index)
+Stage_I_factors['ACPIM'] = pd.DataFrame(cbo_baseline.CPIM/cbo_baseline.CPIM[2009],
+                                        index=index)
 cbo_growth_rates = cbo_baseline.pct_change() + 1.0
 cbo_growth_rates = cbo_growth_rates.drop(cbo_growth_rates.index[0], axis=0)
 
 # read  IRS number-of-returns projection
-irs_returns = (DataFrame.from_csv("IRS_return_projection.csv",
-                                  index_col=0)).transpose()
+irs_returns = pd.read_csv("IRS_return_projection.csv", index_col=0)
+irs_returns = irs_returns.transpose()
 return_growth_rate = irs_returns.pct_change() + 1.0
 return_growth_rate.Returns['2023'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2024'] = return_growth_rate.Returns['2022']
@@ -144,8 +139,8 @@ return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
-soi_estimates = (DataFrame.from_csv("SOI_estimates.csv",
-                                    index_col=0)).transpose()
+soi_estimates = pd.read_csv("SOI_estimates.csv", index_col=0)
+soi_estimates = soi_estimates.transpose()
 historical_index = list(range(2008, 2015))
 soi_estimates.index = historical_index
 
@@ -179,13 +174,14 @@ for i in range(2014, 2026):
     Wage_10 = return_projection.WAGE_10[i]*cbo_growth_rates.Wages[i+1]
     Wage_11 = return_projection.WAGE_11[i]*cbo_growth_rates.Wages[i+1]
     Wage_12 = return_projection.WAGE_12[i]*cbo_growth_rates.Wages[i+1]
-    current_year = DataFrame([Single, Joint, HH,
-                              SS_return, Dep_return,
-                              INTS, DIVS, SCHCI, SCHCL,
-                              CGNS, Pension, SCHEI, SCHEL, SS, UCOMP,
-                              Wage_1, Wage_2, Wage_3, Wage_4, Wage_5,
-                              Wage_6, Wage_7, Wage_8, Wage_9, Wage_10,
-                              Wage_11, Wage_12]).transpose()
+    current_year = pd.DataFrame([Single, Joint, HH,
+                                 SS_return, Dep_return,
+                                 INTS, DIVS, SCHCI, SCHCL,
+                                 CGNS, Pension, SCHEI, SCHEL, SS, UCOMP,
+                                 Wage_1, Wage_2, Wage_3, Wage_4, Wage_5,
+                                 Wage_6, Wage_7, Wage_8, Wage_9, Wage_10,
+                                 Wage_11, Wage_12])
+    current_year = current_year.transpose()
     current_year.columns = return_projection.columns
     current_year.index = [i+1]
     return_projection = return_projection.append(current_year)
@@ -194,12 +190,12 @@ for i in range(2014, 2026):
 Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 
 # create all the rest of the Stage_I_factors
-total_return = DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1),
-                         columns=['ARETS'])
+total_return = pd.DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1),
+                            columns=['ARETS'])
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2009]
 
-total_wage = DataFrame(Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1),
-                       columns=['AWAGE'])
+total_wage = pd.DataFrame(Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1),
+                          columns=['AWAGE'])
 Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[2009]
 
 Stage_I_factors['ASCHCI'] = Stage_II_targets.SCHCI/Stage_II_targets.SCHCI[2009]
