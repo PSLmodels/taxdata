@@ -1,10 +1,12 @@
 import pandas as pd
 
+SYR = 2009  # calendar year used to normalize factors
+
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
-totes = 999
-dep = 19
-senior = 65
+TOTES = 999
+DEP = 19
+SENIOR = 65
 
 # Import Census projection on population:
 # - Projection from 2014
@@ -30,14 +32,14 @@ historical1 = historical1[historical1.SEX == 0]
 historical1 = historical1.drop(['SEX', 'CENSUS2010POP', 'ESTIMATESBASE2010'],
                                axis=1)
 
-pop_dep1 = historical1[historical1.AGE <= dep].sum()
+pop_dep1 = historical1[historical1.AGE <= DEP].sum()
 pop_dep1 = pop_dep1.drop(['AGE'], axis=0)
 
-pop_snr1 = historical1[(historical1.AGE >= senior) &
-                       (historical1.AGE < totes)].sum()
+pop_snr1 = historical1[(historical1.AGE >= SENIOR) &
+                       (historical1.AGE < TOTES)].sum()
 pop_snr1 = pop_snr1.drop(['AGE'], axis=0)
 
-total_pop1 = historical1[historical1.AGE == totes]
+total_pop1 = historical1[historical1.AGE == TOTES]
 total_pop1 = total_pop1.drop(['AGE'], axis=1)
 
 # data for 2008-2009
@@ -48,35 +50,37 @@ historical2 = historical2[(historical2.MONTH == 7) &
 historical2 = historical2.drop(historical2.columns[4:], axis=1)
 historical2 = historical2.drop(historical2.columns[0], axis=1)
 
-year08under19 = (historical2.YEAR == 2008) & (historical2.AGE <= dep)
-year09under19 = (historical2.YEAR == 2009) & (historical2.AGE <= dep)
+year08under19 = (historical2.YEAR == 2008) & (historical2.AGE <= DEP)
+year09under19 = (historical2.YEAR == 2009) & (historical2.AGE <= DEP)
 pop_dep2 = []
 pop_dep2.append(historical2.TOT_POP[year08under19].sum())
 pop_dep2.append(historical2.TOT_POP[year09under19].sum())
 
 year08over65 = ((historical2.YEAR == 2008) &
-                (historical2.AGE >= senior) &
-                (historical2.AGE < totes))
+                (historical2.AGE >= SENIOR) &
+                (historical2.AGE < TOTES))
 year09over65 = ((historical2.YEAR == 2009) &
-                (historical2.AGE >= senior) &
-                (historical2.AGE < totes))
+                (historical2.AGE >= SENIOR) &
+                (historical2.AGE < TOTES))
 pop_snr2 = []
 pop_snr2.append(historical2.TOT_POP[year08over65].sum())
 pop_snr2.append(historical2.TOT_POP[year09over65].sum())
 
-year08total = (historical2.YEAR == 2008) & (historical2.AGE == totes)
-year09total = (historical2.YEAR == 2009) & (historical2.AGE == totes)
+year08total = (historical2.YEAR == 2008) & (historical2.AGE == TOTES)
+year09total = (historical2.YEAR == 2009) & (historical2.AGE == TOTES)
 total_pop2 = []
 total_pop2.append(historical2.TOT_POP[year08total].sum())
 total_pop2.append(historical2.TOT_POP[year09total].sum())
 
 # combine data for 2008-2014 with projection data
+popdf = pd.DataFrame(pop_projection[pop_projection.columns[1:21]].sum(axis=1))
 POP_DEP = pd.concat([pd.DataFrame(pop_dep2),
                      pd.DataFrame(pop_dep1),
-                     pd.DataFrame(pop_projection[pop_projection.columns[1:21]].sum(axis=1))])
+                     popdf])
+popdf = pd.DataFrame(pop_projection[pop_projection.columns[66:]].sum(axis=1))
 POP_SNR = pd.concat([pd.DataFrame(pop_snr2),
                      pd.DataFrame(pop_snr1),
-                     pd.DataFrame(pop_projection[pop_projection.columns[66:]].sum(axis=1))])
+                     popdf])
 TOTAL_POP = pd.concat([pd.DataFrame(total_pop2),
                        pd.DataFrame(total_pop1.values.transpose()),
                        pd.DataFrame(pop_projection.total_pop.values)])
@@ -92,15 +96,14 @@ Stage_II_targets['POP_SNR'] = POP_SNR.values
 index = list(range(2008, 2027))
 Stage_II_targets.index = index
 
-# calculate Stage_I_factors base on population targets
-APOPN = Stage_II_targets.TOTAL_POP / Stage_II_targets.TOTAL_POP[2009]
+# calculate Stage_I_factors for population targets
+APOPN = Stage_II_targets.TOTAL_POP / Stage_II_targets.TOTAL_POP[SYR]
 Stage_I_factors = pd.DataFrame(APOPN, index=index)
 Stage_I_factors.columns = ['APOPN']
-
-Stage_I_factors['APOPDEP'] = pd.DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets.POP_DEP[2009],
-                                          index=index)
-Stage_I_factors['APOPSNR'] = pd.DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2009],
-                                          index=index)
+data = Stage_II_targets.POP_DEP / Stage_II_targets.POP_DEP[SYR]
+Stage_I_factors['APOPDEP'] = pd.DataFrame(data, index=index)
+data = Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[SYR]
+Stage_I_factors['APOPSNR'] = pd.DataFrame(data, index=index)
 
 # specify yearly growth rates used in Stage I to create Stage_I_factors
 pop_growth_rates = pd.DataFrame(Stage_II_targets.TOTAL_POP.pct_change() + 1.0)
@@ -111,21 +114,21 @@ pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0],
 
 # import CBO baseline projection
 cbo_baseline = pd.read_csv("CBO_baseline.csv", index_col=0)
-cbo_baseline = cbo_baseline.transpose()
-cbo_baseline.index = index
-Stage_I_factors['AGDPN'] = pd.DataFrame(cbo_baseline.GDP/cbo_baseline.GDP[2009],
+cbobase = cbo_baseline.transpose()
+cbobase.index = index
+Stage_I_factors['AGDPN'] = pd.DataFrame(cbobase.GDP/cbobase.GDP[SYR],
                                         index=index)
-Stage_I_factors['ATXPY'] = pd.DataFrame(cbo_baseline.TPY/cbo_baseline.TPY[2009],
+Stage_I_factors['ATXPY'] = pd.DataFrame(cbobase.TPY/cbobase.TPY[SYR],
                                         index=index)
-Stage_I_factors['ASCHF'] = pd.DataFrame(cbo_baseline.SCHF/cbo_baseline.SCHF[2009],
+Stage_I_factors['ASCHF'] = pd.DataFrame(cbobase.SCHF/cbobase.SCHF[SYR],
                                         index=index)
-Stage_I_factors['ABOOK'] = pd.DataFrame(cbo_baseline.BOOK/cbo_baseline.BOOK[2009],
+Stage_I_factors['ABOOK'] = pd.DataFrame(cbobase.BOOK/cbobase.BOOK[SYR],
                                         index=index)
-Stage_I_factors['ACPIU'] = pd.DataFrame(cbo_baseline.CPIU/cbo_baseline.CPIU[2009],
+Stage_I_factors['ACPIU'] = pd.DataFrame(cbobase.CPIU/cbobase.CPIU[SYR],
                                         index=index)
-Stage_I_factors['ACPIM'] = pd.DataFrame(cbo_baseline.CPIM/cbo_baseline.CPIM[2009],
+Stage_I_factors['ACPIM'] = pd.DataFrame(cbobase.CPIM/cbobase.CPIM[SYR],
                                         index=index)
-cbo_growth_rates = cbo_baseline.pct_change() + 1.0
+cbo_growth_rates = cbobase.pct_change() + 1.0
 cbo_growth_rates = cbo_growth_rates.drop(cbo_growth_rates.index[0], axis=0)
 
 # read  IRS number-of-returns projection
@@ -190,25 +193,28 @@ for i in range(2014, 2026):
 Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 
 # create all the rest of the Stage_I_factors
-total_return = pd.DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1),
-                            columns=['ARETS'])
-Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2009]
+data = Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1)
+total_return = pd.DataFrame(data, columns=['ARETS'])
 
-total_wage = pd.DataFrame(Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1),
-                          columns=['AWAGE'])
-Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[2009]
+data = Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1)
+total_wage = pd.DataFrame(data, columns=['AWAGE'])
 
-Stage_I_factors['ASCHCI'] = Stage_II_targets.SCHCI/Stage_II_targets.SCHCI[2009]
-Stage_I_factors['ASCHCL'] = Stage_II_targets.SCHCL/Stage_II_targets.SCHCL[2009]
-Stage_I_factors['ASCHEI'] = Stage_II_targets.SCHEI/Stage_II_targets.SCHEI[2009]
-Stage_I_factors['ASCHEL'] = Stage_II_targets.SCHEL/Stage_II_targets.SCHEL[2009]
+Stage_I_factors['ARETS'] = total_return/total_return.ARETS[SYR]
 
-Stage_I_factors['AINTS'] = Stage_II_targets.INTS/Stage_II_targets.INTS[2009]
-Stage_I_factors['ADIVS'] = Stage_II_targets.DIVS/Stage_II_targets.DIVS[2009]
-Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[2009]
+Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[SYR]
 
-Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[2009]
-Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2009]
+Stage_I_factors['ASCHCI'] = Stage_II_targets.SCHCI/Stage_II_targets.SCHCI[SYR]
+Stage_I_factors['ASCHCL'] = Stage_II_targets.SCHCL/Stage_II_targets.SCHCL[SYR]
+
+Stage_I_factors['ASCHEI'] = Stage_II_targets.SCHEI/Stage_II_targets.SCHEI[SYR]
+Stage_I_factors['ASCHEL'] = Stage_II_targets.SCHEL/Stage_II_targets.SCHEL[SYR]
+
+Stage_I_factors['AINTS'] = Stage_II_targets.INTS/Stage_II_targets.INTS[SYR]
+Stage_I_factors['ADIVS'] = Stage_II_targets.DIVS/Stage_II_targets.DIVS[SYR]
+Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[SYR]
+
+Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[SYR]
+Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[SYR]
 
 # rename Stage_II_targets index
 rename = {
