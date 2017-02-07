@@ -248,9 +248,12 @@ rename = {
 }
 Stage_II_targets.rename(columns=rename, inplace=True)
 
+# Delate 2008 row from Stage_I_factors
+Stage_I_factors = Stage_I_factors.drop(2008)
 # Export Stage_I_factors for final preparation and then use by Tax-Calculator
 Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
-                       float_format='%.4f')
+                       float_format='%.4f',
+                       index_label='YEAR')
 
 # Export TRANSPOSE of Stage_I_factors for use in stage2 weights calculation
 Stage_I_factors = Stage_I_factors.transpose()
