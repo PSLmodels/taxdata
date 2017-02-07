@@ -125,9 +125,6 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         var[(agi >= 2e6) & (agi < 5e6)] *= factors['BIN_16']
         var[(agi >= 5e6) & (agi < 1e7)] *= factors['BIN_17']
         factors_df['{}{}'.format(var_name, year)] = factors
-        # var *= factors_df['{}{}'.format(var_name, year)]
-        # TODO: change how the factors are applied in stage 3 to match how they
-        # would be in TaxCalc. Not doing so causes NaN error
 
     return factors_df
 
