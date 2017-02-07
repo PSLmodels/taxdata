@@ -12,7 +12,7 @@ import pandas as pd
 # pylint: disable=invalid-name
 first_data_year = 2009
 input_filename = 'Stage_I_factors.csv'
-output_filename = 'puf_factors.csv'
+output_filename = 'growth_factors.csv'
 
 # read in blowup factors used internally in taxdata repository
 data = pd.read_csv(input_filename, index_col='YEAR')
