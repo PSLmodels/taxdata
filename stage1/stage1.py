@@ -254,10 +254,10 @@ Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
 
 # Export TRANSPOSE of Stage_I_factors for use in stage2 weights calculation
 Stage_I_factors = Stage_I_factors.transpose()
-Stage_I_factors.to_csv(path_or_buf="../Stage II/Stage_I_factors.csv",
+Stage_I_factors.to_csv(path_or_buf="Stage_I_factors_transposed.csv",
                        float_format='%.4f')
 
 # Export Stage_II_targets for use in stage2 weights calculation
 Stage_II_targets = Stage_II_targets.transpose()
-Stage_II_targets.to_csv(path_or_buf="../Stage II/Stage_II_targets.csv",
+Stage_II_targets.to_csv(path_or_buf="Stage_II_targets.csv",
                         float_format='%.4f')

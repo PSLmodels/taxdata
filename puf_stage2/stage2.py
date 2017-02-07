@@ -3,11 +3,13 @@ import pandas as pd
 from solve_lp_for_year import solve_lp_for_year
 
 # Read private CPS-matched-PUF file into a Pandas DataFrame
-puf = pd.read_csv("cps-puf.csv")
+puf = pd.read_csv("../puf_data/cps-matched-puf.csv")
 
-# Read stage1 factors and stage2 targets written by stage1/stage1.py script
-Stage_I_factors = pd.read_csv("Stage_I_factors.csv", index_col=0)
-Stage_II_targets = pd.read_csv("Stage_II_targets.csv", index_col=0)
+# Read stage1 factors and stage2 targets written by stage1.py script
+Stage_I_factors = pd.read_csv("../stage1/Stage_I_factors_transposed.csv",
+                              index_col=0)
+Stage_II_targets = pd.read_csv("../stage1/Stage_II_targets.csv",
+                               index_col=0)
 
 # Use the matched_weight variable in CPS as the final weight
 puf.s006 = puf.matched_weight * 100
