@@ -168,6 +168,7 @@ for i in range(2014, 2026):
     SCHEL = return_projection.SCHEL[i]*cbo_growth_rates.BOOK[i+1]
     SS = return_projection.SS[i]*cbo_growth_rates.SOCSEC[i+1]
     UCOMP = return_projection.UCOMP[i]*cbo_growth_rates.UCOMP[i+1]
+    IPD = return_projection.IPD[i]*cbo_growth_rates.TPY[i+1]
     Wage_1 = return_projection.WAGE_1[i]*cbo_growth_rates.Wages[i+1]
     Wage_2 = return_projection.WAGE_2[i]*cbo_growth_rates.Wages[i+1]
     Wage_3 = return_projection.WAGE_3[i]*cbo_growth_rates.Wages[i+1]
@@ -183,7 +184,7 @@ for i in range(2014, 2026):
     current_year = DataFrame([Single, Joint, HH,
                               SS_return, Dep_return,
                               INTS, DIVS, SCHCI, SCHCL,
-                              CGNS, Pension, SCHEI, SCHEL, SS, UCOMP,
+                              CGNS, Pension, SCHEI, SCHEL, SS, UCOMP, IPD,
                               Wage_1, Wage_2, Wage_3, Wage_4, Wage_5,
                               Wage_6, Wage_7, Wage_8, Wage_9, Wage_10,
                               Wage_11, Wage_12]).transpose()
@@ -199,7 +200,7 @@ total_return = DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axi
                          columns=['ARETS'])
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2009]
 
-total_wage = DataFrame(Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1),
+total_wage = DataFrame(Stage_II_targets[Stage_II_targets.columns[19:30]].sum(axis=1),
                        columns=['AWAGE'])
 Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[2009]
 
@@ -214,6 +215,7 @@ Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[2009]
 
 Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[2009]
 Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2009]
+Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[2009]
 
 # Rename Stage_II_targets index
 rename = {
