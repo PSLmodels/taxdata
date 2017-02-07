@@ -7,17 +7,17 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     puf_length = len(puf.s006)
 
-    print("Preparing coefficient matrix...")
+    print("Preparing coefficient matrix for year {} .....".format(year))
 
     s006 = np.where(puf.e02400 > 0,
                     puf.s006 * Stage_I_factors[year]["APOPSNR"] / 100,
                     puf.s006 * Stage_I_factors[year]["ARETS"] / 100)
 
-    single_return = np.where((puf.mars == 1 & puf.filer == 1), s006, 0)
-    joint_return = np.where(((puf.mars == 2 | puf.mars == 3) &
-                             puf.filer == 1), s006, 0)
-    hh_return = np.where((puf.mars == 4 & puf.filer == 1), s006, 0)
-    return_w_SS = np.where((puf.e02400 > 0 & puf.filer == 1), s006, 0)
+    single_return = np.where((puf.mars == 1) & (puf.filer == 1), s006, 0)
+    joint_return = np.where(((puf.mars == 2) | (puf.mars == 3)) &
+                            (puf.filer == 1), s006, 0)
+    hh_return = np.where((puf.mars == 4) & (puf.filer == 1), s006, 0)
+    return_w_SS = np.where((puf.e02400 > 0) & (puf.filer == 1), s006, 0)
 
     dependent_exempt_num = (puf.xocah + puf.xocawh +
                             puf.xoodep + puf.xopar) * s006
@@ -35,25 +35,25 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     # Wage distribution
     wage_1 = np.where(puf.e00100 <= 0, puf.e00200, 0) * s006
-    wage_2 = np.where((puf.e00100 > 0 & puf.e00100 <= 10000),
+    wage_2 = np.where((puf.e00100 > 0) & (puf.e00100 <= 10000),
                       puf.e00200, 0) * s006
-    wage_3 = np.where((puf.e00100 > 10000 & puf.e00100 <= 20000),
+    wage_3 = np.where((puf.e00100 > 10000) & (puf.e00100 <= 20000),
                       puf.e00200, 0) * s006
-    wage_4 = np.where((puf.e00100 > 20000 & puf.e00100 <= 30000),
+    wage_4 = np.where((puf.e00100 > 20000) & (puf.e00100 <= 30000),
                       puf.e00200, 0) * s006
-    wage_5 = np.where((puf.e00100 > 30000 & puf.e00100 <= 40000),
+    wage_5 = np.where((puf.e00100 > 30000) & (puf.e00100 <= 40000),
                       puf.e00200, 0) * s006
-    wage_6 = np.where((puf.e00100 > 40000 & puf.e00100 <= 50000),
+    wage_6 = np.where((puf.e00100 > 40000) & (puf.e00100 <= 50000),
                       puf.e00200, 0) * s006
-    wage_7 = np.where((puf.e00100 > 50000 & puf.e00100 <= 75000),
+    wage_7 = np.where((puf.e00100 > 50000) & (puf.e00100 <= 75000),
                       puf.e00200, 0) * s006
-    wage_8 = np.where((puf.e00100 > 75000 & puf.e00100 <= 100000),
+    wage_8 = np.where((puf.e00100 > 75000) & (puf.e00100 <= 100000),
                       puf.e00200, 0) * s006
-    wage_9 = np.where((puf.e00100 > 100000 & puf.e00100 <= 200000),
+    wage_9 = np.where((puf.e00100 > 100000) & (puf.e00100 <= 200000),
                       puf.e00200, 0) * s006
-    wage_10 = np.where((puf.e00100 > 200000 & puf.e00100 <= 500000),
+    wage_10 = np.where((puf.e00100 > 200000) & (puf.e00100 <= 500000),
                        puf.e00200, 0) * s006
-    wage_11 = np.where((puf.e00100 > 500000 & puf.e00100 <= 1000000),
+    wage_11 = np.where((puf.e00100 > 500000) & (puf.e00100 <= 1000000),
                        puf.e00200, 0) * s006
     wage_12 = np.where(puf.e00100 > 1000000, puf.e00200, 0) * s006
 
@@ -72,7 +72,7 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
     A1 = np.matrix(One_half_LHS)
     A2 = np.matrix(-One_half_LHS)
 
-    print("Preparing targets for ", year)
+    print("Preparing targets for year {} .....".format(year))
 
     APOPN = Stage_I_factors[year]["APOPN"]
 
@@ -177,14 +177,15 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
         b.append(m)
 
     targets = CyLPArray(b)
-    print("Targets for year ", year, " is ", targets)
+    print("Targets for year {} are:".format(year))
+    print(targets)
 
     LP = CyLPModel()
 
     r = LP.addVariable("r", puf_length)
     s = LP.addVariable("s", puf_length)
 
-    print("Adding constraints")
+    print("Adding constraints for year {} .....".format(year))
     LP.addConstraint(r >= 0, "positive r")
     LP.addConstraint(s >= 0, "positive s")
     LP.addConstraint(r + s <= tol, "abs upperbound")
@@ -194,13 +195,13 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     LP.addConstraint(A1 * r + A2 * s == targets, "Aggregates")
 
-    print("Setting up the LP model")
+    print("Setting up the LP model for year {} .....".format(year))
     model = CyClpSimplex(LP)
 
-    print("Solving LP......")
+    print("Solving LP for year {} .....".format(year))
     model.initialSolve()
 
-    print("DONE!!")
+    print("DONE solving LP for year {}".format(year))
     z = np.empty([puf_length])
     z = (1.0 + model.primalVariableSolution["r"] -
          model.primalVariableSolution["s"]) * s006 * 100
