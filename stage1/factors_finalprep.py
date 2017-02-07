@@ -1,18 +1,14 @@
 """
-puf_factors_processing.py does final preparation of Stage1 blowup factors by
-transforming Stage1Factors.csv into puf_factors.csv
+Transform Stage_I_factors.csv (written by stage1.py)
+into growfactors.csv (used by Tax-Calculator)
 """
-# CODING-STYLE CHECKS:
-# pep8 --ignore=E402 puf_factors_processing.py
-# pylint --disable=locally-disabled puf_factors_processing.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import pandas as pd
 
 # pylint: disable=invalid-name
 first_data_year = 2009
 input_filename = 'Stage_I_factors.csv'
-output_filename = 'growth_factors.csv'
+output_filename = 'growfactors.csv'
 
 # read in blowup factors used internally in taxdata repository
 data = pd.read_csv(input_filename, index_col='YEAR')
