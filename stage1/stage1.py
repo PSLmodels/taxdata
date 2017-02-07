@@ -266,8 +266,3 @@ Stage_II_targets.to_csv(path_or_buf="Stage_II_targets.csv",
 Stage_I_factors_t = Stage_I_factors.transpose()
 Stage_I_factors_t.to_csv(path_or_buf="Stage_I_factors_transpose.csv",
                          float_format='%.4f')
-
-# write Stage_I_factors for final preparation and then use by Tax-Calculator
-Stage_I_factors = Stage_I_factors.drop(2008)
-Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
-                       float_format='%.4f')
