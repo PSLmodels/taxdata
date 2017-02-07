@@ -17,7 +17,7 @@ senior = 65
 # - Historical estimates from 2000 to 2010
 #   <http://www.census.gov/popest/data/intercensal/national/nat2010.html>
 
-# projection 2014+
+# projection for 2014+
 pop_projection = DataFrame.from_csv("NP2014_D1.csv", index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) &
                                 (pop_projection.race == 0) &
@@ -27,7 +27,7 @@ pop_projection = pop_projection.drop(pop_projection.index[13:], axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
-# estimates 2010-2014
+# data for 2010-2014
 historical1 = pd.read_csv("NC-EST2014-AGESEX-RES.csv")
 historical1 = historical1[historical1.SEX == 0]
 historical1 = historical1.drop(['SEX', 'CENSUS2010POP', 'ESTIMATESBASE2010'],
@@ -43,7 +43,7 @@ pop_snr1 = pop_snr1.drop(['AGE'], axis=0)
 total_pop1 = historical1[historical1.AGE == totes]
 total_pop1 = total_pop1.drop(['AGE'], axis=1)
 
-# estimates 2008-2009
+# data for 2008-2009
 historical2 = pd.read_csv("US-EST00INT-ALLDATA.csv")
 historical2 = historical2[(historical2.MONTH == 7) &
                           (historical2.YEAR >= 2008) &
@@ -56,7 +56,6 @@ year09under19 = (historical2.YEAR == 2009) & (historical2.AGE <= dep)
 pop_dep2 = []
 pop_dep2.append(historical2.TOT_POP[year08under19].sum())
 pop_dep2.append(historical2.TOT_POP[year09under19].sum())
-
 
 year08over65 = ((historical2.YEAR == 2008) &
                 (historical2.AGE >= senior) &
@@ -74,7 +73,7 @@ total_pop2 = []
 total_pop2.append(historical2.TOT_POP[year08total].sum())
 total_pop2.append(historical2.TOT_POP[year09total].sum())
 
-# combine the estimates of 08-14 with the projection data
+# combine data for 2008-2014 with projection data
 POP_DEP = pd.concat([DataFrame(pop_dep2),
                      DataFrame(pop_dep1),
                      DataFrame(pop_projection[pop_projection.columns[1:21]].sum(axis=1))])
@@ -85,18 +84,18 @@ TOTAL_POP = pd.concat([DataFrame(total_pop2),
                        DataFrame(total_pop1.values.transpose()),
                        DataFrame(pop_projection.total_pop.values)])
 
-# Stage_II_targets stores all targets later used in stage2 logic
+# create Stage_II_targets to store all targets used in stage2 logic
 Stage_II_targets = DataFrame(TOTAL_POP)
 Stage_II_targets.columns = ['TOTAL_POP']
 
-# add number of dependent and number of senior population to Stage II targets
+# add number of dependents and number of seniors to Stage_II_targets
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
 index = list(range(2008, 2027))
 Stage_II_targets.index = index
 
-# Calculate Stage I factors base on population targets
+# calculate Stage_I_factors base on population targets
 APOPN = Stage_II_targets.TOTAL_POP / Stage_II_targets.TOTAL_POP[2009]
 Stage_I_factors = DataFrame(APOPN, index=index)
 Stage_I_factors.columns = ['APOPN']
@@ -106,14 +105,14 @@ Stage_I_factors['APOPDEP'] = DataFrame(Stage_II_targets.POP_DEP/Stage_II_targets
 Stage_I_factors['APOPSNR'] = DataFrame(Stage_II_targets.POP_SNR/Stage_II_targets.POP_SNR[2009],
                                        index=index)
 
-# Specify yearly growth rates used in Stage I to create Stage I factors
+# specify yearly growth rates used in Stage I to create Stage_I_factors
 pop_growth_rates = DataFrame(Stage_II_targets.TOTAL_POP.pct_change() + 1.0)
 pop_growth_rates['POPDEP'] = Stage_II_targets.POP_DEP.pct_change() + 1.0
 pop_growth_rates['POPSNR'] = Stage_II_targets.POP_SNR.pct_change() + 1.0
 pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0],
                                          axis=0)
 
-# Import CBO baseline
+# import CBO baseline projection
 cbo_baseline = (DataFrame.from_csv("CBO_baseline.csv",
                                    index_col=0)).transpose()
 cbo_baseline.index = index
@@ -134,7 +133,7 @@ Stage_I_factors['ACPIM'] = DataFrame(cbo_baseline.CPIM/cbo_baseline.CPIM[2009],
 cbo_growth_rates = cbo_baseline.pct_change() + 1.0
 cbo_growth_rates = cbo_growth_rates.drop(cbo_growth_rates.index[0], axis=0)
 
-# Import IRS number of returns projection
+# read  IRS number-of-returns projection
 irs_returns = (DataFrame.from_csv("IRS_return_projection.csv",
                                   index_col=0)).transpose()
 return_growth_rate = irs_returns.pct_change() + 1.0
@@ -144,13 +143,13 @@ return_growth_rate.Returns['2025'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
-# Import SOI estimates (2008 - 2012)
+# read SOI estimates for 2008+
 soi_estimates = (DataFrame.from_csv("SOI_estimates.csv",
                                     index_col=0)).transpose()
 historical_index = list(range(2008, 2015))
 soi_estimates.index = historical_index
 
-# Use yearly growth rates from Census, CBO, and IRS as blowup factors
+# use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
 for i in range(2014, 2026):
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
@@ -191,10 +190,10 @@ for i in range(2014, 2026):
     current_year.index = [i+1]
     return_projection = return_projection.append(current_year)
 
-# Combine the historical data with the newly blow-up data
+# combine historical data with the newly blownup data
 Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 
-# Create all the rest of the Stage I factors
+# create all the rest of the Stage_I_factors
 total_return = DataFrame(Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1),
                          columns=['ARETS'])
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[2009]
@@ -215,7 +214,7 @@ Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[2009]
 Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[2009]
 Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[2009]
 
-# Rename Stage_II_targets index
+# rename Stage_II_targets index
 rename = {
     'TOTAL_POP': 'US Population',
     'Single': 'Single Returns',
@@ -248,16 +247,17 @@ rename = {
 }
 Stage_II_targets.rename(columns=rename, inplace=True)
 
-# Export Stage_I_factors for final preparation and then use by Tax-Calculator
-Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
-                       float_format='%.4f')
-
-# Export TRANSPOSE of Stage_I_factors for use in stage2 weights calculation
-Stage_I_factors = Stage_I_factors.transpose()
-Stage_I_factors.to_csv(path_or_buf="Stage_I_factors_transposed.csv",
-                       float_format='%.4f')
-
-# Export Stage_II_targets for use in stage2 weights calculation
+# write Stage_II_targets for use in stage2 weights calculation
 Stage_II_targets = Stage_II_targets.transpose()
 Stage_II_targets.to_csv(path_or_buf="Stage_II_targets.csv",
                         float_format='%.4f')
+
+# write TRANSPOSE of Stage_I_factors for use in stage2 weights calculation
+Stage_I_factors_t = Stage_I_factors.transpose()
+Stage_I_factors_t.to_csv(path_or_buf="Stage_I_factors_transpose.csv",
+                         float_format='%.4f')
+
+# write Stage_I_factors for final preparation and then use by Tax-Calculator
+Stage_I_factors = Stage_I_factors.drop(2008)
+Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
+                       float_format='%.4f')

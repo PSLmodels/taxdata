@@ -6,7 +6,7 @@ from solve_lp_for_year import solve_lp_for_year
 puf = pd.read_csv("../puf_data/cps-matched-puf.csv")
 
 # Read stage1 factors and stage2 targets written by stage1.py script
-Stage_I_factors = pd.read_csv("../stage1/Stage_I_factors_transposed.csv",
+Stage_I_factors = pd.read_csv("../stage1/Stage_I_factors_transpose.csv",
                               index_col=0)
 Stage_II_targets = pd.read_csv("../stage1/Stage_II_targets.csv",
                                index_col=0)
