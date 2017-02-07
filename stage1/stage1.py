@@ -199,7 +199,7 @@ Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 data = Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1)
 total_return = pd.DataFrame(data, columns=['ARETS'])
 
-data = Stage_II_targets[Stage_II_targets.columns[19:30]].sum(axis=1)
+data = Stage_II_targets[Stage_II_targets.columns[19:31]].sum(axis=1)
 total_wage = pd.DataFrame(data, columns=['AWAGE'])
 
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[SYR]
