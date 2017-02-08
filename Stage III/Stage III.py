@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import copy
+import os
 
 
 def adjustment(agi, var, var_name, target, weight, blowup):
@@ -47,7 +48,6 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     for year in range(2010, 2027):
 
         goal_amts = goal_total[year][0] * distribution[year]
-        print year, goal_amts.sum()
 
         wt_year = 'WT{}'.format(year)
         s006 = weight[wt_year] * 0.01
@@ -125,6 +125,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         var[(agi >= 1.5e6) & (agi < 2e6)] *= factors['BIN_15']
         var[(agi >= 2e6) & (agi < 5e6)] *= factors['BIN_16']
         var[(agi >= 5e6) & (agi < 1e7)] *= factors['BIN_17']
+        var[(agi >= 1e7)] *= factors['BIN_18']
         factors_df['{}{}'.format(var_name, year)] = factors
 
     return factors_df
@@ -143,4 +144,4 @@ ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
 final_factors = pd.concat([ints], axis=1)
 
 # Crate CSV from the final factors
-final_factors.to_csv('adjustment_factors.csv', index=False)
+final_factors.to_csv('pufadj_factors.csv', index=False)
