@@ -16,7 +16,7 @@ This script transforms the INPUT csv file in several ways as described below.
 
 import argparse
 import sys
-import pandas as pd
+import pandas
 import numpy as np
 
 
@@ -32,13 +32,8 @@ def main():
                               'contains data from original CPS-matched PUF.'))
     args = parser.parse_args()
 
-<<<<<<< HEAD:final prep/puf-cps-processing.py
-    # (*) Read unprocessed puf-cps.csv file into a Pandas Dataframe
-    data = pd.read_csv(args.INPUT)
-=======
     # (*) Read unprocessed INPUT file into a Pandas Dataframe
     data = pandas.read_csv(args.INPUT)
->>>>>>> open-source-economics/master:puf_data/finalprep.py
 
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])
@@ -389,13 +384,12 @@ def add_dependents(data):
     return data
 
 
-<<<<<<< HEAD:final prep/puf-cps-processing.py
 def add_agi_bin(data):
     """
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
 
     """
-    agi = pd.Series([0] * len(data.e00100))
+    agi = pandas.Series([0] * len(data.e00100))
     agi[data.e00100 < 0] = 0
     agi[(data.e00100 >= 0) & (data.e00100 < 5000)] = 1
     agi[(data.e00100 >= 5000) & (data.e00100 < 10000)] = 2
@@ -420,7 +414,5 @@ def add_agi_bin(data):
 
     return data
 
-=======
->>>>>>> open-source-economics/master:puf_data/finalprep.py
 if __name__ == '__main__':
     sys.exit(main())
