@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import copy
-import os
 
 
 def adjustment(agi, var, var_name, target, weight, blowup):
@@ -131,10 +130,10 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     return factors_df
 
 # Read all necessary files
-puf = pd.read_csv('cps-puf.csv')
-targets = pd.read_csv('Stage III Targets.csv', index_col=0)
-wght = pd.read_csv('WEIGHTS.csv')
-bf = pd.read_csv('growfactors.csv', index_col=0)
+puf = pd.read_csv('../puf_data/cps-matched-puf.csv')
+targets = pd.read_csv('stage3_targets.csv', index_col=0)
+wght = pd.read_csv('../puf_stage2/puf_weights.csv')
+bf = pd.read_csv('../stage1/growfactors.csv', index_col=0)
 
 
 # Call adjustment function with each variable desired
