@@ -165,6 +165,7 @@ for i in range(2014, 2026):
     SCHEL = return_projection.SCHEL[i]*cbo_growth_rates.BOOK[i+1]
     SS = return_projection.SS[i]*cbo_growth_rates.SOCSEC[i+1]
     UCOMP = return_projection.UCOMP[i]*cbo_growth_rates.UCOMP[i+1]
+    IPD = return_projection.IPD[i]*cbo_growth_rates.TPY[i+1]
     Wage_1 = return_projection.WAGE_1[i]*cbo_growth_rates.Wages[i+1]
     Wage_2 = return_projection.WAGE_2[i]*cbo_growth_rates.Wages[i+1]
     Wage_3 = return_projection.WAGE_3[i]*cbo_growth_rates.Wages[i+1]
@@ -177,14 +178,16 @@ for i in range(2014, 2026):
     Wage_10 = return_projection.WAGE_10[i]*cbo_growth_rates.Wages[i+1]
     Wage_11 = return_projection.WAGE_11[i]*cbo_growth_rates.Wages[i+1]
     Wage_12 = return_projection.WAGE_12[i]*cbo_growth_rates.Wages[i+1]
+
     current_year = pd.DataFrame([Single, Joint, HH,
                                  SS_return, Dep_return,
                                  INTS, DIVS, SCHCI, SCHCL,
-                                 CGNS, Pension, SCHEI, SCHEL, SS, UCOMP,
+                                 CGNS, Pension, SCHEI, SCHEL, SS, UCOMP, IPD,
                                  Wage_1, Wage_2, Wage_3, Wage_4, Wage_5,
                                  Wage_6, Wage_7, Wage_8, Wage_9, Wage_10,
                                  Wage_11, Wage_12])
     current_year = current_year.transpose()
+
     current_year.columns = return_projection.columns
     current_year.index = [i+1]
     return_projection = return_projection.append(current_year)
@@ -196,7 +199,7 @@ Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 data = Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1)
 total_return = pd.DataFrame(data, columns=['ARETS'])
 
-data = Stage_II_targets[Stage_II_targets.columns[18:30]].sum(axis=1)
+data = Stage_II_targets[Stage_II_targets.columns[19:31]].sum(axis=1)
 total_wage = pd.DataFrame(data, columns=['AWAGE'])
 
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[SYR]
@@ -215,7 +218,9 @@ Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[SYR]
 
 Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[SYR]
 Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[SYR]
+Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[SYR]
 
+Stage_II_targets = Stage_II_targets.drop('IPD', axis=1)
 # rename Stage_II_targets index
 rename = {
     'TOTAL_POP': 'US Population',
