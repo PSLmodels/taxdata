@@ -47,6 +47,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     for year in range(2010, 2027):
 
         goal_amts = goal_total[year][0] * distribution[year]
+        print year, goal_amts.sum()
 
         wt_year = 'WT{}'.format(year)
         s006 = weight[wt_year] * 0.01
@@ -132,11 +133,8 @@ def adjustment(agi, var, var_name, target, weight, blowup):
 puf = pd.read_csv('cps-puf.csv')
 targets = pd.read_csv('Stage III Targets.csv', index_col=0)
 wght = pd.read_csv('WEIGHTS.csv')
-bf = pd.read_csv('Stage_I_factors.csv', index_col=0)
-# Set blowup factors as in TaxCalc
-bf.AINTS = bf.AINTS / bf.APOPN
-bf.AINTS = 1.0 + bf.AINTS.pct_change()
-bf.AINTS[2009] = 1.0357
+bf = pd.read_csv('growfactors.csv', index_col=0)
+
 
 # Call adjustment function with each variable desired
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
