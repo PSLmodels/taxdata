@@ -220,6 +220,7 @@ Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[SYR]
 Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[SYR]
 Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[SYR]
 
+Stage_II_targets = Stage_II_targets.drop('IPD', axis=1)
 # rename Stage_II_targets index
 rename = {
     'TOTAL_POP': 'US Population',
