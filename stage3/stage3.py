@@ -144,4 +144,4 @@ final_ratios = pd.concat([ints], axis=1)
 final_ratios = final_ratios.transpose()
 
 # Crate CSV from the final ratios
-final_ratios.to_csv('puf_ratios.csv')
+final_ratios.to_csv('pufadj_ratios.csv')
