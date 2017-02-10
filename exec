@@ -16,10 +16,10 @@ function usage {
 function gitdiffs {
     git diff --quiet
     if [ $? -eq 0 ]; then
-        echo "NO 'git diff' OUTPUT ==> NO CHANGES IN CSV OUTPUT" >&2
+        echo "NO 'git diff' OUTPUT ==> NO CHANGES IN FILES" >&2
     else
-        echo "SOME 'git diff' OUTPUT ==> CHANGES IN CSV OUTPUT" >&2
-        echo "USE 'git status' TO SEE WHICH CSV OUTPUT FILES CHANGED" >&2
+        echo "SOME 'git diff' OUTPUT ==> CHANGES IN FILES" >&2
+        echo "USE 'git status' TO SEE IF CSV OUTPUT FILES CHANGED" >&2
     fi
 }
 
