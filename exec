@@ -75,7 +75,7 @@ fi
 S2=$DTYPE"_stage2"
 cd $S2
 echo "`date` : $S2 START" >&2
-python stage2.py
+########################################python stage2.py
 RC=$?
 rm -f *.pyc
 if [ $RC -ne 0 ]; then
@@ -94,7 +94,7 @@ if [ $LSTAGE -eq 2 ]; then
 fi
 
 # execute $DTYPE_stage3 script
-S3=$DTYPE_stage3
+S3=$DTYPE"_stage3"
 cd $S3
 echo "`date` : $S3 START" >&2
 python stage3.py
