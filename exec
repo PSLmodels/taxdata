@@ -1,0 +1,116 @@
+#!/bin/bash
+# exec script executes taxdata Python scripts through the specified last stage
+# USAGE: ./exec  puf|cps  1|2|3
+# (run this command in the top-level taxdata directory)
+
+function usage {
+    echo "USAGE: ./exec DATATYPE LASTSTAGE > LP.log" >&2
+    echo "       where DATATYPE can be puf or cps" >&2
+    echo "         and LASTSTAGE can be 1 or 2 or 3" >&2
+    echo "       Note: run ./exec in top-level taxdata directory" >&2
+    echo "       Note: execution time with LASTSTAGE equal to 2 or 3 will" >&2
+    echo "             be roughly one hour" >&2
+    exit 1
+}
+
+function gitdiffs {
+    git diff --quiet
+    if [ $? -eq 0 ]; then
+        echo "NO 'git diff' OUTPUT ==> NO CHANGES IN CSV OUTPUT" >&2
+    else
+        echo "SOME 'git diff' OUTPUT ==> CHANGES IN CSV OUTPUT" >&2
+        echo "USE 'git status' TO SEE WHICH CSV OUTPUT FILES CHANGED" >&2
+    fi
+}
+
+# process command-line arguments
+if [ $# -ne 2 ]; then
+    echo "ERROR: number of command-line arguments is not two" >&2
+    usage
+fi
+DTYPE=$1
+if [ $DTYPE != "puf" ] && [ $DTYPE != "cps" ]; then
+    echo "ERROR: DATATYPE is neither puf nor cps" >&2
+    usage
+fi
+LSTAGE=$2
+if [ $LSTAGE -ne 1 ] && [ $LSTAGE -ne 2 ] && [ $LSTAGE -ne 3 ]; then
+    echo "ERROR: LASTSTAGE is neither 1 nor 2 nor 3" >&2
+    usage
+fi
+
+# TEMPORARY CODE BELOW
+if [ $DTYPE == "cps" ]; then
+    echo "ERROR: DATATYPE cannot be cps yet" >&2
+    usage
+fi
+# TEMPORARY CODE ABOVE
+
+# execute stage1 scripts
+cd stage1
+echo "`date` : stage1 START" >&2
+python stage1.py
+if [ $? -ne 0 ]; then
+    echo "ERROR: executing stage1.py script" >&2
+    gitdiffs
+    exit 1
+fi
+python factors_finalprep.py
+if [ $? -ne 0 ]; then
+    echo "ERROR: executing stage1/finalprep.py script" >&2
+    gitdiffs
+    exit 1
+fi
+echo "`date` : stage1 FINISH" >&2
+cd ..
+
+# consider stopping after stage1 scripts have executed
+if [ $LSTAGE -eq 1 ]; then
+    echo "STOPPING AFTER stage1" >&2
+    gitdiffs
+    exit 0
+fi
+
+# execute $DTYPE_stage2 script
+S2=$DTYPE"_stage2"
+cd $S2
+echo "`date` : $S2 START" >&2
+python stage2.py
+RC=$?
+rm -f *.pyc
+if [ $RC -ne 0 ]; then
+    echo "ERROR: executing $S2/stage2.py script" >&2
+    gitdiffs
+    exit 1
+fi
+echo "`date` : $S2 FINISH" >&2
+cd ..
+
+# consider stopping after $DTYPE_stage2 script has executed
+if [ $LSTAGE -eq 2 ]; then
+    echo "STOPPING AFTER $S2" >&2
+    gitdiffs
+    exit 0
+fi
+
+# execute $DTYPE_stage3 script
+S3=$DTYPE_stage3
+cd $S3
+echo "`date` : $S3 START" >&2
+python stage3.py
+if [ $? -ne 0 ]; then
+    echo "ERROR: executing stage3/stage3.py script" >&2
+    gitdiffs
+    exit 1
+fi
+echo "`date` : $S3 FINISH" >&2
+cd ..
+
+# consider stopping after $DTYPE_stage3 script has executed
+if [ $LSTAGE -eq 3 ]; then
+    echo "STOPPING AFTER $S3"
+    gitdiffs
+    exit 0
+fi
+
+exit 0
