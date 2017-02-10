@@ -11,13 +11,13 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     agi: AGI provided in PUF
     var: Variable being adjusted
     var_name: Three letter code to identify variable being adjusted
-    target:
+    target: Target bin levels
     weight: Weights file
     blowup: Blowup factors created in Stage 1 of the extrapolation process
 
     Returns
     -------
-    DataFrame of adjustment factors for each year for that variable
+    DataFrame of adjustment ratios for each year for that variable
 
     """
 
@@ -42,8 +42,8 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     # Advance variable to 2009 level
     var *= blowup[2009]
 
-    # In each year find the factors to get the correct distribution
-    factors_df = pd.DataFrame()
+    # In each year find the ratios to get the correct distribution
+    ratios_df = pd.DataFrame()
     for year in range(2010, 2027):
 
         goal_amts = goal_total[year][0] * distribution[year]
@@ -97,37 +97,37 @@ def adjustment(agi, var, var_name, target, weight, blowup):
                                  bin_17, bin_18],
                                 index=goal_amts.index)
 
-        factors_index = ['BIN_0', 'BIN_1', 'BIN_2', 'BIN_3', 'BIN_4', 'BIN_5',
+        ratios_index = ['BIN_0', 'BIN_1', 'BIN_2', 'BIN_3', 'BIN_4', 'BIN_5',
                          'BIN_6', 'BIN_7', 'BIN_8', 'BIN_9', 'BIN_10',
                          'BIN_11', 'BIN_12', 'BIN_13', 'BIN_14', 'BIN_15',
                          'BIN_16', 'BIN_17', 'BIN_18']
 
-        # Find factor for each AGI bin
-        factors = pd.Series(goal_amts / actual_amts)
-        factors.index = factors_index
+        # Find ratios for each AGI bin
+        ratios = pd.Series(goal_amts / actual_amts)
+        ratios.index = ratios_index
 
-        var[agi < 0] *= factors['BIN_0']
-        var[(agi >= 0) & (agi < 5000)] *= factors['BIN_1']
-        var[(agi >= 5000) & (agi < 10000)] *= factors['BIN_2']
-        var[(agi >= 10000) & (agi < 15000)] *= factors['BIN_3']
-        var[(agi >= 15000) & (agi < 20000)] *= factors['BIN_4']
-        var[(agi >= 20000) & (agi < 25000)] *= factors['BIN_5']
-        var[(agi >= 25000) & (agi < 30000)] *= factors['BIN_6']
-        var[(agi >= 30000) & (agi < 40000)] *= factors['BIN_7']
-        var[(agi >= 40000) & (agi < 50000)] *= factors['BIN_8']
-        var[(agi >= 50000) & (agi < 75000)] *= factors['BIN_9']
-        var[(agi >= 75000) & (agi < 100000)] *= factors['BIN_10']
-        var[(agi >= 100000) & (agi < 200000)] *= factors['BIN_11']
-        var[(agi >= 200000) & (agi < 500000)] *= factors['BIN_12']
-        var[(agi >= 500000) & (agi < 1e6)] *= factors['BIN_13']
-        var[(agi >= 1e6) & (agi < 1.5e6)] *= factors['BIN_14']
-        var[(agi >= 1.5e6) & (agi < 2e6)] *= factors['BIN_15']
-        var[(agi >= 2e6) & (agi < 5e6)] *= factors['BIN_16']
-        var[(agi >= 5e6) & (agi < 1e7)] *= factors['BIN_17']
-        var[(agi >= 1e7)] *= factors['BIN_18']
-        factors_df['{}{}'.format(var_name, year)] = factors
+        var[agi < 0] *= ratios['BIN_0']
+        var[(agi >= 0) & (agi < 5000)] *= ratios['BIN_1']
+        var[(agi >= 5000) & (agi < 10000)] *= ratios['BIN_2']
+        var[(agi >= 10000) & (agi < 15000)] *= ratios['BIN_3']
+        var[(agi >= 15000) & (agi < 20000)] *= ratios['BIN_4']
+        var[(agi >= 20000) & (agi < 25000)] *= ratios['BIN_5']
+        var[(agi >= 25000) & (agi < 30000)] *= ratios['BIN_6']
+        var[(agi >= 30000) & (agi < 40000)] *= ratios['BIN_7']
+        var[(agi >= 40000) & (agi < 50000)] *= ratios['BIN_8']
+        var[(agi >= 50000) & (agi < 75000)] *= ratios['BIN_9']
+        var[(agi >= 75000) & (agi < 100000)] *= ratios['BIN_10']
+        var[(agi >= 100000) & (agi < 200000)] *= ratios['BIN_11']
+        var[(agi >= 200000) & (agi < 500000)] *= ratios['BIN_12']
+        var[(agi >= 500000) & (agi < 1e6)] *= ratios['BIN_13']
+        var[(agi >= 1e6) & (agi < 1.5e6)] *= ratios['BIN_14']
+        var[(agi >= 1.5e6) & (agi < 2e6)] *= ratios['BIN_15']
+        var[(agi >= 2e6) & (agi < 5e6)] *= ratios['BIN_16']
+        var[(agi >= 5e6) & (agi < 1e7)] *= ratios['BIN_17']
+        var[(agi >= 1e7)] *= ratios['BIN_18']
+        ratios_df['{}{}'.format(var_name, year)] = ratios
 
-    return factors_df
+    return ratios_df
 
 # Read all necessary files
 puf = pd.read_csv('../puf_data/cps-matched-puf.csv')
@@ -139,8 +139,9 @@ bf = pd.read_csv('../stage1/growfactors.csv', index_col=0)
 # Call adjustment function with each variable desired
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
 
-# Concat each variables factors to the final DataFrame
-final_factors = pd.concat([ints], axis=1)
+# Concat each variables ratios to the final DataFrame
+final_ratios = pd.concat([ints], axis=1)
+final_ratios = final_ratios.transpose()
 
-# Crate CSV from the final factors
-final_factors.to_csv('pufadj_factors.csv', index=False)
+# Crate CSV from the final ratios
+final_ratios.to_csv('puf_ratios.csv')
