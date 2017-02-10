@@ -75,7 +75,7 @@ fi
 S2=$DTYPE"_stage2"
 cd $S2
 echo "`date` : $S2 START" >&2
-########################################python stage2.py
+python stage2.py
 RC=$?
 rm -f *.pyc
 if [ $RC -ne 0 ]; then
