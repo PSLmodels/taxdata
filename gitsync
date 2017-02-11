@@ -1,0 +1,13 @@
+#!/bin/bash
+# stop if not on master branch of local git repo
+git branch | awk '$1~/\*/{if($2~/master/){exit 0}else{exit 1}}'
+if [ $? -ne 0 ]; then
+    echo "STOP: not on master branch"
+    exit 1
+fi
+# synchronize my local git repo with GitHub repos
+git fetch upstream
+git checkout master
+git merge upstream/master
+git push
+exit 0
