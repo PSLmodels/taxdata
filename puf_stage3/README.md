@@ -1,15 +1,15 @@
 About puf_stage3
 ================
 
-This directory contains the following scripts:
+This directory contains the following script:
 
 * Python script **stage3.py**, which reads/writes:
 
   Input files:
-    - stage3_targets.csv
-    - ../puf_data/cps-matched-puf.csv
+    - ../puf_data/cps-matched-puf.csv (not in repo because is restricted)
     - ../stage1/growfactors.csv
     - ../puf_stage2/puf_weights.csv
+    - stage3_targets.csv
 
   Output files:
     - puf_ratios.csv

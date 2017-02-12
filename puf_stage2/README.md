@@ -7,9 +7,9 @@ This directory contains the following script:
 `solve_lp_for_year.py` file, reads/writes:
 
   Input files:
-    - ../puf_data/cps-matched-puf.csv
-    - ../stage1/Stage_II_targets.csv
+    - ../puf_data/cps-matched-puf.csv (not in repo because is restricted)
     - ../stage1/Stage_I_factors_transpose.csv
+    - ../stage1/Stage_II_targets.csv
 
   Output files:
     - puf_weights.csv
