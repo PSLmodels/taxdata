@@ -1,13 +1,15 @@
 About cps_data
 ==============
 
-This directory contains the following:
+This directory contains the following script:
 
-* Input file(s):
+* Python script **....py**, which reads/writes:
 
-* Python script(s):
+  Input files:
+    - ...
 
-* Output file(s):
+  Output files:
+    - cps.csv
 
 
 Documentation
