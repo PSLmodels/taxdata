@@ -18,4 +18,6 @@ This directory contains the following scripts:
 Documentation
 -------------
 
-**all documentation files go in a `doc` subdirectory of this directory**
+For more information on the preparation of the AGI-bin-specific
+adjustment ratios, see [this document](doc/stage3.md).
+
