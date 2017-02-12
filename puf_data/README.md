@@ -1,13 +1,15 @@
 About puf_data
 ==============
 
-This directory contains the following:
+This directory contains the following script:
 
-* Input file(s):
+* Python script **finalprep.py**, which reads/writes:
 
-* Python script(s):
+  Input files:
+    - cps-matched-puf.csv (not in repo because is restricted)
 
-* Output file(s):
+  Output files:
+    - puf.csv (not in repo because is restricted)
 
 
 Documentation
