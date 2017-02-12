@@ -19,5 +19,5 @@ Documentation
 -------------
 
 For more information on the preparation of the AGI-bin-specific
-adjustment ratios, see [this document](doc/stage3.md).
+adjustment ratios, see [this document](doc/puf_stage3.md).
 

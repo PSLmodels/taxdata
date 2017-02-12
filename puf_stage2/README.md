@@ -1,13 +1,18 @@
 About puf_stage2
 ================
 
-This directory contains the following:
+This directory contains the following script:
 
-* Input file(s):
+* Python script **stage2.py**, which calls a function in the
+`solve_lp_for_year.py` file, reads/writes:
 
-* Python script(s):
+  Input files:
+    - ../puf_data/cps-matched-puf.csv
+    - ../stage1/Stage_II_targets.csv
+    - ../stage1/Stage_I_factors_transpose.csv
 
-* Output file(s):
+  Output files:
+    - puf_weights.csv
 
 
 Documentation

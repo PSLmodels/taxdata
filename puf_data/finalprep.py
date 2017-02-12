@@ -3,16 +3,12 @@ import numpy as np
 import pandas
 
 
-INPUT_FILENAME = 'cps-matched-puf.csv'
-OUTPUT_FILENAME = 'puf.csv'
-
-
 def main():
     """
     Contains all the logic of the puf_data/finalprep.py script.
     """
-    # (*) Read unprocessed INPUT file into a Pandas Dataframe
-    data = pandas.read_csv(INPUT_FILENAME)
+    # (*) Read unprocessed input file into a Pandas Dataframe
+    data = pandas.read_csv('cps-matched-puf.csv')
 
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])
@@ -64,7 +60,7 @@ def main():
         data = remove_unused_variables(data)
 
     # (*) Write processed data to the final puf.csv file
-    data.to_csv(OUTPUT_FILENAME, index=False)
+    data.to_csv('puf.csv', index=False)
 
     return 0
 # end of main function code
