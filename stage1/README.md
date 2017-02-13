@@ -31,3 +31,11 @@ Documentation
 -------------
 
 **all documentation files go in a `doc` subdirectory of this directory**
+
+For information on the source of the input file data, see:
+- [Stage 1 Growth Rate Sources](docs/Stage1_Growth_Rate_Sources.csv)
+- [Stage 2 Base Year Sources](docs/Stage2_Base_Year_Sources.csv)
+
+For information on updating input data, see:
+- [CBO Baseline Updating Instructions](CBO_Baseline_Updating_Instructions.txt)
+- [SOI Estimates Updating Instructions](SOI_Estimates_Updating_Instrutions.txt)
