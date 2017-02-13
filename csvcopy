@@ -1,13 +1,13 @@
 #!/bin/bash
-# copies CSV files produced by makecsv in the specified taxcalc directory tree
+# copies CSV files produced by csvmake to the specified taxcalc directory
 
 function usage {
-    echo "USAGE: ./copycsv DATATYPE TAXCALCDIR [dryrun]"
+    echo "USAGE: ./csvcopy DATATYPE TAXCALCDIR [dryrun]"
     echo "       where DATATYPE can be puf or cps"
     echo "         and TAXCALCDIR is path to Tax-Calculator taxcalc directory"
     echo "             (TAXCALCDIR must end with a / character)"
     echo "         and dryrun is optional signal to skip the CSV copying"
-    echo "       Note: run ./copycsv in top-level taxdata directory"
+    echo "       Note: run ./csvcopy in top-level taxdata directory"
     exit 1
 }
 
