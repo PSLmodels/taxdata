@@ -1,39 +1,14 @@
-"""
-puf_data_processing.py transforms raw cps-puf-*.csv into final puf.csv file.
-
-COMMAND-LINE USAGE: python puf_data_processing.py INPUT
-
-This script transforms the INPUT csv file in several ways as described below.
-"""
-# CODING-STYLE CHECKS:
-# pep8 --ignore=E402 puf_data_processing.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy xxx.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
-# disable pylint warning about script name having dashes instead of underscores
-# pylint: disable=invalid-name
-
-
-import argparse
 import sys
-import pandas
 import numpy as np
+import pandas
 
 
 def main():
     """
-    Contains all the logic of the puf_data_processing.py script.
+    Contains all the logic of the puf_data/finalprep.py script.
     """
-    parser = argparse.ArgumentParser(
-        prog='python puf_data_processing.py',
-    )
-    parser.add_argument('INPUT',
-                        help=('INPUT is name of required CSV file that '
-                              'contains data from original CPS-matched PUF.'))
-    args = parser.parse_args()
-
-    # (*) Read unprocessed INPUT file into a Pandas Dataframe
-    data = pandas.read_csv(args.INPUT)
+    # (*) Read unprocessed input file into a Pandas Dataframe
+    data = pandas.read_csv('cps-matched-puf.csv')
 
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])

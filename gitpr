@@ -1,0 +1,20 @@
+#!/bin/bash
+# stop if not on master branch of local git repo
+git branch | awk '$1~/\*/{if($2~/master/){exit 0}else{exit 1}}'
+if [[ $? -ne 0 ]] ; then
+    echo "STOP: not on master branch"
+    exit 1
+fi
+# check manditory command-line argument, which is the pull request number
+if [[ "$#" -ne 1 ]]; then
+    echo "ERROR: must specify exactly one command-line argument,"
+    echo "       the pull request number, PRNUM"
+    echo "USAGE: ./gitpr PRNUM"
+    exit 1
+fi
+PRNUM=$1
+# create local branch containing upstream pull request with PRNUM
+git fetch upstream pull/$PRNUM/head:pr-$PRNUM
+git checkout pr-$PRNUM
+git status
+exit 0

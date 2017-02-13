@@ -1,11 +1,10 @@
-import pandas as pd
-import numpy as np
 import copy
+import numpy as np
+import pandas as pd
 
 
 def adjustment(agi, var, var_name, target, weight, blowup):
     """
-
     Parameters
     ----------
     agi: AGI provided in PUF
@@ -18,7 +17,6 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     Returns
     -------
     DataFrame of adjustment ratios for each year for that variable
-
     """
 
     # Make a copy of the variable and use to create target totals
@@ -98,9 +96,9 @@ def adjustment(agi, var, var_name, target, weight, blowup):
                                 index=goal_amts.index)
 
         ratios_index = ['BIN_0', 'BIN_1', 'BIN_2', 'BIN_3', 'BIN_4', 'BIN_5',
-                         'BIN_6', 'BIN_7', 'BIN_8', 'BIN_9', 'BIN_10',
-                         'BIN_11', 'BIN_12', 'BIN_13', 'BIN_14', 'BIN_15',
-                         'BIN_16', 'BIN_17', 'BIN_18']
+                        'BIN_6', 'BIN_7', 'BIN_8', 'BIN_9', 'BIN_10',
+                        'BIN_11', 'BIN_12', 'BIN_13', 'BIN_14', 'BIN_15',
+                        'BIN_16', 'BIN_17', 'BIN_18']
 
         # Find ratios for each AGI bin
         ratios = pd.Series(goal_amts / actual_amts)
@@ -134,7 +132,6 @@ puf = pd.read_csv('../puf_data/cps-matched-puf.csv')
 targets = pd.read_csv('stage3_targets.csv', index_col=0)
 wght = pd.read_csv('../puf_stage2/puf_weights.csv')
 bf = pd.read_csv('../stage1/growfactors.csv', index_col=0)
-
 
 # Call adjustment function with each variable desired
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
