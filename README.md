@@ -59,11 +59,13 @@ Work-Flow Documentation
 -----------------------
 
 The sequence of operations required to make the two sets of data files
-is contained in the [`makecsv` bash script](makecsv).
+is contained in the [`csvmake` bash script](csvmake), which also
+automates the preparation work-flow (except on Windows).
 
 The sequence of operations required to install the two sets of data
-files in the Tax-Calculator repository is contained in the [`copycsv`
-bash script](copycsv).
+files in the Tax-Calculator repository is contained in the [`csvcopy`
+bash script](csvcopy), which also automates the installation work-flow
+(except on Windows).
 
 
 Contributors
