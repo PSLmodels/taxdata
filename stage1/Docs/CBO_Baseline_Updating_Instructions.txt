@@ -1,17 +1,18 @@
-This document provides instructions for updating the 'CBO_baseline.csv' file found in the
-Stage I folder.
+This document provides instructions for updating the 'CBO_baseline.csv' file
+found in the Stage I folder.
 
-Most of the projections can be found in the CBO's 10-year Economic Projections. Those 
-variables are listed under "Variables in 10-Year CBO Projections." Those not in that
-file are listed separately with instructions on where/how to find/update them.
+Most of the projections can be found in the CBO's 10-year Economic Projections.
+Those variables are listed under "Variables in 10-Year CBO Projections." Those
+not in that file are listed separately with instructions on where/how to
+find/update them.
 
-The year of the file/report the current numbers come from as well as the year of the
-file/report used before the most recent update are listed for each variable. These
-will need to be updated with each update of CBO_baseline.
+The year of the file/report the current numbers come from as well as the year
+of the file/report used before the most recent update are listed for each
+variable. These will need to be updated with each update of CBO_baseline.
 
 If the updates include projections for years that were not there previously,
-'Stage I.py' and 'CLP_solver_16Years.py' will also need to be updated. Instructions for that
-are also included in this file.
+'Stage I.py' and 'CLP_solver_16Years.py' will also need to be updated.
+Instructions for that are also included in this file.
 
 Variables in 10-Year CBO Projections:
     Source: 10-Year Economic Projections (CBO)
@@ -40,22 +41,24 @@ Variables not in 10-year CBO Projections:
         Link: https://www.cbo.gov/about/products/budget-economic-data#7
         Previous: Unknown
         Current: January 2016
-        Notes: This projection is not in every iteration of this document, but is the
-               only publicly available projection I could find.
-               In the revenue projections file, the data is in the 'Capital Gains
-               Realizations' tab under the 'Capital Gains Realizations' column.
+        Notes: This projection is not in every iteration of this document,
+               but is the only publicly available projection I could find.
+               In the revenue projections file, the data is in the 'Capital
+               Gains Realizations' tab under the 'Capital Gains Realizations'
+               column.
 
     RETS:
         Source: IRS Publication 6187, Table 1B
         Link: https://www.irs.gov/pub/irs-pdf/p6187.pdf
         Previous: Unknown
         Current: Publication 6187, Fall 2016
-        Notes: Years 2015 to 2023 are directly from the table. Years 2024 to 2026 are
-               extrapolated out using the growth rate between 2022 and 2023.
+        Notes: Years 2015 to 2023 are directly from the table. Years 2024 to
+               2026 are extrapolated out using the growth rate between 2022
+               and 2023.
 
     SOCSEC:
-        Source: OASI Trust Fund Annual Trustees Report -Table VI.C4: Operations of the
-                OASI Trust Fund, Fiscal Years 2011-15.
+        Source: OASI Trust Fund Annual Trustees Report -Table VI.C4: Operations
+                of the OASI Trust Fund, Fiscal Years 2011-15.
                 Column: Cost: Scheduled Benefits: Intermediate Level
         Link: https://www.ssa.gov/oact/tr/2016/tr2016.pdf
         Previous: 2014 report
@@ -80,18 +83,18 @@ Variables not in 10-year CBO Projections:
         Link: https://www.cbo.gov/about/products/baseline-projections-selected-programs#24
         Previous: April 2014
         Current: March 2016
-        Notes: Put the 'Total Benefits' number from the table in terms of billions rather
-        than millions of dollars
+        Notes: Put the 'Total Benefits' number from the table in terms of
+               billions rather than millions of dollars
 
 Updating Stage I.py:
 
-    Increase the final year in the for loop to be one greater than the last year in the
-    updated CBO_baseline file.
+    Increase the final year in the for loop to be one greater than the last
+    year in the updated CBO_baseline file.
 
 Updating CLP_solver_16Year.py:
 
-    Increase the length of the 'z' array to be equal to the new number of years being
-    calculated.
+    Increase the length of the 'z' array to be equal to the new number of years
+    being calculated.
     Add elements to that array that match these new years in the same format
     as all other years are in.
     Add new weight columns to 'z' DataFrame.
