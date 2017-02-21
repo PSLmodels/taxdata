@@ -95,34 +95,32 @@ def adjustment(agi, var, var_name, target, weight, blowup):
                                  bin_17, bin_18],
                                 index=goal_amts.index)
 
-        ratios_index = ['BIN_0', 'BIN_1', 'BIN_2', 'BIN_3', 'BIN_4', 'BIN_5',
-                        'BIN_6', 'BIN_7', 'BIN_8', 'BIN_9', 'BIN_10',
-                        'BIN_11', 'BIN_12', 'BIN_13', 'BIN_14', 'BIN_15',
-                        'BIN_16', 'BIN_17', 'BIN_18']
+        ratios_index = [num for num in range(0, 19)]
 
         # Find ratios for each AGI bin
         ratios = pd.Series(goal_amts / actual_amts)
         ratios.index = ratios_index
 
-        var[agi < 0] *= ratios['BIN_0']
-        var[(agi >= 0) & (agi < 5000)] *= ratios['BIN_1']
-        var[(agi >= 5000) & (agi < 10000)] *= ratios['BIN_2']
-        var[(agi >= 10000) & (agi < 15000)] *= ratios['BIN_3']
-        var[(agi >= 15000) & (agi < 20000)] *= ratios['BIN_4']
-        var[(agi >= 20000) & (agi < 25000)] *= ratios['BIN_5']
-        var[(agi >= 25000) & (agi < 30000)] *= ratios['BIN_6']
-        var[(agi >= 30000) & (agi < 40000)] *= ratios['BIN_7']
-        var[(agi >= 40000) & (agi < 50000)] *= ratios['BIN_8']
-        var[(agi >= 50000) & (agi < 75000)] *= ratios['BIN_9']
-        var[(agi >= 75000) & (agi < 100000)] *= ratios['BIN_10']
-        var[(agi >= 100000) & (agi < 200000)] *= ratios['BIN_11']
-        var[(agi >= 200000) & (agi < 500000)] *= ratios['BIN_12']
-        var[(agi >= 500000) & (agi < 1e6)] *= ratios['BIN_13']
-        var[(agi >= 1e6) & (agi < 1.5e6)] *= ratios['BIN_14']
-        var[(agi >= 1.5e6) & (agi < 2e6)] *= ratios['BIN_15']
-        var[(agi >= 2e6) & (agi < 5e6)] *= ratios['BIN_16']
-        var[(agi >= 5e6) & (agi < 1e7)] *= ratios['BIN_17']
-        var[(agi >= 1e7)] *= ratios['BIN_18']
+        var[agi < 0] *= ratios[0]
+        var[(agi >= 0) & (agi < 5000)] *= ratios[1]
+        var[(agi >= 5000) & (agi < 10000)] *= ratios[2]
+        var[(agi >= 10000) & (agi < 15000)] *= ratios[3]
+        var[(agi >= 15000) & (agi < 20000)] *= ratios[4]
+        var[(agi >= 20000) & (agi < 25000)] *= ratios[5]
+        var[(agi >= 25000) & (agi < 30000)] *= ratios[6]
+        var[(agi >= 30000) & (agi < 40000)] *= ratios[7]
+        var[(agi >= 40000) & (agi < 50000)] *= ratios[8]
+        var[(agi >= 50000) & (agi < 75000)] *= ratios[9]
+        var[(agi >= 75000) & (agi < 100000)] *= ratios[10]
+        var[(agi >= 100000) & (agi < 200000)] *= ratios[11]
+        var[(agi >= 200000) & (agi < 500000)] *= ratios[12]
+        var[(agi >= 500000) & (agi < 1e6)] *= ratios[13]
+        var[(agi >= 1e6) & (agi < 1.5e6)] *= ratios[14]
+        var[(agi >= 1.5e6) & (agi < 2e6)] *= ratios[15]
+        var[(agi >= 2e6) & (agi < 5e6)] *= ratios[16]
+        var[(agi >= 5e6) & (agi < 1e7)] *= ratios[17]
+        var[(agi >= 1e7)] *= ratios[18]
+
         ratios_df['{}{}'.format(var_name, year)] = ratios
 
     return ratios_df
@@ -133,12 +131,13 @@ targets = pd.read_csv('stage3_targets.csv', index_col=0)
 wght = pd.read_csv('../puf_stage2/puf_weights.csv')
 bf = pd.read_csv('../stage1/growfactors.csv', index_col=0)
 
-# Call adjustment function with each variable desired
+# Call adjustment function for each variable being adjusted
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
 
-# Concat each variables ratios to the final DataFrame
-final_ratios = pd.concat([ints], axis=1)
+# Concat each variable's ratios to the final DataFrame and set index name
+var_ratios_list = [ints]
+final_ratios = pd.concat(var_ratios_list, axis=1)
 final_ratios = final_ratios.transpose()
 
-# Crate CSV from the final ratios
-final_ratios.to_csv('puf_ratios.csv')
+# Create CSV from the final ratios
+final_ratios.to_csv('puf_ratios.csv', index_label='agi_bin')
