@@ -18,4 +18,7 @@ This directory contains the following script:
 Documentation
 -------------
 
-**all documentation files go in a `doc` subdirectory of this directory**
+For historical documentation on stage1 and stage2 methods and how they
+have been used in this project, see:
+- [Stage1 and Stage2 Methodology](../doc/Stage1_Stage2_Methodology.pdf)
+- [Methods Applied to 2009 PUF](../doc/Stage1_Stage2_2009PUF.pdf)

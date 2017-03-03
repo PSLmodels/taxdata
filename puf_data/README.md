@@ -15,4 +15,5 @@ This directory contains the following script:
 Documentation
 -------------
 
-**all documentation files go in a `doc` subdirectory of this directory**
+The SAS scripts used to prepare the cps-matched-puf.csv file are
+described in the [StatMatch subdirectory](StatMatch/README.md).

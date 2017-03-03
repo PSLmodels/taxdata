@@ -1,5 +1,5 @@
 About StatMatch
-=================
+===============
 
 This directory contains the following scripts:
 - 1CPSMAR2014R.sas
@@ -11,7 +11,7 @@ This directory contains the following scripts:
 - 7AddCPSVars_2009.sas
 - 8AddNonFilers2014.sas
 
-The scripts are used to statistically match the 2014 CPS with the 2009 Public
-Use File and should be run in the order they are numbered. 
+The scripts are used to statistically match the 2014 CPS with the 2009
+Public Use File and should be run in the order they are numbered.
 
-For information about this technique, see the `doc` directory.
+For information about this technique, see the `doc` subdirectory.
