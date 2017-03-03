@@ -38,7 +38,7 @@ For information on procedures for updating input data, see:
 - [CBO Baseline Updating
   Instructions](doc/CBO_Baseline_Updating_Instructions.txt)
 - [SOI Estimates Updating
-  Instructions](doc/SOI_Estimates_Updating_Instrutions.txt)
+  Instructions](doc/SOI_Estimates_Updating_Instructions.txt)
 
 For historical documentation on stage1 and stage2 methods and how they
 have been used in this project, see:
