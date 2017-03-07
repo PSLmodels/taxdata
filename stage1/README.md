@@ -30,12 +30,17 @@ This directory contains the following scripts:
 Documentation
 -------------
 
-**all documentation files go in a `doc` subdirectory of this directory**
+For information on the sources of the input file data, see:
+- [Stage 1 Growth Rate Sources](doc/Stage1_Growth_Rate_Sources.csv)
+- [Stage 2 Base Year Sources](doc/Stage2_Base_Year_Sources.csv)
 
-For information on the source of the input file data, see:
-- [Stage 1 Growth Rate Sources](docs/Stage1_Growth_Rate_Sources.csv)
-- [Stage 2 Base Year Sources](docs/Stage2_Base_Year_Sources.csv)
+For information on procedures for updating input data, see:
+- [CBO Baseline Updating
+  Instructions](doc/CBO_Baseline_Updating_Instructions.txt)
+- [SOI Estimates Updating
+  Instructions](doc/SOI_Estimates_Updating_Instructions.txt)
 
-For information on updating input data, see:
-- [CBO Baseline Updating Instructions](CBO_Baseline_Updating_Instructions.txt)
-- [SOI Estimates Updating Instructions](SOI_Estimates_Updating_Instrutions.txt)
+For historical documentation on stage1 and stage2 methods and how they
+have been used in this project, see:
+- [Stage1 and Stage2 Methodology](../doc/Stage1_Stage2_Methodology.pdf)
+- [Methods Applied to 2009 PUF](../doc/Stage1_Stage2_2009PUF.pdf)
