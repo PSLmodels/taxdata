@@ -202,6 +202,18 @@ ZDEPIN = 0;
 ZOWNER = 0;
 ZWASPT = PREC(&PERSON , 20) ;
 ZWASSP = 0;
+
+/*
+        Benefits Data
+*/
+SSI = PREC(&PERSON , 119) ;
+SSIP = SSI ;
+SNAP = PREC(&PERSON , 120) ;
+SNAPP = SNAP ;
+MEDICAREX = PREC(&PERSON , 121) ;
+MEDICAREXP = MEDICAREX ;
+SSI_PARTICIPATIONP = PREC(&PERSON , 122) ;
+SNAP_PARTICIPATIONP = PREC(&PERSON , 123) ;
 /*
         Home Ownership Flag
 */
@@ -274,6 +286,17 @@ SELECT;
                                         ZCHSUP = ZCHSUP + PREC(SP_PTR , 53) ;
                                         ZFINAS = ZFINAS + PREC(SP_PTR , 54) ;
                                         ZWASSP = PREC(SP_PTR , 20) ;
+										/*
+										        Benefits data
+										*/
+										SSIS = PREC(SP_PTR , 119) ;
+										SSI = SSI + SSIS ;
+										SNAPS = PREC(SP_PTR , 120) ;
+										SNAP = SNAP + SNAPS ;
+										MEDICAREXS = PREC(SP_PTR, 121) ;
+										MEDICAREX = MEDICAREX + MEDICAREXS ;
+										SSI_PARTICIPATIONS = PREC(SP_PTR , 122) ;
+										SNAP_PARTICIPATIONS = PREC(SP_PTR , 123) ;
                                 END;
                 END;
         OTHERWISE ;
@@ -740,6 +763,78 @@ END;
 			TREC( NUNITS , 274 ) = PREC(SP_PTR , 109);
 			TREC( NUNITS , 275 ) = PREC(SP_PTR , 110);
 		END;
+*****
+		Add benefits data to tax units
+*****;
+		TREC( NUNITS , 276 ) = 0 ; /* Number of SSI participants */
+		TREC( NUNITS , 277 ) = 0 ; /* Number of SNAP participants */
+		TREC( NUNITS , 278 ) = 0 ; /* Number of Medicare participatns */
+		TREC( NUNITS , 279 ) = SSIP ; /* SSI */
+		TREC( NUNITS , 280 ) = SNAPP ; /* SNAP */
+		TREC( NUNITS , 281 ) = MEDICAREXP ; /* MedicareX  */
+		TREC( NUNITS , 282 ) = SSI_PARTICIPATIONP ; /* SSI Participation flag */
+		TREC( NUNITS , 283 ) = SNAP_PARTICIPATIONP ; /* SNAP Participation flag */
+		/* Spouse */
+		IF ( SP_PTR NE 0 )THEN
+		DO;
+		     TREC( NUNITS , 284 ) = SSIS ; /* SSI */
+			 TREC( NUNITS , 285 ) = SNAPS ; /* SNAP */
+			 TREC( NUNITS , 286 ) = MEDICAREXS ; /* MedicareX */
+			 TREC( NUNITS , 287 ) = SSI_PARTICIPATIONS ; /* SSI Participaiton flag */
+			 TREC( NUNITS , 288 ) = SNAP_PARTICIPATIONS ; /* SNAP Participation flag */
+		END;
+		TREC( NUNITS, 289 ) = SSI ;
+		TREC( NUNITS, 290 ) = SNAP;
+		TREC( NUNITS, 291 ) = MEDICAREX;
+		/* Add benefits data for dependents */
+		TREC( NUNITS, 292 ) = 0 ; /* Total dependent SSI */
+		TREC( NUNITS, 293 ) = 0 ; /* Total dependent SNAP */
+		TREC( NUNITS, 294 ) = 0 ; /* Total dependent Medicare */
+		/* Count number of participants in benefit programs */
+		IF SSIP > 0 THEN TREC( NUNITS , 276 ) = TREC( NUNITS , 276) + 1;
+        IF SSIS > 0 THEN TREC( NUNITS , 276 ) = TREC( NUNITS , 277) + 1;
+        IF SNAPP > 0 THEN TREC( NUNITS , 277 ) = TREC( NUNITS , 277) + 1;
+		IF SNAPS > 0 THEN TREC( NUNITS , 277 ) = TREC( NUNITS , 277) + 1;
+		IF MEDICAREXP > 0 THEN TREC( NUNITS , 278 ) = TREC( NUNITS , 278 ) + 1;
+		IF MEDICAREXS > 0 THEN TREC( NUNITS , 278 ) = TREC( NUNITS , 278 ) + 1;
+
+		/* Count how many are in each age group */
+		TREC( NUNITS , 295 ) = 0; /* Under 18 */
+        TREC( NUNITS , 296 ) = 0; /* 18 to 21 */
+        TREC( NUNITS , 297 ) = 0; /* Over 21 */
+
+		/* variables for Parker */
+		TREC( NUNITS, 298 ) = PREC(&PERSON, 124); /* Gender */
+		TREC( NUNITS, 299 ) = PREC(&PERSON, 125); /* Enrollment status */
+		TREC( NUNITS, 300 ) = PREC(&PERSON, 126); /* Educational attainment */
+		TREC( NUNITS, 301 ) = 0; /* Spouse's gender */ 
+		TREC( NUNITS, 302 ) = 0; /* Spouse's enrollment status */
+		TREC( NUNITS, 303 ) = 0; /* Spouses's educational attainment */
+
+		/* Check reference person and spouse age. Add gender, enrollment status, educational attainment */
+	    IF (PREC(&PERSON, 12) < 18) THEN
+            TREC(NUNITS, 295) = TREC(NUNITS, 295) + 1;
+        ELSE IF (PREC(&PERSON, 12) >= 18 AND PREC(&PERSON, 12) < 21) THEN
+            TREC(NUNITS, 296) = TREC(NUNITS, 296) + 1;
+        ELSE IF (PREC(&PERSON, 12) >= 21) THEN
+            TREC(NUNITS, 297) = TREC(NUNITS, 297) + 1;
+ 
+
+		IF (SP_PTR NE 0) THEN
+		    DO;
+			    IF (PREC(SP_PTR, 12) < 18) THEN
+                    TREC(NUNITS, 295) = TREC(NUNITS, 295) + 1;
+                ELSE IF (PREC(SP_PTR, 12) >= 18 AND PREC(&PERSON, 12) < 21) THEN
+                    TREC(NUNITS, 296) = TREC(NUNITS, 296) + 1;
+                ELSE IF (PREC(SP_PTR, 12) >= 21) THEN
+                    TREC(NUNITS, 297) = TREC(NUNITS, 297) + 1;
+
+			    TREC(NUNITS, 301) = PREC(SP_PTR, 124);
+				TREC(NUNITS, 302) = PREC(SP_PTR, 125);
+				TREC(NUNITS, 303) = PREC(SP_PTR, 126);
+			END;
+
+ 
 
 /*
         ---------------------------------------
@@ -1096,6 +1191,22 @@ DEPNE = TREC(&RETURN , 4) ;
 DAGE = PREC(&PERSON , 12) ;
 TREC(&RETURN , 20 + DEPNE) = &PERSON ;
 TREC(&RETURN , 66 + DEPNE) = DAGE ;
+/* Add dependent benefits to tax unit */
+TREC(&RETURN, 289) = TREC(&RETURN, 289) + PREC(&PERSON, 119) ; /* SSI */
+TREC(&RETURN, 290) = TREC(&RETURN, 290) + PREC(&PERSON, 120) ; /* SNAP */
+TREC(&RETURN, 291) = TREC(&RETURN, 291) + PREC(&PERSON, 121) ;/* MEDICARE */
+/* Add to number of participants */
+IF PREC(&PERSON, 119) > 0 THEN TREC(&RETURN, 276) = TREC(&RETURN, 276) + 1; /* SSI */
+IF PREC(&PERSON, 120) > 0 THEN TREC(&RETURN, 277) = TREC(&RETURN, 277) + 1; /* SNAP*/
+IF PREC(&PERSON, 121) > 0 THEN TREC(&RETURN, 278) = TREC(&RETURN, 278) + 1; /* Medicare */
+
+/* Track age of dependent */
+IF (PREC(&PERSON, 12) < 18) THEN
+    TREC(&RETURN, 295) = TREC(&RETURN, 295) + 1;
+ELSE IF (PREC(&PERSON, 12) >= 18 AND PREC(&PERSON, 12) < 21) THEN
+    TREC(&RETURN, 296) = TREC(&RETURN, 296) + 1;
+ELSE IF (PREC(&PERSON, 12) >= 21) THEN
+    TREC(&RETURN, 297) = TREC(&RETURN, 297) + 1; 
 %MEND ADDEPT ;
 
 %MACRO OUTPUT ;
@@ -1183,6 +1294,35 @@ DO N = 1 TO NUNITS ;
                    XHID    = TREC(N , 93) ;
                    XFID    = TREC(N , 94) ;
                    XPID    = TREC(N , 95) ;
+				   SSI     = TREC(N , 289);
+				   SNAP    = TREC(N , 290);
+				   SSIP    = TREC(N , 279);
+				   SNAPP   = TREC(N , 280);
+				   SSIS    = TREC(N , 284);
+                   SNAPS   = TREC(N , 285);
+                   SSI_DEP = TREC(N , 292);
+                   SNAP_DEP= TREC(N , 293); 
+				   MEDICAREX  = TREC(N , 291);
+				   MEDICAREXP = TREC(N , 281);
+				   MEDICAREXS = TREC(N , 286);
+				   MEDICAREX_DEP = TREC(N , 294);
+				   SSI_PARTICIPATIONP  = TREC(N , 282);
+				   SSI_PARTICIPATIONS  = TREC(N , 287);
+				   SNAP_PARTICIPATIONP = TREC(N , 283);
+				   SNAP_PARTICIPATIONS = TREC(N , 288);
+				   NUM_SSI  = TREC(N , 276);
+                   NUM_SNAP = TREC(N , 277);
+                   NUM_MEDICARE = TREC(N , 278);
+				   NU18 = TREC(N, 295);
+				   N1821 = TREC(N, 296);
+				   N21 = TREC(N, 297);
+				   GENDER_HEAD = TREC(N, 298);
+				   GENDER_SPOUSE = TREC(N, 301);
+				   FTPT_HEAD = TREC(N, 299); 
+				   FTPT_SPOUSE = TREC(N, 302);
+				   HGA_HEAD = TREC(N, 300);
+				   HGA_SPOUSE = TREC(N, 303);
+
 /*
                     Oldest & Youngest Dependents
 */
@@ -1802,6 +1942,24 @@ DEPEX3 = 3950. ;
 				PREC(NPER , 116) = HRWICYN;
 				PREC(NPER , 117) = HFDVAL;
 				PREC(NPER , 118) = CARE_VAL;
+
+				*****
+				New variables for Amy
+				*****;
+
+				PREC(NPER , 119) = SSI_IMPUTE ;
+				PREC(NPER , 120) = SNAP_IMPUTE;
+				PREC(NPER , 121) = MEDICAREX  ;
+				PREC(NPER , 122) = SSI_PARTICIPATION ;
+				PREC(NPER , 123) = SNAP_PARTICIPATION;
+
+				*****
+				New variables for Paker
+				*****;
+
+				PREC(NPER, 124) = A_SEX;
+				PREC(NPER, 125) = A_FTPT;
+				PREC(NPER, 126) = A_HGA;
 %MEND FILLREC ;
 
 %MACRO HHSTATUS( INDEX ) ;
@@ -1841,6 +1999,9 @@ LIBNAME EXTRACT "C:\Users\anderson.frailey\Documents\";
 	NOTE: 	THE ORIGINAL CPS IS NOT IS THE CORRECT SORT ORDER SO WE GIVE EACH
 			RECORD A UNIQUE SEQUENCE NUMBER.
 *****;
+DATA EXTRACT.CPSMAR&CPSYEAR;
+MERGE EXTRACT.SSISNAPMEDICARE(DROP = H_SEQ FFPOS PERIDNUM MARSUPWT) EXTRACT.CPSMAR2014;
+RUN;
 DATA TEMPORARY(KEEP=H_SEQ SORT_ORDER H_NUMPER);
 SET EXTRACT.CPSMAR&CPSYEAR;
 SORT_ORDER = _N_;
@@ -1882,6 +2043,13 @@ DATA EXTRACT.CPSRETS&CPSYEAR(KEEP=H_SEQ PERIDNUM JS IFDEPT AGEDE DEPNE CAHE AGEH
                           XXOCAH XXOCAWH
                           XXOODEP XXOPAR XXTOT XAGEX XSTATE XREGION
                           XSCHB XSCHF XSCHE XSCHC XHID XFID XPID
+						  SSI SSIP SSIS SSI_DEP SNAP SNAPP SNAPS SNAP_DEP MEDICAREX MEDICAREXP MEDICAREXS MEDICAREX_DEP
+						  SSI_PARTICIPATION SSI_PARTICIPATIONP SSI_PARTICIPATIONS
+						  SNAP_PARTICIPATION SNAP_PARTICIPATIONP SNAP_PARTICIPATIONS
+						  NUM_SSI NUM_SNAP NUM_MEDICARE
+						  NU18 N1821 N21
+						  GENDER_HEAD GENDER_SPOUSE FTPT_HEAD FTPT_SPOUSE HGA_HEAD HGA_SPOUSE
+
                           /*
                                         New CPS Variables
                           */
@@ -1907,7 +2075,7 @@ ARRAY PREC(16 , 162) _temporary_ ;	/*	NEW CPS FIELDS	*/
 *****
 	ANDERSON: NEED TO INCREASE SIZE TREC(*) ARRAY
 *****;
-ARRAY TREC(16 , 300) _temporary_ ;
+ARRAY TREC(16 , 315) _temporary_ ;
 ARRAY ICPS(*) ICPS01-ICPS50 ;
 ARRAY JCPS(*) JCPS1-JCPS200 ;
 IF (_N_ = 1)THEN PTR = 0;
@@ -2102,3 +2270,4 @@ WEIGHT WT;
 VAR FILST;
 TITLE1 'TAX YEAR 2014 - CPS YEAR 2014 TAX UNIT EXTRACT';
 RUN;
+
