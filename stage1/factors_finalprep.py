@@ -28,7 +28,6 @@ data['ASCHEI'] = data['ASCHEI'] / pop
 data['ASCHEL'] = data['ASCHEL'] / pop
 data['ACGNS'] = data['ACGNS'] / pop
 data['ABOOK'] = data['ABOOK'] / pop
-data['AGDPN'] = data['AGDPN'] / pop  # TODO: remove line after Growth redesign
 
 # convert factors into "one plus annual proportion change" format
 data = 1.0 + data.pct_change()
@@ -50,16 +49,14 @@ data['AWAGE'][first_data_year] = 1.0053
 # round converted factors to six decimal digits of accuracy
 data = data.round(6)
 
-# delete from data variables not used by Tax-Calculator (TC)
+# delete from data the variables not used by Tax-Calculator (TC)
 TC_USED_VARS = set(['ABOOK',
                     'ACGNS',
                     'ACPIM',
                     'ACPIU',
                     'ADIVS',
-                    'AGDPN',  # TODO: remove this line after Growth redesign
                     'AINTS',
                     'AIPD',
-                    'APOPN',  # TODO: remove this line after Growth redesign
                     'ASCHCI',
                     'ASCHCL',
                     'ASCHEI',
