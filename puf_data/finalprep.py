@@ -8,7 +8,7 @@ def main():
     Contains all the logic of the puf_data/finalprep.py script.
     """
     # (*) Read unprocessed input file into a Pandas Dataframe
-    data = pandas.read_csv('finalProduction.csv')
+    data = pandas.read_csv('cps-matched-puf.csv')
 
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])
