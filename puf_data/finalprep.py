@@ -3,8 +3,8 @@ import numpy as np
 import pandas
 
 
-BENPUF = False  # set temporarily to True to generated benpuf.csv file
-# BENPUF = False will generate puf.csv file without any benefits variables
+BENPUF = False  # set temporarily to True to generate a benpuf.csv file
+# BENPUF = False will generate a puf.csv file without any benefits variables
 
 
 def main():
