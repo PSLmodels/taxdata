@@ -3,6 +3,10 @@ import numpy as np
 import pandas
 
 
+BENPUF = False  # set temporarily to True to generated benpuf.csv file
+# BENPUF = False will generate puf.csv file without any benefits variables
+
+
 def main():
     """
     Contains all the logic of the puf_data/finalprep.py script.
@@ -49,18 +53,25 @@ def main():
     data['e02100p'] = earnings_split * data['e02100']
     data['e02100s'] = one_minus_earnings_split * data['e02100']
 
-    # (E) Randomly assign additional dependents to households
+    # (E) Randomly assign additional dependents to households:
     data = add_dependents(data)
 
-    # (F) Add AGI bin indicator used for adjustment factors
+    # (F) Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
 
-    # (G) Remove variables not expected by Tax-Calculator
+    # (G) Remove variables not expected by Tax-Calculator:
     if max_flpdyr >= 2009:
         data = remove_unused_variables(data)
 
-    # (*) Write processed data to the final puf.csv file
-    data.to_csv('puf.csv', index=False)
+    # (H) Remove benefits variables when BENPUF is False:
+    if not BENPUF:
+        data = remove_benefits_variables(data)
+
+    # (*) Write processed data to the final CSV-formatted file:
+    if BENPUF:
+        data.to_csv('benpuf.csv', index=False)
+    else:
+        data.to_csv('puf.csv', index=False)
 
     return 0
 # end of main function code
@@ -232,7 +243,7 @@ def capitalize_varnames(data):
 
 def remove_unused_variables(data):
     """
-    Delete variables not expected by Tax-Calculator.
+    Delete non-benefit variables not expected by Tax-Calculator.
     """
     data['s006'] = data['matched_weight'] * 100
 
@@ -265,7 +276,62 @@ def remove_unused_variables(data):
         'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200']
     data = data.drop(UNUSED_READ_VARS, 1)
 
+    NEW_POST_PR83_UNUSED_READ_VARS = [
+        'SOISEQ',
+        'age_dep1', 'age_dep2', 'age_dep3', 'age_dep4', 'age_dep5',
+        'age_oldest', 'age_youngest',
+        'cpsseq',
+        'e07140',
+        'e52852',
+        'e52872',
+        'finalseq',
+        'ftpt_head', 'ftpt_spouse',
+        'gender_head', 'gender_spouse',
+        'h_seq',
+        'hga_head', 'hga_spouse',
+        'head_age',
+        'i',
+        'jcps25', 'jcps28', 'jcps35', 'jcps38',
+        'medicaid',
+        'medicarex_dep',
+        'num_medicaid',
+        'num_medicare',
+        'num_snap',
+        'num_ss',
+        'num_ssi',
+        'num_vet',
+        'p86421',
+        'peridnum',
+        'prodseq',
+        'snap_dep',
+        'snap_participationp',
+        'snap_participations',
+        'sp_ptr',
+        'spouse_age',
+        'ss',
+        'ssi_dep',
+        'ssi_participationp',
+        'ssi_participations',
+        'vb',
+        'vb_participationp',
+        'vb_participations',
+        'vbp',
+        'vbs',
+        'wt']
+    data = data.drop(NEW_POST_PR83_UNUSED_READ_VARS, 1)
     data = data.fillna(value=0)
+    return data
+
+
+def remove_benefits_variables(data):
+    """
+    Delete benefits variables.
+    """
+    BENEFIT_VARS = [
+        'ssi', 'ssip', 'ssis', 'ssi_participation',
+        'snap', 'snapp', 'snaps', 'snap_participation',
+        'medicarex', 'medicarexp', 'medicarexs']
+    data = data.drop(BENEFIT_VARS, 1)
     return data
 
 
