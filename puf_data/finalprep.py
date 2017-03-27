@@ -116,10 +116,10 @@ def create_new_recid(data):
 
 def age_consistency(data):
     """
-    Construct age_head and age_spouse from agerange if available;
-    otherwise use CPS values of age_head and age_spouse.
+    Construct age_head from agerange if available; otherwise use CPS value.
+    Construct age_spouse as a normally-distributed agediff from age_head.
     """
-    # set random-number-generator seed so that always get same random integers
+    # set random-number-generator seed so that always get same random numbers
     np.random.seed(seed=123456789)
     # generate random integers to smooth age distribution in agerange
     shape = data['age_head'].shape
@@ -176,13 +176,16 @@ def age_consistency(data):
                                 1, data['age_head'])
 
     # assign age_spouse relative to age_head if married;
-    # if not head is not married, set age_spouse to zero
-    diff = np.random.normal(0.0, 4.0, size=shape)
-    agediff = diff.round()
+    # if head is not married, set age_spouse to zero;
+    # if head is married but has unknown age, set age_spouse to one;
+    # do not specify age_spouse values below 16
+    adiff = np.random.normal(0.0, 4.0, size=shape)
+    agediff = adiff.round()
+    age_sp = data['age_head'] + agediff
+    age_spouse = np.where(age_sp < 16, 16, age_sp)
     data['age_spouse'] = np.where(data['mars'] == 2,
                                   np.where(data['age_head'] == 1,
-                                           1,
-                                           data['age_head'] + agediff),
+                                           1, age_spouse),
                                   0)
 
     return data
