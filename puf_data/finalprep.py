@@ -178,11 +178,11 @@ def age_consistency(data):
     # assign age_spouse relative to age_head if married;
     # if head is not married, set age_spouse to zero;
     # if head is married but has unknown age, set age_spouse to one;
-    # do not specify age_spouse values below 16
+    # do not specify age_spouse values below 15
     adiff = np.random.normal(0.0, 4.0, size=shape)
-    agediff = adiff.round()
+    agediff = np.int_(adiff.round())
     age_sp = data['age_head'] + agediff
-    age_spouse = np.where(age_sp < 16, 16, age_sp)
+    age_spouse = np.where(age_sp < 15, 15, age_sp)
     data['age_spouse'] = np.where(data['mars'] == 2,
                                   np.where(data['age_head'] == 1,
                                            1, age_spouse),
