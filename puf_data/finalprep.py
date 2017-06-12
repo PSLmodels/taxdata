@@ -393,12 +393,12 @@ def add_dependents(data):
 
     # Count number of dependents under 18
     def reassign(agedp):
-        # With probability 0.46 remove members from age group
+        # With probability 0.47 remove members from age group
         # 17 and 18. This probability is the proportion
         # of 18 year olds in this age group.
         if agedp != 4:
             return agedp
-        return 1 if np.random.rand() <= 0.460867 else 0
+        return 0 if np.random.rand() <= 0.465920 else 4
 
     agedp1 = data.agedp1.apply(reassign)
     under1 = np.where(((agedp1 > 0) & (agedp1 <= 4)), 1, 0)
@@ -409,12 +409,15 @@ def add_dependents(data):
     agedp3 = data.agedp3.apply(reassign)
     under3 = np.where(((agedp3 > 0) & (agedp3 <= 4)), 1, 0)
 
-    # randomly add dependents
-    # the probability decreases significantly after 5
-    choice = [3, 4, 5]
-    prob = [0.91, 0.084, 0.006]
+    # Randomly add dependents according to distribution
+    # observed in CPS
+    # The proportion of tax units with at least three
+    # dependents under age 18 with 0, 1, or 2 more dependents
+    # under age 18
+    choice = [0, 1, 2]
+    prob = [0.910, 0.0828, 0.00633]
     add_rand = np.where(under1 == 1 & under2 == 1 & under3 == 1,
-                        np.random.choice(choice, p=prob) - 3, 0)
+                        np.random.choice(choice, p=prob), 0)
 
     nu18_dep = under1 + under2 + under3 + add_rand
     data["nu18_dep"] = nu18_dep
