@@ -321,7 +321,8 @@ def remove_unused_variables(data):
         'vbp',
         'vbs',
         'wt']
-    data = data.drop(NEW_POST_PR83_UNUSED_READ_VARS, 1)
+    # data = data.drop(NEW_POST_PR83_UNUSED_READ_VARS, 1)
+
     data = data.fillna(value=0)
     return data
 
@@ -334,7 +335,7 @@ def remove_benefits_variables(data):
         'ssi', 'ssip', 'ssis', 'ssi_participation',
         'snap', 'snapp', 'snaps', 'snap_participation',
         'medicarex', 'medicarexp', 'medicarexs']
-    data = data.drop(BENEFIT_VARS, 1)
+    # data = data.drop(BENEFIT_VARS, 1)
     return data
 
 
