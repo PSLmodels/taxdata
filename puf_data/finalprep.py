@@ -431,9 +431,10 @@ def replace_20500(data):
     Replace e20500, net casualty losses, with g20500, gross casualty losses
     (gross loss values less than 10% AGI are unknown and assumed to be zero)
     """
-    data['g20500'] = np.where(data.e20500 > 0.,
-                              data.e20500 + 0.10 * np.maximum(0., data.e00100),
-                              0.)
+    gross = np.where(data.e20500 > 0.,
+                     data.e20500 + 0.10 * np.maximum(0., data.e00100),
+                     0.)
+    data['g20500'] = np.int_(gross.round())
     return data
 
 
