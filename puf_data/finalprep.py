@@ -59,11 +59,14 @@ def main():
     # (F) Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
 
-    # (G) Remove variables not expected by Tax-Calculator:
+    # (G) Replace e20500 with g20500
+    data = replace_20500(data)
+
+    # (H) Remove variables not expected by Tax-Calculator:
     if max_flpdyr >= 2009:
         data = remove_unused_variables(data)
 
-    # (H) Remove benefits variables when BENPUF is False:
+    # (I) Remove benefits variables when BENPUF is False:
     if not BENPUF:
         data = remove_benefits_variables(data)
 
@@ -240,7 +243,7 @@ def remove_unused_variables(data):
         'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
         'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
-        'e11070', 'e11550', 'e11580', 'p87482', 'FDED',
+        'e11070', 'e11550', 'e11580', 'p87482', 'e20500', 'FDED',
         'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200']
     data = data.drop(UNUSED_READ_VARS, 1)
 
@@ -396,7 +399,6 @@ def add_dependents(data):
 def add_agi_bin(data):
     """
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
-
     """
     agi = pandas.Series([0] * len(data.e00100))
     agi[data.e00100 < 0] = 0
@@ -422,6 +424,18 @@ def add_agi_bin(data):
     data['agi_bin'] = agi
 
     return data
+
+
+def replace_20500(data):
+    """
+    Replace e20500, net casualty losses, with g20500, gross casualty losses
+    (gross loss values less than 10% AGI are unknown and assumed to be zero)
+    """
+    data['g20500'] = np.where(data.e20500 > 0.,
+                              data.e20500 + 0.10 * np.maximum(0., data.e00100),
+                              0.)
+    return data
+
 
 if __name__ == '__main__':
     sys.exit(main())
