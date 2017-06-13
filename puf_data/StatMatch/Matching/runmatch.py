@@ -76,4 +76,4 @@ def match(mar_cps_path='asec2014_pubuse_tax_fix_5x8.dat',
 
 if __name__ == "__main__":
     cps_matched = match()
-    cps_matched.to_csv('cps-matched-puf.csv', index=False)
+    cps_matched.to_csv('../cps-matched-puf.csv', index=False)
