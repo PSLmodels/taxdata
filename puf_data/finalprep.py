@@ -55,6 +55,7 @@ def main():
 
     # (E) Randomly assign additional dependents to households:
     data = add_dependents(data)
+    data = add_nu18_dep(data)
 
     # (F) Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
