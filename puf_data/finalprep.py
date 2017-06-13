@@ -391,7 +391,43 @@ def add_dependents(data):
     under5 = age1 + age2 + age3
     data['nu05'] = under5
 
-    # Count number of dependents under 18
+    return data
+
+
+def add_nu18_dep(data):
+    """
+        This function estimates the number of dependents under
+        the age of 18 for a given tax unit. This relies on
+        the agedp* variables and is done in two stages.
+            1. Classify dependents as under 18 years old
+            based off of the value of agedp* and random selection
+            from the 17-18 age group.
+            If agedp* is 1, 2, or 3, then this dependent
+            is in age range 0-16.
+            If agdep* is 4, then this dependent is either 17
+            or 18 years old. To estimate the number of 17 year
+            olds in this age group, agedp* is set to 0 (and
+            thus is no longer considered in nu18_dep count)
+            with probability 0.47 which is the proportion
+            of 18 year olds in this age group as observed in
+            the CPS.
+            If agedp* is greater than 4, then this dependent is
+            over age 18 and is not considered in the nu18_dep count.
+
+            2. Estimate the number of dependents under the age
+            of 18 in the case where there are three
+            known dependents under the age of 18. The PUF file
+            tells us the age of up to three dependents. In the CPS,
+            of tax units with at least three dependents under
+            the age of 18, 91% only have three dependents,
+            8% have 4 dependents, and 0.6% have 5 dependents
+            under the age of 18 (the proportion decreases
+            substantially after 5). According to these
+            proportions either 0, 1, or 2 is added to the number
+            of known dependents.  If there are less than three
+            dependents under the age of 18, then no dependents are
+            added.
+    """
     def reassign(agedp):
         # With probability 0.47 remove members from age group
         # 17 and 18. This probability is the proportion
@@ -409,15 +445,12 @@ def add_dependents(data):
     agedp3 = data.agedp3.apply(reassign)
     under3 = np.where(((agedp3 > 0) & (agedp3 <= 4)), 1, 0)
 
-    # Randomly add dependents according to distribution
+    # Randomly add dependents according to the distribution
     # observed in CPS
-    # The proportion of tax units with at least three
-    # dependents under age 18 with 0, 1, or 2 more dependents
-    # under age 18
-    choice = [0, 1, 2]
+    additional_deps = [0, 1, 2]
     prob = [0.910, 0.0828, 0.00633]
     add_rand = np.where(under1 == 1 & under2 == 1 & under3 == 1,
-                        np.random.choice(choice, p=prob), 0)
+                        np.random.choice(additional_deps, p=prob), 0)
 
     nu18_dep = under1 + under2 + under3 + add_rand
     data["nu18_dep"] = nu18_dep
