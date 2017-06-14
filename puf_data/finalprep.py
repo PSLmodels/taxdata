@@ -21,13 +21,13 @@ def main():
     else:  # if PUF year is 2009+
         data = age_consistency(data)
 
-    # (A) Make recid variable be a unique integer key:
+    # - Make recid variable be a unique integer key:
     data = create_new_recid(data)
 
-    # (B) Make several variable names be uppercase as in SOI PUF:
+    # - Make several variable names be uppercase as in SOI PUF:
     data = capitalize_varnames(data)
 
-    # (C) Impute cmbtp variable to estimate income on Form 6251 but not in AGI:
+    # - Impute cmbtp variable to estimate income on Form 6251 but not in AGI:
     cmbtp_standard = data['e62100'] - data['e00100'] + data['e00700']
     zero = np.zeros(len(data.index))
     medical_limit = np.maximum(zero, data['e17500'] -
@@ -40,7 +40,7 @@ def main():
     cmbtp = np.where(data['FDED'] == 1, cmbtp_itemizer, cmbtp_standard)
     data['cmbtp'] = np.where(data['f6251'] == 1, cmbtp, 0.)
 
-    # (D) Split earnings variables into taxpayer (p) and spouse (s) amounts:
+    # - Split earnings variables into taxpayer (p) and spouse (s) amounts:
     total = np.where(data['MARS'] == 2,
                      data['wage_head'] + data['wage_spouse'], 0)
     earnings_split = np.where(total != 0,
@@ -53,24 +53,21 @@ def main():
     data['e02100p'] = earnings_split * data['e02100']
     data['e02100s'] = one_minus_earnings_split * data['e02100']
 
-    # (E) Randomly assign additional dependents to households:
-    data = add_dependents(data)
-
-    # (F) Add AGI bin indicator used for adjustment factors:
+    # - Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
 
-    # (G) Replace e20500 with g20500
+    # - Replace e20500 with g20500
     data = replace_20500(data)
 
-    # (H) Remove variables not expected by Tax-Calculator:
+    # - Remove variables not expected by Tax-Calculator:
     if max_flpdyr >= 2009:
         data = remove_unused_variables(data)
 
-    # (I) Remove benefits variables when BENPUF is False:
+    # - Remove benefits variables when BENPUF is False:
     if not BENPUF:
         data = remove_benefits_variables(data)
 
-    # (*) Write processed data to the final CSV-formatted file:
+    # - Write processed data to the final CSV-formatted file:
     if BENPUF:
         data.to_csv('benpuf.csv', index=False)
     else:
@@ -494,59 +491,6 @@ def transform_2008_varnames_to_2009_varnames(data):
         'e26100', 'e05200', 'e82200', 'e25860', 'e07220',
         'e11900', 'e25960', 'p27895', 'e12200'}
     data = data.drop(UNUSED_READ_VARS, 1)
-    return data
-
-
-def add_dependents(data):
-    """
-    Randomly assign fourth under 13 dependent to households with three or
-    more dependents under 13 and randomly assign an elderly dependent
-
-    Decimals used when randomly assigning dependents come from 2014 CPS data.
-    Using the 'hunder15' variable (the closest one available to under13),
-    roughly 1/3 of the number of households with three or more persons under
-    15 had four or more under 15. Looking at those ages 13 and under in the
-    data set, slightly over 1/3 of those in households with three or more
-    under 15 were in households with four or more under 15. The decimal used
-    here is the average of these two numbers.
-
-    Similarly, the number used in elderly dependent assignment is the fraction
-    of those 65 and older that are listed as dependents in the data set.
-    """
-    # pylint: disable=too-many-locals
-    # Randomly assign fourth dependent to units with at lease three dependents
-    np.random.seed(409)
-    randDep = (list(np.random.rand(len(data.agedp3[(data.agedp3 > 0) &
-                                                   (data.agedp3 <= 2)]))))
-    agedp4 = []
-    for item in data.agedp3:
-        if 0 < item <= 2:
-            x = randDep.pop(0)
-            if x <= .360998:
-                agedp4.append(1)
-            else:
-                agedp4.append(0)
-        else:
-            agedp4.append(0)
-    agedp4 = np.array(agedp4)
-    # Count number of dependents under 13
-    under1 = np.where(((data.agedp1 > 0) & (data.agedp1 <= 2)), 1, 0)
-    under2 = np.where(((data.agedp2 > 0) & (data.agedp2 <= 2)), 1, 0)
-    under3 = np.where(((data.agedp3 > 0) & (data.agedp3 <= 2)), 1, 0)
-    under4 = np.where(agedp4 == 1, 1, 0)
-    nu13 = under1 + under2 + under3 + under4
-    data["nu13"] = nu13
-    # Add elderly dependent
-    np.random.seed(1000)
-    elderly = np.array(np.random.rand(len(data.agedp3)))
-    elderly_dependent = np.where(elderly <= 0.000075509, 1, 0)
-    data['elderly_dependent'] = elderly_dependent
-    # Count dependents under 5
-    age1 = np.where(data.agedp1 == 1, 1, 0)
-    age2 = np.where(data.agedp2 == 1, 1, 0)
-    age3 = np.where(data.agedp3 == 1, 1, 0)
-    under5 = age1 + age2 + age3
-    data['nu05'] = under5
     return data
 
 
