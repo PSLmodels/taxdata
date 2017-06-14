@@ -116,8 +116,8 @@ def create_new_recid(data):
 
 def age_consistency(data):
     """
-    Construct age_head and age_spouse from agerange if available;
-    otherwise use CPS values of age_head and age_spouse.
+    Construct age_head from agerange if available; otherwise use CPS value.
+    Construct age_spouse as a normally-distributed agediff from age_head.
     """
     # set random-number-generator seed so that always get same random numbers
     np.random.seed(seed=123456789)
@@ -171,55 +171,22 @@ def age_consistency(data):
                                 data['age_head'] - 4 + agefuzz10,
                                 data['age_head'])
 
-    # assign age_spouse using agerange midpoint or CPS age if agerange absent
-    data['age_spouse'] = np.where(data['agerange'] == 0,
-                                  data['age_spouse'],
-                                  (data['agerange'] + 1 - data['dsi']) * 10)
-
-    # smooth the agerange-based age_spouse within each agerange
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 1,
-                                                 data['dsi'] == 0),
-                                  data['age_spouse'] - 3 + agefuzz9,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 2,
-                                                 data['dsi'] == 0),
-                                  data['age_spouse'] - 4 + agefuzz9,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 3,
-                                                 data['dsi'] == 0),
-                                  data['age_spouse'] - 5 + agefuzz10,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 4,
-                                                 data['dsi'] == 0),
-                                  data['age_spouse'] - 5 + agefuzz10,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 5,
-                                                 data['dsi'] == 0),
-                                  data['age_spouse'] - 5 + agefuzz10,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 6,
-                                                 data['dsi'] == 0),
-                                  data['age_spouse'] - 5 + agefuzz15,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 1,
-                                                 data['dsi'] == 1),
-                                  data['age_spouse'] - 0 + agefuzz8,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 2,
-                                                 data['dsi'] == 1),
-                                  data['age_spouse'] - 2 + agefuzz8,
-                                  data['age_spouse'])
-    data['age_spouse'] = np.where(np.logical_and(data['agerange'] == 3,
-                                                 data['dsi'] == 1),
-                                  data['age_spouse'] - 4 + agefuzz10,
-                                  data['age_spouse'])
-
-    # convert any zero ages to age one
+    # convert zero age_head to one
     data['age_head'] = np.where(data['age_head'] == 0,
                                 1, data['age_head'])
-    data['age_spouse'] = np.where(data['age_spouse'] == 0,
-                                  1, data['age_spouse'])
 
+    # assign age_spouse relative to age_head if married;
+    # if head is not married, set age_spouse to zero;
+    # if head is married but has unknown age, set age_spouse to one;
+    # do not specify age_spouse values below 15
+    adiff = np.random.normal(0.0, 4.0, size=shape)
+    agediff = np.int_(adiff.round())
+    age_sp = data['age_head'] + agediff
+    age_spouse = np.where(age_sp < 15, 15, age_sp)
+    data['age_spouse'] = np.where(data['mars'] == 2,
+                                  np.where(data['age_head'] == 1,
+                                           1, age_spouse),
+                                  0)
     return data
 
 
