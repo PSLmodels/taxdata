@@ -41,17 +41,7 @@ def main():
     data['cmbtp'] = np.where(data['f6251'] == 1, cmbtp, 0.)
 
     # - Split earnings variables into taxpayer (p) and spouse (s) amounts:
-    total = np.where(data['MARS'] == 2,
-                     data['wage_head'] + data['wage_spouse'], 0)
-    earnings_split = np.where(total != 0,
-                              data['wage_head'] / total, 1.)
-    one_minus_earnings_split = 1.0 - earnings_split
-    data['e00200p'] = earnings_split * data['e00200']
-    data['e00200s'] = one_minus_earnings_split * data['e00200']
-    data['e00900p'] = earnings_split * data['e00900']
-    data['e00900s'] = one_minus_earnings_split * data['e00900']
-    data['e02100p'] = earnings_split * data['e02100']
-    data['e02100s'] = one_minus_earnings_split * data['e02100']
+    data = split_earnings_variables(data)
 
     # - Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
@@ -458,6 +448,30 @@ def transform_2008_varnames_to_2009_varnames(data):
         'e26100', 'e05200', 'e82200', 'e25860', 'e07220',
         'e11900', 'e25960', 'p27895', 'e12200'}
     data = data.drop(UNUSED_READ_VARS, 1)
+    return data
+
+
+def split_earnings_variables(data):
+    """
+    Split earnings subject to FICA or SECA taxation between taxpayer and spouse
+    """
+    # split wage-and-salary earnings subject to FICA taxation
+    total_wages = np.where(data['MARS'] == 2,
+                           data['wage_head'] + data['wage_spouse'], 0)
+    wage_frac_p = np.where(total_wages != 0,
+                           data['wage_head'] / total_wages, 1.)
+    wage_frac_s = 1.0 - wage_frac_p
+    data['e00200p'] = wage_frac_p * data['e00200']
+    data['e00200s'] = wage_frac_s * data['e00200']
+    # split self-employment earnings subject to SECA taxation
+    # --- old e00900 and e02100 splitting logic:
+    data['e00900p'] = wage_frac_p * data['e00900']
+    data['e00900s'] = wage_frac_s * data['e00900']
+    data['e02100p'] = wage_frac_p * data['e02100']
+    data['e02100s'] = wage_frac_s * data['e02100']
+    # SECA taxable income capped at 2009 MTE of 106800 dollars
+    # data['secatip'] = data['e30400'] - data['e30500']
+    # data['secatis'] = data['e30500']
     return data
 
 
