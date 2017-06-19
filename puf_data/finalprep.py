@@ -484,19 +484,28 @@ def split_earnings_variables(data, data_year):
     data['e02100p'] = np.around(frac_p * data['e02100'], 2)
     data['e02100s'] = np.around(frac_s * data['e02100'], 2)
     # ... estimate Schedule K-1 box 14 self-employment earnings/loss
-    #     Note: secati? values fall in the [0,mte] range
+    # ...    Note: secati? values fall in the [0,mte] range.
+    # ...    So, if sum of e00900? and e02100? is negative and secati? is
+    # ...    zero, we make a conservative assumption and set box14 to zero
+    # ...    (rather than to a positive number), but we allow the estimate
+    # ...    of box 14 to be negative (that is, represent a loss).
     nonbox14 = data['e00900p'] + data['e02100p']
     box14 = np.where(np.logical_and(nonbox14 <= 0, secatip <= 0),
-                     0.,  # zero is conservative estimate of k1bx14p
-                     np.maximum(0.,  # non-neg because secatip is mte capped
-                                secatip - nonbox14))
+                     0.,
+                     secatip - nonbox14)
     data['k1bx14p'] = box14.round(2)
     nonbox14 = data['e00900s'] + data['e02100s']
     box14 = np.where(np.logical_and(nonbox14 <= 0, secatis <= 0),
-                     0.,  # zero is conservative estimate of k1bx14s
-                     np.maximum(0.,  # non-neg because secatis is mte capped
-                                secatis - nonbox14))
+                     0.,
+                     secatis - nonbox14)
     data['k1bx14s'] = box14.round(2)
+    # ... check consistency of self-employment earnings estimates
+    raw = data['e00900p'] + data['e02100p'] + data['k1bx14p']
+    estp = np.where(raw < 0, 0., np.where(raw > mte, mte, raw))
+    raw = data['e00900s'] + data['e02100s'] + data['k1bx14s']
+    ests = np.where(raw < 0, 0., np.where(raw > mte, mte, raw))
+    assert np.allclose(estp, secatip, rtol=0.0, atol=0.01)
+    assert np.allclose(ests, secatis, rtol=0.0, atol=0.01)
     return data
 
 
