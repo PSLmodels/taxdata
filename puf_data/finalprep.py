@@ -41,17 +41,7 @@ def main():
     data['cmbtp'] = np.where(data['f6251'] == 1, cmbtp, 0.)
 
     # - Split earnings variables into taxpayer (p) and spouse (s) amounts:
-    total = np.where(data['MARS'] == 2,
-                     data['wage_head'] + data['wage_spouse'], 0)
-    earnings_split = np.where(total != 0,
-                              data['wage_head'] / total, 1.)
-    one_minus_earnings_split = 1.0 - earnings_split
-    data['e00200p'] = earnings_split * data['e00200']
-    data['e00200s'] = one_minus_earnings_split * data['e00200']
-    data['e00900p'] = earnings_split * data['e00900']
-    data['e00900s'] = one_minus_earnings_split * data['e00900']
-    data['e02100p'] = earnings_split * data['e02100']
-    data['e02100s'] = one_minus_earnings_split * data['e02100']
+    data = split_earnings_variables(data, max_flpdyr)
 
     # - Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
@@ -458,6 +448,64 @@ def transform_2008_varnames_to_2009_varnames(data):
         'e26100', 'e05200', 'e82200', 'e25860', 'e07220',
         'e11900', 'e25960', 'p27895', 'e12200'}
     data = data.drop(UNUSED_READ_VARS, 1)
+    return data
+
+
+def split_earnings_variables(data, data_year):
+    """
+    Split earnings subject to FICA or SECA taxation between taxpayer and spouse
+    """
+    # split wage-and-salary earnings subject to FICA taxation
+    total = np.where(data['MARS'] == 2,
+                     data['wage_head'] + data['wage_spouse'], 0)
+    frac_p = np.where(total != 0, data['wage_head'] / total, 1.)
+    frac_s = 1.0 - frac_p
+    data['e00200p'] = np.around(frac_p * data['e00200'], 2)
+    data['e00200s'] = np.around(frac_s * data['e00200'], 2)
+    # specify FICA-SECA maximum taxable earnings (mte) for data_year
+    if data_year == 2008:
+        mte = 102000
+    elif data_year == 2009:
+        mte = 106800
+    else:
+        raise ValueError('illegal SOI PUF data year {}'.format(data_year))
+    # total self-employment earnings subject to SECA taxation
+    # (minimum handles a few secatip values slightly over the mte cap)
+    secatip = np.minimum(mte, data['e30400'] - data['e30500'])  # for taxpayer
+    secatis = np.minimum(mte, data['e30500'])  # for spouse
+    # split self-employment earnings subject to SECA taxation
+    # ... compute secati?-derived frac_p and frac_s
+    total = np.where(data['MARS'] == 2, secatip + secatis, 0)
+    frac_p = np.where(total != 0, secatip / total, 1.)
+    frac_s = 1.0 - frac_p
+    # ... split e00900 (Schedule C) and e02100 (Schedule F) net earnings/loss
+    data['e00900p'] = np.around(frac_p * data['e00900'], 2)
+    data['e00900s'] = np.around(frac_s * data['e00900'], 2)
+    data['e02100p'] = np.around(frac_p * data['e02100'], 2)
+    data['e02100s'] = np.around(frac_s * data['e02100'], 2)
+    # ... estimate Schedule K-1 box 14 self-employment earnings/loss
+    # ...    Note: secati? values fall in the [0,mte] range.
+    # ...    So, if sum of e00900? and e02100? is negative and secati? is
+    # ...    zero, we make a conservative assumption and set box14 to zero
+    # ...    (rather than to a positive number), but we allow the estimate
+    # ...    of box 14 to be negative (that is, represent a loss).
+    nonbox14 = data['e00900p'] + data['e02100p']
+    box14 = np.where(np.logical_and(nonbox14 <= 0, secatip <= 0),
+                     0.,
+                     secatip - nonbox14)
+    data['k1bx14p'] = box14.round(2)
+    nonbox14 = data['e00900s'] + data['e02100s']
+    box14 = np.where(np.logical_and(nonbox14 <= 0, secatis <= 0),
+                     0.,
+                     secatis - nonbox14)
+    data['k1bx14s'] = box14.round(2)
+    # ... check consistency of self-employment earnings estimates
+    raw = data['e00900p'] + data['e02100p'] + data['k1bx14p']
+    estp = np.where(raw < 0, 0., np.where(raw > mte, mte, raw))
+    raw = data['e00900s'] + data['e02100s'] + data['k1bx14s']
+    ests = np.where(raw < 0, 0., np.where(raw > mte, mte, raw))
+    assert np.allclose(estp, secatip, rtol=0.0, atol=0.01)
+    assert np.allclose(ests, secatis, rtol=0.0, atol=0.01)
     return data
 
 
