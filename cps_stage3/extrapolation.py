@@ -3,34 +3,66 @@ import numpy as np
 import copy
 
 
-def ravel_test(indicator, benefits, prob, CPS_weights, Participant_Targets,
-               SSI_extrapolation):
+def ravel_test(indicator, benefits, prob, CPS_weights):
 
     wt = CPS_weights.loc[:, 'WT'+str("2015")]
-    prior_year_indicator = copy.deepcopy(indicator)
-    prior_year_benefits = copy.deepcopy(benefits)
-    prior_year_prob = copy.deepcopy(prob)
 
-    extrap_df = ravel_data(wt.copy(), prior_year_indicator.copy(),
+    extrap_df = ravel_data(wt.copy(), indicator.copy(),
                            benefits.copy(), prob.copy())
     extrap_df.sort_values(by=["i", "j"], inplace=True)
 
     I_unrav = unravel_data(extrap_df, "I",
-                           prior_year_indicator.columns.tolist(),
+                           indicator.columns.tolist(),
                            dtype=np.int64)
     benefits_unrav = unravel_data(extrap_df, "benefits",
-                                  prior_year_benefits.columns.tolist(),
+                                  benefits.columns.tolist(),
                                   dtype=np.float64)
     prob_unrav = unravel_data(extrap_df, "prob",
-                              prior_year_prob.columns.tolist(),
+                              prob.columns.tolist(),
                               dtype=np.float64)
 
-    pd.testing.assert_frame_equal(prior_year_indicator, I_unrav,
-                                  check_dtype=False)
-    pd.testing.assert_frame_equal(prior_year_benefits, benefits_unrav,
-                                  check_dtype=False)
-    pd.testing.assert_frame_equal(prior_year_prob, prob_unrav,
-                                  check_dtype=False)
+    pd.testing.assert_frame_equal(indicator, I_unrav, check_dtype=False)
+    pd.testing.assert_frame_equal(benefits, benefits_unrav, check_dtype=False)
+    pd.testing.assert_frame_equal(prob, prob_unrav, check_dtype=False)
+
+
+def prepare_data(target_grates_path, CPS_tax_unit_path, CPS_weights,
+                 benefit="SSI"):
+    """ prepare data """
+    target_grates = pd.read_csv(target_grates_path, index_col=0)
+    CPS_tax_unit = pd.read_csv(CPS_tax_unit_path)
+
+    # create benefit targets
+    benefit_2014 = (CPS_tax_unit[benefit] * CPS_tax_unit.s006).sum()
+    benefit_targets = benefit_2014 * (1 + target_grates['{0} Target Growth'
+                                                        .format(benefit)])
+    benefit_targets = benefit_targets[1:]
+
+    # extract program benefit in 2014 to Benefit_base array
+    benefit_base_col = [col for col in list(CPS_tax_unit) if
+                        col.startswith('{0}_VAL'.format(benefit))]
+    benefit_base = CPS_tax_unit[benefit_base_col]
+
+    # Create Participation targets from tax-unit individual level markers
+    # and growth rates from SSA
+    participation_2014 = pd.DataFrame(np.where(benefit_base > 0, 1, 0))
+    total_particpants = (participation_2014.sum(axis=1) *
+                         CPS_tax_unit.s006).sum()
+    participant_targets = total_particpants * \
+        (1 + target_grates['{0} Participation Growth'.format(benefit)])
+
+    # extract probability of participation in program from tax-unit database
+    prob_col = [col for col in list(CPS_tax_unit)
+                if col.startswith('{0}_PROB'.format(benefit))]
+    prob_base = CPS_tax_unit[prob_col]
+
+    # dataframe of number participants and total benefits from program
+    benefit_extrapolation = pd.DataFrame(participation_2014.sum(axis=1),
+                                         columns=['Parcipation_2014'])
+    benefit_extrapolation['Benefit_2014'] = CPS_tax_unit[benefit]
+
+    return (prob_base, participation_2014, benefit_base,
+            participant_targets, benefit_targets, benefit_extrapolation)
 
 
 def unravel_data(df, var_name, column_names, dtype=None):
@@ -175,13 +207,13 @@ def extrapolate(wt, I, benefits, prob, target):
     return I, benefits, prob
 
 
-def run(indicator, benefits, prob, CPS_weights, Participant_Targets,
-        SSI_extrapolation):
+def run(indicator, benefits, prob, CPS_weights, participant_targets,
+        benefit_targets, benefit_extrapolation):
     prior_year_indicator = copy.deepcopy(indicator)
     prior_year_benefits = copy.deepcopy(benefits)
     prior_year_prob = copy.deepcopy(prob)
-    for year in Targets.index:
-        diff = Participant_Targets[year] - \
+    for year in benefit_targets.index:
+        diff = participant_targets[year] - \
             (indicator.sum(axis=1) * CPS_weights['WT'+str(year)]).sum()
         if abs(diff) <= 1000:
             print('The differece of participants is neglegible')
@@ -195,78 +227,52 @@ def run(indicator, benefits, prob, CPS_weights, Participant_Targets,
             indicator, benefits, prob = extrapolate(wt, prior_year_indicator,
                                                     prior_year_benefits,
                                                     prior_year_prob,
-                                                    Participant_Targets[year])
+                                                    participant_targets[year])
         print('Done with year ', year)
         extrapolated = (indicator.sum(axis=1) *
                         CPS_weights['WT'+str(year)]).sum()
         print('this year total is ', extrapolated,
-              'while target is ', Participant_Targets[year],
+              'while target is ', participant_targets[year],
               'thus diff is ',
-              (extrapolated - Participant_Targets[year]))
+              (extrapolated - participant_targets[year]))
 
-        SSI_extrapolation['Participation_'+str(year)] = indicator.sum(axis=1)
+        benefit_extrapolation['Participation_'+str(year)] = \
+            indicator.sum(axis=1)
         sum_this_year = (benefits.sum(axis=1) *
                          CPS_weights['WT'+str(year)]).sum()
-        SSI_extrapolation['Benefit_'+str(year)] = \
-            benefits.sum(axis=1) * Targets[year] / sum_this_year
+        benefit_extrapolation['Benefit_'+str(year)] = \
+            benefits.sum(axis=1) * benefit_targets[year] / sum_this_year
 
         prior_year_indicator = indicator.copy()
         prior_year_benefits = benefits.copy()
         prior_year_prob = prob.copy()
 
     return (prior_year_indicator, prior_year_prob, prior_year_benefits,
-            SSI_extrapolation)
+            benefit_extrapolation)
 
 
 if __name__ == "__main__":
 
-    """ prepare data """
-    target_grates = pd.read_csv('GrowthRates.csv', index_col=0)
-    CPS_tax_unit = pd.read_csv('cps_ssi.csv')
     CPS_weights = pd.read_csv('cps_weights.csv')
 
-    print(CPS_tax_unit.s006.sum(),
-          CPS_tax_unit.s006[CPS_tax_unit.SSI > 0].sum(),
-          CPS_weights.WT2015.sum())
+    benefits = {"SSI": {"grates_path": "GrowthRates.csv",
+                        "cps_tax_units_path": "cps_ssi.csv"}
+                }
 
-    # create SSI targets
-    SSI_2014 = (CPS_tax_unit.SSI*CPS_tax_unit.s006).sum()
-    Targets = SSI_2014 * (1 + target_grates['SSI Target Growth'])
-    Targets = Targets[1:]
-    # print (Targets[2015])
+    for benefit in benefits:
+        (prob, indicator, benefits, participant_targets, benefit_targets,
+            benefit_extrapolation) = \
+                prepare_data(benefits[benefit]["grates_path"],
+                             benefits[benefit]["cps_tax_units_path"],
+                             CPS_weights,
+                             benefit=benefit)
 
-    # extract SSI benefit in 2014 to Benefit_base array
-    Benefit_base_col = [col for col in list(CPS_tax_unit) if
-                        col.startswith('SSI_VAL')]
-    Benefit_base = CPS_tax_unit[Benefit_base_col]
+        """extrapolate"""
 
-    # Create Participation targets from tax-unit individual level markers
-    # and growth rates from SSA
-    Parcipation_2014 = pd.DataFrame(np.where(Benefit_base > 0, 1, 0))
-    total_particpants = (Parcipation_2014.sum(axis=1) *
-                         CPS_tax_unit.s006).sum()
-    Participant_Targets = total_particpants * \
-        (1 + target_grates['SSI Participation Growth'])
+        indicator, prob, benefits, benefit_extrapolation = \
+            run(indicator, benefits, prob,
+                CPS_weights, participant_targets,
+                benefit_targets,
+                benefit_extrapolation)
 
-    # extract probability of SSI participation from tax-unit database
-    Prob_col = [col for col in list(CPS_tax_unit)
-                if col.startswith('SSI_PROB')]
-    Prob_base = CPS_tax_unit[Prob_col]
-
-    # dataframe of number participants and total SSI benefits
-    SSI_extrapolation = pd.DataFrame(Parcipation_2014.sum(axis=1),
-                                     columns=['Parcipation_2014'])
-    SSI_extrapolation['Benefit_2014'] = CPS_tax_unit.SSI
-
-    """extrapolate"""
-    prob = copy.deepcopy(Prob_base)
-    indicator = copy.deepcopy(Parcipation_2014)
-    benefits = copy.deepcopy(Benefit_base)
-
-    prior_year_indicator, prior_year_prob, prior_year_benefits, \
-        SSI_extrapolation = run(indicator, benefits, prob,
-                                CPS_weights, Participant_Targets,
-                                SSI_extrapolation)
-
-    # ravel_test(indicator, benefits, prob, CPS_weights, Participant_Targets,
-    #            SSI_extrapolation)
+    # ravel_test(indicator, benefits, prob, CPS_weights)
