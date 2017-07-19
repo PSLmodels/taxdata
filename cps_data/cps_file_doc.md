@@ -1,6 +1,7 @@
 # Current Population Survey Tax Unit File Documentation
 
-Microsimulation models, such as the Open Source Policy Center's (OSPC) [Tax-Calculator](https://github.com/open-source-economics/Tax-Calculator),
+Microsimulation models, such as
+[Tax-Calculator](https://github.com/open-source-economics/Tax-Calculator),
 rely on datasets comprised of individual tax units. These datasets are available
 through the IRS, but at substantial financial cost and are not permitted to be
 shared. This document outlines the creation of a tax unit dataset created from
@@ -8,12 +9,13 @@ publicly available CPS files that is suitable for use with OSPC's Tax-Calculator
 
 ## Overview
 
-The March supplement to the Current Population Survey (CPS) is an annual survey
-of US households conducted in March of every year. The file contains
-information on income, demographic, and family structure that can be
-used to create tax units comprised of those surveyed. Our final file is created
-using the 2013, 2014, and 2015 CPS supplements. The 2013 and 2014 files are
-then aged to 2015, making the file representative of tax year 2014.
+The Annual Social and Economic Supplement (ASEC) to the Current Population
+Survey (CPS) is an annual survey of US households conducted in March of every
+year. The file contains information on prior-year income and current family
+structure that can be used to create tax units comprised of those surveyed.
+Our final file is created using the 2013, 2014, and 2015 March CPS supplements.
+Dollar amounts in the The 2013 and 2014 files are then aged to be compatible
+with values in the 2015, making the file representative of tax year 2014.
 
 We use an algorithm developed by John O'Hare at Quantria Strategies with slight
 modifications to fit our needs to create the final file. The documentation will
@@ -46,10 +48,11 @@ three age groups - under 18, 18 to 21, and over 21 years old - in each tax unit.
 Our second uses the Open Source CPS Transfer Augmentation Model (C-TAM) to add
 imputed benefit participation and amounts for Supplemental Security Income (SSI),
 Supplemental Nutrition Assistance Program (SNAP), Medicare, Medicaid, Social
-Security, and Veterans' Benefits. C-TAM imputes these benefits on an individual
-level using the CPS files before they are converted into tax units. During the
-creation process, we modified the code to add up these benefits so that we
-have a total benefits received by the entire unit.
+Security, and Veterans' Benefits and the total of several other benefits.
+C-TAM imputes these benefits on an individual level using the CPS files before
+they are converted into tax units. During the creation process, we modified the
+code to add up these benefits so that we have a total benefits received by the
+entire unit.
 
 ## Top-Coding and Imputation
 
