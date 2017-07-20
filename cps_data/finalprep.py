@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 import copy
+import subprocess
 
 
 def main():
@@ -90,7 +91,8 @@ def main():
 
     data = data.fillna(0.)
     print 'Exporting...'
-    data.to_csv('cps.csv.gz', index=False, compression='gzip')
+    data.to_csv('cps.csv', index=False)
+    subprocess.check_call(["gzip", "-n", "cps.csv"])
 
 
 def deduction_limits(data):
