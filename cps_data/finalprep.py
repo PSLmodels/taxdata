@@ -10,7 +10,6 @@ def main():
     data = pd.read_csv('cps_raw.csv.gz', compression='gzip')
     adj_targets = pd.read_csv('adjustment_targets.csv')
     # other_ben = pd.read_csv('benefitprograms.csv')
-    weights = pd.read_csv('cps_weights_raw.csv.gz', compression='gzip')
 
     # Rename specified variables
     renames = {
@@ -88,14 +87,10 @@ def main():
     # data = benefits(data, other_ben)
     print 'Dropping unused variables'
     data = drop_vars(data)
-    # Round weights for size considerations
-    print 'Rounding Weights'
-    weights = weights.round(0).astype('int64')
 
     data = data.fillna(0.)
     print 'Exporting...'
     data.to_csv('cps.csv.gz', index=False, compression='gzip')
-    weights.to_csv('cps_weights.csv.gz', index=False, compression='gzip')
 
 
 def deduction_limits(data):
