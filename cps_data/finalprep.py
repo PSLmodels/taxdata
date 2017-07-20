@@ -92,7 +92,7 @@ def main():
     data = data.fillna(0.)
     print 'Exporting...'
     data.to_csv('cps.csv', index=False)
-    subprocess.check_call(["gzip", "-n", "cps.csv"])
+    subprocess.check_call(["gzip", "-nf", "cps.csv"])
 
 
 def deduction_limits(data):
