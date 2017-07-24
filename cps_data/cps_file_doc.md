@@ -5,7 +5,7 @@ Microsimulation models, such as
 rely on datasets comprised of individual tax units. These datasets are available
 through the IRS, but at substantial financial cost and are not permitted to be
 shared. This document outlines the creation of a tax unit dataset created from
-publicly available CPS files that is suitable for use with OSPC's Tax-Calculator.
+publicly available CPS files that is suitable for use with Tax-Calculator.
 
 ## Overview
 
@@ -154,8 +154,8 @@ credit, and earned income credit are counted for each tax unit.
 
 The last step in the final preparations is adjusting the distribution of interest
 income, ordinary and qualified dividends, and self-employment income using a
-method developed by OSPC. Using data from the Individual Statistical tables
-[made available by the IRS](https://www.irs.gov/uac/soi-tax-stats-individual-statistical-tables-by-size-of-adjusted-gross-income),
+method developed by the Open Source Policy Center. Using data from the
+Individual Statistical tables [made available by the IRS](https://www.irs.gov/uac/soi-tax-stats-individual-statistical-tables-by-size-of-adjusted-gross-income),
 we determine the distribution of each targeted variable as reported for the
 year 2014. The CPS records are then grouped into 19 bins based on total
 income.<sub>2</sub> Using the distribution found in the IRS data, we determine
@@ -163,10 +163,6 @@ the ideal weighted sum in each income bin. This goal amount is then compared to
 the actual amount in each bin and a ratio is established for each bin. The
 records in each bin are then multiplied by their respective ratios so that the
 distribution more closely matches what is seen in the IRS data.
-
-### Tax-Calculator Integration
-
-
 
 
 <sup>1</sup>A more detailed explanation of the algorithm is available
