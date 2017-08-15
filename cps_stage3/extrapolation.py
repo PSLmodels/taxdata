@@ -68,13 +68,13 @@ class Benefits():
               'thus diff is ',
               (extrapolated - self.participant_targets[self.current_year]))
 
-#       shouldn't this be waited?
-        self.benefit_extrapolation['Participation_'+str(self.current_year)] = \
+        lab = self.benefit_name.lower() + '_recipients_' + str(self.current_year)
+        self.benefit_extrapolation[lab] = \
             self.participation.sum(axis=1)
 
         total_current_benefits = (self.benefits.sum(axis=1) * WT).sum()
-
-        self.benefit_extrapolation['Benefit_'+str(self.current_year)] = \
+        lab = self.benefit_name.lower() + '_benefit_' + str(self.current_year)
+        self.benefit_extrapolation[lab] = \
             (self.benefits.sum(axis=1) *
              self.benefit_targets[self.current_year] / total_current_benefits)
 
@@ -95,8 +95,8 @@ class Benefits():
 
         # create benefit targets
         benefit_2014 = (cps_benefit[benefit] * cps_benefit.s006).sum()
-        benefit_targets = benefit_2014 * (1 + target_grates['{0} Target Growth'
-                                                            .format(benefit)])
+        benefit_targets = benefit_2014 * (1 + target_grates['{0}_target_growth'
+                                                            .format(benefit.lower())])
         benefit_targets = benefit_targets[1:]
 
         # extract program benefit in 2014 to base_benefits array
@@ -110,7 +110,7 @@ class Benefits():
         total_particpants = (base_participation.sum(axis=1) *
                              cps_benefit.s006).sum()
         participant_targets = total_particpants * \
-            (1 + target_grates['{0} Participation Growth'.format(benefit)])
+            (1 + target_grates['{0}_participation_growth'.format(benefit.lower())])
 
         # extract probability of participation in program from tax-unit database
         prob_col = [col for col in list(cps_benefit)
@@ -119,11 +119,9 @@ class Benefits():
 
         # dataframe of number participants and total benefits from program
         benefit_extrapolation = pd.DataFrame(base_participation.sum(axis=1),
-                                             columns=['Participation_2014'])
+                                             columns=['{}_base_participation'.format(benefit.lower())])
         benefit_extrapolation['Benefit_2014'] = cps_benefit[benefit]
 
-        # return (prob_base, participation_2014, benefit_base,
-        #         participant_targets, benefit_targets, benefit_extrapolation)
         setattr(self, 'prob', prob)
         setattr(self, 'base_participation', base_participation)
         setattr(self, 'base_benefits', base_benefits)
@@ -131,6 +129,7 @@ class Benefits():
         setattr(self, 'benefit_targets', benefit_targets)
         setattr(self, 'benefit_extrapolation', benefit_extrapolation)
         setattr(self, 'WT', cps_weights)
+        setattr(self, 'benefit_name', benefit)
 
     @staticmethod
     def _extrapolate(WT, I, benefits, prob, target):
@@ -284,7 +283,7 @@ class Benefits():
 if __name__ == "__main__":
 
 
-    benefits = {"SSI": {"grates_path": "GrowthRates.csv",
+    benefits = {"SSI": {"grates_path": "ssi_growth_rates.csv",
                         "cps_tax_units_path": "cps_ssi.csv"}
                 }
 
