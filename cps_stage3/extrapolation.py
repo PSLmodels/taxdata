@@ -73,7 +73,7 @@ class Benefits():
             self.participation.sum(axis=1)
 
         total_current_benefits = (self.benefits.sum(axis=1) * WT).sum()
-        lab = self.benefit_name.lower() + '_benefit_' + str(self.current_year)
+        lab = self.benefit_name.lower() + '_benefits_' + str(self.current_year)
         self.benefit_extrapolation[lab] = \
             (self.benefits.sum(axis=1) *
              self.benefit_targets[self.current_year] / total_current_benefits)
