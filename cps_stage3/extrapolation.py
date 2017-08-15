@@ -119,8 +119,8 @@ class Benefits():
 
         # dataframe of number participants and total benefits from program
         benefit_extrapolation = pd.DataFrame(base_participation.sum(axis=1),
-                                             columns=['{}_base_participation'.format(benefit.lower())])
-        benefit_extrapolation['Benefit_2014'] = cps_benefit[benefit]
+                                             columns=['{}_recipients_2014'.format(benefit.lower())])
+        benefit_extrapolation['{}_benefits_2014'.format(benefit.lower())] = cps_benefit[benefit]
 
         setattr(self, 'prob', prob)
         setattr(self, 'base_participation', base_participation)
