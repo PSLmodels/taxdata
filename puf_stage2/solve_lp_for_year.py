@@ -1,11 +1,8 @@
 import numpy as np
-from cylp.cy import CyClpSimplex
-from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
+import pulp
 
 
 def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
-
-    puf_length = len(puf.s006)
 
     print("Preparing coefficient matrix for year {} .....".format(year))
 
@@ -69,8 +66,8 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
                               wage_11, wage_12))
 
     # Coefficients for r and s
-    A1 = np.matrix(One_half_LHS)
-    A2 = np.matrix(-One_half_LHS)
+    A1 = np.array(One_half_LHS)
+    A2 = np.array(-One_half_LHS)
 
     print("Preparing targets for year {} .....".format(year))
 
@@ -176,33 +173,28 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
     for m in temp:
         b.append(m)
 
-    targets = CyLPArray(b)
-    print("Targets for year {} are:".format(year))
-    print(targets)
+    print 'Constructing Model...'
+    LP = pulp.LpProblem('Stage 2 Adjustment', pulp.LpMinimize)
+    r = pulp.LpVariable.dicts('r', puf.index)
+    s = pulp.LpVariable.dicts('s', puf.index)
 
-    LP = CyLPModel()
+    # Add objective function: minimize sum(r[i] + s[i])
+    LP += pulp.lpSum([r[i] + s[i]] for i in puf.index)
+    # Add constraints
+    for i in puf.index:
+        LP += r[i] >= 0
+        LP += s[i] >= 0
+        LP += r[i] + s[i] <= tol
+    for i in range(len(b)):
+        LP += pulp.lpSum([(A1[i][j] * r[j] + A2[i][j] * s[j])
+                          for j in puf.index]) == b[i]
+    print 'Solving Model...'
+    LP.solve()
+    print pulp.LpStatus[LP.status]
 
-    r = LP.addVariable("r", puf_length)
-    s = LP.addVariable("s", puf_length)
+    # Apply r and s to s006
+    r_val = np.array([r[i].varValue for i in r])
+    s_val = np.array([r[i].varValue for i in s])
+    z = (1. + r_val - s_val) * s006 * 100
 
-    print("Adding constraints for year {} .....".format(year))
-    LP.addConstraint(r >= 0, "positive r")
-    LP.addConstraint(s >= 0, "positive s")
-    LP.addConstraint(r + s <= tol, "abs upperbound")
-
-    c = CyLPArray((np.ones(puf_length)))
-    LP.objective = c * r + c * s
-
-    LP.addConstraint(A1 * r + A2 * s == targets, "Aggregates")
-
-    print("Setting up the LP model for year {} .....".format(year))
-    model = CyClpSimplex(LP)
-
-    print("Solving LP for year {} .....".format(year))
-    model.initialSolve()
-
-    print("DONE solving LP for year {}".format(year))
-    z = np.empty([puf_length])
-    z = (1.0 + model.primalVariableSolution["r"] -
-         model.primalVariableSolution["s"]) * s006 * 100
     return z
