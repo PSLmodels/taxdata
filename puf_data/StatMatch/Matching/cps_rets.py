@@ -68,7 +68,7 @@ class Returns(object):
         self.cps['alm_val'] = 0
         for index, row in self.cps.iterrows():
             if row['oi_off'] == 20:
-                row['alm_val'] = row['oi_off']
+                row['alm_val'] = row['oi_val']
 
         for num in tqdm(self.h_nums):
             self.nunits = 0
@@ -213,7 +213,7 @@ class Returns(object):
         record['n1821'] = 0
         record['n21'] = 0
         record['elderly_dependent'] = 0
-        if record['a_age'] < 18:
+        if 0 < record['a_age'] < 18:
             record['nu18'] += 1
         if 18 <= record['a_age'] < 21:
             record['n1821'] += 1
@@ -250,7 +250,7 @@ class Returns(object):
                     agede += 1
                 # Income items
                 # Determine spouse's age bracket
-                if spouse['a_age'] < 18:
+                if 0 < spouse['a_age'] < 18:
                     record['nu18'] += 1
                 if 18 <= spouse['a_age'] < 21:
                     record['n1821'] += 1
@@ -703,7 +703,7 @@ class Returns(object):
                         record['nu05'] += 1
                     if individual['a_age'] <= 13:
                         record['nu13'] += 1
-                    if individual['a_age'] < 18:
+                    if 0 < individual['a_age'] < 18:
                         record['nu18'] += 1
                         record['nu18_dep'] += 1
                     if 18 <= individual['a_age'] < 21:
@@ -927,6 +927,7 @@ class Returns(object):
             amount = self.joint - self.depExempt * unit['depne']
             if unit['agede'] == 1:
                 amount = self.joint65one - self.depExempt * unit['depne']
+            elif unit['agede'] == 2:
                 amount = self.joint65both - self.depExempt * unit['depne']
             if income >= amount:
                 unit['filst'] = 1
@@ -966,7 +967,7 @@ class Returns(object):
         if unit['js'] == 2:
             txpye = 2
         else:
-            txpye = 2
+            txpye = 1
         xxtot = txpye + depne
         # Check relationship codes among dependents
         xxoodep = 0
