@@ -14,8 +14,8 @@ import argparse
 """
 
 
-def match(mar_cps_path='asec2014_pubuse_tax_fix_5x8.dat',
-          puf_path='puf2009.csv'):
+def match(mar_cps_path='asec2016_pubuse_v3.dat',
+          puf_path='puf2011.csv'):
     # Add arguments for specifying path to CPS file in CSV format
     # this will allow the program to skip the process of creating the CPS from
     # a .DAT file.
@@ -41,7 +41,11 @@ def match(mar_cps_path='asec2014_pubuse_tax_fix_5x8.dat',
     if args.puf is not None:
         puf_path = args.puf
     puf = pd.read_csv(puf_path)
-    puf = puf[puf['recid'] != 999999]
+    # Change PUF columns to lowercase
+    puf.columns = map(str.lower, puf.columns)
+    # Remove aggregated variables from the PUF
+    puf = puf[(puf['recid'] != 999996) & (puf['recid'] != 999997) &
+              (puf['recid'] != 999999) & (puf['recid'] != 999999)]
 
     print('CPS Created')
     rets = Returns(mar_cps)
@@ -54,6 +58,9 @@ def match(mar_cps_path='asec2014_pubuse_tax_fix_5x8.dat',
     soi = create_soi(puf.copy())
 
     print('PUF Created')
+    print ('Start Phase One')
+    filers = filers.fillna(0)
+    soi = soi.fillna(0)
     soi_final, cps_final, counts = phaseone(filers, soi)
 
     print('Start Phase Two')

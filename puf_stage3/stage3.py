@@ -31,14 +31,14 @@ def adjustment(agi, var, var_name, target, weight, blowup):
 
     # Create DataFrame with the goal distribution for each year
     distribution = pd.DataFrame()
-    for year in range(2009, 2015):
+    for year in range(2011, 2015):
         distribution[year] = target[str(year)] / target[str(year)].sum()
     # Use 2014 distribution for all future years
     for year in range(2015, 2028):
         distribution[year] = distribution[2014]
 
-    # Advance variable to 2009 level
-    var *= blowup[2009]
+    # Advance variable to 2011 level
+    var *= blowup[2011]
 
     # In each year find the ratios to get the correct distribution
     ratios_df = pd.DataFrame()
@@ -124,6 +124,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         ratios_df['{}{}'.format(var_name, year)] = ratios
 
     return ratios_df
+
 
 # Read all necessary files
 puf = pd.read_csv('../puf_data/cps-matched-puf.csv')

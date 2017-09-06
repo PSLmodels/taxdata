@@ -6,7 +6,7 @@ into growfactors.csv (used by Tax-Calculator)
 import pandas as pd
 
 # pylint: disable=invalid-name
-first_data_year = 2009
+first_data_year = 2011
 input_filename = 'Stage_I_factors.csv'
 output_filename = 'growfactors.csv'
 
@@ -36,6 +36,8 @@ data = 1.0 + data.pct_change()
 # (these values have been transferred from Tax-Calculator records.py)
 for var in list(data):
     data[var][first_data_year] = 1.0
+"""
+Double check that these are still needed
 data['ACGNS'][first_data_year] = 1.1781
 data['ADIVS'][first_data_year] = 1.0606
 data['AINTS'][first_data_year] = 1.0357
@@ -45,6 +47,7 @@ data['ASCHEI'][first_data_year] = 1.1089
 data['ASCHEL'][first_data_year] = 1.2953
 data['AUCOMP'][first_data_year] = 1.0034
 data['AWAGE'][first_data_year] = 1.0053
+"""
 
 # round converted factors to six decimal digits of accuracy
 data = data.round(6)

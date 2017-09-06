@@ -1,6 +1,6 @@
 """
 Read in raw CPS data file and structure to be used in future scripts
-Input file: asec2014_pubuse_tax)fix_5x8.dat
+Input file: asec2016_pubuse_v3.dat
 Run time is approximately two hours
 """
 from collections import OrderedDict
@@ -44,7 +44,6 @@ def h_recs(rec):
     record['h_telavl'] = [int(rec[36])]
     record['h_telint'] = [int(rec[37])]
     record['gereg'] = [int(rec[38])]
-    record['gestcen'] = [int(rec[39:41])]
     record['gestfips'] = [int(rec[41:43])]
     record['gtcbsa'] = [int(rec[43:48])]
     record['gtco'] = [int(rec[48:51])]
@@ -82,9 +81,9 @@ def h_recs(rec):
     record['hssival'] = [int(rec[138:144])]
     record['hpaw_yn'] = [int(rec[144])]
     record['hpawval'] = [int(rec[145:151])]
-    record['hvet_yn '] = [int(rec[151])]
+    record['hvet_yn'] = [int(rec[151])]
     record['hvetval'] = [int(rec[152:159])]
-    record['hsur_yn '] = [int(rec[159])]
+    record['hsur_yn'] = [int(rec[159])]
     record['hsurval'] = [int(rec[160:167])]
     record['hdis_yn'] = [int(rec[167])]
     record['hdisval'] = [int(rec[168:175])]
@@ -100,8 +99,6 @@ def h_recs(rec):
     record['hedval'] = [int(rec[208:215])]
     record['hcsp_yn'] = [int(rec[215])]
     record['hcspval'] = [int(rec[216:223])]
-    record['halm_yn'] = [int(rec[223])]
-    record['halmval'] = [int(rec[224:231])]
     record['hfin_yn'] = [int(rec[231])]
     record['hfinval'] = [int(rec[232:239])]
     record['hoi_yn'] = [int(rec[239])]
@@ -228,8 +225,6 @@ def f_recs(rec):
     record['fedval'] = [int(rec[165:172])]
     record['finc_csp'] = [int(rec[172])]
     record['fcspval'] = [int(rec[173:180])]
-    record['finc_alm'] = [int(rec[180])]
-    record['falmval'] = [int(rec[181:188])]
     record['finc_fin'] = [int(rec[188])]
     record['ffinval'] = [int(rec[189:196])]
     record['finc_oi'] = [int(rec[196])]
@@ -241,13 +236,9 @@ def f_recs(rec):
     record['fspanish'] = [int(rec[230])]
     record['fsup_wgt'] = [float(rec[232:238] + '.' + rec[238:240])]
     record['ffposold'] = [int(rec[240:242])]
-    record['f_mv_fs'] = [int(rec[242:246])]
-    record['f_mv_sl'] = [int(rec[246:250])]
-    record['ffngcare'] = [int(rec[250:255])]
-    record['ffngcaid'] = [int(rec[255:260])]
+    record['f_mv_fs'] = [int(rec[242:247])]
+    record['f_mv_sl'] = [int(rec[247:251])]
     record['fhoussub'] = [int(rec[260:263])]
-    record['ffoodreq'] = [int(rec[263:267])]
-    record['fhousreq'] = [int(rec[267:271])]
     record['fhip_val'] = [int(rec[271:278])]
     record['fmoop'] = [int(rec[278:285])]
     record['fotc_val'] = [int(rec[285:291])]
@@ -259,7 +250,7 @@ def f_recs(rec):
 
 def p_recs(rec):
     """
-    Process a person record from the raw CPS file and
+    Process a person record from the raw CPS file.
 
     Parameters
     ----------
@@ -484,7 +475,6 @@ def p_recs(rec):
     record['int_yn'] = [int(rec[524])]
     record['int_val'] = [int(rec[525:530])]
     record['div_yn'] = [int(rec[530])]
-    record['div_non'] = [int(rec[531])]
     record['div_val'] = [int(rec[532:538])]
     record['rnt_yn'] = [int(rec[538])]
     record['rnt_val'] = [int(rec[539:544])]
@@ -495,8 +485,6 @@ def p_recs(rec):
     record['ed_val'] = [int(rec[548:553])]
     record['csp_yn'] = [int(rec[553])]
     record['csp_val'] = [int(rec[554:559])]
-    record['alm_yn'] = [int(rec[559])]
-    record['alm_val'] = [int(rec[560:565])]
     record['fin_yn'] = [int(rec[565])]
     record['fin_val'] = [int(rec[566:571])]
     record['oi_off'] = [int(rec[571:573])]
@@ -510,9 +498,7 @@ def p_recs(rec):
     record['pov_univ'] = [int(rec[606])]
     record['wicyn'] = [int(rec[607])]
     record['mcare'] = [int(rec[628])]
-    record['p_mvcare'] = [int(rec[629:634])]
     record['mcaid'] = [int(rec[634])]
-    record['p_mvcaid'] = [int(rec[635:640])]
     record['champ'] = [int(rec[640])]
     record['hi_yn'] = [int(rec[641])]
     record['hiown'] = [int(rec[642])]
@@ -574,9 +560,9 @@ def p_recs(rec):
     record['fica'] = [int(rec[743:748])]
     record['fed_ret'] = [int(rec[748:754])]
     record['agi'] = [int(rec[754:761])]
-    record['tax_inc'] = [int(rec[764:771])]
-    record['fedtax_bc'] = [int(rec[771:777])]
-    record['fedtax_ac'] = [int(rec[777:783])]
+    record['tax_inc'] = [int(rec[762:769])]
+    record['fedtax_bc'] = [int(rec[769:776])]
+    record['fedtax_ac'] = [int(rec[776:783])]
     record['statetax_bc'] = [int(rec[783:789])]
     record['statetax_ac'] = [int(rec[789:795])]
     record['prswkxpns'] = [int(rec[795:799])]
@@ -713,8 +699,6 @@ def p_recs(rec):
     record['i_oedval'] = [int(rec[993])]
     record['i_cspyn'] = [int(rec[994])]
     record['i_cspval'] = [int(rec[995])]
-    record['i_almyn'] = [int(rec[996])]
-    record['i_almval'] = [int(rec[997])]
     record['i_finyn'] = [int(rec[998])]
     record['i_finval'] = [int(rec[999])]
     record['i_oival'] = [int(rec[1000])]
@@ -763,7 +747,6 @@ def p_recs(rec):
     record['trnt_val'] = [int(rec[1063])]
     record['ted_val'] = [int(rec[1064])]
     record['tcsp_val'] = [int(rec[1065])]
-    record['talm_val'] = [int(rec[1066])]
     record['tfin_val'] = [int(rec[1067])]
     record['toi_val'] = [int(rec[1068])]
     record['tphip_val'] = [int(rec[1069])]
@@ -792,7 +775,7 @@ def create_cps(raw_cps):
            open(raw_cps).readlines()]
 
     # Empty list to hold the completed records
-    cps_list = list()
+    cps_list = []
     print ('Creating Records')
     for record in tqdm(cps):
         # Find the type of record
@@ -804,7 +787,7 @@ def create_cps(raw_cps):
             # If it's a family record, concat to household record and store
             house_fam = pd.concat([house_rec, f_recs(record[0])], axis=1)
         else:
-            # If it's a person record concat to household and family record
+            # If it's a person record, concat to household and family record
             final_rec = pd.concat([house_fam, p_recs(record[0])], axis=1)
             # Append final record to the list of records
             cps_list.append(final_rec)
@@ -813,5 +796,5 @@ def create_cps(raw_cps):
     cps_mar = pd.concat(cps_list)
     # Export the data
     print ('Exporting Data')
-    cps_mar.to_csv('cpsmar2014.csv', index=False)
+    cps_mar.to_csv('cpsmar2016.csv', index=False)
     return cps_mar

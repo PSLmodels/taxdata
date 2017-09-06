@@ -1,6 +1,6 @@
 import pandas as pd
 
-SYR = 2009  # calendar year used to normalize factors
+SYR = 2011  # calendar year used to normalize factors
 
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
@@ -256,7 +256,8 @@ rename = {
 Stage_II_targets.rename(columns=rename, inplace=True)
 
 # Delate 2008 row from Stage_I_factors
-Stage_I_factors = Stage_I_factors.drop(2008)
+Stage_I_factors = Stage_I_factors.drop([2008, 2009, 2010])
+Stage_II_targets = Stage_II_targets.drop([2008, 2009, 2010])
 
 # write Stage_I_factors for final preparation and then use by Tax-Calculator
 Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
