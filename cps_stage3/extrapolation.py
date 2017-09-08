@@ -308,7 +308,7 @@ if __name__ == "__main__":
     for _ in range(12):
         ben.increment_year()
 
-    ben.benefit_extrapolation.to_csv("benefit_extrapolation.csv.gz", index=False,
+    ben.benefit_extrapolation.to_csv("cps_benefits.csv.gz", index=False,
                                      compression="gzip")
 
 
