@@ -28,7 +28,7 @@ def ravel_test(indicator, benefits, prob, CPS_weights):
 
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
-    CPS_BENEFIT_PATH = 'cps_ben.csv.gz'
+    CPS_BENEFIT_PATH = 'cps_benefits.csv.gz'
     CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
 
     def __init__(self,
@@ -57,7 +57,10 @@ class Benefits():
             prob = getattr(self, "{}_prob".format(benefit))
 
             diff = participant_targets[self.current_year] - \
-                (base_participation.sum(axis=1) * WT).sum()
+                (participation.sum(axis=1) * WT).sum()
+            # print(self.current_year, benefit, "target - actual =", diff)
+            # print('value_counts before')
+            # print(participation.sum(axis=1).value_counts())
             if abs(diff)/participant_targets[self.current_year] > tol:
                 participation, benefits = \
                     self._extrapolate(WT,
@@ -66,7 +69,8 @@ class Benefits():
                                       prob,
                                       participant_targets[self.current_year],
                                       tol=tol)
-
+            # print('value_counts after')
+            # print(participation.sum(axis=1).value_counts())
             extrapolated = (participation.sum(axis=1) * WT).sum()
             print(benefit, 'this year total is ', extrapolated,
                   ', target is ', participant_targets[self.current_year],
@@ -271,6 +275,8 @@ class Benefits():
             # Create Participation targets from tax-unit individual level markers
             # and growth rates from SSA
             base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0))
+            # print(benefit,'value_counts baseline')
+            # print(base_participation.sum(axis=1).value_counts())
             total_particpants = (base_participation.sum(axis=1) *
                                  cps_benefit.s006).sum()
             participant_targets = total_particpants * \
@@ -302,7 +308,8 @@ if __name__ == "__main__":
     for _ in range(12):
         ben.increment_year()
 
-    ben.benefit_extrapolation.to_csv("benefit_extrapolation.csv", index=False)
+    ben.benefit_extrapolation.to_csv("benefit_extrapolation.csv.gz", index=False,
+                                     compression="gzip")
 
 
 
