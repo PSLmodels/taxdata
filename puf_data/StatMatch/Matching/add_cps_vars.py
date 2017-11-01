@@ -16,7 +16,10 @@ def add_cps(cps_recs, match, puffile):
     # cpsfile = cps_recs
     # match = pd.read_csv('match.csv')
     # puffile = pd.read_sas('puf2009.sas7bdat')
-    puffile = puffile[puffile['recid'] != 999999]
+    puffile = puffile[(puffile['recid'] != 999999) &
+                      (puffile['recid'] != 999998) &
+                      (puffile['recid'] != 999997) &
+                      (puffile['recid'] != 999996)]
     puffile['filer'] = 1
     puffile['wt'] = puffile['s006'] / 100
     puffile['soiseq'] = puffile.index + 1
