@@ -44,7 +44,7 @@ class Benefits():
         self.benefit_names = benefit_names
 
 
-    def increment_year(self, tol=0.001):
+    def increment_year(self, tol=0.01):
         self.current_year += 1
         print("starting year", self.current_year)
         WT = self.WT.loc[:, 'WT'+str(self.current_year)]
@@ -58,9 +58,6 @@ class Benefits():
 
             diff = participant_targets[self.current_year] - \
                 (participation.sum(axis=1) * WT).sum()
-            # print(self.current_year, benefit, "target - actual =", diff)
-            # print('value_counts before')
-            # print(participation.sum(axis=1).value_counts())
             if abs(diff)/participant_targets[self.current_year] > tol:
                 participation, benefits = \
                     self._extrapolate(WT,
@@ -69,8 +66,6 @@ class Benefits():
                                       prob,
                                       participant_targets[self.current_year],
                                       tol=tol)
-            # print('value_counts after')
-            # print(participation.sum(axis=1).value_counts())
             extrapolated = (participation.sum(axis=1) * WT).sum()
             print(benefit, 'this year total is ', extrapolated,
                   ', target is ', participant_targets[self.current_year],
@@ -93,7 +88,7 @@ class Benefits():
 
 
     @staticmethod
-    def _extrapolate(WT, I, benefits, prob, target, tol=0.001):
+    def _extrapolate(WT, I, benefits, prob, target, tol=0.01):
         """
         Goal: get number of participants as close to target as possible
         Steps:
@@ -154,7 +149,7 @@ class Benefits():
         # get index of minimum absolute difference
         min_diff = candidates.abs_diff.idxmin()
 
-        # check to make results are close enough
+        # # check to make results are close enough
         assert np.allclose(candidates.iloc[min_diff].cum_participants, target,
                            atol=0.0, rtol=tol)
 
@@ -303,12 +298,12 @@ class Benefits():
 
 
 if __name__ == "__main__":
-    ben = Benefits(cps_weights=pd.read_csv('cps_weights.csv'))
+    ben = Benefits()
 
     for _ in range(12):
         ben.increment_year()
 
-    ben.benefit_extrapolation.to_csv("cps_benefits.csv.gz", index=False,
+    ben.benefit_extrapolation.to_csv("cps_benefits_extrap.csv.gz", index=False,
                                      compression="gzip")
 
 
