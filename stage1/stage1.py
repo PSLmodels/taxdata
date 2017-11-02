@@ -93,7 +93,7 @@ Stage_II_targets.columns = ['TOTAL_POP']
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
-index = list(range(2008, 2027))
+index = list(range(2008, 2028))##JennyD: change 2027 to 2028
 Stage_II_targets.index = index
 
 # calculate Stage_I_factors for population targets
@@ -144,12 +144,12 @@ return_growth_rate.Returns.index = index
 # read SOI estimates for 2008+
 soi_estimates = pd.read_csv("SOI_estimates.csv", index_col=0)
 soi_estimates = soi_estimates.transpose()
-historical_index = list(range(2008, 2015))
+historical_index = list(range(2008, 2017)) ##JennyD: change 2015 to 2017
 soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
-for i in range(2014, 2026):
+for i in range(2014, 2027): ##JennyD: change 2026 to 2027
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
