@@ -15,7 +15,7 @@ Stage_II_targets = pd.read_csv("../stage1/Stage_II_targets.csv",
 puf.s006 = puf.matched_weight * 100
 
 # Create two-dimensional array to hold sample weights for each year
-z = np.empty([len(puf.s006), 18])
+z = np.empty([len(puf.s006), 19])
 z[:, 0] = puf.s006
 
 # Execute stage2 logic for each year using a year-specific LP tolerance
@@ -53,12 +53,14 @@ z[:, 16] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                              year='2025', tol=0.55)
 z[:, 17] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                              year='2026', tol=0.55)
+z[:, 18] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
+                             year='2027', tol=0.40)
 
 # Write all weights (rounded to nearest integer) to puf_weights.csv file
 z = pd.DataFrame(z,
                  columns=['WT2009', 'WT2010', 'WT2011', 'WT2012', 'WT2013',
                           'WT2014', 'WT2015', 'WT2016', 'WT2017', 'WT2018',
                           'WT2019', 'WT2020', 'WT2021', 'WT2022', 'WT2023',
-                          'WT2024', 'WT2025', 'WT2026'])
+                          'WT2024', 'WT2025', 'WT2026', 'WT2027'])
 z = z.round(0).astype('int64')
 z.to_csv('puf_weights.csv', index=False)
