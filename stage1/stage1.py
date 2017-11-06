@@ -22,7 +22,7 @@ pop_projection = pop_projection[(pop_projection.sex == 0) &
                                 (pop_projection.race == 0) &
                                 (pop_projection.origin == 0)]
 pop_projection = pop_projection.drop(['sex', 'race', 'origin'], axis=1)
-pop_projection = pop_projection.drop(pop_projection.index[13:], axis=0)
+pop_projection = pop_projection.drop(pop_projection.index[14:], axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
@@ -93,7 +93,7 @@ Stage_II_targets.columns = ['TOTAL_POP']
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
-index = list(range(2008, 2027))
+index = list(range(2008, 2028))
 Stage_II_targets.index = index
 
 # calculate Stage_I_factors for population targets
@@ -139,6 +139,7 @@ return_growth_rate.Returns['2023'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2024'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2025'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
+return_growth_rate.Returns['2027'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
@@ -149,7 +150,7 @@ soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
-for i in range(2014, 2026):
+for i in range(2014, 2027):
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
