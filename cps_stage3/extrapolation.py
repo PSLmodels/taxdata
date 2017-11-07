@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+from copy import deepcopy
 
 
 def ravel_test(indicator, benefits, prob, CPS_weights):
@@ -28,7 +29,7 @@ def ravel_test(indicator, benefits, prob, CPS_weights):
 
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
-    CPS_BENEFIT_PATH = 'cps_benefits.csv.gz'
+    CPS_BENEFIT_PATH = '../cps_data/cps_raw.csv.gz'
     CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
 
     def __init__(self,
@@ -294,6 +295,8 @@ class Benefits():
             setattr(self, '{}_participation'.format(benefit), base_participation)
             setattr(self, '{}_benefits'.format(benefit), base_benefits)
 
+        # add record ID
+        benefit_extrapolation['RECID'] = cps_benefit['SEQUENCE']
         self.benefit_extrapolation = benefit_extrapolation
 
 
@@ -302,6 +305,18 @@ if __name__ == "__main__":
 
     for _ in range(12):
         ben.increment_year()
+
+    # drop unnecessary variables
+    drop_list = []
+    for year in range(2014, 2027):
+        for benefit in ben.benefit_names:
+            drop_list.append('{}_recipients_{}'.format(benefit, year))
+    ben.benefit_extrapolation = ben.benefit_extrapolation.drop(drop_list,
+                                                               axis=1)
+    # drop records with no benefits
+    col_list = ben.benefit_extrapolation.columns
+    mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
+    ben.benefit_extrapolation = deepcopy(ben.benefit_extrapolation[mask != 0])
 
     ben.benefit_extrapolation.to_csv("cps_benefits_extrap.csv.gz", index=False,
                                      compression="gzip")
