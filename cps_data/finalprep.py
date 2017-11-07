@@ -54,7 +54,9 @@ def main():
         # 'MEDICAID': 'mcaid_ben',
         # 'SS': 'ss_ben',
         # 'SNAP': 'snap_ben',
-        'SLTX': 'e18400'
+        'SLTX': 'e18400',
+        'XHID': 'h_seq',
+        'XFID': 'ffpos'
     }
     data = data.rename(columns=renames)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
@@ -197,7 +199,8 @@ def drop_vars(data):
         'e87530', 'elderly_dependent', 'f2441', 'f6251', 'filer', 'n24',
         'nu05', 'nu13', 'nu18', 'n1821', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
-        'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben', 'total_ben'
+        'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben',
+        'total_ben', 'h_seq', 'ffpos'
     ]
     # for i in range(1, 16):
     #    useable_vars.append('SSI_VAL{}'.format(str(i)))
