@@ -48,12 +48,12 @@ def main():
         'BLIND_HEAD': 'blind_head',
         'BLIND_SPOUSE': 'blind_spouse',
         'HMIE': 'e19200',
-        # 'SSI': 'ssi_ben',
-        # 'VB': 'vet_ben',
-        # 'MEDICARE': 'mcare_ben',
-        # 'MEDICAID': 'mcaid_ben',
-        # 'SS': 'ss_ben',
-        # 'SNAP': 'snap_ben',
+        'SSI': 'ssi_ben',
+        'vb_ben': 'vet_ben',
+        'medicare_ben': 'mcare_ben',
+        'medicaid_ben': 'mcaid_ben',
+        'SS': 'ss_ben',
+        'SNAP': 'snap_ben',
         'SLTX': 'e18400',
         'XHID': 'h_seq',
         'XFID': 'ffpos'
@@ -202,9 +202,7 @@ def drop_vars(data):
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben',
         'total_ben', 'h_seq', 'ffpos'
     ]
-    # for i in range(1, 16):
-    #    useable_vars.append('SSI_VAL{}'.format(str(i)))
-    #    useable_vars.append('SSI_PROB{}'.format(str(i)))
+
     drop_vars = []
     for item in data.columns:
         if item not in useable_vars:
