@@ -8,7 +8,6 @@ from add_cps_vars import add_cps
 from add_nonfilers import add_nonfiler
 import pandas as pd
 import argparse
-import copy
 
 """
     Script to run each phase of the matching process
@@ -45,15 +44,8 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     # Change PUF columns to lowercase
     puf.columns = map(str.lower, puf.columns)
     # Remove aggregated variables from the PUF
-<<<<<<< HEAD
     puf = puf[(puf['recid'] != 999996) & (puf['recid'] != 999997) &
-              (puf['recid'] != 999999) & (puf['recid'] != 999999)]
-=======
-    puf = copy.deepcopy(puf[(puf['recid'] != 999996) &
-                            (puf['recid'] != 999997) &
-                            (puf['recid'] != 999999) &
-                            (puf['recid'] != 999999)])
->>>>>>> fdcf162762b3b1e32b215f189b96dc95a6e09eec
+              (puf['recid'] != 999998) & (puf['recid'] != 999999)]
 
     print('CPS Created')
     rets = Returns(mar_cps)
