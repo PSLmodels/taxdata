@@ -8,6 +8,7 @@ from add_cps_vars import add_cps
 from add_nonfilers import add_nonfiler
 import pandas as pd
 import argparse
+import copy
 
 """
     Script to run each phase of the matching process
@@ -44,8 +45,15 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     # Change PUF columns to lowercase
     puf.columns = map(str.lower, puf.columns)
     # Remove aggregated variables from the PUF
+<<<<<<< HEAD
     puf = puf[(puf['recid'] != 999996) & (puf['recid'] != 999997) &
               (puf['recid'] != 999999) & (puf['recid'] != 999999)]
+=======
+    puf = copy.deepcopy(puf[(puf['recid'] != 999996) &
+                            (puf['recid'] != 999997) &
+                            (puf['recid'] != 999999) &
+                            (puf['recid'] != 999999)])
+>>>>>>> fdcf162762b3b1e32b215f189b96dc95a6e09eec
 
     print('CPS Created')
     rets = Returns(mar_cps)
@@ -71,6 +79,8 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     print('Creating final file')
     cpsrets = add_cps(filers, match, puf)
     cps_matched = add_nonfiler(cpsrets, nonfilers)
+    # add age range variable
+    cps_matched['agerange'] = 0
     # Rename variables for use in PUF data prep
     renames = {'icps1': 'age_head',
                'icps2': 'age_spouse',
@@ -83,4 +93,4 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
 
 if __name__ == "__main__":
     cps_matched = match()
-    cps_matched.to_csv('../cps-matched-puf.csv', index=False)
+    cps_matched.to_csv('../../cps-matched-puf.csv', index=False)
