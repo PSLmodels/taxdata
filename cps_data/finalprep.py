@@ -56,7 +56,8 @@ def main():
         'SNAP': 'snap_ben',
         'SLTX': 'e18400',
         'XHID': 'h_seq',
-        'XFID': 'ffpos'
+        'XFID': 'ffpos',
+        'XSTATE': 'fips'
     }
     data = data.rename(columns=renames)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
@@ -200,7 +201,7 @@ def drop_vars(data):
         'nu05', 'nu13', 'nu18', 'n1821', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben',
-        'total_ben', 'h_seq', 'ffpos'
+        'total_ben', 'h_seq', 'ffpos', 'fips'
     ]
 
     drop_vars = []
