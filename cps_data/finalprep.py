@@ -20,8 +20,6 @@ def main():
         'JCPS21': 'e00200p',
         'JCPS31': 'e00200s',
         'ALIMONY': 'e00800',
-        'JCPS25': 'e00900p',
-        'JCPS35': 'e00900s',
         'JCPS28': 'e02100p',
         'JCPS38': 'e02100s',
         'UCOMP': 'e02300',
@@ -65,7 +63,6 @@ def main():
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
     data['e00100'] = data['JCPS9'] + data['JCPS19']
     data['e00200'] = data['e00200p'] + data['e00200s']
-    data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']
     # Determine amount of qualified dividends using IRS ratio
     data['e00650'] = data.e00600 * 0.7556
@@ -79,6 +76,8 @@ def main():
     # Split pentions and annuities using PUF ratio
     data['e01700'] = data['e01500'] * 0.1656
 
+    print 'Spliting Self-Employment Data'
+    data = split_se_income(data)
     print 'Applying deduction limits'
     data = deduction_limits(data)
     print 'Adding dependents'
@@ -96,6 +95,24 @@ def main():
     print 'Exporting...'
     data.to_csv('cps.csv', index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
+
+
+def split_se_income(data):
+    """
+    Split self-employment data into e00900, e02000, and e26270 according to
+    IRS income data
+    """
+    total_se = data.JCPS25 + data.JCPS35
+    earnings_split_p = data.JCPS25 / total_se
+    earnings_split_s = 1. - earnings_split_p
+    data['e00900'] = total_se * 0.318327505
+    data['e00900p'] = data['e00900'] * earnings_split_p
+    data['e00900s'] = data['e00900'] * earnings_split_s
+    data['e26270'] = total_se * 0.585758102
+    e02000_e26270 = total_se * 0.095914393
+    data['e02000'] = e02000_e26270 + data['e26270']
+
+    return data
 
 
 def deduction_limits(data):
@@ -201,7 +218,7 @@ def drop_vars(data):
         'nu05', 'nu13', 'nu18', 'n1821', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben',
-        'total_ben', 'h_seq', 'ffpos', 'fips'
+        'total_ben', 'h_seq', 'ffpos', 'fips', 'e02000', 'e26270'
     ]
 
     drop_vars = []
