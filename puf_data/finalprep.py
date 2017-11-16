@@ -14,6 +14,14 @@ def main():
     # (*) Read unprocessed input file into a Pandas Dataframe
     data = pandas.read_csv('cps-matched-puf.csv')
 
+    # Rename certain CPS variables
+    renames = {
+        'XHID': 'h_seq',
+        'XFID': 'ffpos',
+        'XSTATE': 'fips'
+    }
+    data = data.rename(columns=renames)
+
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])
     if max_flpdyr == 2008:
