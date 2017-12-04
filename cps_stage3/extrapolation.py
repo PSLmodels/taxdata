@@ -303,12 +303,12 @@ class Benefits():
 if __name__ == "__main__":
     ben = Benefits()
 
-    for _ in range(12):
+    for _ in range(13):
         ben.increment_year()
 
     # drop unnecessary variables
     drop_list = []
-    for year in range(2014, 2027):
+    for year in range(2014, 2028):
         for benefit in ben.benefit_names:
             drop_list.append('{}_recipients_{}'.format(benefit, year))
     ben.benefit_extrapolation = ben.benefit_extrapolation.drop(drop_list,
