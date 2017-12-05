@@ -4,29 +4,6 @@ import os
 from copy import deepcopy
 
 
-def ravel_test(indicator, benefits, prob, CPS_weights):
-
-    wt = CPS_weights.loc[:, 'WT'+str("2015")]
-
-    extrap_df = Benefits._ravel_data(wt.copy(), indicator.copy(),
-                                         benefits.copy(), prob.copy())
-    extrap_df.sort_values(by=["i", "j"], inplace=True)
-
-    I_unrav = Benefits._unravel_data(extrap_df, "I",
-                                                 indicator.columns.tolist(),
-                                                 dtype=np.int64)
-    ben_unrav = Benefits._unravel_data(extrap_df, "benefits",
-                                                   benefits.columns.tolist(),
-                                                   dtype=np.float64)
-    prob_unrav = Benefits._unravel_data(extrap_df, "prob",
-                                                    prob.columns.tolist(),
-                                                    dtype=np.float64)
-
-    pd.testing.assert_frame_equal(indicator, I_unrav, check_dtype=False)
-    pd.testing.assert_frame_equal(benefits, ben_unrav, check_dtype=False)
-    pd.testing.assert_frame_equal(prob, prob_unrav, check_dtype=False)
-
-
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
     CPS_BENEFIT_PATH = '../cps_data/cps_raw.csv.gz'
@@ -48,11 +25,11 @@ class Benefits():
     def increment_year(self, tol=0.01):
         self.current_year += 1
         print("starting year", self.current_year)
-        WT = self.WT.loc[:, 'WT'+str(self.current_year)]
+        WT = self.WT.loc[:, 'WT'+str(self.current_year)] * 0.01
         for benefit in self.benefit_names:
             participant_targets = getattr(self, "{}_participant_targets".format(benefit))
             benefit_targets = getattr(self, "{}_benefit_targets".format(benefit))
-            base_participation = getattr(self, "{}_base_participation".format(benefit))
+            # base_participation = getattr(self, "{}_base_participation".format(benefit))
             participation = getattr(self, "{}_participation".format(benefit))
             benefits = getattr(self, "{}_benefits".format(benefit))
             prob = getattr(self, "{}_prob".format(benefit))
@@ -89,7 +66,7 @@ class Benefits():
 
 
     @staticmethod
-    def _extrapolate(WT, I, benefits, prob, target, tol=0.01):
+    def _extrapolate(WT, I, benefits, prob, target, tol=0.01, J=15):
         """
         Goal: get number of participants as close to target as possible
         Steps:
@@ -118,6 +95,8 @@ class Benefits():
                                          I.copy(),
                                          benefits.copy(),
                                          prob.copy())
+        receives = extrap_df.loc[extrap_df.I > 0, ]
+        avg_benefit = receives.benefits_wt.sum() / receives.I_wt.sum()
 
         actual = extrap_df.I_wt.sum()
         diff = actual - target
@@ -165,7 +144,6 @@ class Benefits():
             candidates.loc[(min_diff + 1):, 'benefits'] = 0
         else:
             # all added candidates have indicator 1 but no benefits
-            avg_benefit = target/(candidates.I_wt.sum() + noncandidates.I_wt.sum())
             candidates.loc[(candidates.I == 1) &
                            (candidates.benefits == 0), 'benefits'] = avg_benefit
 
@@ -173,7 +151,7 @@ class Benefits():
         del candidates
         del noncandidates
         result.sort_values(by=["i", "j"], inplace=True)
-        wt_ravel = Benefits._repeating_ravel((len(WT), 15),
+        wt_ravel = Benefits._repeating_ravel((len(WT), J),
                                                           apply_to=np.array(WT))
 
         result.I_wt = result.I * wt_ravel
@@ -224,6 +202,8 @@ class Benefits():
         prob_arr = np.array(prob)
 
         I_wt = (wt_arr * I_arr.T).T
+        benefits_wt = (wt_arr * benefits_arr.T).T
+        # ben_wt = (wt_arr)
         wt_rav = Benefits._repeating_ravel(I_arr.shape, apply_to=wt_arr)
 
         # create indices
@@ -232,10 +212,11 @@ class Benefits():
 
         # stack and create data frame with all individuals
         extrap_arr = np.vstack((prob_arr.ravel(), I_arr.ravel(), I_wt.ravel(),
-                                wt_rav, benefits_arr.ravel(), i, j)).T
+                                wt_rav, benefits_arr.ravel(),
+                                benefits_wt.ravel(), i, j)).T
         extrap_df = pd.DataFrame(extrap_arr,
-                                 columns=["prob", "I", "I_wt", "WT", "benefits",
-                                          "i", "j"])
+                                 columns=["prob", "I", "I_wt", "WT",
+                                          "benefits", "benefits_wt", "i", "j"])
 
         return extrap_df
 
@@ -320,7 +301,6 @@ if __name__ == "__main__":
 
     ben.benefit_extrapolation.to_csv("cps_benefits_extrap.csv.gz", index=False,
                                      compression="gzip")
-
 
 
 
