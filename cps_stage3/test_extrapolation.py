@@ -81,3 +81,14 @@ def test_repeating_ravel():
     exp = np.array([5, 5, 6, 6, 7, 7, 8, 8])
 
     assert np.allclose(act, exp)
+
+
+def test_unravel_data():
+    test_df = pd.DataFrame({'i': [0, 0, 1, 1, 2, 2, 3, 3],
+                            'j': [0, 0, 0, 0, 1, 1, 1, 1],
+                            'var': [2, 3, 5, 7, 11, 13, 17, 19]})
+    act = Benefits._unravel_data(test_df, 'var', ['var0', 'var1'])
+    exp = pd.DataFrame({'var0': [2, 5, 11, 17],
+                        'var1': [3, 7, 13, 19]})
+
+    pd.testing.assert_frame_equal(exp, act, check_dtype=False)
