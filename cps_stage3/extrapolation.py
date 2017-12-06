@@ -165,6 +165,13 @@ class Benefits():
 
     @staticmethod
     def _unravel_data(df, var_name, column_names, dtype=None):
+        """
+        Convert dataframe with flattened matrix back into full matrix with
+        shape N X j (j=15 in this case)
+
+        returns DataFrame un-flattened DataFrame
+        """
+
         # dataframe df should already be sorted by i and j in extrapolate
         # df.sort_values(by=["i", "j"], inplace=True)
 
@@ -180,9 +187,11 @@ class Benefits():
     @staticmethod
     def _repeating_ravel(shape, apply_to=None):
         """
-        test = np.array([5,6,7,8])
-        repeating_ravel((4,2), apply_to=test)
-        returns array([5, 5, 6, 6, 7, 7, 8, 8])
+        Convert 1-D array of length N into array of length N * j where j
+        is the number of columns in some matrix with which we intend to
+        match this array. Each entry in apply_to is repeated j times.
+
+        returns extended array
         """
         if apply_to is None:
             apply_to = np.arange(shape[0], dtype=np.int32)
@@ -195,6 +204,11 @@ class Benefits():
 
     @staticmethod
     def _ravel_data(WT, I, benefits, prob):
+        """
+        Flattens matrices into 1-D arrays and stacks them into a DataFrame
+
+        returns DataFrame with flattened matrices
+        """
         wt_arr = np.array(WT)
         I_arr = np.array(I)
         benefits_arr = np.array(benefits)
