@@ -29,7 +29,6 @@ class Benefits():
         for benefit in self.benefit_names:
             participant_targets = getattr(self, "{}_participant_targets".format(benefit))
             benefit_targets = getattr(self, "{}_benefit_targets".format(benefit))
-            # base_participation = getattr(self, "{}_base_participation".format(benefit))
             participation = getattr(self, "{}_participation".format(benefit))
             benefits = getattr(self, "{}_benefits".format(benefit))
             prob = getattr(self, "{}_prob".format(benefit))
