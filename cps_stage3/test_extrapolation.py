@@ -73,3 +73,11 @@ def test_remove_participants():
 
     assert np.allclose(I_act.values.ravel(), I_exp)
     assert np.allclose(ben_act.values.ravel(), ben_exp)
+
+
+def test_repeating_ravel():
+    test = np.array([5,6,7,8])
+    act = Benefits._repeating_ravel((4,2), apply_to=test)
+    exp = np.array([5, 5, 6, 6, 7, 7, 8, 8])
+
+    assert np.allclose(act, exp)
