@@ -159,8 +159,8 @@ class Benefits():
         I = Benefits._unravel_data(result, "I", I.columns.tolist(),
                                                dtype=np.int64)
         benefits = Benefits._unravel_data(result, "benefits",
-                                                      benefits.columns.tolist(),
-                                                      dtype=np.float64)
+                                          benefits.columns.tolist(),
+                                          dtype=np.float64)
 
         return I, benefits
 
@@ -170,9 +170,9 @@ class Benefits():
         # df.sort_values(by=["i", "j"], inplace=True)
 
         var = df[var_name].values
-        max_i = int(df.i.max()) + 1
         max_j = int(df.j.max()) + 1
-        var = var.reshape(max_i, max_j)
+        N = int(df.i.max() / max_j) + 1
+        var = var.reshape(N, max_j)
 
         df = pd.DataFrame(var, columns=column_names, dtype=dtype)
 
@@ -203,11 +203,10 @@ class Benefits():
 
         I_wt = (wt_arr * I_arr.T).T
         benefits_wt = (wt_arr * benefits_arr.T).T
-        # ben_wt = (wt_arr)
         wt_rav = Benefits._repeating_ravel(I_arr.shape, apply_to=wt_arr)
 
         # create indices
-        i = Benefits._repeating_ravel(I_arr.shape)
+        i = np.arange(I_arr.shape[0] * I_arr.shape[1])
         j = i % I_arr.shape[1]
 
         # stack and create data frame with all individuals
@@ -217,7 +216,6 @@ class Benefits():
         extrap_df = pd.DataFrame(extrap_arr,
                                  columns=["prob", "I", "I_wt", "WT",
                                           "benefits", "benefits_wt", "i", "j"])
-
         return extrap_df
 
 

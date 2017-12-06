@@ -16,6 +16,8 @@ def test_ravel():
 
     extrap_df = Benefits._ravel_data(wt.copy(), indicator.copy(),
                                          benefits.copy(), prob.copy())
+    # shuffle dataframe first
+    extrap_df = extrap_df.sample(frac=1)
     extrap_df.sort_values(by=["i", "j"], inplace=True)
 
     I_unrav = Benefits._unravel_data(extrap_df, "I",
@@ -84,7 +86,7 @@ def test_repeating_ravel():
 
 
 def test_unravel_data():
-    test_df = pd.DataFrame({'i': [0, 0, 1, 1, 2, 2, 3, 3],
+    test_df = pd.DataFrame({'i': [0, 1, 2, 3, 4, 5, 6, 7],
                             'j': [0, 0, 0, 0, 1, 1, 1, 1],
                             'var': [2, 3, 5, 7, 11, 13, 17, 19]})
     act = Benefits._unravel_data(test_df, 'var', ['var0', 'var1'])
