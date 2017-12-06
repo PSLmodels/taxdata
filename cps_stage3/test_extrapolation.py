@@ -94,3 +94,26 @@ def test_unravel_data():
                         'var1': [3, 7, 13, 19]})
 
     pd.testing.assert_frame_equal(exp, act, check_dtype=False)
+
+
+def test_ravel_data():
+    wt = [1, 2, 3, 4, 5, 6]
+    I = np.array([[1, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1]]).T
+    benefits = np.array([[9, 10, 11, 10, 9, 0], [0, 9, 10, 11, 10, 9]]).T
+    prob = np.array([[0.9, 0.8, 0.7, 0.6, 0.5, 0.1],
+                     [0.1, 0.5, 0.6, 0.7, 0.8, 0.9]]).T
+
+    I_wt_exp = np.array([1, 0, 2, 2, 3, 3, 4, 4, 5, 5, 0, 6])
+    benefits_wt_exp = np.array([9, 0, 20, 18, 33, 30, 40, 44, 45, 50, 0, 54])
+    prob_exp = np.array([0.9, 0.1, 0.8, 0.5, 0.7, 0.6, 0.6, 0.7,
+                         0.5, 0.8, 0.1, 0.9])
+    i_exp = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    j_exp = np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+
+    act = Benefits._ravel_data(wt, I, benefits, prob)
+
+    assert np.allclose(act.I_wt.values, I_wt_exp)
+    assert np.allclose(act.benefits_wt.values, benefits_wt_exp)
+    assert np.allclose(act.prob.values, prob_exp)
+    assert np.allclose(act.i.values, i_exp)
+    assert np.allclose(act.j.values, j_exp)
