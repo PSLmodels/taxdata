@@ -86,8 +86,8 @@ def test_repeating_ravel():
 
 
 def test_unravel_data():
-    test_df = pd.DataFrame({'i': [0, 1, 2, 3, 4, 5, 6, 7],
-                            'j': [0, 0, 0, 0, 1, 1, 1, 1],
+    test_df = pd.DataFrame({'i': [0, 0, 1, 1, 2, 2, 3, 3],
+                            'j': [0, 1, 0, 1, 0, 1, 0, 1],
                             'var': [2, 3, 5, 7, 11, 13, 17, 19]})
     act = Benefits._unravel_data(test_df, 'var', ['var0', 'var1'])
     exp = pd.DataFrame({'var0': [2, 5, 11, 17],
@@ -107,7 +107,7 @@ def test_ravel_data():
     benefits_wt_exp = np.array([9, 0, 20, 18, 33, 30, 40, 44, 45, 50, 0, 54])
     prob_exp = np.array([0.9, 0.1, 0.8, 0.5, 0.7, 0.6, 0.6, 0.7,
                          0.5, 0.8, 0.1, 0.9])
-    i_exp = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    i_exp = np.array([0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
     j_exp = np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
 
     act = Benefits._ravel_data(wt, I, benefits, prob)

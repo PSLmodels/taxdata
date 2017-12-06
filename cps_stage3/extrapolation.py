@@ -169,9 +169,9 @@ class Benefits():
         # df.sort_values(by=["i", "j"], inplace=True)
 
         var = df[var_name].values
+        max_i = int(df.i.max()) + 1
         max_j = int(df.j.max()) + 1
-        N = int(df.i.max() / max_j) + 1
-        var = var.reshape(N, max_j)
+        var = var.reshape(max_i, max_j)
 
         df = pd.DataFrame(var, columns=column_names, dtype=dtype)
 
@@ -205,8 +205,8 @@ class Benefits():
         wt_rav = Benefits._repeating_ravel(I_arr.shape, apply_to=wt_arr)
 
         # create indices
-        i = np.arange(I_arr.shape[0] * I_arr.shape[1])
-        j = i % I_arr.shape[1]
+        i = Benefits._repeating_ravel(I_arr.shape)
+        j = np.arange(I_arr.shape[0] * I_arr.shape[1]) % I_arr.shape[1]
 
         # stack and create data frame with all individuals
         extrap_arr = np.vstack((prob_arr.ravel(), I_arr.ravel(), I_wt.ravel(),
