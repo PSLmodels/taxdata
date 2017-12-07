@@ -6,6 +6,7 @@ from pandas.util.testing import assert_frame_equal
 programs = ['ss', 'ssi', 'medicaid', 'medicare', 'vb', 'snap']
 billion = 10e9
 million = 10e6
+delta = 1e-06
 
 def read_files():
     ''' import weights, benefit, and raw cps file'''
@@ -35,18 +36,17 @@ def read_files():
 
     return cps
 
+cps = read_files()
+
 def test_decile_dist():
     
     ''' total participation, total benefits and average benefits
         by decile
     '''
-    cps = read_files()
     benefits_vars = [x + '_benefits_2015' for x in programs]
     p_vars = [x + '_recipients_2015' for x in programs]
     
-    
     decile2015 = pd.DataFrame(np.linspace(1,10, num=10), columns=['2015_decile'])
-    delta = 1e06
 
     for i in range(6):
 
@@ -74,8 +74,6 @@ def test_decile_dist():
 def test_aggregates():
     
     '''total individual & taxunit participation, total benefits from 2014-2026'''
-
-    cps = read_files()
     
     benefits = pd.DataFrame(programs, columns=['programs'])
     taxunits = pd.DataFrame(programs, columns=['programs'])
@@ -127,7 +125,6 @@ def test_tabs():
     ''' tabulation of number of participants per tax unit from 2014 to 2026'''
     
     tabs = {}
-    cps = read_files()
     
     # inline function to create single year program tabulation
     p_tab = lambda program: cps[program].value_counts()
