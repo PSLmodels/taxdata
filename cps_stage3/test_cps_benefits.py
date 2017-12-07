@@ -3,6 +3,46 @@ import pandas as pd
 import numpy as np
 from pandas.util.testing import assert_frame_equal
 
+
+'''
+The tests in this script check distribution and aggregates for the benefit data.
+Whenever the benefit data gets updated, the tests would create new statistics
+and compare with the previous version. 
+
+This file needs three inputs: CPS weights (cps_weights.csv.gz), CPS tax unit
+database (cps.csv.gz), and CPS benefit (cps_benefits_extrap_full.csv.gz).
+The first two input files are in their corresponding folders as indicated
+in the code, but the third benefit file is different from the current version
+in that it also includes recipient information for each tax unit. Because this
+recipient per tax unit information is not used in the tax-calculator, we have
+dropped those variable to save space. But the recipients is essential for
+checking aggregates and distribution. So anyone who wants to run the tests needs
+to recreate the full version of benefit data.
+
+It is relatively simple to generate the full version:
+
+1. find the extrapolation.py in the current folder and comment out the six
+lines of code (line 310 - 315) that drop all recipients
+2. Rename the output to cps_benefits_extrap_full.csv.gz
+3. Run the extrapolation script with 'python extrapolation.py'
+
+The tests will create three new files for statistic summary:
+
+1. decile2015_new.csv: participation, total benefit and average benefit
+by wage decile
+2. aggregates_new.csv: total participation and benefits for each program
+from 2014 to 2026
+3. tabs_new.csv: tabulations of tax unit participation for each program
+from 2014 to 2026
+
+If all three files are exactly the same as the previous version, then the tests
+will pass. If the tests fail, compare the new version with the previous version
+carefully and then replace the previous with the new version if the difference is
+reasonable.
+
+'''
+
+
 programs = ['ss', 'ssi', 'medicaid', 'medicare', 'vb', 'snap']
 billion = 1e09
 million = 1e06
