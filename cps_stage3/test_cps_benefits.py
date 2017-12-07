@@ -4,8 +4,8 @@ import numpy as np
 from pandas.util.testing import assert_frame_equal
 
 programs = ['ss', 'ssi', 'medicaid', 'medicare', 'vb', 'snap']
-billion = 10e9
-million = 10e6
+billion = 1e09
+million = 1e06
 delta = 1e-06
 
 def read_files():
@@ -24,7 +24,7 @@ def read_files():
     # merge all essential variables
     cps = cps_income.merge(cps_benefit, on='RECID', how='left')
     cps.fillna(0, inplace=True)
-    cps = cps.join(weights)
+    cps = cps.join(weights/100)
     
     # rename to facilitate for loops
     cps.rename(columns={'s006': 'WT2014'}, inplace=True)
@@ -57,8 +57,10 @@ def test_decile_dist():
         cps['dummy'] = np.where(cps[p_vars[i]]!=0, cps['WT2015'], 0)
         
         # calculate total benefits, participation (# tax units), and average per decile
-        bp = cps[[benefits_vars[i] + '_weighted', 'dummy']].groupby(cps.WT2015_decile,
-                                                                    as_index=False).sum()/million
+        variables = [benefits_vars[i] + '_weighted', 'dummy']
+        bp = cps[variables].groupby(cps.WT2015_decile, as_index=False).sum()
+        
+        
         bp['average'] = bp[benefits_vars[i] + '_weighted']/(bp['dummy'] + delta)
 
         # rename and save
