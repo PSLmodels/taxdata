@@ -239,6 +239,10 @@ class Benefits():
             cps_weights = pd.read_csv(cps_weights)
         else:
             assert(isinstance(cps_weights, pd.DataFrame))
+        cps_weights["SEQUENCE"] = cps_benefit["SEQUENCE"]
+        cps_benefit.set_index("SEQUENCE")
+        cps_weights.set_index("SEQUENCE")
+
         self.WT = cps_weights
         growth_rates = pd.read_csv(growth_rates, index_col=0)
         benefit_extrapolation = pd.DataFrame()
@@ -282,6 +286,14 @@ class Benefits():
             setattr(self, '{}_benefit_extrapolation'.format(benefit), benefit_extrapolation)
             setattr(self, '{}_participation'.format(benefit), base_participation)
             setattr(self, '{}_benefits'.format(benefit), base_benefits)
+
+            # indexing check
+            # assert (getattr(self, '{}_prob'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_base_participation'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_base_benefits'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_benefit_extrapolation'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_participation'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_benefits'.format(benefit)).index == cps_benefit.index).all()
 
         # add record ID
         benefit_extrapolation['RECID'] = cps_benefit['SEQUENCE']

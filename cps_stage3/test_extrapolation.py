@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pytest
 
 from extrapolation import Benefits
 
@@ -35,7 +36,65 @@ def test_ravel():
     pd.testing.assert_frame_equal(prob, prob_unrav, check_dtype=False)
 
 
-def test_add_particpants():
+def test_add_participants():
+    """
+    Checks
+        1. those with benefits still have benefits
+        2. record with lowest prob and no benefits gets benefits
+    """
+    benefit_names = ["medicare"]
+    ben = Benefits(benefit_names=benefit_names)
+
+    has_benefits = ben.medicare_participation[ben.medicare_participation.sum(axis=1) > 0]
+
+    ben.increment_year()
+
+    after = ben.medicare_participation[ben.medicare_participation.sum(axis=1) > 0]
+    assert len(after) > len(has_benefits)
+    overlap = has_benefits.join(after, how="inner", rsuffix="rem")
+
+    assert (overlap.index == has_benefits.index).all()
+
+    no_benefits_overlap = overlap[[c for c in overlap if not c.endswith('rem')]]
+    no_benefits_overlap.columns = has_benefits.columns
+
+    pd.testing.assert_frame_equal(no_benefits_overlap, has_benefits,
+                                  check_dtype=False, check_column_type=False)
+
+    no_benefits_ix = set(has_benefits.index)
+    assert len(no_benefits_ix - set(after.index)) == 0
+
+
+def test_remove_participants():
+    """
+    Checks
+        1. those without benefits still do not have benefits
+        2. record with lowest prob and benefits gets no benefits
+    """
+    benefit_names = ["snap"]
+    ben = Benefits(benefit_names=benefit_names)
+
+    no_benefits = ben.snap_participation[ben.snap_participation.sum(axis=1) == 0]
+
+    ben.increment_year()
+
+    after = ben.snap_participation[ben.snap_participation.sum(axis=1) == 0]
+    assert len(after) > len(no_benefits)
+    overlap = no_benefits.join(after, how="inner", rsuffix="rem")
+
+    assert (overlap.index == no_benefits.index).all()
+
+    no_benefits_overlap = overlap[[c for c in overlap if not c.endswith('rem')]]
+    no_benefits_overlap.columns = no_benefits.columns
+
+    pd.testing.assert_frame_equal(no_benefits_overlap, no_benefits,
+                                  check_dtype=False, check_column_type=False)
+
+    no_benefits_ix = set(no_benefits.index)
+    assert len(no_benefits_ix - set(after.index)) == 0
+
+
+def test_add_particpants_small():
     """
     Check that entry with lowest probablity but is a participant is NOT removed
     and that entry highest probablity is added
@@ -56,7 +115,7 @@ def test_add_particpants():
     assert np.allclose(ben_act.values.ravel(), ben_exp)
 
 
-def test_remove_participants():
+def test_remove_participants_small():
     """
     Check that entry with lowest probablity is removed and that entry with
     highest probablity but is not participating is not added
