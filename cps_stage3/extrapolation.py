@@ -117,30 +117,25 @@ class Benefits():
         # of prob so that we only keep those with highest prob of
         # receiving benefits in the future
         candidates.sort_values(by="prob", ascending=False, inplace=True)
-        # create index based on new ordering for idxmin operation below
-        candidates.reset_index(drop=True, inplace=True)
         # create running sum of weighted participants
         candidates["cum_participants"] = candidates.I_wt.cumsum() + noncan_part
         # get absolute difference between candidates and target
-        candidates["abs_diff"] = np.abs(candidates.cum_participants -
-                                        target)
-
-        # get index of minimum absolute difference
-        min_diff = candidates.abs_diff.idxmin()
+        candidates["_diff"] = candidates.cum_participants - target
 
         # # check to make results are close enough
-        assert np.allclose(candidates.iloc[min_diff].cum_participants, target,
-                           atol=0.0, rtol=tol)
+        assert np.allclose(
+            candidates[candidates._diff <= 0].cum_participants.max(), target,
+            atol=0.0, rtol=tol
+        )
 
         # individuals prior to min_diff have highest probability of getting
         # benefits in the future ==> they get benefits
-        candidates.iloc[:min_diff, candidates.columns.get_loc("I")] = 1
-        candidates.iloc[(min_diff + 1):, candidates.columns.get_loc("I")] = 0
-        candidates.iloc[(min_diff + 1):,
-                        candidates.columns.get_loc("prob")] = 10000
+        candidates.loc[candidates._diff <= 0, "I"] = 1
+        candidates.loc[candidates._diff > 0, "I"] = 0
+        candidates.loc[candidates._diff > 0, "prob"] = 10000
 
         if remove:
-            candidates.loc[(min_diff + 1):, 'benefits'] = 0
+            candidates.loc[candidates._diff > 0, 'benefits'] = 0
         else:
             # all added candidates have indicator 1 but no benefits
             candidates.loc[(candidates.I == 1) &
@@ -263,6 +258,7 @@ class Benefits():
             # Create Participation targets from tax-unit individual level markers
             # and growth rates from SSA
             base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0))
+
             # print(benefit,'value_counts baseline')
             # print(base_participation.sum(axis=1).value_counts())
             total_particpants = (base_participation.sum(axis=1) *
