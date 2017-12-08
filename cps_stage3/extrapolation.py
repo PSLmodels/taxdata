@@ -99,6 +99,7 @@ class Benefits():
 
         actual = extrap_df.I_wt.sum()
         diff = actual - target
+        print('diff', diff)
         if diff < 0:
             remove = False
             candidates = extrap_df.loc[extrap_df.I == 0, ]
@@ -178,7 +179,8 @@ class Benefits():
         max_j = int(df.j.max()) + 1
         var = var.reshape(max_i, max_j)
 
-        df = pd.DataFrame(var, columns=column_names, dtype=dtype)
+        df = pd.DataFrame(var, columns=column_names, dtype=dtype,
+                          index=self.index)
 
         return df
 
@@ -236,19 +238,23 @@ class Benefits():
         prepare data
         """
         cps_benefit = pd.read_csv(cps_benefit)
+        self.index = cps_benefit["SEQUENCE"]
 
         if isinstance(cps_weights, str):
             assert(os.path.exists(cps_weights))
             cps_weights = pd.read_csv(cps_weights)
         else:
             assert(isinstance(cps_weights, pd.DataFrame))
-        cps_weights["SEQUENCE"] = cps_benefit["SEQUENCE"]
-        cps_benefit.set_index("SEQUENCE")
-        cps_weights.set_index("SEQUENCE")
+        cps_weights["SEQUENCE"] = self.index
+        cps_weights.set_index("SEQUENCE", inplace=True)
+
+        benefit_extrapolation = pd.DataFrame({"SEQUENCE": self.index})
+        benefit_extrapolation.set_index('SEQUENCE', inplace=True)
+
+        cps_benefit.set_index("SEQUENCE", inplace=True)
 
         self.WT = cps_weights
         growth_rates = pd.read_csv(growth_rates, index_col=0)
-        benefit_extrapolation = pd.DataFrame()
         for benefit in benefit_names:
 
             # create benefit targets
@@ -264,7 +270,8 @@ class Benefits():
 
             # Create Participation targets from tax-unit individual level markers
             # and growth rates from SSA
-            base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0))
+            base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0),
+                                              index=self.index)
 
             # print(benefit,'value_counts baseline')
             # print(base_participation.sum(axis=1).value_counts())
@@ -276,11 +283,12 @@ class Benefits():
             prob_col = [col for col in list(cps_benefit)
                         if col.startswith('{0}_PROB'.format(benefit.upper()))]
             prob = cps_benefit[prob_col]
+            prob.columns = list(range(len(prob.columns)))
 
             # dataframe of number participants and total benefits from program
             benefit_extrapolation['{}_recipients_2014'.format(benefit)] = base_participation.sum(axis=1)
             benefit_extrapolation['{}_benefits_2014'.format(benefit)] = cps_benefit[benefit + '_ben']
-
+            print(benefit_extrapolation)
             setattr(self, '{}_prob'.format(benefit), prob)
             setattr(self, '{}_base_participation'.format(benefit), base_participation)
             setattr(self, '{}_base_benefits'.format(benefit), base_benefits)
@@ -299,7 +307,7 @@ class Benefits():
             # assert (getattr(self, '{}_benefits'.format(benefit)).index == cps_benefit.index).all()
 
         # add record ID
-        benefit_extrapolation['RECID'] = cps_benefit['SEQUENCE']
+        benefit_extrapolation['RECID'] = benefit_extrapolation.index.values
         self.benefit_extrapolation = benefit_extrapolation
 
 
