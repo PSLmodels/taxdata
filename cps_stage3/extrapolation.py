@@ -101,16 +101,20 @@ class Benefits():
         diff = actual - target
         if diff < 0:
             remove = False
-            candidates = extrap_df.loc[extrap_df.I == 0, ].copy()
+            candidates = extrap_df.loc[extrap_df.I == 0, ]
+            assert candidates.I.sum() == 0
             # set everyone as a participant and then remove surplus below
-            # this is necassary since I * wt will all be zeroes
+            # this is necessary since I * wt will all be zeroes
             candidates.loc[:, "I"] = np.ones(len(candidates))
             candidates.loc[:, "I_wt"] = candidates.I * candidates.WT
             noncandidates = extrap_df.loc[extrap_df.I == 1, ]
+            assert noncandidates.I.sum() == len(noncandidates)
         else:
             remove = True
             candidates = extrap_df.loc[extrap_df.I == 1, ]
+            assert candidates.I.sum() == len(candidates)
             noncandidates = extrap_df.loc[extrap_df.I == 0, ]
+            assert noncandidates.I.sum() == 0
         noncan_part = noncandidates.I_wt.sum()
         del extrap_df
         # sort by probability of getting benefits in descending order
