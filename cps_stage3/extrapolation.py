@@ -132,7 +132,6 @@ class Benefits():
         # benefits in the future ==> they get benefits
         candidates.loc[candidates._diff <= 0, "I"] = 1
         candidates.loc[candidates._diff > 0, "I"] = 0
-        candidates.loc[candidates._diff > 0, "prob"] = 10000
 
         if remove:
             candidates.loc[candidates._diff > 0, 'benefits'] = 0
