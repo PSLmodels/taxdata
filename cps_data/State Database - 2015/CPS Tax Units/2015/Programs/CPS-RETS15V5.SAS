@@ -3,7 +3,7 @@
 			WHERE I MADE THE MODIFICATIONS, JUST SEARCH FOR "SHANE:". I ADDED 10 NEW
 			PERSON-LEVEL VARIABLES, BUT THIS TRANSLATED INTO 20 NEW TAX UNIT VARIABLES:
 			ONE FOR THE PRIMARY TAXPAYER AND ONE FOR THE SPOUSE. THE VARIABLES ARE FROM
-			YOUR EARLIER E-MAIL, PLUS I ADDED A COUPLE OF CENSUS IMPUTED TAX FIELDS. I 
+			YOUR EARLIER E-MAIL, PLUS I ADDED A COUPLE OF CENSUS IMPUTED TAX FIELDS. I
 			DON'T HAVE MUCH EXPERIENCE WITH THESE IMPUTED AMOUNTS.
 
 			1.	A_AGE	(ALREADY ON THE ORIGINAL TAX UNIT EXTRACT)
@@ -55,7 +55,7 @@
 ***                 * Repeat this process for each household member until all members   ***;
 ***                   of the household are represented in a tax unit record. A house-   ***;
 ***                   hold member can only be represented on one tax unit record.       ***;
-***                 * After all CPS tax units have been constructed, determine if the   ***; 
+***                 * After all CPS tax units have been constructed, determine if the   ***;
 ***                   unit is required to actually file a tax return as determined by   ***;
 ***                   filing threshholds in place for that tax year.                    ***;
 ***                 * Repeat this process for every household in the CPS until a SAS    ***;
@@ -63,7 +63,7 @@
 ***                 * Tabulate weighted and unweighted record counts by filing type.    ***;
 ***                                                                                     ***;
 ***	Input:      	CPS person-level extract from the raw CPS file for a particular     ***;
-***                 year.                                                               ***; 
+***                 year.                                                               ***;
 ***                                                                                     ***;
 ***	Output:			SAS dataset containing CPS tax units. This dataset will form the    ***;
 ***                 basis of an aggregate summary, by state and filer type that is      ***;
@@ -73,7 +73,7 @@
 ***                                                                                     ***;
 ***	History:		Program begun on 01-FEB-2010.                                       ***;
 ***                 Revised on 20-FEB-2010 to automate the selection of tax years and   ***;
-***                 CPS years. Also, added dataset of tax law parameters.               ***; 
+***                 CPS years. Also, added dataset of tax law parameters.               ***;
 *******************************************************************************************;
 *OPTIONS PAGESIZE=84 LINESIZE=111; /* PORTRAIT  */
 OPTIONS PAGESIZE=59 LINESIZE=160 CENTER ; /* LANDSCAPE */
@@ -546,7 +546,7 @@ END;
 				SEFARM = PREC( &PERSON , 22 );
 				MAJORINDUSTRY = PREC( &PERSON , 61 );
 			END;
-		
+
 		IF( SP_PTR NE 0 )THEN
 				DO;
 					CLASSOFWORKER = PREC( SP_PTR , 60 );
@@ -557,8 +557,8 @@ END;
 							IF( ABS( SENONFARM_SP ) GT ABS( SENONFARM ) )THEN MAJORINDUSTRY = PREC( SP_PTR , 61 );
 							SENONFARM = SENONFARM + SENONFARM_SP;
 							SEFARM = SEFARM + SEFARM_SP;
-						END; 
-				END; 
+						END;
+				END;
 		TREC( NUNITS , 146 ) = MAJORINDUSTRY;
 		TREC( NUNITS , 147 ) = SENONFARM;
 		TREC( NUNITS , 148 ) = SEFARM;
@@ -619,7 +619,7 @@ END;
 				TREC( NUNITS , 188 ) = PREC( SP_PTR , 22) ;
 				TREC( NUNITS , 189 ) = PREC( SP_PTR , 23) ;
 				TREC( NUNITS , 190 ) = PREC( SP_PTR , 24) ;
-			END;	
+			END;
 *****
 	NEW VARIABLES FOR PEW DATABASE - VERSION 4.0
 *****;
@@ -687,7 +687,7 @@ END;
 	NEED TO SAVE SPOUSE POINTER LATER USE.
 	ADDED ON 24-MAY-2016 BY OHARE.
 *****;
-		TREC( NUNITS , 227 ) = SP_PTR;	
+		TREC( NUNITS , 227 ) = SP_PTR;
 *****
 		ANDERSON: NEW TAX RECORD VARIABLES
 *****;
@@ -779,7 +779,7 @@ END;
 				    TREC(NUNITS, 281) = TREC(NUNITS, 281) + 1;
 			END;
 /* Add imputed variable data */
-		DO NDP = 282 TO 311;
+		DO NDP = 282 TO 467;
 			TREC(NUNITS, NDP) = 0.0;
 		END;
 		TREC(NUNITS, 312) = PREC(&PERSON, 120); * total SSI ;
@@ -790,7 +790,17 @@ END;
 		TREC(NUNITS, 315) = PREC(&PERSON, 124); * Total Medicare Imputations;
 		TREC(NUNITS, 316) = PREC(&PERSON, 125); * Total Medicaid Imputations;
 		TREC(NUNITS, 317) = PREC(&PERSON, 126); * Social Security Imputations;
-		
+		TREC(NUNITS, 318) = PREC(&PERSON, 128); * SNAP Probability;
+		TREC(NUNITS, 333) = PREC(&PERSON, 123); * SNAP Value;
+		TREC(NUNITS, 348) = PREC(&PERSON, 127); * SS Probability;
+		TREC(NUNITS, 363) = PREC(&PERSON, 126); * SS Value;
+		TREC(NUNITS, 378) = PREC(&PERSON, 129); * VB Probability head of unit;
+		TREC(NUNITS, 393) = PREC(&PERSON, 122); * VB imputed value head;
+		TREC(NUNITS, 408) = PREC(&PERSON, 130); * Medicare probability head;
+		TREC(NUNITS, 423) = PREC(&PERSON, 124); * Medicare imputed value head;
+		TREC(NUNITS, 438) = PREC(&PERSON, 131); * Medicaid probability head;
+		TREC(NUNITS, 453) = PREC(&PERSON, 125); * Medicaid imputed value head;
+
 		IF (SP_PTR NE 0) THEN
 			DO;
 				TREC(NUNITS, 283) = PREC(SP_PTR, 120);
@@ -800,7 +810,20 @@ END;
 				TREC(NUNITS, 315) = TREC(NUNITS, 315) + PREC(SP_PTR, 124);
 				TREC(NUNITS, 316) = TREC(NUNITS, 316) + PREC(SP_PTR, 125);
 				TREC(NUNITS, 317) = TREC(NUNITS, 317) + PREC(SP_PTR, 126);
+				TREC(NUNITS, 319) = PREC(SP_PTR, 128); * SNAP Probability;
+				TREC(NUNITS, 334) = PREC(SP_PTR, 123); * SNAP value;
+				TREC(NUNITS, 349) = PREC(SP_PTR, 127); * SS probability;
+				TREC(NUNITS, 364) = PREC(SP_PTR, 126); * SS value;
+				TREC(NUNITS, 379) = PREC(SP_PTR, 129); * VB probability;
+				TREC(NUNITS, 394) = PREC(SP_PTR, 122); * VB value;
+				TREC(NUNITS, 409) = PREC(SP_PTR, 130); * Medicare probability;
+				TREC(NUNITS, 424) = PREC(SP_PTR, 124); * Medicare value;
+				TREC(NUNITS, 439) = PREC(SP_PTR, 131); * Medicaid probability;
+				TREC(NUNITS, 454) = PREC(SP_PTR, 125); * Medicaid value;
+
 			END;
+
+		TREC(NUNITS, 468) = PREC(&PERSON, 6);
 /*
         ---------------------------------------
         Dependents can't have dependents, so
@@ -1168,6 +1191,16 @@ TREC(&RETURN , 313) = TREC(&RETURN , 313) + PREC(&PERSON , 122); * Total VB;
 TREC(&RETURN , 315) = TREC(&RETURN , 315) + PREC(&PERSON , 124); * Total Medicare;
 TREC(&RETURN , 316) = TREC(&RETURN , 316) + PREC(&PERSON , 125); * Total Medicaid;
 TREC(&RETURN , 317) = TREC(&RETURN , 317) + PREC(&PERSON , 126); * Total Social Security;
+TREC(&RETURN , 319 + DEPNE) = PREC(&PERSON, 128); * SNAP probability;
+TREC(&RETURN , 334 + DEPNE) = PREC(&PERSON, 123); * SNAP value;
+TREC(&RETURN , 349 + DEPNE) = PREC(&PERSON, 127); * SS probability;
+TREC(&RETURN , 364 + DEPNE) = PREC(&PERSON, 126); * SS value;
+TREC(&RETURN , 379 + DEPNE) = PREC(&PERSON, 129); * VB probability;
+TREC(&RETURN , 394 + DEPNE) = PREC(&PERSON, 122); * VB value;
+TREC(&RETURN , 409 + DEPNE) = PREC(&PERSON, 130); * Medicare probability;
+TREC(&RETURN , 424 + DEPNE) = PREC(&PERSON, 124); * Medicare value;
+TREC(&RETURN , 439 + DEPNE) = PREC(&PERSON, 131); * Medicaid probability;
+TREC(&RETURN , 454 + DEPNE) = PREC(&PERSON, 125); * Medicaid value;
 
 /* Add dependent age info */
 IF (PREC(&PERSON, 12) < 18 AND PREC(&PERSON, 12) > 0) THEN
@@ -1263,12 +1296,168 @@ DO N = 1 TO NUNITS ;
 					 SSI_PROB13 = TREC(N , 309);
 					 SSI_PROB14 = TREC(N , 310);
 					 SSI_PROB15 = TREC(N , 311);
+
 					 SSI = TREC(N , 312);
 					 VB = TREC(N , 313);
 					 SNAP = TREC(N , 314);
 					 MEDICARE = TREC(N , 315);
 					 MEDICAID = TREC(N , 316);
 					 SS = TREC(N , 317);
+
+					 SNAP_PROB1 = TREC(N, 318);
+					 SNAP_PROB2 = TREC(N, 319);
+					 SNAP_PROB3 = TREC(N, 320);
+					 SNAP_PROB4 = TREC(N, 321);
+					 SNAP_PROB5 = TREC(N, 322);
+					 SNAP_PROB6 = TREC(N, 323);
+					 SNAP_PROB7 = TREC(N, 324);
+					 SNAP_PROB8 = TREC(N, 325);
+					 SNAP_PROB9 = TREC(N, 326);
+					SNAP_PROB10 = TREC(N, 327);
+					SNAP_PROB11 = TREC(N, 328);
+					SNAP_PROB12 = TREC(N, 329);
+					SNAP_PROB13 = TREC(N, 330);
+					SNAP_PROB14 = TREC(N, 331);
+					SNAP_PROB15 = TREC(N, 332);
+					  SNAP_VAL1 = TREC(N, 333);
+					  SNAP_VAL2 = TREC(N, 334);
+					  SNAP_VAL3 = TREC(N, 335);
+					  SNAP_VAL4 = TREC(N, 336);
+					  SNAP_VAL5 = TREC(N, 337);
+					  SNAP_VAL6 = TREC(N, 338);
+					  SNAP_VAL7 = TREC(N, 339);
+					  SNAP_VAL8 = TREC(N, 340);
+					  SNAP_VAL9 = TREC(N, 341);
+				     SNAP_VAL10 = TREC(N, 342);
+					 SNAP_VAL11 = TREC(N, 343);
+					 SNAP_VAL12 = TREC(N, 344);
+					 SNAP_VAL13 = TREC(N, 345);
+					 SNAP_VAL14 = TREC(N, 346);
+					 SNAP_VAL15 = TREC(N, 347);
+
+					   SS_PROB1 = TREC(N, 348);
+					   SS_PROB2 = TREC(N, 349);
+					   SS_PROB3 = TREC(N, 350);
+					   SS_PROB4 = TREC(N, 351);
+					   SS_PROB5 = TREC(N, 352);
+					   SS_PROB6 = TREC(N, 353);
+					   SS_PROB7 = TREC(N, 354);
+					   SS_PROB8 = TREC(N, 355);
+					   SS_PROB9 = TREC(N, 356);
+					  SS_PROB10 = TREC(N, 357);
+					  SS_PROB11 = TREC(N, 358);
+					  SS_PROB12 = TREC(N, 359);
+					  SS_PROB13 = TREC(N, 360);
+					  SS_PROB14 = TREC(N, 361);
+					  SS_PROB15 = TREC(N, 362);
+					    SS_VAL1 = TREC(N, 363);
+						SS_VAL2 = TREC(N, 364);
+						SS_VAL3 = TREC(N, 365);
+						SS_VAL4 = TREC(N, 366);
+						SS_VAL5 = TREC(N, 367);
+						SS_VAL6 = TREC(N, 368);
+						SS_VAL7 = TREC(N, 369);
+						SS_VAL8 = TREC(N, 370);
+						SS_VAL9 = TREC(N, 371);
+					   SS_VAL10 = TREC(N, 372);
+					   SS_VAL11 = TREC(N, 373);
+					   SS_VAL12 = TREC(N, 374);
+					   SS_VAL13 = TREC(N, 375);
+					   SS_VAL14 = TREC(N, 376);
+					   SS_VAL15 = TREC(N, 377);
+
+					   VB_PROB1 = TREC(N, 378);
+ 					   VB_PROB2 = TREC(N, 379);
+ 					   VB_PROB3 = TREC(N, 380);
+ 					   VB_PROB4 = TREC(N, 381);
+ 					   VB_PROB5 = TREC(N, 382);
+ 					   VB_PROB6 = TREC(N, 383);
+ 					   VB_PROB7 = TREC(N, 384);
+ 					   VB_PROB8 = TREC(N, 385);
+ 					   VB_PROB9 = TREC(N, 386);
+ 					  VB_PROB10 = TREC(N, 387);
+ 					  VB_PROB11 = TREC(N, 388);
+ 					  VB_PROB12 = TREC(N, 389);
+ 					  VB_PROB13 = TREC(N, 390);
+ 					  VB_PROB14 = TREC(N, 391);
+ 					  VB_PROB15 = TREC(N, 392);
+ 					    VB_VAL1 = TREC(N, 393);
+ 						VB_VAL2 = TREC(N, 394);
+ 						VB_VAL3 = TREC(N, 395);
+ 						VB_VAL4 = TREC(N, 396);
+ 						VB_VAL5 = TREC(N, 397);
+ 						VB_VAL6 = TREC(N, 398);
+ 						VB_VAL7 = TREC(N, 399);
+ 						VB_VAL8 = TREC(N, 400);
+ 						VB_VAL9 = TREC(N, 401);
+ 					   VB_VAL10 = TREC(N, 402);
+ 					   VB_VAL11 = TREC(N, 403);
+ 					   VB_VAL12 = TREC(N, 404);
+ 					   VB_VAL13 = TREC(N, 405);
+ 					   VB_VAL14 = TREC(N, 406);
+ 					   VB_VAL15 = TREC(N, 407);
+
+					   MCARE_PROB1 = TREC(N, 408);
+ 					   MCARE_PROB2 = TREC(N, 409);
+ 					   MCARE_PROB3 = TREC(N, 410);
+ 					   MCARE_PROB4 = TREC(N, 411);
+ 					   MCARE_PROB5 = TREC(N, 412);
+ 					   MCARE_PROB6 = TREC(N, 413);
+ 					   MCARE_PROB7 = TREC(N, 414);
+ 					   MCARE_PROB8 = TREC(N, 415);
+ 					   MCARE_PROB9 = TREC(N, 416);
+ 					  MCARE_PROB10 = TREC(N, 417);
+ 					  MCARE_PROB11 = TREC(N, 418);
+ 					  MCARE_PROB12 = TREC(N, 419);
+ 					  MCARE_PROB13 = TREC(N, 420);
+ 					  MCARE_PROB14 = TREC(N, 421);
+ 					  MCARE_PROB15 = TREC(N, 422);
+ 					    MCARE_VAL1 = TREC(N, 423);
+ 						MCARE_VAL2 = TREC(N, 424);
+ 						MCARE_VAL3 = TREC(N, 425);
+ 						MCARE_VAL4 = TREC(N, 426);
+ 						MCARE_VAL5 = TREC(N, 427);
+ 						MCARE_VAL6 = TREC(N, 428);
+ 						MCARE_VAL7 = TREC(N, 429);
+ 						MCARE_VAL8 = TREC(N, 430);
+ 						MCARE_VAL9 = TREC(N, 431);
+ 					   MCARE_VAL10 = TREC(N, 432);
+ 					   MCARE_VAL11 = TREC(N, 433);
+ 					   MCARE_VAL12 = TREC(N, 434);
+ 					   MCARE_VAL13 = TREC(N, 435);
+ 					   MCARE_VAL14 = TREC(N, 436);
+ 					   MCARE_VAL15 = TREC(N, 437);
+
+					   MCAID_PROB1 = TREC(N, 438);
+ 					   MCAID_PROB2 = TREC(N, 439);
+ 					   MCAID_PROB3 = TREC(N, 440);
+ 					   MCAID_PROB4 = TREC(N, 441);
+ 					   MCAID_PROB5 = TREC(N, 442);
+ 					   MCAID_PROB6 = TREC(N, 443);
+ 					   MCAID_PROB7 = TREC(N, 444);
+ 					   MCAID_PROB8 = TREC(N, 445);
+ 					   MCAID_PROB9 = TREC(N, 446);
+ 					  MCAID_PROB10 = TREC(N, 447);
+ 					  MCAID_PROB11 = TREC(N, 448);
+ 					  MCAID_PROB12 = TREC(N, 449);
+ 					  MCAID_PROB13 = TREC(N, 450);
+ 					  MCAID_PROB14 = TREC(N, 451);
+ 					  MCAID_PROB15 = TREC(N, 452);
+ 					    MCAID_VAL1 = TREC(N, 453);
+ 						MCAID_VAL2 = TREC(N, 454);
+ 						MCAID_VAL3 = TREC(N, 455);
+ 						MCAID_VAL4 = TREC(N, 456);
+ 						MCAID_VAL5 = TREC(N, 457);
+ 						MCAID_VAL6 = TREC(N, 458);
+ 						MCAID_VAL7 = TREC(N, 459);
+ 						MCAID_VAL8 = TREC(N, 460);
+ 						MCAID_VAL9 = TREC(N, 461);
+ 					   MCAID_VAL10 = TREC(N, 462);
+ 					   MCAID_VAL11 = TREC(N, 463);
+ 					   MCAID_VAL12 = TREC(N, 464);
+ 					   MCAID_VAL13 = TREC(N, 465);
+ 					   MCAID_VAL14 = TREC(N, 466);
+ 					   MCAID_VAL15 = TREC(N, 467);
 /*
                    Additional Fields for Non-Filers
                    NOTE: Locations 83, 84 & 85 will
@@ -1304,6 +1493,7 @@ DO N = 1 TO NUNITS ;
                    XHID    = TREC(N , 93) ;
                    XFID    = TREC(N , 94) ;
                    XPID    = TREC(N , 95) ;
+				   XFHEADIDX = TREC(N, 468);
 /*
                     Oldest & Youngest Dependents
 */
@@ -1433,7 +1623,7 @@ IF( (DEPNE) GT 0.0 )THEN
 		JCPS37	=	TREC(N , 187);
 		JCPS38	=	TREC(N , 188);
 		JCPS39	=	TREC(N , 189);
-		JCPS40	=	TREC(N , 190);		
+		JCPS40	=	TREC(N , 190);
 *****
 		PEW DATABASE: VERSION 4.0
 *****;
@@ -1739,7 +1929,7 @@ IF( RENTS LT 0.0 )THEN FILST = 1.;
         ----------------------------
         2014 Filing Thresholds, Etc.
 
-		NOTE: From 1040 Instructions 
+		NOTE: From 1040 Instructions
 			  relating to "Who Has To
 			  File?"
         ----------------------------
@@ -1794,7 +1984,7 @@ DEPEX3 = 3950. ;
                 PREC(NPER , 5)  = FPERSONS;
                 PREC(NPER , 6)  = FHEADIDX;
                 PREC(NPER , 7)  = FWIFEIDX;
-                PREC(NPER , 8)  = FHUSBIDX;				
+                PREC(NPER , 8)  = FHUSBIDX;
                 PREC(NPER , 9)  = A_SPOUSE;     /* NOTE: Change from previous matches! */
 				IF( A_SPOUSE GT H_NUMPER )THEN PREC(NPER , 9) = 0;
                 PREC(NPER , 10) = FSUP_WGT;
@@ -1934,12 +2124,17 @@ DEPEX3 = 3950. ;
 	Imputation Variables
 *****;
 				PREC(NPER , 120) = SSI_IMPUTE;
-				PREC(NPER , 121) = PROBS;
+				PREC(NPER , 121) = SSI_PROBS;
 				PREC(NPER , 122) = VB_IMPUTE;
 				PREC(NPER , 123) = SNAP_IMPUTE;
 				PREC(NPER , 124) = MEDICAREX;
 				PREC(NPER , 125) = MEDICAIDX;
 				PREC(NPER , 126) = SS_VAL_Y;
+				PREC(NPER , 127) = SS_PROBS;
+				PREC(NPER , 128) = SNAP_PROBS;
+				PREC(NPER , 129) = VB_PROBS;
+				PREC(NPER , 130) = MCARE_PROBS;
+				PREC(NPER , 131) = MCAID_PROBS;
 *****
 	ADD NEW IDENTIFIER VARIABLES
 *****;
@@ -1978,7 +2173,7 @@ DEPEX3 = 3950. ;
 LIBNAME EXTRACT "C:\Users\anderson.frailey\Documents\State Database - 2015\CPS Tax Units\2015\EXTRACTS\";
 
 *****
-	CREATE A TEMPORY SAS DATASET OF HOUSEHOLDS W/ NUMBER OF PERSONS TO 
+	CREATE A TEMPORY SAS DATASET OF HOUSEHOLDS W/ NUMBER OF PERSONS TO
 	FACILITATE PROCESSING.
 
 	NOTE: 	THE ORIGINAL CPS IS NOT IS THE CORRECT SORT ORDER SO WE GIVE EACH
@@ -1986,7 +2181,8 @@ LIBNAME EXTRACT "C:\Users\anderson.frailey\Documents\State Database - 2015\CPS T
 *****;
 DATA TEMPORARY(KEEP=H_SEQ SORT_ORDER H_NUMPER);
 * SET EXTRACT.CPSMAR&CPSYEAR;
-SET EXTRACT.CPSMARBEN15;
+* SET EXTRACT.CPSMARBEN15;
+SET EXTRACT.CPSMAR2015_BEN;
 SORT_ORDER = _N_;
 RUN;
 PROC SORT DATA=TEMPORARY;BY H_SEQ;
@@ -2030,6 +2226,11 @@ DATA EXTRACT.CPSRETS&CPSYEAR(KEEP=JS IFDEPT AGEDE DEPNE CAHE AGEH AGES
 						  BLIND_HEAD BLIND_SPOUSE
 						  SSI_VAL1-SSI_VAL15 SSI_PROB1-SSI_PROB15 SSI
 						  VB SNAP MEDICARE MEDICAID SS
+						  SNAP_PROB1-SNAP_PROB15 SNAP_VAL1-SNAP_VAL15
+						  SS_PROB1-SS_PROB15 SS_VAL1-SS_VAL15
+						  MCARE_VAL1-MCARE_VAL15 MCARE_PROB1-MCARE_PROB15
+						  MCAID_VAL1-MCAID_VAL15 MCAID_PROB1-MCAID_PROB15
+						  VB_VAL1-VB_VAL15 VB_PROB1-VB_PROB15 XFHEADIDX
                           /*
                                         New CPS Variables
                           */
@@ -2055,7 +2256,7 @@ ARRAY PREC(16 , 162) _temporary_ ;	/*	NEW CPS FIELDS	*/
 *****
 	ANDERSON: NEED TO INCREASE SIZE TREC(*) ARRAY
 *****;
-ARRAY TREC(16 , 350) _temporary_ ;
+ARRAY TREC(16 , 480) _temporary_ ;
 ARRAY ICPS(*) ICPS01-ICPS50 ;
 ARRAY JCPS(*) JCPS1-JCPS200 ;
 IF (_N_ = 1)THEN PTR = 0;
@@ -2070,7 +2271,8 @@ HHID = H_SEQ ;
 ******************************************************************************;
 DO NPER = 1 TO H_NUMPER;
 	* SET EXTRACT.CPSMAR&CPSYEAR ;
-	SET EXTRACT.CPSMARBEN15;
+	* SET EXTRACT.CPSMARBEN15;
+	SET EXTRACT.CPSMAR2015_BEN;
    	%FILLREC
 END;
 ******************************************************************************;
@@ -2174,7 +2376,7 @@ END;
                 END;
 
 
-                ********************************************************;    
+                ********************************************************;
                 *** IV.) OUTPUT RETURNS                              ***;
                 ********************************************************;
 

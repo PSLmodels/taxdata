@@ -57,7 +57,8 @@ def main():
         'SLTX': 'e18400',
         'XHID': 'h_seq',
         'XFID': 'ffpos',
-        'XSTATE': 'fips'
+        'XSTATE': 'fips',
+        'XFHEADIDX': 'fheadidx'
     }
     data = data.rename(columns=renames)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
