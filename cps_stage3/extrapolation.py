@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from copy import deepcopy
-
+import time
 
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
@@ -90,10 +90,27 @@ class Benefits():
                 get the same matrix that we started with but with the
                 updated values
         """
-        extrap_df = Benefits._ravel_data(WT.copy(),
-                                         I.copy(),
-                                         benefits.copy(),
-                                         prob.copy())
+        start = time.time()
+        wt_ext = pd.concat([WT for i in range(0, J)], axis=1)
+        wt_ext.columns = list(range(0, J))
+
+        wt_stack = wt_ext.stack()
+        I_stack = I.stack()
+        ben_stack = benefits.stack()
+        prob_stack = prob.stack()
+
+        stacked = time.time()
+        print('stacked - start', stacked - start)
+        extrap_df = pd.concat(
+            (wt_stack, I_stack, ben_stack, prob_stack),
+            axis=1
+        )
+        df_create = time.time()
+        print('df_create - stacked', df_create - stacked)
+        extrap_df.columns = ['wt', 'I', 'benefits', 'prob']
+        extrap_df["I_wt"] = extrap_df.I * extrap_df.wt
+        extrap_df["benefits_wt"] = extrap_df.benefits * extrap_df.wt
+
         receives = extrap_df.loc[extrap_df.I > 0, ]
         avg_benefit = receives.benefits_wt.sum() / receives.I_wt.sum()
 
@@ -107,7 +124,7 @@ class Benefits():
             # set everyone as a participant and then remove surplus below
             # this is necessary since I * wt will all be zeroes
             candidates.loc[:, "I"] = np.ones(len(candidates))
-            candidates.loc[:, "I_wt"] = candidates.I * candidates.WT
+            candidates.loc[:, "I_wt"] = candidates.I * candidates.wt
             noncandidates = extrap_df.loc[extrap_df.I == 1, ]
             assert noncandidates.I.sum() == len(noncandidates)
         else:
@@ -145,91 +162,15 @@ class Benefits():
             candidates.loc[(candidates.I == 1) &
                            (candidates.benefits == 0), 'benefits'] = avg_benefit
 
-        result = pd.concat([noncandidates, candidates], axis=0, ignore_index=True)
+        result = pd.concat([noncandidates, candidates], axis=0, ignore_index=False)
         del candidates
         del noncandidates
-        result.sort_values(by=["i", "j"], inplace=True)
-        wt_ravel = Benefits._repeating_ravel((len(WT), J),
-                                                          apply_to=np.array(WT))
 
-        result.I_wt = result.I * wt_ravel
-
-        I = Benefits._unravel_data(result, "I", I.columns.tolist(),
-                                               dtype=np.int64)
-        benefits = Benefits._unravel_data(result, "benefits",
-                                          benefits.columns.tolist(),
-                                          dtype=np.float64)
-
-        return I, benefits
-
-    @staticmethod
-    def _unravel_data(df, var_name, column_names, dtype=None):
-        """
-        Convert dataframe with flattened matrix back into full matrix with
-        shape N X j (j=15 in this case)
-
-        returns DataFrame un-flattened DataFrame
-        """
-
-        # dataframe df should already be sorted by i and j in extrapolate
-        # df.sort_values(by=["i", "j"], inplace=True)
-
-        var = df[var_name].values
-        max_i = int(df.i.max()) + 1
-        max_j = int(df.j.max()) + 1
-        var = var.reshape(max_i, max_j)
-
-        df = pd.DataFrame(var, columns=column_names, dtype=dtype,
-                          index=self.index)
-
-        return df
-
-    @staticmethod
-    def _repeating_ravel(shape, apply_to=None):
-        """
-        Convert 1-D array of length N into array of length N * j where j
-        is the number of columns in some matrix with which we intend to
-        match this array. Each entry in apply_to is repeated j times.
-
-        returns extended array
-        """
-        if apply_to is None:
-            apply_to = np.arange(shape[0], dtype=np.int32)
-        assert(isinstance(apply_to, np.ndarray))
-        assert (apply_to.shape[0] == shape[0])
-        i = np.tile(apply_to, shape[1])
-        i = i.reshape(shape[1], shape[0])
-        i = i.T.ravel()
-        return i
-
-    @staticmethod
-    def _ravel_data(WT, I, benefits, prob):
-        """
-        Flattens matrices into 1-D arrays and stacks them into a DataFrame
-
-        returns DataFrame with flattened matrices
-        """
-        wt_arr = np.array(WT)
-        I_arr = np.array(I)
-        benefits_arr = np.array(benefits)
-        prob_arr = np.array(prob)
-
-        I_wt = (wt_arr * I_arr.T).T
-        benefits_wt = (wt_arr * benefits_arr.T).T
-        wt_rav = Benefits._repeating_ravel(I_arr.shape, apply_to=wt_arr)
-
-        # create indices
-        i = Benefits._repeating_ravel(I_arr.shape)
-        j = np.arange(I_arr.shape[0] * I_arr.shape[1]) % I_arr.shape[1]
-
-        # stack and create data frame with all individuals
-        extrap_arr = np.vstack((prob_arr.ravel(), I_arr.ravel(), I_wt.ravel(),
-                                wt_rav, benefits_arr.ravel(),
-                                benefits_wt.ravel(), i, j)).T
-        extrap_df = pd.DataFrame(extrap_arr,
-                                 columns=["prob", "I", "I_wt", "WT",
-                                          "benefits", "benefits_wt", "i", "j"])
-        return extrap_df
+        result.I_wt = result.I * result.wt
+        finish = time.time()
+        print('finish - df_create', finish - df_create)
+        print('total time', finish - start)
+        return result.I.unstack(), result.benefits.unstack()
 
 
     def _read_data(self, growth_rates, cps_benefit, cps_weights,
@@ -267,11 +208,13 @@ class Benefits():
             base_benefits_col = [col for col in list(cps_benefit) if
                                  col.startswith('{0}_VAL'.format(benefit.upper()))]
             base_benefits = cps_benefit[base_benefits_col]
-
+            base_benefits.columns = list(range(len(base_benefits.columns)))
             # Create Participation targets from tax-unit individual level markers
             # and growth rates from SSA
             base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0),
-                                              index=self.index)
+                                              index=self.index,
+                                              columns=list(range(len(base_benefits.columns))))
+
 
             # print(benefit,'value_counts baseline')
             # print(base_participation.sum(axis=1).value_counts())
@@ -288,7 +231,6 @@ class Benefits():
             # dataframe of number participants and total benefits from program
             benefit_extrapolation['{}_recipients_2014'.format(benefit)] = base_participation.sum(axis=1)
             benefit_extrapolation['{}_benefits_2014'.format(benefit)] = cps_benefit[benefit + '_ben']
-            print(benefit_extrapolation)
             setattr(self, '{}_prob'.format(benefit), prob)
             setattr(self, '{}_base_participation'.format(benefit), base_participation)
             setattr(self, '{}_base_benefits'.format(benefit), base_benefits)
