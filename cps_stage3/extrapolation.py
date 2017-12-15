@@ -43,6 +43,8 @@ class Benefits():
                                       prob,
                                       participant_targets[self.current_year],
                                       tol=tol)
+            # part_wt = pd.concat(participation.sum(axis=1), WT)
+            # extrapolated = part_wt.
             extrapolated = (participation.sum(axis=1) * WT).sum()
             print(benefit, 'this year total is ', extrapolated,
                   ', target is ', participant_targets[self.current_year],
@@ -62,7 +64,6 @@ class Benefits():
 
             setattr(self, '{}_participation'.format(benefit), participation)
             setattr(self, '{}_benefits'.format(benefit), benefits)
-
 
     @staticmethod
     def _extrapolate(WT, I, benefits, prob, target, tol=0.01, J=15):
@@ -91,32 +92,14 @@ class Benefits():
                 updated values
         """
         start = time.time()
-        wt_ext = pd.concat([WT for i in range(0, J)], axis=1)
-        wt_ext.columns = list(range(0, J))
 
-        wt_stack = wt_ext.stack()
-        I_stack = I.stack()
-        ben_stack = benefits.stack()
-        prob_stack = prob.stack()
-
-        stacked = time.time()
-        print('stacked - start', stacked - start)
-        extrap_df = pd.concat(
-            (wt_stack, I_stack, ben_stack, prob_stack),
-            axis=1
-        )
-        df_create = time.time()
-        print('df_create - stacked', df_create - stacked)
-        extrap_df.columns = ['wt', 'I', 'benefits', 'prob']
-        extrap_df["I_wt"] = extrap_df.I * extrap_df.wt
-        extrap_df["benefits_wt"] = extrap_df.benefits * extrap_df.wt
+        extrap_df = Benefits._stack_df(WT, I, benefits, prob, J)
 
         receives = extrap_df.loc[extrap_df.I > 0, ]
         avg_benefit = receives.benefits_wt.sum() / receives.I_wt.sum()
 
         actual = extrap_df.I_wt.sum()
         diff = actual - target
-        print('diff', diff)
         if diff < 0:
             remove = False
             candidates = extrap_df.loc[extrap_df.I == 0, ]
@@ -168,10 +151,31 @@ class Benefits():
 
         result.I_wt = result.I * result.wt
         finish = time.time()
-        print('finish - df_create', finish - df_create)
         print('total time', finish - start)
-        return result.I.unstack(), result.benefits.unstack()
+        I = result.I.unstack().sort_index()
+        benefits = result.benefits.unstack().sort_index()
 
+        return I, benefits
+
+    @staticmethod
+    def _stack_df(WT, I, benefits, prob, J):
+        wt_ext = pd.concat([WT for i in range(0, J)], axis=1)
+        wt_ext.columns = list(range(0, J))
+
+        wt_stack = wt_ext.stack()
+        I_stack = I.stack()
+        ben_stack = benefits.stack()
+        prob_stack = prob.stack()
+
+        extrap_df = pd.concat(
+            (wt_stack, I_stack, ben_stack, prob_stack),
+            axis=1
+        )
+        extrap_df.columns = ['wt', 'I', 'benefits', 'prob']
+        extrap_df["I_wt"] = extrap_df.I * extrap_df.wt
+        extrap_df["benefits_wt"] = extrap_df.benefits * extrap_df.wt
+
+        return extrap_df
 
     def _read_data(self, growth_rates, cps_benefit, cps_weights,
                    cps=None, benefit_names=[]):
@@ -253,6 +257,9 @@ class Benefits():
         self.benefit_extrapolation = benefit_extrapolation
 
 
+
+
+
 if __name__ == "__main__":
     ben = Benefits()
 
@@ -269,11 +276,18 @@ if __name__ == "__main__":
     # drop records with no benefits
     col_list = ben.benefit_extrapolation.columns
     mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
-    ben.benefit_extrapolation = deepcopy(ben.benefit_extrapolation[mask != 0])
 
-    ben.benefit_extrapolation.to_csv("cps_benefits_extrap.csv.gz", index=False,
+    gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
+    gets_benefits.to_csv("cps_benefits_extrap.csv.gz", index=False,
                                      compression="gzip")
 
+    no_benefits = deepcopy(ben.benefit_extrapolation[mask == 0])
+    no_benefits.to_csv("cps_no_benefits_extrap.csv.gz", index=False,
+                                     compression="gzip")
+
+    # probs = ben.attach_probs()
+    # probs.to_csv("cps_benefits_extrap_w_probs.csv.gz", index=True,
+    #              compression="gzip")
 
 
     # ravel_test(indicator, benefits, prob, CPS_weights)
