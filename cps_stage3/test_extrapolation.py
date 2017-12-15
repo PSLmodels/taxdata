@@ -4,36 +4,6 @@ import pytest
 
 from extrapolation import Benefits
 
-def test_ravel():
-    """
-    Test that ravel(unravel(data)) == data
-    """
-    ben = Benefits()
-    indicator = ben.ssi_participation
-    benefits = ben.ssi_benefits
-    prob = ben.ssi_prob
-
-    wt = ben.WT.loc[:, 'WT2015']
-
-    extrap_df = Benefits._ravel_data(wt.copy(), indicator.copy(),
-                                         benefits.copy(), prob.copy())
-    # shuffle dataframe first
-    extrap_df = extrap_df.sample(frac=1)
-    extrap_df.sort_values(by=["i", "j"], inplace=True)
-
-    I_unrav = Benefits._unravel_data(extrap_df, "I",
-                                                 indicator.columns.tolist(),
-                                                 dtype=np.int64)
-    ben_unrav = Benefits._unravel_data(extrap_df, "benefits",
-                                                   benefits.columns.tolist(),
-                                                   dtype=np.float64)
-    prob_unrav = Benefits._unravel_data(extrap_df, "prob",
-                                                    prob.columns.tolist(),
-                                                    dtype=np.float64)
-
-    pd.testing.assert_frame_equal(indicator, I_unrav, check_dtype=False)
-    pd.testing.assert_frame_equal(benefits, ben_unrav, check_dtype=False)
-    pd.testing.assert_frame_equal(prob, prob_unrav, check_dtype=False)
 
 
 def test_add_participants():
@@ -45,53 +15,79 @@ def test_add_participants():
     benefit_names = ["medicare"]
     ben = Benefits(benefit_names=benefit_names)
 
-    shape = ben.medicare_participation.shape
-    recid_ravel = Benefits._repeating_ravel(shape,
-                                            ben.medicare_participation.index.values)
+    recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)], axis=1)
+    recid_ext.columns = list(range(15))
+    recid_stack = recid_ext.stack()
 
-    ravel_df = Benefits._ravel_data(
-        WT=ben.WT.loc[:, 'WT2015'].values * 0.01,
+    stack_df = Benefits._stack_df(
+        WT=ben.WT.loc[:, 'WT2015'] * 0.01,
         I=ben.medicare_participation,
         benefits=ben.medicare_benefits,
-        prob=ben.medicare_prob
+        prob=ben.medicare_prob,
+        J=15
     )
-    ravel_df['recid'] = recid_ravel
+    stack_df = pd.concat((stack_df, recid_stack), axis=1)
 
     target = ben.medicare_participant_targets[2015]
 
-    candidates = ravel_df.loc[ravel_df.I == 0, ].copy()
+    candidates = stack_df.loc[stack_df.I == 0, ].copy()
+    for ix in candidates.index.values[:min(100, len(candidates.index))]:
+        assert np.allclose(
+            ben.medicare_participation.loc[ix[0], ix[1]],
+            np.zeros(1)
+        )
     assert candidates.I.sum() == 0
     candidates.loc[:, "I"] = np.ones(len(candidates))
-    candidates.loc[:, "I_wt"] = candidates.I * candidates.WT
+    candidates.loc[:, "I_wt"] = candidates.I * candidates.wt
 
-    noncandidates = ravel_df.loc[ravel_df.I > 0, ].copy()
+    noncandidates = stack_df.loc[stack_df.I > 0, ].copy()
     assert noncandidates.I.sum() == len(noncandidates)
 
     candidates.sort_values("prob", inplace=True, ascending=False)
     noncan_part = noncandidates["I_wt"].sum()
     candidates["cum_participants"] = candidates["I_wt"].cumsum() + noncan_part
     candidates["_diff"] = candidates["cum_participants"] - target
+    # # check to make results are close enough
+    assert np.allclose(
+        candidates[candidates._diff <= 0].cum_participants.max(), target,
+        atol=0.0, rtol=0.01
+    )
 
-    keeps_benefits = candidates.loc[candidates._diff <= 0, ["recid", "j", "prob", "_diff", "cum_participants"]]
-    loses_benefits = candidates.loc[candidates._diff > 0, ["recid", "j", "prob", "_diff", "cum_participants"]]
+    keeps_benefits = candidates.loc[candidates._diff <= 0, ["prob", "_diff"]]
+    loses_benefits = candidates.loc[candidates._diff > 0, ["prob", "_diff"]]
 
-    for df in [keeps_benefits, loses_benefits]:
-        for _, row in df.iterrows():
-            assert np.allclose(
-                ben.medicare_participation.iloc[int(row['recid'])][row['j']],
-                np.zeros(1)
-            )
+    keep = pd.concat(
+        (keeps_benefits.nlargest(10, "prob"),
+         keeps_benefits.nsmallest(10, "prob")),
+        axis=0
+    )
+    lose = pd.concat(
+        (loses_benefits.nlargest(10, "prob"),
+         loses_benefits.nsmallest(10, "prob")),
+        axis=0
+    )
+
+    for ix in keep.index.values:
+        assert np.allclose(
+            ben.medicare_participation.loc[ix[0], ix[1]],
+            np.zeros(1)
+        )
+    for ix in lose.index.values:
+        assert np.allclose(
+            ben.medicare_participation.loc[ix[0], ix[1]],
+            np.zeros(1)
+        )
 
     ben.increment_year()
 
-    for _, row in keeps_benefits.iterrows():
+    for ix in keep.index.values:
         assert np.allclose(
-            ben.medicare_participation.iloc[int(row['recid'])][row['j']],
+            ben.medicare_participation.loc[ix[0], ix[1]],
             np.ones(1)
         )
-    for _, row in loses_benefits.iterrows():
+    for ix in lose.index.values:
         assert np.allclose(
-            ben.medicare_participation.iloc[int(row['recid'])][row['j']],
+            ben.medicare_participation.loc[ix[0], ix[1]],
             np.zeros(1)
         )
 
@@ -105,54 +101,77 @@ def test_remove_participants():
     benefit_names = ["snap"]
     ben = Benefits(benefit_names=benefit_names)
 
-    shape = ben.snap_participation.shape
-    recid_ravel = Benefits._repeating_ravel(shape,
-                                            ben.snap_participation.index.values)
+    recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)], axis=1)
+    recid_ext.columns = list(range(15))
+    recid_stack = recid_ext.stack()
 
-    ravel_df = Benefits._ravel_data(
-        WT=ben.WT.loc[:, 'WT2015'].values * 0.01,
+    stack_df = Benefits._stack_df(
+        WT=ben.WT.loc[:, 'WT2015'] * 0.01,
         I=ben.snap_participation,
         benefits=ben.snap_benefits,
-        prob=ben.snap_prob
+        prob=ben.snap_prob,
+        J=15
     )
-    ravel_df['recid'] = recid_ravel
+    stack_df = pd.concat((stack_df, recid_stack), axis=1)
 
     target = ben.snap_participant_targets[2015]
 
-    candidates = ravel_df.loc[ravel_df.I > 0, ].copy()
-    assert candidates.I.sum() == len(candidates)
-    noncandidates = ravel_df.loc[ravel_df.I == 0, ].copy()
-    assert noncandidates.I.sum() == 0
+    candidates = stack_df.loc[stack_df.I > 0, ].copy()
+    for ix in candidates.index.values:
+        assert np.allclose(
+            ben.snap_participation.loc[ix[0], ix[1]],
+            np.ones(1)
+        )
 
+    assert candidates.I.sum() == len(candidates)
+    noncandidates = stack_df.loc[stack_df.I == 0, ].copy()
+    assert noncandidates.I.sum() == 0
 
     candidates.sort_values("prob", inplace=True, ascending=False)
     noncan_part = noncandidates["I_wt"].sum()
     candidates["cum_participants"] = candidates["I_wt"].cumsum() + noncan_part
     candidates["_diff"] = candidates["cum_participants"] - target
+    # # check to make results are close enough
+    assert np.allclose(
+        candidates[candidates._diff <= 0].cum_participants.max(), target,
+        atol=0.0, rtol=0.01
+    )
 
-    keeps_benefits = candidates.loc[candidates._diff <= 0, ["recid", "j", "prob", "_diff", "cum_participants"]]
-    loses_benefits = candidates.loc[candidates._diff > 0, ["recid", "j", "prob", "_diff", "cum_participants"]]
+    keeps_benefits = candidates.loc[candidates._diff <= 0, ["prob", "_diff"]]
+    loses_benefits = candidates.loc[candidates._diff > 0, ["prob", "_diff"]]
 
-    # last_keep = keeps_benefits.nsmallest(len(keeps_benefits), "prob")
-    # first_lose = loses_benefits.nlargest(len(loses_benefits), "prob")
+    keep = pd.concat(
+        (keeps_benefits.nlargest(10, "prob"),
+         keeps_benefits.nsmallest(10, "prob")),
+        axis=0
+    )
+    lose = pd.concat(
+        (loses_benefits.nlargest(10, "prob"),
+         loses_benefits.nsmallest(10, "prob")),
+        axis=0
+    )
 
-    for df in [keeps_benefits, loses_benefits]:
-        for _, row in df.iterrows():
-            assert np.allclose(
-                ben.snap_participation.iloc[int(row['recid'])][row['j']],
-                np.ones(1)
-            )
+    for ix in keep.index.values:
+        assert np.allclose(
+            ben.snap_participation.loc[ix[0], ix[1]],
+            np.ones(1)
+        )
+    for ix in lose.index.values:
+        assert np.allclose(
+            ben.snap_participation.loc[ix[0], ix[1]],
+            np.ones(1)
+        )
 
     ben.increment_year()
 
-    for _, row in keeps_benefits.iterrows():
+    for ix in keep.index.values:
         assert np.allclose(
-            ben.snap_participation.iloc[int(row['recid'])][row['j']],
+            ben.snap_participation.loc[ix[0], ix[1]],
             np.ones(1)
         )
-    for _, row in loses_benefits.iterrows():
+    for ix in lose.index.values:
         assert np.allclose(
-            ben.snap_participation.iloc[int(row['recid'])][row['j']],
+            ben.snap_participation.loc[ix[0], ix[1]],
             np.zeros(1)
         )
 
@@ -162,10 +181,10 @@ def test_add_particpants_small():
     Check that entry with lowest probablity but is a participant is NOT removed
     and that entry highest probablity is added
     """
-    wt = np.ones(10)
+    wt = pd.Series(np.ones(10))
     I = pd.DataFrame({'I': [1, 1, 0, 1, 1, 0, 0, 0, 1, 0]})
     benefits = pd.DataFrame([10, 10, 0, 10, 10, 0, 0, 0, 10, 0])
-    prob = [0.0, 0.9, 0.8, 0.9, 0.1, 0.0, 0.7, 0.0, 0.1, 1.0]
+    prob = pd.DataFrame([0.0, 0.9, 0.8, 0.9, 0.1, 0.0, 0.7, 0.0, 0.1, 1.0])
 
     target_part = 6
 
@@ -197,45 +216,3 @@ def test_remove_participants_small():
 
     assert np.allclose(I_act.values.ravel(), I_exp)
     assert np.allclose(ben_act.values.ravel(), ben_exp)
-
-
-def test_repeating_ravel():
-    test = np.array([5,6,7,8])
-    act = Benefits._repeating_ravel((4,2), apply_to=test)
-    exp = np.array([5, 5, 6, 6, 7, 7, 8, 8])
-
-    assert np.allclose(act, exp)
-
-
-def test_unravel_data():
-    test_df = pd.DataFrame({'i': [0, 0, 1, 1, 2, 2, 3, 3],
-                            'j': [0, 1, 0, 1, 0, 1, 0, 1],
-                            'var': [2, 3, 5, 7, 11, 13, 17, 19]})
-    act = Benefits._unravel_data(test_df, 'var', ['var0', 'var1'])
-    exp = pd.DataFrame({'var0': [2, 5, 11, 17],
-                        'var1': [3, 7, 13, 19]})
-
-    pd.testing.assert_frame_equal(exp, act, check_dtype=False)
-
-
-def test_ravel_data():
-    wt = [1, 2, 3, 4, 5, 6]
-    I = np.array([[1, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1]]).T
-    benefits = np.array([[9, 10, 11, 10, 9, 0], [0, 9, 10, 11, 10, 9]]).T
-    prob = np.array([[0.9, 0.8, 0.7, 0.6, 0.5, 0.1],
-                     [0.1, 0.5, 0.6, 0.7, 0.8, 0.9]]).T
-
-    I_wt_exp = np.array([1, 0, 2, 2, 3, 3, 4, 4, 5, 5, 0, 6])
-    benefits_wt_exp = np.array([9, 0, 20, 18, 33, 30, 40, 44, 45, 50, 0, 54])
-    prob_exp = np.array([0.9, 0.1, 0.8, 0.5, 0.7, 0.6, 0.6, 0.7,
-                         0.5, 0.8, 0.1, 0.9])
-    i_exp = np.array([0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
-    j_exp = np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
-
-    act = Benefits._ravel_data(wt, I, benefits, prob)
-
-    assert np.allclose(act.I_wt.values, I_wt_exp)
-    assert np.allclose(act.benefits_wt.values, benefits_wt_exp)
-    assert np.allclose(act.prob.values, prob_exp)
-    assert np.allclose(act.i.values, i_exp)
-    assert np.allclose(act.j.values, j_exp)
