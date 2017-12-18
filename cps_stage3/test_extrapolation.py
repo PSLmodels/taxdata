@@ -31,7 +31,7 @@ def test_add_participants():
     target = ben.medicare_participant_targets[2015]
 
     candidates = stack_df.loc[stack_df.I == 0, ].copy()
-    for ix in candidates.index.values[:min(100, len(candidates.index))]:
+    for ix in candidates.index.values[:min(100, len(candidates))]:
         assert np.allclose(
             ben.medicare_participation.loc[ix[0], ix[1]],
             np.zeros(1)
@@ -117,7 +117,7 @@ def test_remove_participants():
     target = ben.snap_participant_targets[2015]
 
     candidates = stack_df.loc[stack_df.I > 0, ].copy()
-    for ix in candidates.index.values:
+    for ix in candidates.index.values[:min(100, len(candidates))]:
         assert np.allclose(
             ben.snap_participation.loc[ix[0], ix[1]],
             np.ones(1)
