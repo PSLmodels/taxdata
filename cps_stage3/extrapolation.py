@@ -284,10 +284,3 @@ if __name__ == "__main__":
     no_benefits = deepcopy(ben.benefit_extrapolation[mask == 0])
     no_benefits.to_csv("cps_no_benefits_extrap.csv.gz", index=False,
                                      compression="gzip")
-
-    # probs = ben.attach_probs()
-    # probs.to_csv("cps_benefits_extrap_w_probs.csv.gz", index=True,
-    #              compression="gzip")
-
-
-    # ravel_test(indicator, benefits, prob, CPS_weights)
