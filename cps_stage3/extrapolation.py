@@ -277,13 +277,13 @@ if __name__ == "__main__":
     col_list = ben.benefit_extrapolation.columns
     mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
 
-    ben.benefit_extrapolation.to_csv("cps_all_benefits_extrap.csv.gz", index=False,
+    ben.benefit_extrapolation.to_csv("cps_benefits_extrap.csv.gz", index=False,
                                      compression="gzip")
 
-    gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
-    gets_benefits.to_csv("cps_benefits_extrap.csv.gz", index=False,
-                                     compression="gzip")
-
-    no_benefits = deepcopy(ben.benefit_extrapolation[mask == 0])
-    no_benefits.to_csv("cps_no_benefits_extrap.csv.gz", index=False,
-                                     compression="gzip")
+    # gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
+    # gets_benefits.to_csv("cps_benefits_extrap.csv.gz", index=False,
+    #                                  compression="gzip")
+    #
+    # no_benefits = deepcopy(ben.benefit_extrapolation[mask == 0])
+    # no_benefits.to_csv("cps_no_benefits_extrap.csv.gz", index=False,
+    #                                  compression="gzip")
