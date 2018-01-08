@@ -1,3 +1,8 @@
+"""
+Run the tests from the cps_stage3 directory using the following command:
+py.test test_extrapolation.py
+"""
+
 import pandas as pd
 import numpy as np
 import pytest
