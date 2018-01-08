@@ -108,26 +108,6 @@ def test_add_participants():
             np.zeros(1)
         )
 
-    # get total participants for each tax unit and compare with
-    # benefit_extrapolation
-    noncan_taxunit = noncandidates.sum(level="SEQUENCE")
-    noncan_merge = pd.merge(noncan_taxunit, ben.benefit_extrapolation,
-                            how="inner", left_index=True, right_index=True)
-    # Fails since this benefit_extrapolation units may contain candidates
-    # first assertion statement passes since all candidates do not participate
-    pd.testing.assert_series_equal(
-        noncan_merge.I,
-        noncan_merge.medicare_recipients_2014,
-        check_names=False,
-        check_dtype=False
-    )
-    pd.testing.assert_series_equal(
-        noncan_merge.I,
-        noncan_merge.medicare_recipients_2015,
-        check_names=False,
-        check_dtype=False
-    )
-
 
 def test_remove_participants():
     """
@@ -229,22 +209,3 @@ def test_remove_participants():
             ben.snap_participation.loc[ix[0], ix[1]],
             np.zeros(1)
         )
-
-    # get total participants for each tax unit and compare with
-    # benefit_extrapolation
-    noncan_taxunit = noncandidates.sum(level="SEQUENCE")
-    noncan_merge = pd.merge(noncan_taxunit, ben.benefit_extrapolation,
-                            how="inner", left_index=True, right_index=True)
-    # Fails since this benefit_extrapolation units may contain candidates
-    pd.testing.assert_series_equal(
-        noncan_merge.I,
-        noncan_merge.snap_recipients_2014,
-        check_names=False,
-        check_dtype=False
-    )
-    pd.testing.assert_series_equal(
-        noncan_merge.I,
-        noncan_merge.snap_recipients_2015,
-        check_names=False,
-        check_dtype=False
-    )
