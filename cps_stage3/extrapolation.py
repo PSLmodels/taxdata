@@ -278,5 +278,6 @@ if __name__ == "__main__":
     mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
 
     gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
-    gets_benefits.to_csv("cps_benefits.csv.gz", index=False,
+    int_gets_benefits = gets_benefits.astype(np.int32)
+    int_gets_benefits.to_csv("cps_benefits.csv.gz", index=False,
                                      compression="gzip")
