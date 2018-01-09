@@ -102,19 +102,19 @@ class Benefits():
         diff = actual - target
         if diff < 0:
             remove = False
-            candidates = extrap_df.loc[extrap_df.I == 0, ]
+            candidates = extrap_df.loc[extrap_df.I == 0, ].copy()
             assert candidates.I.sum() == 0
             # set everyone as a participant and then remove surplus below
             # this is necessary since I * wt will all be zeroes
             candidates.loc[:, "I"] = np.ones(len(candidates))
             candidates.loc[:, "I_wt"] = candidates.I * candidates.wt
-            noncandidates = extrap_df.loc[extrap_df.I == 1, ]
+            noncandidates = extrap_df.loc[extrap_df.I == 1, ].copy()
             assert noncandidates.I.sum() == len(noncandidates)
         else:
             remove = True
-            candidates = extrap_df.loc[extrap_df.I == 1, ]
+            candidates = extrap_df.loc[extrap_df.I == 1, ].copy()
             assert candidates.I.sum() == len(candidates)
-            noncandidates = extrap_df.loc[extrap_df.I == 0, ]
+            noncandidates = extrap_df.loc[extrap_df.I == 0, ].copy()
             assert noncandidates.I.sum() == 0
         noncan_part = noncandidates.I_wt.sum()
         del extrap_df
