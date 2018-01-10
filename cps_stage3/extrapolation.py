@@ -6,15 +6,15 @@ import time
 
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
-    CPS_BENEFIT_PATH = '../cps_data/cps_raw.csv.gz'
+    CPS_BENEFIT_PATH = '../cps_data/cps_raw_rename.csv.gz'
     CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
 
     def __init__(self,
                  growth_rates=GROWTH_RATES_PATH,
                  cps_benefit=CPS_BENEFIT_PATH,
                  cps_weights=CPS_WEIGHTS_PATH,
-                 benefit_names=["ssi", "medicaid", "medicare",
-                                "vb", "snap", "ss"]):
+                 benefit_names=["ssi", "mcaid", "mcare",
+                                "vet", "snap", "oasdi"]):
         benefit_names = [bn.lower() for bn in benefit_names]
         self._read_data(growth_rates, cps_benefit, cps_weights,
                         benefit_names=benefit_names)
@@ -57,7 +57,7 @@ class Benefits():
             self.benefit_extrapolation[lab] = participation.sum(axis=1)
 
             total_current_benefits = (benefits.sum(axis=1) * WT).sum()
-            lab = benefit + '_benefits_' + str(self.current_year)
+            lab = benefit + str(self.current_year)
             self.benefit_extrapolation[lab] = \
                 (benefits.sum(axis=1) *
                  benefit_targets[self.current_year] / total_current_benefits)
@@ -203,7 +203,7 @@ class Benefits():
         for benefit in benefit_names:
 
             # create benefit targets
-            benefit_2014 = (cps_benefit[benefit + '_ben'] * cps_benefit.s006).sum()
+            benefit_2014 = (cps_benefit[benefit] * cps_benefit.s006).sum()
             benefit_targets = benefit_2014 * (1 + growth_rates['{0}_benefit_growth'
                                                                .format(benefit)])
             benefit_targets = benefit_targets[1:]
@@ -234,7 +234,7 @@ class Benefits():
 
             # dataframe of number participants and total benefits from program
             benefit_extrapolation['{}_recipients_2014'.format(benefit)] = base_participation.sum(axis=1)
-            benefit_extrapolation['{}_benefits_2014'.format(benefit)] = cps_benefit[benefit + '_ben']
+            benefit_extrapolation['{}_benefits_2014'.format(benefit)] = cps_benefit[benefit]
             setattr(self, '{}_prob'.format(benefit), prob)
             setattr(self, '{}_base_participation'.format(benefit), base_participation)
             setattr(self, '{}_base_benefits'.format(benefit), base_benefits)
@@ -257,9 +257,6 @@ class Benefits():
         self.benefit_extrapolation = benefit_extrapolation
 
 
-
-
-
 if __name__ == "__main__":
     ben = Benefits()
 
@@ -276,7 +273,6 @@ if __name__ == "__main__":
     # drop records with no benefits
     col_list = ben.benefit_extrapolation.columns
     mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
-
     gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
     int_gets_benefits = gets_benefits.astype(np.int32)
     int_gets_benefits.to_csv("cps_benefits.csv.gz", index=False,
