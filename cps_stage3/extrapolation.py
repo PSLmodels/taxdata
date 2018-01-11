@@ -57,7 +57,7 @@ class Benefits():
             self.benefit_extrapolation[lab] = participation.sum(axis=1)
 
             total_current_benefits = (benefits.sum(axis=1) * WT).sum()
-            lab = benefit + str(self.current_year)
+            lab = benefit + '_' + str(self.current_year)
             self.benefit_extrapolation[lab] = \
                 (benefits.sum(axis=1) *
                  benefit_targets[self.current_year] / total_current_benefits)
@@ -234,7 +234,7 @@ class Benefits():
 
             # dataframe of number participants and total benefits from program
             benefit_extrapolation['{}_recipients_2014'.format(benefit)] = base_participation.sum(axis=1)
-            benefit_extrapolation['{}_benefits_2014'.format(benefit)] = cps_benefit[benefit]
+            benefit_extrapolation['{}_2014'.format(benefit)] = cps_benefit[benefit]
             setattr(self, '{}_prob'.format(benefit), prob)
             setattr(self, '{}_base_participation'.format(benefit), base_participation)
             setattr(self, '{}_base_benefits'.format(benefit), base_benefits)
