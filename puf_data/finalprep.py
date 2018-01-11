@@ -18,7 +18,7 @@ def main():
     renames = {
         'XHID': 'h_seq',
         'XFID': 'ffpos',
-        'XSTATE': 'fips'
+        'xstate': 'fips'
     }
     data = data.rename(columns=renames)
 
