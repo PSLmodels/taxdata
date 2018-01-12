@@ -52,7 +52,7 @@ def main():
         'vb_ben': 'vet_ben',
         'medicare_ben': 'mcare_ben',
         'medicaid_ben': 'mcaid_ben',
-        'SS': 'ss_ben',
+        'SS': 'oasdi_ben',
         'SNAP': 'snap_ben',
         'SLTX': 'e18400',
         'XHID': 'h_seq',
