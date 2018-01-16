@@ -126,12 +126,12 @@ rename = {
     'OASDI_VAL9': 'SS_VAL9',
 }
 rename_lower = {
-    'ssi_ben': 'ssi',
+    'SSI': 'ssi',
     'vb_ben': 'vet',
-    'snap_ben': 'snap',
+    'SNAP': 'snap',
     'medicare_ben': 'mcare',
     'medicaid_ben': 'mcaid',
-    'ss_ben': 'oasdi'
+    'SS': 'oasdi'
 }
 
 rev_rename = {rename[k]: k for k in rename}

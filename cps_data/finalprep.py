@@ -10,7 +10,7 @@ def main():
     # Import CPS data file
     data = pd.read_csv('cps_raw.csv.gz', compression='gzip')
     adj_targets = pd.read_csv('adjustment_targets.csv')
-    # other_ben = pd.read_csv('benefitprograms.csv')
+    other_ben = pd.read_csv('benefitprograms.csv')
 
     # Rename specified variables
     renames = {
@@ -48,11 +48,11 @@ def main():
         'BLIND_HEAD': 'blind_head',
         'BLIND_SPOUSE': 'blind_spouse',
         'HMIE': 'e19200',
-        'SSI': 'ssi_ben',
+        'SS': 'oasdi_ben',
         'vb_ben': 'vet_ben',
         'medicare_ben': 'mcare_ben',
         'medicaid_ben': 'mcaid_ben',
-        'SS': 'oasdi_ben',
+        'SSI': 'ssi_ben',
         'SNAP': 'snap_ben',
         'SLTX': 'e18400',
         'XHID': 'h_seq',
@@ -88,7 +88,7 @@ def main():
     print 'Adjusting distribution'
     data = adjust(data, adj_targets)
     # print 'Adding Benefits Data'
-    # data = benefits(data, other_ben)
+    data = benefits(data, other_ben)
     print 'Dropping unused variables'
     data = drop_vars(data)
 
@@ -200,8 +200,8 @@ def drop_vars(data):
         'e87530', 'elderly_dependent', 'f2441', 'f6251', 'filer', 'n24',
         'nu05', 'nu13', 'nu18', 'n1821', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
-        'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben',
-        'total_ben', 'h_seq', 'ffpos', 'fips'
+        'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
+        'h_seq', 'ffpos', 'fips'
     ]
 
     drop_vars = []
@@ -367,9 +367,7 @@ def benefits(data, other_ben):
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] + data['s006']).sum())
     data['other_ben'] = data['ratio'] * other_ben['Cost'].sum() / data['s006']
-    data['total_ben'] = (data['mcaid_ben'] + data['mcare_ben'] +
-                         data['ssi_ben'] + data['snap_ben'] + data['ss_ben'] +
-                         data['vet_ben'] + data['other_ben'])
+
     return data
 
 
