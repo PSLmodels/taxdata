@@ -127,10 +127,10 @@ rename = {
 }
 rename_lower = {
     'SSI': 'ssi',
-    'vb_ben': 'vet',
+    'VB': 'vet',
     'SNAP': 'snap',
-    'medicare_ben': 'mcare',
-    'medicaid_ben': 'mcaid',
+    'MEDICARE': 'mcare',
+    'MEDICAID': 'mcaid',
     'SS': 'oasdi'
 }
 

@@ -265,9 +265,13 @@ if __name__ == "__main__":
 
     # drop unnecessary variables
     drop_list = []
+    # drop all recipient columns
     for year in range(2014, 2027 + 1):
         for benefit in ben.benefit_names:
             drop_list.append('{}_recipients_{}'.format(benefit, year))
+    # drop 2014 values
+    for benefit in ben.benefit_names:
+        drop_list.append('{}_2014'.format(benefit))
     ben.benefit_extrapolation = ben.benefit_extrapolation.drop(drop_list,
                                                                axis=1)
     # drop records with no benefits
@@ -276,4 +280,4 @@ if __name__ == "__main__":
     gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
     int_gets_benefits = gets_benefits.astype(np.int32)
     int_gets_benefits.to_csv("cps_benefits.csv.gz", index=False,
-                                     compression="gzip")
+                             compression="gzip")
