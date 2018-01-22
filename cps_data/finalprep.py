@@ -365,8 +365,10 @@ def benefits(data, other_ben):
     data['dist_ben'] = (data['mcaid_ben'] + data['ssi_ben'] +
                         data['snap_ben'] + data['vet_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
-                     (data['dist_ben'] + data['s006']).sum())
-    data['other_ben'] = data['ratio'] * other_ben['Cost'].sum() / data['s006']
+                     (data['dist_ben'] * data['s006']).sum())
+    other_ben['2014_cost'] *= 1e6
+    data['other_ben'] = (data['ratio'] * other_ben['2014_cost'].sum() /
+                         data['s006'])
 
     # Convert benefit data to integers
     data['mcaid_ben'] = data['mcaid_ben'].astype(np.int32)
