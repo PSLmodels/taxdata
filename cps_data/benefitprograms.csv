@@ -1,34 +1,32 @@
-Program,Cost
-Railroad retirement (excl. social security),8803
-Unemployment Assistance,43504
-Children's health insurance,9317
-Indian health,4510
-Health resources and services,7604
-Substance abuse and mental health services,3193
-Center for Medicare and Medicaid Innovation,997
-Refundable Premium Tax Credit and Cost Sharing Reductions,13068
-Other,12834
-Student assistance--Department of Education and other,56337
-Housing assistance,46600
-Child nutrition and special milk programs,19490
-Supplemental feeding programs (WIC and CSFP),6266
-Commodity donations and other,823
-Family support payments to States and TANF,20378
-Low income home energy assistance,3537
-Payments to States for daycare assistance,5064
-Veterans non-service connected pensions,5251
-Payments to States--Foster Care/Adoption Assist.,6868
-Payment where child credit exceeds tax liability,21490
-Other public assistance,1071
-Coal miners and black lung benefits,426
-Aging services programs,1462
-Energy employees compensation fund,1052
-September 11th victim compensation,49
-Refugee assistance and other,4403
-351 Farm income stabilization,20012
-352 Agricultural research and services,4374
-451 Community development,7896
-452 Area and regional development,3027
-453 Disaster relief and insurance,9747
-506 Social services,17299
-Earned income tax credit,60087
+Program,Table,Row,2014_cost
+Unemployment Assistance,11.3,16,43504
+Children's health insurance,11.3,20,9317
+Indian health,11.3,22,4510
+Health resources and services,11.3,24,7604
+Substance abuse and mental health services,11.3,25,3193
+Center for Medicare and Medicaid Innovation,11.3,27,997
+Refundable Premium Tax Credit and Cost Sharing Reductions,11.3,28,13068
+Other,11.3,30,12834
+Student assistance--Department of Education and other,11.3,34,56337
+Housing assistance,11.3,36,46600
+Child nutrition and special milk programs,11.3,39,19490
+Supplemental feeding programs (WIC and CSFP),11.3,40,6266
+Commodity donations and other,11.3,41,823
+Family support payments to States and TANF,11.3,45,20378
+Low income home energy assistance,11.3,46,3537
+Payments to States for daycare assistance,11.3,48,5064
+Veterans non-service connected pensions,11.3,49,5251
+Payments to States--Foster Care/Adoption Assist.,11.3,50,6868
+Payment where child credit exceeds tax liability,11.3,51,21490
+Other public assistance,11.3,53,1071
+Coal miners and black lung benefits,11.3,56,426
+Aging services programs,11.3,58,1462
+Energy employees compensation fund,11.3,59,1052
+September 11th victim compensation,11.3,60,49
+Refugee assistance and other,11.3,61,4403
+351 Farm income stabilization,3.2,42,20012
+352 Agricultural research and services,3.2,43,4374
+451 Community development,3.2,62,7896
+452 Area and regional development,3.2,63,3027
+453 Disaster relief and insurance,3.2,64,9747
+506 Social services,3.2,72,17299

@@ -87,7 +87,7 @@ def main():
     data = add_agi_bin(data, 'INCOME')
     print 'Adjusting distribution'
     data = adjust(data, adj_targets)
-    # print 'Adding Benefits Data'
+    print 'Adding Benefits Data'
     data = benefits(data, other_ben)
     print 'Dropping unused variables'
     data = drop_vars(data)
@@ -367,6 +367,15 @@ def benefits(data, other_ben):
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] + data['s006']).sum())
     data['other_ben'] = data['ratio'] * other_ben['Cost'].sum() / data['s006']
+
+    # Convert benefit data to integers
+    data['mcaid_ben'] = data['mcaid_ben'].astype(np.int32)
+    data['mcare_ben'] = data['mcare_ben'].astype(np.int32)
+    data['ssi_ben'] = data['ssi_ben'].astype(np.int32)
+    data['snap_ben'] = data['snap_ben'].astype(np.int32)
+    data['vet_ben'] = data['vet_ben'].astype(np.int32)
+    data['oasdi_ben'] = data['oasdi_ben'].astype(np.int32)
+    data['other_ben'] = data['other_ben'].astype(np.int32)
 
     return data
 
