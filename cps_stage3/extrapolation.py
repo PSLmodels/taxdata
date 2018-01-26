@@ -14,7 +14,7 @@ class Benefits():
                  cps_benefit=CPS_BENEFIT_PATH,
                  cps_weights=CPS_WEIGHTS_PATH,
                  benefit_names=["ssi", "mcaid", "mcare",
-                                "vet", "snap", "oasdi"]):
+                                "vet", "snap"]):
         benefit_names = [bn.lower() for bn in benefit_names]
         self._read_data(growth_rates, cps_benefit, cps_weights,
                         benefit_names=benefit_names)
