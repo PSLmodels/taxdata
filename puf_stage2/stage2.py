@@ -20,9 +20,9 @@ z[:, 0] = puf.s006
 
 # Execute stage2 logic for each year using a year-specific LP tolerance
 z[:, 1] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2010', tol=0.41)
+                            year='2010', tol=0.25)
 z[:, 2] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2011', tol=0.43)
+                            year='2011', tol=0.25)
 z[:, 3] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                             year='2012', tol=0.52)
 z[:, 4] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
@@ -30,7 +30,7 @@ z[:, 4] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
 z[:, 5] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                             year='2014', tol=0.50)
 z[:, 6] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2015', tol=0.51)
+                            year='2015', tol=0.45)
 z[:, 7] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                             year='2016', tol=0.51)
 z[:, 8] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
@@ -63,4 +63,4 @@ z = pd.DataFrame(z,
                           'WT2019', 'WT2020', 'WT2021', 'WT2022', 'WT2023',
                           'WT2024', 'WT2025', 'WT2026', 'WT2027'])
 z = z.round(0).astype('int64')
-z.to_csv('puf_weights.csv', index=False)
+z.to_csv('puf_weights_lp_2.csv', index=False)
