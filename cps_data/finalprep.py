@@ -41,7 +41,7 @@ def main():
         'KEOGH': 'e03300',
         'TIRAD': 'e01400',
         'NU18': 'nu18',
-        'N1821': 'n1821',
+        'N1821': 'n1820',
         'N21': 'n21',
         'CGAGIX': 'e01100',
         'BLIND_HEAD': 'blind_head',
@@ -363,8 +363,7 @@ def benefits(data, other_ben):
     other_ben['2014_cost'] *= 1e6
     # Adjust unemployment compensation
     ucomp_ratio = (other_ben['2014_cost']['Unemployment Assistance'] /
-                   data['e02300'].sum())
-    print ucomp_ratio
+                   (data['e02300'] * data['s006']).sum())
     data['e02300'] *= ucomp_ratio
     other_ben.drop('Unemployment Assistance', inplace=True)
     # Distribute other benefits
@@ -374,7 +373,7 @@ def benefits(data, other_ben):
                      (data['dist_ben'] * data['s006']).sum())
     # divide by the weight to account for weighting in Tax-Calculator
     data['other_ben'] = (data['ratio'] * other_ben['2014_cost'].sum() /
-                         (data['s006'] * 0.01))
+                         data['s006'])
 
     # Convert benefit data to integers
     data['mcaid_ben'] = data['mcaid_ben'].astype(np.int32)
