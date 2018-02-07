@@ -28,6 +28,7 @@ data['ASCHEI'] = data['ASCHEI'] / pop
 data['ASCHEL'] = data['ASCHEL'] / pop
 data['ACGNS'] = data['ACGNS'] / pop
 data['ABOOK'] = data['ABOOK'] / pop
+data['ABENEFITS'] = data['ABENEFITS'] / pop
 
 # convert factors into "one plus annual proportion change" format
 data = 1.0 + data.pct_change()
@@ -65,7 +66,8 @@ TC_USED_VARS = set(['ABOOK',
                     'ASOCSEC',
                     'ATXPY',
                     'AUCOMP',
-                    'AWAGE'])
+                    'AWAGE',
+                    'ABENEFITS'])
 ALL_VARS = set(list(data))
 TC_UNUSED_VARS = ALL_VARS - TC_USED_VARS
 data = data.drop(TC_UNUSED_VARS, axis=1)

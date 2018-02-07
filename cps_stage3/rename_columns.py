@@ -92,46 +92,14 @@ rename = {
     'VET_VAL6': 'VB_VAL6',
     'VET_VAL7': 'VB_VAL7',
     'VET_VAL8': 'VB_VAL8',
-    'VET_VAL9': 'VB_VAL9',
-
-    'OASDI_PROB1': 'SS_PROB1',
-    'OASDI_PROB10': 'SS_PROB10',
-    'OASDI_PROB11': 'SS_PROB11',
-    'OASDI_PROB12': 'SS_PROB12',
-    'OASDI_PROB13': 'SS_PROB13',
-    'OASDI_PROB14': 'SS_PROB14',
-    'OASDI_PROB15': 'SS_PROB15',
-    'OASDI_PROB2': 'SS_PROB2',
-    'OASDI_PROB3': 'SS_PROB3',
-    'OASDI_PROB4': 'SS_PROB4',
-    'OASDI_PROB5': 'SS_PROB5',
-    'OASDI_PROB6': 'SS_PROB6',
-    'OASDI_PROB7': 'SS_PROB7',
-    'OASDI_PROB8': 'SS_PROB8',
-    'OASDI_PROB9': 'SS_PROB9',
-    'OASDI_VAL1': 'SS_VAL1',
-    'OASDI_VAL10': 'SS_VAL10',
-    'OASDI_VAL11': 'SS_VAL11',
-    'OASDI_VAL12': 'SS_VAL12',
-    'OASDI_VAL13': 'SS_VAL13',
-    'OASDI_VAL14': 'SS_VAL14',
-    'OASDI_VAL15': 'SS_VAL15',
-    'OASDI_VAL2': 'SS_VAL2',
-    'OASDI_VAL3': 'SS_VAL3',
-    'OASDI_VAL4': 'SS_VAL4',
-    'OASDI_VAL5': 'SS_VAL5',
-    'OASDI_VAL6': 'SS_VAL6',
-    'OASDI_VAL7': 'SS_VAL7',
-    'OASDI_VAL8': 'SS_VAL8',
-    'OASDI_VAL9': 'SS_VAL9',
+    'VET_VAL9': 'VB_VAL9'
 }
 rename_lower = {
-    'ssi_ben': 'ssi',
-    'vb_ben': 'vet',
-    'snap_ben': 'snap',
-    'medicare_ben': 'mcare',
-    'medicaid_ben': 'mcaid',
-    'ss_ben': 'oasdi'
+    'SSI': 'ssi',
+    'VB': 'vet',
+    'SNAP': 'snap',
+    'MEDICARE': 'mcare',
+    'MEDICAID': 'mcaid'
 }
 
 rev_rename = {rename[k]: k for k in rename}
