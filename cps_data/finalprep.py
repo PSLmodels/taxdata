@@ -10,7 +10,7 @@ def main():
     # Import CPS data file
     data = pd.read_csv('cps_raw.csv.gz', compression='gzip')
     adj_targets = pd.read_csv('adjustment_targets.csv')
-    # other_ben = pd.read_csv('benefitprograms.csv')
+    other_ben = pd.read_csv('benefitprograms.csv', index_col='Program')
 
     # Rename specified variables
     renames = {
@@ -25,7 +25,6 @@ def main():
         'JCPS28': 'e02100p',
         'JCPS38': 'e02100s',
         'UCOMP': 'e02300',
-        'SOCSEC': 'e02400',
         'SEHEALTH': 'e03270',
         'DPAD': 'e03240',
         'MEDICALEXP': 'e17500',
@@ -42,19 +41,22 @@ def main():
         'KEOGH': 'e03300',
         'TIRAD': 'e01400',
         'NU18': 'nu18',
-        'N1821': 'n1821',
+        'N1821': 'n1820',
         'N21': 'n21',
         'CGAGIX': 'e01100',
         'BLIND_HEAD': 'blind_head',
         'BLIND_SPOUSE': 'blind_spouse',
         'HMIE': 'e19200',
+        'SS': 'e02400',
+        'VB': 'vet_ben',
+        'MEDICARE': 'mcare_ben',
+        'MEDICAID': 'mcaid_ben',
         'SSI': 'ssi_ben',
-        'vb_ben': 'vet_ben',
-        'medicare_ben': 'mcare_ben',
-        'medicaid_ben': 'mcaid_ben',
-        'SS': 'ss_ben',
         'SNAP': 'snap_ben',
-        'SLTX': 'e18400'
+        'SLTX': 'e18400',
+        'XHID': 'h_seq',
+        'XFID': 'ffpos',
+        'XSTATE': 'fips'
     }
     data = data.rename(columns=renames)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
@@ -84,8 +86,8 @@ def main():
     data = add_agi_bin(data, 'INCOME')
     print 'Adjusting distribution'
     data = adjust(data, adj_targets)
-    # print 'Adding Benefits Data'
-    # data = benefits(data, other_ben)
+    print 'Adding Benefits Data'
+    data = benefits(data, other_ben)
     print 'Dropping unused variables'
     data = drop_vars(data)
 
@@ -195,9 +197,10 @@ def drop_vars(data):
         'e18400', 'e18500', 'e19200', 'e19800', 'e20100', 'e20400', 'g20500',
         'e24515', 'e24518', 'e26270', 'e27200', 'e32800', 'e58990', 'e62900',
         'e87530', 'elderly_dependent', 'f2441', 'f6251', 'filer', 'n24',
-        'nu05', 'nu13', 'nu18', 'n1821', 'n21', 'p08000', 'p22250', 'p23250',
+        'nu05', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
-        'vet_ben', 'mcare_ben', 'mcaid_ben', 'ss_ben', 'other_ben', 'total_ben'
+        'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
+        'h_seq', 'ffpos', 'fips'
     ]
 
     drop_vars = []
@@ -357,15 +360,31 @@ def benefits(data, other_ben):
     Distribute benefits from non-models benefit programs and create total
     benefits variable
     """
+    other_ben['2014_cost'] *= 1e6
+    # Adjust unemployment compensation
+    ucomp_ratio = (other_ben['2014_cost']['Unemployment Assistance'] /
+                   (data['e02300'] * data['s006']).sum())
+    data['e02300'] *= ucomp_ratio
+    other_ben.drop('Unemployment Assistance', inplace=True)
     # Distribute other benefits
     data['dist_ben'] = (data['mcaid_ben'] + data['ssi_ben'] +
                         data['snap_ben'] + data['vet_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
-                     (data['dist_ben'] + data['s006']).sum())
-    data['other_ben'] = data['ratio'] * other_ben['Cost'].sum() / data['s006']
-    data['total_ben'] = (data['mcaid_ben'] + data['mcare_ben'] +
-                         data['ssi_ben'] + data['snap_ben'] + data['ss_ben'] +
-                         data['vet_ben'] + data['other_ben'])
+                     (data['dist_ben'] * data['s006']).sum())
+    # divide by the weight to account for weighting in Tax-Calculator
+    data['other_ben'] = (data['ratio'] * other_ben['2014_cost'].sum() /
+                         data['s006'])
+
+    # Convert benefit data to integers
+    data['mcaid_ben'] = data['mcaid_ben'].astype(np.int32)
+    data['mcare_ben'] = data['mcare_ben'].astype(np.int32)
+    data['ssi_ben'] = data['ssi_ben'].astype(np.int32)
+    data['snap_ben'] = data['snap_ben'].astype(np.int32)
+    data['vet_ben'] = data['vet_ben'].astype(np.int32)
+    data['e02400'] = data['e02400'].astype(np.int32)
+    data['e02300'] = data['e02300'].astype(np.int32)
+    data['other_ben'] = data['other_ben'].astype(np.int32)
+
     return data
 
 
