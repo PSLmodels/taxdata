@@ -68,7 +68,7 @@ class Returns(object):
         self.cps['alm_val'] = 0
         for index, row in self.cps.iterrows():
             if row['oi_off'] == 20:
-                row['alm_val'] = row['oi_off']
+                row['alm_val'] = row['oi_val']
 
         for num in tqdm(self.h_nums):
             self.nunits = 0
@@ -210,13 +210,13 @@ class Returns(object):
         record['nu13'] = 0  # Only checked for dependents
         record['nu18_dep'] = 0
         record['nu18'] = 0
-        record['n1821'] = 0
+        record['n1820'] = 0
         record['n21'] = 0
         record['elderly_dependent'] = 0
-        if record['a_age'] < 18:
+        if 0 < record['a_age'] < 18:
             record['nu18'] += 1
         if 18 <= record['a_age'] < 21:
-            record['n1821'] += 1
+            record['n1820'] += 1
         if record['a_age'] >= 21:
             record['n21'] += 1
         depne = 0
@@ -250,10 +250,10 @@ class Returns(object):
                     agede += 1
                 # Income items
                 # Determine spouse's age bracket
-                if spouse['a_age'] < 18:
+                if 0 < spouse['a_age'] < 18:
                     record['nu18'] += 1
                 if 18 <= spouse['a_age'] < 21:
-                    record['n1821'] += 1
+                    record['n1820'] += 1
                 if spouse['a_age'] >= 21:
                     record['n21'] += 1
                 wass = spouse['wsal_val']
@@ -703,11 +703,11 @@ class Returns(object):
                         record['nu05'] += 1
                     if individual['a_age'] <= 13:
                         record['nu13'] += 1
-                    if individual['a_age'] < 18:
+                    if 0 < individual['a_age'] < 18:
                         record['nu18'] += 1
                         record['nu18_dep'] += 1
                     if 18 <= individual['a_age'] < 21:
-                        record['n1821'] += 1
+                        record['n1820'] += 1
                     if individual['a_age'] >= 21:
                         record['n21'] += 1
                     if individual['a_age'] >= 65:
@@ -844,7 +844,7 @@ class Returns(object):
         self.house_units[iy]['nu13'] += self.house_units[ix]['nu13']
         self.house_units[iy]['nu18_dep'] += self.house_units[ix]['nu18_dep']
         self.house_units[iy]['nu18'] += self.house_units[ix]['nu18']
-        self.house_units[iy]['n1821'] += self.house_units[ix]['n1821']
+        self.house_units[iy]['n1820'] += self.house_units[ix]['n1820']
         self.house_units[iy]['n21'] += self.house_units[ix]['n21']
         elderly = self.house_units[ix]['elderly_dependent']
         self.house_units[iy]['elderly_dependent'] += elderly
@@ -927,6 +927,7 @@ class Returns(object):
             amount = self.joint - self.depExempt * unit['depne']
             if unit['agede'] == 1:
                 amount = self.joint65one - self.depExempt * unit['depne']
+            elif unit['agede'] == 2:
                 amount = self.joint65both - self.depExempt * unit['depne']
             if income >= amount:
                 unit['filst'] = 1
@@ -966,7 +967,7 @@ class Returns(object):
         if unit['js'] == 2:
             txpye = 2
         else:
-            txpye = 2
+            txpye = 1
         xxtot = txpye + depne
         # Check relationship codes among dependents
         xxoodep = 0
@@ -1020,7 +1021,7 @@ class Returns(object):
                          'zagesp', 'zoldes', 'zyoung', 'zworkc', 'zsocse',
                          'zssinc', 'zpubas', 'zvetbe', 'zfinas', 'zowner',
                          'zwaspt', 'zwassp', 'wasp', 'wass', 'nu05', 'nu13',
-                         'nu18_dep', 'nu18', 'n1821', 'n21',
+                         'nu18_dep', 'nu18', 'n1820', 'n21',
                          'elderly_dependent']
         for var in repeated_vars:
             record[var] = unit[var]

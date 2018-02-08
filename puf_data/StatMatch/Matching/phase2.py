@@ -14,7 +14,7 @@ def phasetwo(SOI, CPS):
     # CPS = pd.read_csv('cpsrets14_ph1.csv',
     #                  usecols=['cellid', 'cpsseq', 'wt', 'factor', 'yhat'])
 
-    CPS.loc[:,'wt_adj'] = CPS['wt'] * CPS['factor']
+    CPS.loc[:, 'wt_adj'] = CPS['wt'] * CPS['factor']
     factor = 1.
     if CPS['wt'].sum() > 0:
         factor = SOI['wt'].sum() / CPS['wt'].sum()

@@ -1,6 +1,6 @@
 import pandas as pd
 
-SYR = 2009  # calendar year used to normalize factors
+SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
 
 # define constants for the number refers total population,
@@ -278,7 +278,9 @@ rename = {
 Stage_II_targets.rename(columns=rename, inplace=True)
 
 # Delate 2008 row from Stage_I_factors
-Stage_I_factors = Stage_I_factors.drop(2008)
+Stage_I_factors = Stage_I_factors.drop([2008, 2009, 2010])
+Stage_II_targets = Stage_II_targets.drop([2008, 2009, 2010])
+
 # add on benefit factors
 Stage_I_factors['ABENEFITS'] = benefit_factors.transpose()[0]
 # write Stage_I_factors for final preparation and then use by Tax-Calculator
