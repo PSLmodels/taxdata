@@ -65,6 +65,8 @@ def main():
     if not BENPUF:
         data = remove_benefits_variables(data)
 
+    # Convert data to integers
+    data = data.round(0).astype('int64')
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
         data.to_csv('benpuf.csv', index=False)
@@ -238,7 +240,7 @@ def remove_unused_variables(data):
         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
         'e11070', 'e11550', 'e11580', 'p87482', 'e20500', 'FDED',
         'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200',
-        'nu18_dep', 'e87521', 'e11601', 'e11603', 'e11602', 'e25550', 'f8867',
+        'nu18_dep', 'e11601', 'e11603', 'e11602', 'e25550', 'f8867',
         'f8949']
     MORE_UNUSED_READ_VARS = [
         'jcps88',
