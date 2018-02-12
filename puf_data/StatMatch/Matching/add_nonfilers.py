@@ -201,7 +201,6 @@ def add_nonfiler(cpsrets, nonfiler):
     nonfiler['e24570'] = 0
     nonfiler['p25350'] = 0
     nonfiler['p25380'] = 0
-    nonfiler['p25470'] = 0
     nonfiler['p25700'] = 0
     nonfiler['e25820'] = 0
     nonfiler['e25850'] = 0
