@@ -11,7 +11,7 @@ import pandas as pd
 def add_cps(cps_recs, match, puffile):
     # cps_recs = pd.read_csv('cpsrets14.csv')
     cpsfile = cps_recs.filter(regex='jcps\d{1,2}$|icps\d{1}$|jcps100|cpsseq|' +
-                                    'nu\d{1,2}|nu18_dep|n1821|n21|' +
+                                    'nu\d{1,2}|nu18_dep|n1820|n21|' +
                                     'elderly_dependent|wasp|wass|xstate')
     # cpsfile = cps_recs
     # match = pd.read_csv('match.csv')

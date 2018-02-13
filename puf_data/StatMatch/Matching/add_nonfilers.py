@@ -5,6 +5,7 @@ Output file: prod2009_v2.csv
 """
 
 import pandas as pd
+import copy
 
 
 def add_nonfiler(cpsrets, nonfiler):
@@ -29,9 +30,12 @@ def add_nonfiler(cpsrets, nonfiler):
     socsec = nonfiler['socsec']
     wt = nonfiler['wt']
 
-    nonfiler = nonfiler.filter(regex='jcps\d{1,2}$|icps\d{1}$|jcps100|' +
-                                     'cpsseq|nu\d{1,2}|nu18_dep|n1821|n21|' +
-                                     'elderly_dependent|wasp|wass|xstate')
+    nonfiler = copy.deepcopy(nonfiler.filter(regex='jcps\d{1,2}$|icps\d{1}$|' +
+                                                   'jcps100| cpsseq|' +
+                                                   'nu\d{1,2}|nu18_dep|' +
+                                                   'n1820|n21|' +
+                                                   'elderly_dependent|wasp|' +
+                                                   'wass|xstate'))
 
     nonfiler['filer'] = 0
     nonfiler['soiseq'] = 0
@@ -197,7 +201,6 @@ def add_nonfiler(cpsrets, nonfiler):
     nonfiler['e24570'] = 0
     nonfiler['p25350'] = 0
     nonfiler['p25380'] = 0
-    nonfiler['p25470'] = 0
     nonfiler['p25700'] = 0
     nonfiler['e25820'] = 0
     nonfiler['e25850'] = 0
@@ -244,7 +247,7 @@ def add_nonfiler(cpsrets, nonfiler):
     nonfiler['s27860'] = 0
     nonfiler['p27895'] = 0
     nonfiler['p87482'] = 0
-    nonfiler['p87521'] = 0
+    nonfiler['e87521'] = 0
     nonfiler['e87530'] = 0
     nonfiler['e87550'] = 0
     nonfiler['p86421'] = 0
