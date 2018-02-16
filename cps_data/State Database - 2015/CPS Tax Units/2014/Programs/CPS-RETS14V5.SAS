@@ -814,6 +814,8 @@ END;
 			END;
 
 		TREC(NUNITS, 465) = PREC(&PERSON, 6);
+		* add line number;
+		TREC(NUNITS, 466) = PREC(&PERSON, 132);
 
 /*
         ---------------------------------------
@@ -1447,6 +1449,7 @@ DO N = 1 TO NUNITS ;
  					   MCAID_VAL13 = TREC(N, 462);
  					   MCAID_VAL14 = TREC(N, 463);
  					   MCAID_VAL15 = TREC(N, 464);
+					   A_LINENO = TREC(N, 466);
 /*
                    Additional Fields for Non-Filers
                    NOTE: Locations 83, 84 & 85 will
@@ -2161,6 +2164,10 @@ DEPEX3 = 3950. ;
 				PREC(NPER , 129) = VB_PROBS;
 				PREC(NPER , 130) = MCARE_PROBS;
 				PREC(NPER , 131) = MCAID_PROBS;
+*****
+				Add line number
+*****;
+				PREC(NPER , 132) = A_LINENO;
 %MEND FILLREC ;
 
 %MACRO HHSTATUS( INDEX ) ;
@@ -2252,6 +2259,7 @@ DATA EXTRACT.CPSRETS&CPSYEAR(KEEP=JS IFDEPT AGEDE DEPNE CAHE AGEH AGES
 						  MCARE_VAL1-MCARE_VAL15 MCARE_PROB1-MCARE_PROB15
 						  MCAID_VAL1-MCAID_VAL15 MCAID_PROB1-MCAID_PROB15
 						  VB_VAL1-VB_VAL15 VB_PROB1-VB_PROB15 XFHEADIDX XTOTDIFF
+						  A_LINENO
                           /*
                                         New CPS Variables
                           */

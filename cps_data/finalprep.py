@@ -200,7 +200,7 @@ def drop_vars(data):
         'nu05', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
-        'h_seq', 'ffpos', 'fips'
+        'h_seq', 'ffpos', 'fips', 'a_lineno'
     ]
 
     drop_vars = []
