@@ -100,8 +100,8 @@ def add_nonfiler(cpsrets, nonfiler):
     nonfiler['e01100'] = 0
     nonfiler['e01200'] = 0
     nonfiler['e01400'] = 0
-    nonfiler['e01500'] = 0
-    nonfiler['e01700'] = pensions
+    nonfiler['e01500'] = pensions
+    nonfiler['e01700'] = pensions * 0.1656
     nonfiler['e02000'] = rents
     nonfiler['e02100'] = fil
     nonfiler['e02300'] = ucomp
