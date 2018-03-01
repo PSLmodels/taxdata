@@ -145,7 +145,6 @@ def add_dependents(data):
     data['nu05'] = nu05
 
     # Count number of children eligible for child tax credit
-    # Max of three to mach PUF version of n24
     age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 17), 1, 0)
     age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 17), 1, 0)
     age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 17), 1, 0)
@@ -204,7 +203,7 @@ def drop_vars(data):
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
         'h_seq', 'ffpos', 'fips', 'a_lineno', 'tanf_ben', 'wic_ben',
-        'housing_ben', 'ui_ben'
+        'housing_ben'
     ]
 
     drop_vars = []
@@ -365,11 +364,7 @@ def benefits(data, other_ben):
     benefits variable
     """
     other_ben['2014_cost'] *= 1e6
-    # Adjust unemployment compensation
-    ucomp_ratio = (other_ben['2014_cost']['Unemployment Assistance'] /
-                   (data['e02300'] * data['s006']).sum())
-    data['e02300'] *= ucomp_ratio
-    other_ben.drop('Unemployment Assistance', inplace=True)
+
     # Distribute other benefits
     data['dist_ben'] = (data['mcaid_ben'] + data['ssi_ben'] +
                         data['snap_ben'] + data['vet_ben'])
@@ -388,9 +383,8 @@ def benefits(data, other_ben):
     data['tanf_ben'] = data['tanf_ben'].astype(np.int32)
     data['wic_ben'] = data['wic_ben'].astype(np.int32)
     data['housing_ben'] = data['housing_ben'].astype(np.int32)
-    data['ui_ben'] = data['ui_ben'].astype(np.int32)
     data['e02400'] = data['e02400'].astype(np.int32)
-    data['e02300'] = data['e02300'].astype(np.int32)
+    data['e02300'] = data['ui_ben'].astype(np.int32)
     data['other_ben'] = data['other_ben'].astype(np.int32)
 
     return data
