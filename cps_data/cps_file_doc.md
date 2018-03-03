@@ -2,7 +2,7 @@
 
 Microsimulation models, such as
 [Tax-Calculator](https://github.com/open-source-economics/Tax-Calculator),
-rely on datasets comprised of individual tax units. These datasets are available
+rely on datasets comprising individual tax units. These datasets are available
 through the IRS, but at substantial financial cost and are not permitted to be
 shared. This document outlines the creation of a tax unit dataset created from
 publicly available CPS files that is suitable for use with Tax-Calculator.
@@ -14,7 +14,7 @@ Survey (CPS) is an annual survey of US households conducted in March of every
 year. The file contains information on prior-year income and current family
 structure that can be used to create tax units comprised of those surveyed.
 Our final file is created using the 2013, 2014, and 2015 March CPS supplements.
-Dollar amounts in the The 2013 and 2014 files are then aged to be compatible
+Dollar amounts in the 2013 and 2014 files are then aged to be compatible
 with values in the 2015, making the file representative of tax year 2014.
 
 We use an algorithm developed by John O'Hare at Quantria Strategies with slight
@@ -43,7 +43,7 @@ repeated, unless they are a dependent filer themselves. Ultimately, all
 individuals in the household will be assigned to a tax unit.
 
 Our first modification to this process simply counted the number of people in
-three age groups - under 18, 18 to 21, and over 21 years old - in each tax unit.
+three age groups - under 18, 18 to 20, and over 20 years old - in each tax unit.
 
 Our second uses the Open Source CPS Transfer Augmentation Model (C-TAM) to add
 imputed benefit participation and amounts for Supplemental Security Income (SSI),
@@ -51,7 +51,7 @@ Supplemental Nutrition Assistance Program (SNAP), Medicare, Medicaid, Social
 Security, and Veterans' Benefits and the total of several other benefits.
 C-TAM imputes these benefits on an individual level using the CPS files before
 they are converted into tax units. During the creation process, we modified the
-code to add up these benefits so that we have a total benefits received by the
+code to add up these benefits so that we have the total benefits received by the
 entire unit.
 
 ## Top-Coding and Imputation
@@ -121,7 +121,7 @@ Capital gains/losses, taxable IRA distributions, adjusted IRA distributions,
 KEOGH plans, and student loan interest deductions are all imputed using a
 two-step approach based on the PUF. First, the probability of realizing a capital
 gain/loss, claiming a deduction, etc. is estimated. Then, conditional amounts
-for each field is imputed.
+for each field are imputed.
 
 ### Final Preparations
 
@@ -135,8 +135,8 @@ by summing the values for the head of the tax unit and their spouse.
 
 Interest income is split between taxable and nontaxable using the ratio between
 the two found in the PUF. Total dividends is separated into ordinary and
-qualified dividends in the same manor. Pensions and annuities included in AGI
-is derived from total pensions and annuities reported in the CPS also in
+qualified dividends in the same manner. Pensions and annuities included in AGI
+are derived from total pensions and annuities reported in the CPS also in
 proportion to the ratio in the PUF.
 
 We also apply the limitations to certain itemized deductions as they are found
