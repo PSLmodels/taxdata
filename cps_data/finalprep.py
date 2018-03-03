@@ -75,8 +75,20 @@ def main():
     data['e00300'] = data.INTST * taxable
     data['e00400'] = data.INTST * nontaxable
 
-    # Split pentions and annuities using PUF ratio
-    data['e01700'] = data['e01500'] * 0.1656
+    # Split pentions and annuities using random assignment
+    np.random.seed(79)
+    probs = np.random.random(len(data['e01500']))
+    # probabiliies used for random assignment
+    fully_taxable_prob = 0.48
+    zero_tax_prob = 0.18
+    non_avg_prob = fully_taxable_prob + zero_tax_prob
+    avg_taxable_amout = 0.64
+    # determine tax ability
+    taxability = np.ones(len(data['e01500']))
+    taxability = np.where((probs > fully_taxable_prob) &
+                          (probs <= non_avg_prob), 0.0, taxability)
+    taxability = np.where(probs > non_avg_prob, avg_taxable_amout, taxability)
+    data['e01700'] = data['e01500'] * taxability
 
     print 'Applying deduction limits'
     data = deduction_limits(data)
