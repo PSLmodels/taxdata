@@ -370,8 +370,12 @@ def benefits(data, other_ben):
                         data['snap_ben'] + data['vet_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] * data['s006']).sum())
+    # remove TANF and WIC from other_ben
+    tanf = (data['tanf_ben'] * data['s006']).sum()
+    wic = (data['wic_ben'] * data['s006']).sum()
+    other_ben_total = other_ben['2014_cost'].sum() - tanf - wic
     # divide by the weight to account for weighting in Tax-Calculator
-    data['other_ben'] = (data['ratio'] * other_ben['2014_cost'].sum() /
+    data['other_ben'] = (data['ratio'] * other_ben_total /
                          data['s006'])
 
     # Convert benefit data to integers
