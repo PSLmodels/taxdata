@@ -72,7 +72,7 @@ def main():
     data['e02100'] = data['e02100p'] + data['e02100s']
 
     np.random.seed(79)
-    # Determine amount of qualified dividends using IRS ratio
+    # Determine amount of qualified dividends
     # percent of units where all dividends are qualified
     all_qualified_prob = 0.429
     # percent of units where no dividends are qualified
@@ -89,24 +89,12 @@ def main():
     qualified = np.where(probs > non_avg_prob, qualified_frac, qualified)
     data['e00650'] = data.e00600 * qualified
 
-    # Split interest income into taxable and tax exempt using IRS ratio
-    # label units by how much interest income they have
-    intst_groups = [0, 100, 500, 1000, 5000, 10000, 9e99]
-    labels = [1, 2, 3, 4, 5, 6]
-    data['group'] = pd.cut(data['INTST'], bins=intst_groups, labels=labels,
-                           right=True, include_lowest=True)
-    # group probabilities and fractions
-    # probability of having only taxable interest income
-    group_probs = {1: 0.99, 2: 0.93, 3: 0.82, 4: 0.65, 5: 0.44, 6: 0.29}
-    # fraction of interest income that is taxable by group
-    group_fracs = {1: 0.4, 2: 0.43, 3: 0.35, 4: 0.39, 5: 0.39, 6: 0.46}
-    # arrays for comparison
-    group_prob = np.array([group_probs[i] for i in data['group']])
-    group_frac = np.array([group_fracs[i] for i in data['group']])
-    # random assignment
-    probs = np.random.random(len(data['INTST']))
-    data['e00300'] = np.where(probs < group_prob, data['INTST'],
-                              data['INTST'] * group_frac)
+    # Split interest income into taxable and tax exempt
+    slope = 93
+    ratio = 0.60
+    prob = 1. - slope * (data.INTST / 1000)
+    probs = np.random.random(len(prob))
+    data['e00300'] = np.where(prob < probs, data.INTST, data.INTST * ratio)
     data['e00400'] = data['INTST'] - data['e00300']
 
     # Split pentions and annuities using random assignment
