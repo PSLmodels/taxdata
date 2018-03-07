@@ -779,7 +779,7 @@ END;
 				    TREC(NUNITS, 281) = TREC(NUNITS, 281) + 1;
 			END;
 /* Add imputed variable data */
-		DO NDP = 282 TO 467;
+		DO NDP = 282 TO 595;
 			TREC(NUNITS, NDP) = 0.0;
 		END;
 		TREC(NUNITS, 312) = PREC(&PERSON, 120); * total SSI ;
@@ -801,6 +801,19 @@ END;
 		TREC(NUNITS, 438) = PREC(&PERSON, 131); * Medicaid probability head;
 		TREC(NUNITS, 453) = PREC(&PERSON, 125); * Medicaid imputed value head;
 
+		TREC(NUNITS, 470) = PREC(&PERSON, 133); * TANF benefit for head of unit;
+		TREC(NUNITS, 485) = PREC(&PERSON, 133); * TANF total benefits;
+		TREC(NUNITS, 486) = PREC(&PERSON, 134); * TANF probability - head;
+		TREC(NUNITS, 501) = PREC(&PERSON, 135); * UI benefit for head of unit;
+		TREC(NUNITS, 516) = PREC(&PERSON, 135); * UI total benefits;
+		TREC(NUNITS, 517) = PREC(&PERSON, 136); * UI probability - head;
+		TREC(NUNITS, 532) = PREC(&PERSON, 137); * Housing benefit - head of unit;
+		TREC(NUNITS, 547) = PREC(&PERSON, 137); * Housing total benefits;
+		TREC(NUNITS, 548) = PREC(&PERSON, 138); * Housing benefit probability - head;
+		TREC(NUNITS, 563) = PREC(&PERSON, 139); * WIC benefits for head of unit;
+		TREC(NUNITS, 578) = PREC(&PERSON, 139); * WIC benefits total;
+		TREC(NUNITS, 579) = PREC(&PERSON, 140); * WIC probability - head;
+
 		IF (SP_PTR NE 0) THEN
 			DO;
 				TREC(NUNITS, 283) = PREC(SP_PTR, 120);
@@ -820,6 +833,18 @@ END;
 				TREC(NUNITS, 424) = PREC(SP_PTR, 124); * Medicare value;
 				TREC(NUNITS, 439) = PREC(SP_PTR, 131); * Medicaid probability;
 				TREC(NUNITS, 454) = PREC(SP_PTR, 125); * Medicaid value;
+				TREC(NUNITS, 471) = PREC(SP_PTR, 133); * TANF benefit for spouse;
+				TREC(NUNITS, 485) = TREC(NUNITS, 485) + PREC(SP_PTR, 133);
+				TREC(NUNITS, 487) = PREC(SP_PTR, 134); * TANF probability - spouse;
+				TREC(NUNITS, 502) = PREC(SP_PTR, 135); * UI benefit - spouse;
+				TREC(NUNITS, 516) = TREC(NUNITS, 516) + PREC(SP_PTR, 135);
+				TREC(NUNITS, 518) = PREC(SP_PTR, 136); * UI probability - spouse;
+				TREC(NUNITS, 533) = PREC(SP_PTR, 137); * Housing benefit - spouse;
+				TREC(NUNITS, 547) = TREC(NUNITS, 547) + PREC(SP_PTR, 137);
+				TREC(NUNITS, 549) = PREC(SP_PTR, 138); * Housing probability - spouse;
+				TREC(NUNITS, 564) = PREC(SP_PTR, 139); * WIC benefit - spouse;
+				TREC(NUNITS, 578) = TREC(NUNITS, 578) + PREC(SP_PTR, 139);
+				TREC(NUNITS, 580) = PREC(SP_PTR, 140); * WIC probability - spouse;
 
 			END;
 
@@ -1203,6 +1228,20 @@ TREC(&RETURN , 424 + DEPNE) = PREC(&PERSON, 124); * Medicare value;
 TREC(&RETURN , 439 + DEPNE) = PREC(&PERSON, 131); * Medicaid probability;
 TREC(&RETURN , 454 + DEPNE) = PREC(&PERSON, 125); * Medicaid value;
 
+TREC(&RETURN , 471 + DEPNE) = PREC(&PERSON, 133); * TANF value;
+TREC(&RETURN , 485) = TREC(&RETURN , 485) + PREC(&PERSON, 133);
+TREC(&RETURN , 487 + DEPNE) = PREC(&PERSON, 134); * TANF probability;
+TREC(&RETURN , 502 + DEPNE) = PREC(&PERSON, 135); * UI value;
+TREC(&RETURN , 516) = TREC(&RETURN , 516) + PREC(&PERSON, 135);
+TREC(&RETURN , 518 + DEPNE) = PREC(&PERSON, 136); * UI probability;
+* comment out because housing is by family;
+* TREC(&RETURN , 533 + DEPNE) = PREC(&PERSON, 137); * Housing value;
+* TREC(&RETURN , 547) = TREC(&RETURN , 547) + PREC(&PERSON, 137);
+TREC(&RETURN , 549 + DEPNE) = PREC(&PERSON, 138); * Housing probability;
+TREC(&RETURN , 564 + DEPNE) = PREC(&PERSON, 139); * WIC value;
+TREC(&RETURN , 578) = TREC(&RETURN , 578) + PREC(&PERSON , 139);
+TREC(&RETURN , 580 + DEPNE) = PREC(&PERSON, 140); * WIC probability;
+
 /* Add dependent age info */
 IF (PREC(&PERSON, 12) < 18 AND PREC(&PERSON, 12) > 0) THEN
     TREC(&RETURN, 279) = TREC(&RETURN, 279) + 1;
@@ -1459,6 +1498,135 @@ DO N = 1 TO NUNITS ;
  					   MCAID_VAL13 = TREC(N, 465);
  					   MCAID_VAL14 = TREC(N, 466);
  					   MCAID_VAL15 = TREC(N, 467);
+
+					   TANF = TREC(N, 485);
+					   TANF_VAL1 = TREC(N, 470);
+					   TANF_VAL2 = TREC(N, 471);
+					   TANF_VAL3 = TREC(N, 472);
+					   TANF_VAL4 = TREC(N, 473);
+					   TANF_VAL5 = TREC(N, 474);
+					   TANF_VAL6 = TREC(N, 475);
+					   TANF_VAL7 = TREC(N, 476);
+					   TANF_VAL8 = TREC(N, 477);
+					   TANF_VAL9 = TREC(N, 478);
+					   TANF_VAL10 = TREC(N, 479);
+					   TANF_VAL11 = TREC(N, 480);
+					   TANF_VAL12 = TREC(N, 481);
+					   TANF_VAL13 = TREC(N, 482);
+					   TANF_VAL14 = TREC(N, 483);
+					   TANF_VAL15 = TREC(N, 484);
+					   TANF_PROB1 = TREC(N, 486);
+					   TANF_PROB2 = TREC(N, 487);
+					   TANF_PROB3 = TREC(N, 488);
+					   TANF_PROB4 = TREC(N, 489);
+					   TANF_PROB5 = TREC(N, 490);
+					   TANF_PROB6 = TREC(N, 491);
+					   TANF_PROB7 = TREC(N, 492);
+					   TANF_PROB8 = TREC(N ,493);
+					   TANF_PROB9 = TREC(N, 494);
+					   TANF_PROB10 = TREC(N, 495);
+					   TANF_PROB11 = TREC(N, 496);
+					   TANF_PROB12 = TREC(N, 497);
+					   TANF_PROB13 = TREC(N, 498);
+					   TANF_PROB14 = TREC(N, 499);
+					   TANF_PROB15 = TREC(N, 500);
+
+					   UI = TREC(N, 516);
+					   UI_VAL1 = TREC(N, 501);
+					   UI_VAL2 = TREC(N, 502);
+					   UI_VAL3 = TREC(N, 503);
+					   UI_VAL4 = TREC(N, 504);
+					   UI_VAL5 = TREC(N, 505);
+					   UI_VAL6 = TREC(N, 506);
+					   UI_VAL7 = TREC(N, 507);
+					   UI_VAL8 = TREC(N, 508);
+					   UI_VAL9 = TREC(N, 509);
+					   UI_VAL10 = TREC(N, 510);
+					   UI_VAL11 = TREC(N, 511);
+					   UI_VAL12 = TREC(N, 512);
+					   UI_VAL13 = TREC(N, 513);
+					   UI_VAL14 = TREC(N, 514);
+					   UI_VAL15 = TREC(N, 515);
+					   UI_PROB1 = TREC(N, 517);
+					   UI_PROB2 = TREC(N, 518);
+					   UI_PROB3 = TREC(N, 519);
+					   UI_PROB4 = TREC(N, 520);
+					   UI_PROB5 = TREC(N, 521);
+					   UI_PROB6 = TREC(N, 522);
+					   UI_PROB7 = TREC(N, 523);
+					   UI_PROB8 = TREC(N, 524);
+					   UI_PROB9 = TREC(N, 525);
+					   UI_PROB10 = TREC(N, 526);
+					   UI_PROB11 = TREC(N, 527);
+					   UI_PROB12 = TREC(N, 528);
+					   UI_PROB13 = TREC(N, 529);
+					   UI_PROB14 = TREC(N, 530);
+					   UI_PROB15 = TREC(N, 531);
+
+					   HOUSING = TREC(N, 547);
+					   HOUSING_VAL1 = TREC(N, 532);
+					   HOUSING_VAL2 = TREC(N, 533);
+					   HOUSING_VAL3 = TREC(N, 534);
+					   HOUSING_VAL4 = TREC(N, 535);
+					   HOUSING_VAL5 = TREC(N, 536);
+					   HOUSING_VAL6 = TREC(N, 537);
+					   HOUSING_VAL7 = TREC(N, 538);
+					   HOUSING_VAL8 = TREC(N, 539);
+					   HOUSING_VAL9 = TREC(N, 540);
+					   HOUSING_VAL10 = TREC(N, 541);
+					   HOUSING_VAL11 = TREC(N, 542);
+					   HOUSING_VAL12 = TREC(N, 543);
+					   HOUSING_VAL13 = TREC(N, 544);
+					   HOUSING_VAL14 = TREC(N, 545);
+					   HOUSING_VAL15 = TREC(N, 546);
+					   HOUSING_PROB1 = TREC(N, 548);
+					   HOUSING_PROB2 = TREC(N, 549);
+					   HOUSING_PROB3 = TREC(N, 550);
+					   HOUSING_PROB4 = TREC(N, 551);
+					   HOUSING_PROB5 = TREC(N, 552);
+					   HOUSING_PROB6 = TREC(N, 553);
+					   HOUSING_PROB7 = TREC(N, 554);
+					   HOUSING_PROB8 = TREC(N, 555);
+					   HOUSING_PROB9 = TREC(N, 556);
+					   HOUSING_PROB10 = TREC(N, 557);
+					   HOUSING_PROB11 = TREC(N, 558);
+					   HOUSING_PROB12 = TREC(N, 559);
+					   HOUSING_PROB13 = TREC(N, 560);
+					   HOUSING_PROB14 = TREC(N, 561);
+					   HOUSING_PROB15 = TREC(N, 562);
+
+					   WIC = TREC(N, 578);
+					   WIC_VAL1 = TREC(N, 563);
+					   WIC_VAL2 = TREC(N, 564);
+					   WIC_VAL3 = TREC(N, 565);
+					   WIC_VAL4 = TREC(N, 566);
+					   WIC_VAL5 = TREC(N, 567);
+					   WIC_VAL6 = TREC(N, 568);
+					   WIC_VAL7 = TREC(N, 569);
+					   WIC_VAL8 = TREC(N, 570);
+					   WIC_VAL9 = TREC(N, 571);
+					   WIC_VAL10 = TREC(N, 572);
+					   WIC_VAL11 = TREC(N, 573);
+					   WIC_VAL12 = TREC(N, 574);
+					   WIC_VAL13 = TREC(N, 575);
+					   WIC_VAL14 = TREC(N, 576);
+					   WIC_VAL15 = TREC(N, 577);
+					   WIC_PROB1 = TREC(N, 579);
+					   WIC_PROB2 = TREC(N, 580);
+					   WIC_PROB3 = TREC(N, 581);
+					   WIC_PROB4 = TREC(N, 582);
+					   WIC_PROB5 = TREC(N, 583);
+					   WIC_PROB6 = TREC(N, 584);
+					   WIC_PROB7 = TREC(N, 585);
+					   WIC_PROB8 = TREC(N, 586);
+					   WIC_PROB9 = TREC(N, 587);
+					   WIC_PROB10 = TREC(N, 588);
+					   WIC_PROB11 = TREC(N, 589);
+					   WIC_PROB12 = TREC(N, 590);
+					   WIC_PROB13 = TREC(N, 591);
+					   WIC_PROB14 = TREC(N, 592);
+					   WIC_PROB15 = TREC(n, 593);
+
 					   A_LINENO = TREC(N, 469);
 /*
                    Additional Fields for Non-Filers
@@ -2180,6 +2348,14 @@ DEPEX3 = 3950. ;
 				PREC(NPER , 129) = VB_PROBS;
 				PREC(NPER , 130) = MCARE_PROBS;
 				PREC(NPER , 131) = MCAID_PROBS;
+				PREC(NPER , 133) = TANF_IMPUTE;
+				PREC(NPER , 134) = TANF_PROBS;
+				PREC(NPER , 135) = UI_IMPUTE;
+				PREC(NPER , 136) = UI_PROBS;
+				PREC(NPER , 137) = HOUSING_IMPUTE;
+				PREC(NPER , 138) = HOUSING_PROBS;
+				PREC(NPER , 139) = WIC_IMPUTE;
+				PREC(NPER , 140) = WIC_PROBS;
 *****
 	ADD NEW IDENTIFIER VARIABLES
 *****;
@@ -2228,7 +2404,8 @@ LIBNAME EXTRACT "C:\Users\anderson.frailey\Documents\State Database - 2015\CPS T
 DATA TEMPORARY(KEEP=H_SEQ SORT_ORDER H_NUMPER);
 * SET EXTRACT.CPSMAR&CPSYEAR;
 * SET EXTRACT.CPSMARBEN15;
-SET EXTRACT.CPSMAR2015_BEN;
+* SET EXTRACT.CPSMAR2015_BEN;
+SET EXTRACT.CPSMAR2015_BEN_FULL;
 SORT_ORDER = _N_;
 RUN;
 PROC SORT DATA=TEMPORARY;BY H_SEQ;
@@ -2277,7 +2454,10 @@ DATA EXTRACT.CPSRETS&CPSYEAR(KEEP=JS IFDEPT AGEDE DEPNE CAHE AGEH AGES
 						  MCARE_VAL1-MCARE_VAL15 MCARE_PROB1-MCARE_PROB15
 						  MCAID_VAL1-MCAID_VAL15 MCAID_PROB1-MCAID_PROB15
 						  VB_VAL1-VB_VAL15 VB_PROB1-VB_PROB15 XFHEADIDX XTOTDIFF
-						  A_LINENO
+						  A_LINENO TANF TANF_VAL1-TANF_VAL15 TANF_PROB1-TANF_PROB15
+						  UI UI_VAL1-UI_VAL15 UI_PROB1-UI_PROB15
+						  WIC WIC_VAL1-WIC_VAL15 WIC_PROB1-WIC_PROB15
+						  HOUSING HOUSING_VAL1-HOUSING_VAL15 HOUSING_PROB1-HOUSING_PROB15
                           /*
                                         New CPS Variables
                           */
@@ -2303,7 +2483,7 @@ ARRAY PREC(16 , 162) _temporary_ ;	/*	NEW CPS FIELDS	*/
 *****
 	ANDERSON: NEED TO INCREASE SIZE TREC(*) ARRAY
 *****;
-ARRAY TREC(16 , 480) _temporary_ ;
+ARRAY TREC(16 , 595) _temporary_ ;
 ARRAY ICPS(*) ICPS01-ICPS50 ;
 ARRAY JCPS(*) JCPS1-JCPS200 ;
 IF (_N_ = 1)THEN PTR = 0;
@@ -2319,7 +2499,8 @@ HHID = H_SEQ ;
 DO NPER = 1 TO H_NUMPER;
 	* SET EXTRACT.CPSMAR&CPSYEAR ;
 	* SET EXTRACT.CPSMARBEN15;
-	SET EXTRACT.CPSMAR2015_BEN;
+	* SET EXTRACT.CPSMAR2015_BEN;
+	SET EXTRACT.CPSMAR2015_BEN_FULL;
    	%FILLREC
 END;
 ******************************************************************************;
