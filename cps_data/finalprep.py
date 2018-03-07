@@ -53,6 +53,10 @@ def main():
         'MEDICAID': 'mcaid_ben',
         'SSI': 'ssi_ben',
         'SNAP': 'snap_ben',
+        'WIC': 'wic_ben',
+        'TANF': 'tanf_ben',
+        'UI': 'ui_ben',
+        'HOUSING': 'housing_ben',
         'SLTX': 'e18400',
         'XHID': 'h_seq',
         'XFID': 'ffpos',
@@ -141,14 +145,12 @@ def add_dependents(data):
     data['nu05'] = nu05
 
     # Count number of children eligible for child tax credit
-    # Max of three to mach PUF version of n24
     age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 17), 1, 0)
     age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 17), 1, 0)
     age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 17), 1, 0)
     age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 17), 1, 0)
     age5 = np.where((data.ICPS07) > 0 & (data.ICPS07 <= 17), 1, 0)
     n24 = age1 + age2 + age3 + age4 + age5
-    n24 = np.where(n24 > 3, 3, n24)
     data['n24'] = n24
 
     # Count number of elderly dependents
@@ -200,7 +202,8 @@ def drop_vars(data):
         'nu05', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
-        'h_seq', 'ffpos', 'fips', 'a_lineno'
+        'h_seq', 'ffpos', 'fips', 'a_lineno', 'tanf_ben', 'wic_ben',
+        'housing_ben'
     ]
 
     drop_vars = []
@@ -361,18 +364,18 @@ def benefits(data, other_ben):
     benefits variable
     """
     other_ben['2014_cost'] *= 1e6
-    # Adjust unemployment compensation
-    ucomp_ratio = (other_ben['2014_cost']['Unemployment Assistance'] /
-                   (data['e02300'] * data['s006']).sum())
-    data['e02300'] *= ucomp_ratio
-    other_ben.drop('Unemployment Assistance', inplace=True)
+
     # Distribute other benefits
     data['dist_ben'] = (data['mcaid_ben'] + data['ssi_ben'] +
                         data['snap_ben'] + data['vet_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] * data['s006']).sum())
+    # remove TANF and WIC from other_ben
+    tanf = (data['tanf_ben'] * data['s006']).sum()
+    wic = (data['wic_ben'] * data['s006']).sum()
+    other_ben_total = other_ben['2014_cost'].sum() - tanf - wic
     # divide by the weight to account for weighting in Tax-Calculator
-    data['other_ben'] = (data['ratio'] * other_ben['2014_cost'].sum() /
+    data['other_ben'] = (data['ratio'] * other_ben_total /
                          data['s006'])
 
     # Convert benefit data to integers
@@ -381,8 +384,11 @@ def benefits(data, other_ben):
     data['ssi_ben'] = data['ssi_ben'].astype(np.int32)
     data['snap_ben'] = data['snap_ben'].astype(np.int32)
     data['vet_ben'] = data['vet_ben'].astype(np.int32)
+    data['tanf_ben'] = data['tanf_ben'].astype(np.int32)
+    data['wic_ben'] = data['wic_ben'].astype(np.int32)
+    data['housing_ben'] = data['housing_ben'].astype(np.int32)
     data['e02400'] = data['e02400'].astype(np.int32)
-    data['e02300'] = data['e02300'].astype(np.int32)
+    data['e02300'] = data['ui_ben'].astype(np.int32)
     data['other_ben'] = data['other_ben'].astype(np.int32)
 
     return data

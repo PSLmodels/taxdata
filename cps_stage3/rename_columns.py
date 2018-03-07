@@ -99,7 +99,10 @@ rename_lower = {
     'VB': 'vet',
     'SNAP': 'snap',
     'MEDICARE': 'mcare',
-    'MEDICAID': 'mcaid'
+    'MEDICAID': 'mcaid',
+    'WIC': 'wic',
+    'TANF': 'tanf',
+    'HOUSING': 'housing'
 }
 
 rev_rename = {rename[k]: k for k in rename}

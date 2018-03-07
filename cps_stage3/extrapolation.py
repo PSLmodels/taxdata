@@ -14,7 +14,7 @@ class Benefits():
                  cps_benefit=CPS_BENEFIT_PATH,
                  cps_weights=CPS_WEIGHTS_PATH,
                  benefit_names=["ssi", "mcaid", "mcare",
-                                "vet", "snap"]):
+                                "vet", "snap", 'tanf', 'housing', 'wic']):
         benefit_names = [bn.lower() for bn in benefit_names]
         self._read_data(growth_rates, cps_benefit, cps_weights,
                         benefit_names=benefit_names)
@@ -203,7 +203,7 @@ class Benefits():
         for benefit in benefit_names:
 
             # create benefit targets
-            benefit_2014 = (cps_benefit[benefit] * cps_benefit.s006).sum()
+            benefit_2014 = (cps_benefit[benefit] * cps_benefit.WT).sum()
             benefit_targets = benefit_2014 * (1 + growth_rates['{0}_benefit_growth'
                                                                .format(benefit)])
             benefit_targets = benefit_targets[1:]
@@ -223,7 +223,7 @@ class Benefits():
             # print(benefit,'value_counts baseline')
             # print(base_participation.sum(axis=1).value_counts())
             total_particpants = (base_participation.sum(axis=1) *
-                                 cps_benefit.s006).sum()
+                                 cps_benefit.WT).sum()
             participant_targets = total_particpants * \
                 (1 + growth_rates['{0}_participation_growth'.format(benefit)])
             # extract probability of participation in program from tax-unit database
