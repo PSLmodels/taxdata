@@ -70,17 +70,48 @@ def main():
     data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']
-    # Determine amount of qualified dividends using IRS ratio
-    data['e00650'] = data.e00600 * 0.7556
 
-    # Split interest income into taxable and tax exempt using IRS ratio
-    taxable = 0.6
-    nontaxable = 1. - taxable
-    data['e00300'] = data.INTST * taxable
-    data['e00400'] = data.INTST * nontaxable
+    np.random.seed(79)
+    # Determine amount of qualified dividends
+    # percent of units where all dividends are qualified
+    all_qualified_prob = 0.429
+    # percent of units where no dividends are qualified
+    no_qualified_prob = 0.093
+    # percent of units where either all or no dividends are qualified
+    non_avg_prob = all_qualified_prob + no_qualified_prob
+    # percent of dividends that are qualified among remaining units
+    qualified_frac = 0.678
+    # Determine qualified dividend percentage
+    probs = np.random.random(len(data['e00600']))
+    qualified = np.ones(len(data['e00600']))
+    qualified = np.where((probs > all_qualified_prob) &
+                         (probs <= non_avg_prob), 0.0, qualified)
+    qualified = np.where(probs > non_avg_prob, qualified_frac, qualified)
+    data['e00650'] = data.e00600 * qualified
 
-    # Split pentions and annuities using PUF ratio
-    data['e01700'] = data['e01500'] * 0.1656
+    # Split interest income into taxable and tax exempt
+    slope = 0.068
+    ratio = 0.46
+    prob = 1. - slope * (data.INTST * 1e-3)
+    uniform_rn = np.random.random(len(prob))
+    data['e00300'] = np.where(uniform_rn < prob,
+                              data.INTST,
+                              data.INTST * ratio)
+    data['e00400'] = data['INTST'] - data['e00300']
+
+    # Split pentions and annuities using random assignment
+    # probabiliies used for random assignment
+    probs = np.random.random(len(data['e01500']))
+    fully_taxable_prob = 0.612
+    zero_tax_prob = 0.073
+    non_avg_prob = fully_taxable_prob + zero_tax_prob
+    avg_taxable_amout = 0.577
+    # determine tax ability
+    taxability = np.ones(len(data['e01500']))
+    taxability = np.where((probs > fully_taxable_prob) &
+                          (probs <= non_avg_prob), 0.0, taxability)
+    taxability = np.where(probs > non_avg_prob, avg_taxable_amout, taxability)
+    data['e01700'] = data['e01500'] * taxability
 
     print 'Applying deduction limits'
     data = deduction_limits(data)
