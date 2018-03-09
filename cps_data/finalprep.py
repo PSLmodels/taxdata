@@ -90,11 +90,13 @@ def main():
     data['e00650'] = data.e00600 * qualified
 
     # Split interest income into taxable and tax exempt
-    slope = 93
-    ratio = 0.60
-    prob = 1. - slope * (data.INTST / 1000)
-    probs = np.random.random(len(prob))
-    data['e00300'] = np.where(prob < probs, data.INTST, data.INTST * ratio)
+    slope = 0.068
+    ratio = 0.46
+    prob = 1. - slope * (data.INTST * 1e-3)
+    uniform_rn = np.random.random(len(prob))
+    data['e00300'] = np.where(uniform_rn < prob,
+                              data.INTST,
+                              data.INTST * ratio)
     data['e00400'] = data['INTST'] - data['e00300']
 
     # Split pentions and annuities using random assignment
