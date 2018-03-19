@@ -699,9 +699,9 @@ class Returns(object):
                     dage = individual['a_age']
                     record[('dep' + str(depne))] = house.index(individual)
                     record['depage' + str(depne)] = dage
-                    if individual['a_age'] <= 5:
+                    if individual['a_age'] < 5:
                         record['nu05'] += 1
-                    if individual['a_age'] <= 13:
+                    if individual['a_age'] < 13:
                         record['nu13'] += 1
                     if 0 < individual['a_age'] < 18:
                         record['nu18'] += 1
