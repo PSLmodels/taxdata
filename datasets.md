@@ -31,18 +31,17 @@ Because benefit data is imputed onto the CPS, it is not available in the PUF.
 Similarly, the CPS is missing some income and deduction variables only available
 in the PUF.
 
-A full list of variables available in each file can be found in
-[`records_variables.json`](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/records_variables.json)
-in the Tax-Calculator repository. The availability of each variable is specified
-in the `availability` section. PUF availability is indicated by `taxdata_puf`,
-CPS availability by `taxdata_cps`.
+A full list of variables available in each file can be found
+[here](http://open-source-economics.github.io/Tax-Calculator/#input). The
+availability of each variable is specified in the _availability_ section. PUF
+availability is indicated by `taxdata_puf`, CPS availability by `taxdata_cps`.
 
 Due to missing variables, certain policy parameters will be ineffective depending
 on which file you're using. These will be greyed out in TaxBrain. The policy
 parameters available in Tax-Calculator can be found in
-[`current_law_policy.json`](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/current_law_policy.json)
-in the Tax-Calculator repository. The dataset(s) compatible with each parameter
-are indicated by boolean values in the `compatible_data` field.
+[here](http://open-source-economics.github.io/Tax-Calculator/#pol). The
+dataset(s) compatible with each parameter are indicated by true/false values in
+the _Has An Effect When Using_ section.
 
 ## Aggregate Totals
 
