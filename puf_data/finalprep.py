@@ -14,6 +14,14 @@ def main():
     # (*) Read unprocessed input file into a Pandas Dataframe
     data = pandas.read_csv('cps-matched-puf.csv')
 
+    # Rename certain CPS variables
+    renames = {
+        'XHID': 'h_seq',
+        'XFID': 'ffpos',
+        'xstate': 'fips'
+    }
+    data = data.rename(columns=renames)
+
     # check the PUF year
     max_flpdyr = max(data['flpdyr'])
     if max_flpdyr == 2008:
@@ -57,6 +65,8 @@ def main():
     if not BENPUF:
         data = remove_benefits_variables(data)
 
+    # Convert data to integers
+    data = data.round(0).astype('int64')
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
         data.to_csv('benpuf.csv', index=False)
@@ -206,19 +216,18 @@ def remove_unused_variables(data):
 
     UNUSED_READ_VARS = [
         'agir1', 'efi', 'elect', 'flpdmo', 'wage_head', 'wage_spouse',
-        'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
+        'f3800', 'f8582', 'f8606', 'f8829', 'f8910',
         'n20', 'n25', 'n30', 'prep', 'schb', 'schcf', 'sche',
         'tform', 'ie', 'txst', 'xfpt', 'xfst',
         'xocah', 'xocawh', 'xoodep', 'xopar', 'agerange',
-        'gender', 'earnsplit', 'agedp1', 'agedp2', 'agedp3',
         's008', 's009', 'wsamp', 'txrt', 'matched_weight',
         'e01000', 'e03260', 'e09400', 'e24516', 'e62720', 'e62730',
         'e62740', 'e05100', 'e05800', 'e08800', 'e15360', 'p04470',
         'e00100', 'e20800', 'e21040', 'e62100', 'e59560', 'p60100',
         'e19550', 'e20550', 'e20600', 'e19700', 'e02500', 'e07200',
-        'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
+        'e87870', 'e30400', 'e24598', 'e11300', 'e30500',
         'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
-        'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
+        'e15210', 'e24615', 'e07230', 'e11100', 'e10900',
         'e11582', 'e11583', 'e25920', 's27860', 'e10960', 'e59720',
         'e87550', 'e26190', 'e53317', 'e53410', 'e04600', 'e26390',
         'e15250', 'p65300', 'p25350', 'e06500', 'e10300', 'e26170',
@@ -230,7 +239,9 @@ def remove_unused_variables(data):
         'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
         'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
         'e11070', 'e11550', 'e11580', 'p87482', 'e20500', 'FDED',
-        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200']
+        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200',
+        'nu18_dep', 'e11601', 'e11603', 'e11602', 'e25550', 'f8867',
+        'f8949']
     MORE_UNUSED_READ_VARS = [
         'jcps88',
         'jcps89',
@@ -467,11 +478,13 @@ def split_earnings_variables(data, data_year):
         mte = 102000
     elif data_year == 2009:
         mte = 106800
+    elif data_year == 2011:
+        mte = 106800
     else:
         raise ValueError('illegal SOI PUF data year {}'.format(data_year))
     # total self-employment earnings subject to SECA taxation
     # (minimum handles a few secatip values slightly over the mte cap)
-    secatip = np.minimum(mte, data['e30400'] - data['e30500'])  # for taxpayer
+    secatip = np.minimum(mte, data['e30400'])  # for taxpayer
     secatis = np.minimum(mte, data['e30500'])  # for spouse
     # split self-employment earnings subject to SECA taxation
     # ... compute secati?-derived frac_p and frac_s

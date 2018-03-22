@@ -2,42 +2,19 @@ import pandas as pd
 import numpy as np
 import os
 from copy import deepcopy
-
-
-def ravel_test(indicator, benefits, prob, CPS_weights):
-
-    wt = CPS_weights.loc[:, 'WT'+str("2015")]
-
-    extrap_df = Benefits._ravel_data(wt.copy(), indicator.copy(),
-                                         benefits.copy(), prob.copy())
-    extrap_df.sort_values(by=["i", "j"], inplace=True)
-
-    I_unrav = Benefits._unravel_data(extrap_df, "I",
-                                                 indicator.columns.tolist(),
-                                                 dtype=np.int64)
-    ben_unrav = Benefits._unravel_data(extrap_df, "benefits",
-                                                   benefits.columns.tolist(),
-                                                   dtype=np.float64)
-    prob_unrav = Benefits._unravel_data(extrap_df, "prob",
-                                                    prob.columns.tolist(),
-                                                    dtype=np.float64)
-
-    pd.testing.assert_frame_equal(indicator, I_unrav, check_dtype=False)
-    pd.testing.assert_frame_equal(benefits, ben_unrav, check_dtype=False)
-    pd.testing.assert_frame_equal(prob, prob_unrav, check_dtype=False)
-
+import time
 
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
-    CPS_BENEFIT_PATH = '../cps_data/cps_raw.csv.gz'
+    CPS_BENEFIT_PATH = '../cps_data/cps_raw_rename.csv.gz'
     CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
 
     def __init__(self,
                  growth_rates=GROWTH_RATES_PATH,
                  cps_benefit=CPS_BENEFIT_PATH,
                  cps_weights=CPS_WEIGHTS_PATH,
-                 benefit_names=["ssi", "medicaid", "medicare",
-                                "vb", "snap", "ss"]):
+                 benefit_names=["ssi", "mcaid", "mcare",
+                                "vet", "snap", 'tanf', 'housing', 'wic']):
         benefit_names = [bn.lower() for bn in benefit_names]
         self._read_data(growth_rates, cps_benefit, cps_weights,
                         benefit_names=benefit_names)
@@ -48,11 +25,10 @@ class Benefits():
     def increment_year(self, tol=0.01):
         self.current_year += 1
         print("starting year", self.current_year)
-        WT = self.WT.loc[:, 'WT'+str(self.current_year)]
+        WT = self.WT.loc[:, 'WT'+str(self.current_year)] * 0.01
         for benefit in self.benefit_names:
             participant_targets = getattr(self, "{}_participant_targets".format(benefit))
             benefit_targets = getattr(self, "{}_benefit_targets".format(benefit))
-            base_participation = getattr(self, "{}_base_participation".format(benefit))
             participation = getattr(self, "{}_participation".format(benefit))
             benefits = getattr(self, "{}_benefits".format(benefit))
             prob = getattr(self, "{}_prob".format(benefit))
@@ -67,6 +43,8 @@ class Benefits():
                                       prob,
                                       participant_targets[self.current_year],
                                       tol=tol)
+            # part_wt = pd.concat(participation.sum(axis=1), WT)
+            # extrapolated = part_wt.
             extrapolated = (participation.sum(axis=1) * WT).sum()
             print(benefit, 'this year total is ', extrapolated,
                   ', target is ', participant_targets[self.current_year],
@@ -79,7 +57,7 @@ class Benefits():
             self.benefit_extrapolation[lab] = participation.sum(axis=1)
 
             total_current_benefits = (benefits.sum(axis=1) * WT).sum()
-            lab = benefit + '_benefits_' + str(self.current_year)
+            lab = benefit + '_' + str(self.current_year)
             self.benefit_extrapolation[lab] = \
                 (benefits.sum(axis=1) *
                  benefit_targets[self.current_year] / total_current_benefits)
@@ -87,9 +65,8 @@ class Benefits():
             setattr(self, '{}_participation'.format(benefit), participation)
             setattr(self, '{}_benefits'.format(benefit), benefits)
 
-
     @staticmethod
-    def _extrapolate(WT, I, benefits, prob, target, tol=0.01):
+    def _extrapolate(WT, I, benefits, prob, target, tol=0.01, J=15):
         """
         Goal: get number of participants as close to target as possible
         Steps:
@@ -114,131 +91,91 @@ class Benefits():
                 get the same matrix that we started with but with the
                 updated values
         """
-        extrap_df = Benefits._ravel_data(WT.copy(),
-                                         I.copy(),
-                                         benefits.copy(),
-                                         prob.copy())
+        start = time.time()
+
+        extrap_df = Benefits._stack_df(WT, I, benefits, prob, J)
+
+        receives = extrap_df.loc[extrap_df.I > 0, ]
+        avg_benefit = receives.benefits_wt.sum() / receives.I_wt.sum()
 
         actual = extrap_df.I_wt.sum()
         diff = actual - target
         if diff < 0:
             remove = False
             candidates = extrap_df.loc[extrap_df.I == 0, ].copy()
+            assert candidates.I.sum() == 0
             # set everyone as a participant and then remove surplus below
-            # this is necassary since I * wt will all be zeroes
+            # this is necessary since I * wt will all be zeroes
             candidates.loc[:, "I"] = np.ones(len(candidates))
-            candidates.loc[:, "I_wt"] = candidates.I * candidates.WT
-            noncandidates = extrap_df.loc[extrap_df.I == 1, ]
+            candidates.loc[:, "I_wt"] = candidates.I * candidates.wt
+            noncandidates = extrap_df.loc[extrap_df.I == 1, ].copy()
+            assert noncandidates.I.sum() == len(noncandidates)
         else:
             remove = True
-            candidates = extrap_df.loc[extrap_df.I == 1, ]
-            noncandidates = extrap_df.loc[extrap_df.I == 0, ]
+            candidates = extrap_df.loc[extrap_df.I == 1, ].copy()
+            assert candidates.I.sum() == len(candidates)
+            noncandidates = extrap_df.loc[extrap_df.I == 0, ].copy()
+            assert noncandidates.I.sum() == 0
         noncan_part = noncandidates.I_wt.sum()
         del extrap_df
         # sort by probability of getting benefits in descending order
         # of prob so that we only keep those with highest prob of
         # receiving benefits in the future
         candidates.sort_values(by="prob", ascending=False, inplace=True)
-        # create index based on new ordering for idxmin operation below
-        candidates.reset_index(drop=True, inplace=True)
         # create running sum of weighted participants
         candidates["cum_participants"] = candidates.I_wt.cumsum() + noncan_part
         # get absolute difference between candidates and target
-        candidates["abs_diff"] = np.abs(candidates.cum_participants -
-                                        target)
-
-        # get index of minimum absolute difference
-        min_diff = candidates.abs_diff.idxmin()
+        candidates["_diff"] = candidates.cum_participants - target
 
         # # check to make results are close enough
-        assert np.allclose(candidates.iloc[min_diff].cum_participants, target,
-                           atol=0.0, rtol=tol)
+        assert np.allclose(
+            candidates[candidates._diff <= 0].cum_participants.max(), target,
+            atol=0.0, rtol=tol
+        )
 
         # individuals prior to min_diff have highest probability of getting
         # benefits in the future ==> they get benefits
-        candidates.iloc[:min_diff, candidates.columns.get_loc("I")] = 1
-        candidates.iloc[(min_diff + 1):, candidates.columns.get_loc("I")] = 0
-        candidates.iloc[(min_diff + 1):,
-                        candidates.columns.get_loc("prob")] = 10000
+        candidates.loc[candidates._diff <= 0, "I"] = 1
+        candidates.loc[candidates._diff > 0, "I"] = 0
 
         if remove:
-            candidates.loc[(min_diff + 1):, 'benefits'] = 0
+            candidates.loc[candidates._diff > 0, 'benefits'] = 0
         else:
             # all added candidates have indicator 1 but no benefits
-            avg_benefit = target/(candidates.I_wt.sum() + noncandidates.I_wt.sum())
             candidates.loc[(candidates.I == 1) &
                            (candidates.benefits == 0), 'benefits'] = avg_benefit
 
-        result = pd.concat([noncandidates, candidates], axis=0, ignore_index=True)
+        result = pd.concat([noncandidates, candidates], axis=0, ignore_index=False)
         del candidates
         del noncandidates
-        result.sort_values(by=["i", "j"], inplace=True)
-        wt_ravel = Benefits._repeating_ravel((len(WT), 15),
-                                                          apply_to=np.array(WT))
 
-        result.I_wt = result.I * wt_ravel
-
-        I = Benefits._unravel_data(result, "I", I.columns.tolist(),
-                                               dtype=np.int64)
-        benefits = Benefits._unravel_data(result, "benefits",
-                                                      benefits.columns.tolist(),
-                                                      dtype=np.float64)
+        result.I_wt = result.I * result.wt
+        finish = time.time()
+        print('total time', finish - start)
+        I = result.I.unstack().sort_index()
+        benefits = result.benefits.unstack().sort_index()
 
         return I, benefits
 
     @staticmethod
-    def _unravel_data(df, var_name, column_names, dtype=None):
-        # dataframe df should already be sorted by i and j in extrapolate
-        # df.sort_values(by=["i", "j"], inplace=True)
+    def _stack_df(WT, I, benefits, prob, J):
+        wt_ext = pd.concat([WT for i in range(0, J)], axis=1)
+        wt_ext.columns = list(range(0, J))
 
-        var = df[var_name].values
-        max_i = int(df.i.max()) + 1
-        max_j = int(df.j.max()) + 1
-        var = var.reshape(max_i, max_j)
+        wt_stack = wt_ext.stack()
+        I_stack = I.stack()
+        ben_stack = benefits.stack()
+        prob_stack = prob.stack()
 
-        df = pd.DataFrame(var, columns=column_names, dtype=dtype)
-
-        return df
-
-    @staticmethod
-    def _repeating_ravel(shape, apply_to=None):
-        """
-        test = np.array([5,6,7,8])
-        repeating_ravel((4,2), apply_to=test)
-        returns array([5, 5, 6, 6, 7, 7, 8, 8])
-        """
-        if apply_to is None:
-            apply_to = np.arange(shape[0], dtype=np.int32)
-        assert(isinstance(apply_to, np.ndarray))
-        assert (apply_to.shape[0] == shape[0])
-        i = np.tile(apply_to, shape[1])
-        i = i.reshape(shape[1], shape[0])
-        i = i.T.ravel()
-        return i
-
-    @staticmethod
-    def _ravel_data(WT, I, benefits, prob):
-        wt_arr = np.array(WT)
-        I_arr = np.array(I)
-        benefits_arr = np.array(benefits)
-        prob_arr = np.array(prob)
-
-        I_wt = (wt_arr * I_arr.T).T
-        wt_rav = Benefits._repeating_ravel(I_arr.shape, apply_to=wt_arr)
-
-        # create indices
-        i = Benefits._repeating_ravel(I_arr.shape)
-        j = i % I_arr.shape[1]
-
-        # stack and create data frame with all individuals
-        extrap_arr = np.vstack((prob_arr.ravel(), I_arr.ravel(), I_wt.ravel(),
-                                wt_rav, benefits_arr.ravel(), i, j)).T
-        extrap_df = pd.DataFrame(extrap_arr,
-                                 columns=["prob", "I", "I_wt", "WT", "benefits",
-                                          "i", "j"])
+        extrap_df = pd.concat(
+            (wt_stack, I_stack, ben_stack, prob_stack),
+            axis=1
+        )
+        extrap_df.columns = ['wt', 'I', 'benefits', 'prob']
+        extrap_df["I_wt"] = extrap_df.I * extrap_df.wt
+        extrap_df["benefits_wt"] = extrap_df.benefits * extrap_df.wt
 
         return extrap_df
-
 
     def _read_data(self, growth_rates, cps_benefit, cps_weights,
                    cps=None, benefit_names=[]):
@@ -246,19 +183,27 @@ class Benefits():
         prepare data
         """
         cps_benefit = pd.read_csv(cps_benefit)
+        self.index = cps_benefit["SEQUENCE"]
 
         if isinstance(cps_weights, str):
             assert(os.path.exists(cps_weights))
             cps_weights = pd.read_csv(cps_weights)
         else:
             assert(isinstance(cps_weights, pd.DataFrame))
+        cps_weights["SEQUENCE"] = self.index
+        cps_weights.set_index("SEQUENCE", inplace=True)
+
+        benefit_extrapolation = pd.DataFrame({"SEQUENCE": self.index})
+        benefit_extrapolation.set_index('SEQUENCE', inplace=True)
+
+        cps_benefit.set_index("SEQUENCE", inplace=True)
+
         self.WT = cps_weights
         growth_rates = pd.read_csv(growth_rates, index_col=0)
-        benefit_extrapolation = pd.DataFrame()
         for benefit in benefit_names:
 
             # create benefit targets
-            benefit_2014 = (cps_benefit[benefit + '_ben'] * cps_benefit.s006).sum()
+            benefit_2014 = (cps_benefit[benefit] * cps_benefit.WT).sum()
             benefit_targets = benefit_2014 * (1 + growth_rates['{0}_benefit_growth'
                                                                .format(benefit)])
             benefit_targets = benefit_targets[1:]
@@ -267,25 +212,29 @@ class Benefits():
             base_benefits_col = [col for col in list(cps_benefit) if
                                  col.startswith('{0}_VAL'.format(benefit.upper()))]
             base_benefits = cps_benefit[base_benefits_col]
-
+            base_benefits.columns = list(range(len(base_benefits.columns)))
             # Create Participation targets from tax-unit individual level markers
             # and growth rates from SSA
-            base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0))
+            base_participation = pd.DataFrame(np.where(base_benefits > 0, 1, 0),
+                                              index=self.index,
+                                              columns=list(range(len(base_benefits.columns))))
+
+
             # print(benefit,'value_counts baseline')
             # print(base_participation.sum(axis=1).value_counts())
             total_particpants = (base_participation.sum(axis=1) *
-                                 cps_benefit.s006).sum()
+                                 cps_benefit.WT).sum()
             participant_targets = total_particpants * \
                 (1 + growth_rates['{0}_participation_growth'.format(benefit)])
             # extract probability of participation in program from tax-unit database
             prob_col = [col for col in list(cps_benefit)
                         if col.startswith('{0}_PROB'.format(benefit.upper()))]
             prob = cps_benefit[prob_col]
+            prob.columns = list(range(len(prob.columns)))
 
             # dataframe of number participants and total benefits from program
             benefit_extrapolation['{}_recipients_2014'.format(benefit)] = base_participation.sum(axis=1)
-            benefit_extrapolation['{}_benefits_2014'.format(benefit)] = cps_benefit[benefit + '_ben']
-
+            benefit_extrapolation['{}_2014'.format(benefit)] = cps_benefit[benefit]
             setattr(self, '{}_prob'.format(benefit), prob)
             setattr(self, '{}_base_participation'.format(benefit), base_participation)
             setattr(self, '{}_base_benefits'.format(benefit), base_benefits)
@@ -295,33 +244,40 @@ class Benefits():
             setattr(self, '{}_participation'.format(benefit), base_participation)
             setattr(self, '{}_benefits'.format(benefit), base_benefits)
 
+            # indexing check
+            # assert (getattr(self, '{}_prob'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_base_participation'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_base_benefits'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_benefit_extrapolation'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_participation'.format(benefit)).index == cps_benefit.index).all()
+            # assert (getattr(self, '{}_benefits'.format(benefit)).index == cps_benefit.index).all()
+
         # add record ID
-        benefit_extrapolation['RECID'] = cps_benefit['SEQUENCE']
+        benefit_extrapolation['RECID'] = benefit_extrapolation.index.values
         self.benefit_extrapolation = benefit_extrapolation
 
 
 if __name__ == "__main__":
     ben = Benefits()
 
-    for _ in range(12):
+    for _ in range(13):
         ben.increment_year()
 
     # drop unnecessary variables
     drop_list = []
-    for year in range(2014, 2027):
+    # drop all recipient columns
+    for year in range(2014, 2027 + 1):
         for benefit in ben.benefit_names:
             drop_list.append('{}_recipients_{}'.format(benefit, year))
+    # drop 2014 values
+    for benefit in ben.benefit_names:
+        drop_list.append('{}_2014'.format(benefit))
     ben.benefit_extrapolation = ben.benefit_extrapolation.drop(drop_list,
                                                                axis=1)
     # drop records with no benefits
     col_list = ben.benefit_extrapolation.columns
     mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
-    ben.benefit_extrapolation = deepcopy(ben.benefit_extrapolation[mask != 0])
-
-    ben.benefit_extrapolation.to_csv("cps_benefits_extrap.csv.gz", index=False,
-                                     compression="gzip")
-
-
-
-
-    # ravel_test(indicator, benefits, prob, CPS_weights)
+    gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
+    int_gets_benefits = gets_benefits.astype(np.int32)
+    int_gets_benefits.to_csv("cps_benefits.csv.gz", index=False,
+                             compression="gzip")

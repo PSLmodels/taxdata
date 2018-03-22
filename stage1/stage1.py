@@ -1,6 +1,7 @@
 import pandas as pd
 
-SYR = 2009  # calendar year used to normalize factors
+SYR = 2011  # calendar year used to normalize factors
+BEN_SYR = 2014  # calendar year used just for the benefit start year
 
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
@@ -221,6 +222,27 @@ Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[SYR]
 Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[SYR]
 Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[SYR]
 
+# Add benefit growth rates to Stage 1 factors
+benefit_programs = pd.read_csv('../cps_data/benefitprograms.csv',
+                               index_col='Program')
+benefit_programs.drop('Unemployment Assistance', inplace=True)
+benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
+# Find growth rate between 2020 and 2021 and extrapolate out to 2027
+gr = benefit_sums['2021_cost'] / float(benefit_sums['2020_cost'])
+for year in range(2022, 2028):
+    prev_year = year - 1
+    prev_value = benefit_sums['{}_cost'.format(prev_year)]
+    benefit_sums['{}_cost'.format(year)] = prev_value * gr
+
+ABENEFITS = (benefit_sums /
+             benefit_sums['{}_cost'.format(BEN_SYR)]).transpose()
+benefit_factors = pd.DataFrame()
+for year in range(SYR, 2028):
+    if year <= BEN_SYR:
+        benefit_factors[year] = [1.0]
+    else:
+        benefit_factors[year] = ABENEFITS['{}_cost'.format(year)]
+
 Stage_II_targets = Stage_II_targets.drop('IPD', axis=1)
 # rename Stage_II_targets index
 rename = {
@@ -256,8 +278,11 @@ rename = {
 Stage_II_targets.rename(columns=rename, inplace=True)
 
 # Delate 2008 row from Stage_I_factors
-Stage_I_factors = Stage_I_factors.drop(2008)
+Stage_I_factors = Stage_I_factors.drop([2008, 2009, 2010])
+Stage_II_targets = Stage_II_targets.drop([2008, 2009, 2010])
 
+# add on benefit factors
+Stage_I_factors['ABENEFITS'] = benefit_factors.transpose()[0]
 # write Stage_I_factors for final preparation and then use by Tax-Calculator
 Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
                        float_format='%.4f',
