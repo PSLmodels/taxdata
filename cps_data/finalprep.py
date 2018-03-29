@@ -417,6 +417,7 @@ def benefits(data, other_ben):
     data['vet_ben'] = data['vet_ben'].astype(np.int32)
     data['tanf_ben'] = data['tanf_ben'].astype(np.int32)
     data['wic_ben'] = data['wic_ben'].astype(np.int32)
+    data['housing_ben'] *= 12
     data['housing_ben'] = data['housing_ben'].astype(np.int32)
     data['e02400'] = data['e02400'].astype(np.int32)
     data['e02300'] = data['ui_ben'].astype(np.int32)
