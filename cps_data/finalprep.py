@@ -67,9 +67,7 @@ def main():
 
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
     data['e00100'] = data['JCPS9'] + data['JCPS19']
-    data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
-    data['e02100'] = data['e02100p'] + data['e02100s']
 
     np.random.seed(79)
     # Determine amount of qualified dividends
@@ -127,6 +125,10 @@ def main():
     data = drop_vars(data)
 
     data = data.fillna(0.)
+    data = data.astype(np.int32)
+    data['e00200'] = data['e00200p'] + data['e00200s']
+    data['e00900'] = data['e00900p'] + data['e00900s']
+    data['e02100'] = data['e02100p'] + data['e02100s']
     print 'Exporting...'
     data.to_csv('cps.csv', index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
