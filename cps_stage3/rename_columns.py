@@ -109,4 +109,5 @@ rev_rename = {rename[k]: k for k in rename}
 rev_rename.update(rename_lower)
 cps = pd.read_csv('../cps_data/cps_raw.csv.gz', compression="gzip")
 cps.rename(columns=rev_rename, inplace=True)
+cps['housing'] *= 12
 cps.to_csv('../cps_data/cps_raw_rename.csv.gz', compression="gzip")
