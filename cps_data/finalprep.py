@@ -161,28 +161,28 @@ def deduction_limits(data):
 def add_dependents(data):
     # Count number of dependents under 13
     # Max of four to match PUF version of nu13
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 13), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 13), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 13), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 13), 1, 0)
+    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 13), 1, 0)
+    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 13), 1, 0)
+    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 13), 1, 0)
+    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 13), 1, 0)
     nu13 = age1 + age2 + age3 + age4
     data['nu13'] = nu13
 
     # Count number of dependents under 5
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 5), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 5), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 5), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 5), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS06 <= 5), 1, 0)
+    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 5), 1, 0)
+    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 5), 1, 0)
+    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 5), 1, 0)
+    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 5), 1, 0)
+    age5 = np.where((data.ICPS07 > 0) & (data.ICPS06 < 5), 1, 0)
     nu05 = age1 + age2 + age3 + age4 + age5
     data['nu05'] = nu05
 
     # Count number of children eligible for child tax credit
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 17), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 17), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 17), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 17), 1, 0)
-    age5 = np.where((data.ICPS07) > 0 & (data.ICPS07 <= 17), 1, 0)
+    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 17), 1, 0)
+    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 17), 1, 0)
+    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 17), 1, 0)
+    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 17), 1, 0)
+    age5 = np.where((data.ICPS07) > 0 & (data.ICPS07 < 17), 1, 0)
     n24 = age1 + age2 + age3 + age4 + age5
     data['n24'] = n24
 

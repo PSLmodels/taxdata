@@ -148,9 +148,9 @@ The student loan interest deduction is capped at $2,500, and IRA contributions
 are limited at either $6,500 or $5,500 depending on the age of the head of the
 tax unit.
 
-We then count the number of dependents under 5 and 13 or over 65 years old.
-Finally, the number of children qualified for the child tax credit, childcare
-credit, and earned income credit are counted for each tax unit.
+We then count the number of dependents under 5 years old, under 13, and 65 or
+older. Finally, the number of children qualified for the child tax credit,
+childcare credit, and earned income credit are counted for each tax unit.
 
 The last step in the final preparations is adjusting the distribution of interest
 income, ordinary and qualified dividends, and self-employment income using a
