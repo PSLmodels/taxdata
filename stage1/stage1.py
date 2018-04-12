@@ -225,7 +225,6 @@ Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[SYR]
 # Add benefit growth rates to Stage 1 factors
 benefit_programs = pd.read_csv('../cps_data/benefitprograms.csv',
                                index_col='Program')
-benefit_programs.drop('Unemployment Assistance', inplace=True)
 benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
 # Find growth rate between 2020 and 2021 and extrapolate out to 2027
 gr = benefit_sums['2021_cost'] / float(benefit_sums['2020_cost'])
