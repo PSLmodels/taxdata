@@ -62,7 +62,7 @@ Variables not in 10-year CBO Projections:
                 Column: Cost: Scheduled Benefits: Intermediate Level
         Link: https://www.ssa.gov/oact/tr/2017/tr2017.pdf
         Previous: 2016 report
-        Current: 2017 report
+        Current: 2017 report (page 174)
         Notes: Projections are taken directly from this chart for years 2017-2026.
                2027 projections are extrapolated out using the growth
                rate between 2025 and 2026.
