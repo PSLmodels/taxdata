@@ -60,7 +60,12 @@ def main():
         'SLTX': 'e18400',
         'XHID': 'h_seq',
         'XFID': 'ffpos',
-        'XSTATE': 'fips'
+        'XSTATE': 'fips',
+        'NU13': 'nu13',
+        'NU05': 'nu05',
+        'N24': 'n24',
+        'ELDERLY_DEPENDENT': 'elderly_dependent',
+        'F2441': 'f2441'
     }
     data = data.rename(columns=renames)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
@@ -111,17 +116,15 @@ def main():
     taxability = np.where(probs > non_avg_prob, avg_taxable_amout, taxability)
     data['e01700'] = data['e01500'] * taxability
 
-    print 'Applying deduction limits'
+    print('Applying deduction limits')
     data = deduction_limits(data)
-    print 'Adding dependents'
-    data = add_dependents(data)
-    print 'Adding AGI bins'
+    print('Adding AGI bins')
     data = add_agi_bin(data, 'INCOME')
-    print 'Adjusting distribution'
+    print('Adjusting distribution')
     data = adjust(data, adj_targets)
-    print 'Adding Benefits Data'
+    print('Adding Benefits Data')
     data = benefits(data, other_ben)
-    print 'Dropping unused variables'
+    print('Dropping unused variables')
     data = drop_vars(data)
 
     data = data.fillna(0.)
@@ -129,7 +132,7 @@ def main():
     data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']
-    print 'Exporting...'
+    print('Exporting...')
     data.to_csv('cps.csv', index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
 
@@ -158,67 +161,9 @@ def deduction_limits(data):
     return data
 
 
-def add_dependents(data):
-    # Count number of dependents under 13
-    # Max of four to match PUF version of nu13
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 13), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 13), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 13), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 13), 1, 0)
-    nu13 = age1 + age2 + age3 + age4
-    data['nu13'] = nu13
-
-    # Count number of dependents under 5
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 5), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 5), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 5), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 5), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS06 < 5), 1, 0)
-    nu05 = age1 + age2 + age3 + age4 + age5
-    data['nu05'] = nu05
-
-    # Count number of children eligible for child tax credit
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 17), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 17), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 17), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 17), 1, 0)
-    age5 = np.where((data.ICPS07) > 0 & (data.ICPS07 < 17), 1, 0)
-    n24 = age1 + age2 + age3 + age4 + age5
-    data['n24'] = n24
-
-    # Count number of elderly dependents
-    age1 = np.where(data.ICPS03 >= 65, 1, 0)
-    age2 = np.where(data.ICPS04 >= 65, 1, 0)
-    age3 = np.where(data.ICPS05 >= 65, 1, 0)
-    age4 = np.where(data.ICPS06 >= 65, 1, 0)
-    age5 = np.where(data.ICPS07 >= 65, 1, 0)
-    elderly = age1 + age2 + age3 + age4 + age5
-    data['elderly_dependent'] = elderly
-
-    # Count number elegible for f2441
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 13), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 13), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 13), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 13), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS07 < 13), 1, 0)
-    qualified = age1 + age2 + age3 + age4 + age5
-    data['f2441'] = np.where(qualified <= 3, qualified, 3)
-
-    # Count number elegible for EIC
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 19), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 19), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 19), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 19), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS07 < 19), 1, 0)
-    qualified = age1 + age2 + age3 + age4 + age5
-    data['EIC'] = np.where(qualified > 3, 3, qualified)
-
-    return data
-
-
 def drop_vars(data):
     """
-    Returns PDF of data without unuseable variables
+    Returns Pandas DataFrame of data without unuseable variables
     """
     useable_vars = [
         'DSI', 'EIC', 'FLPDYR', 'MARS', 'MIDR', 'RECID', 'XTOT', 'age_head',
@@ -244,6 +189,7 @@ def drop_vars(data):
         if item not in useable_vars:
             drop_vars.append(item)
     data = data.drop(drop_vars, axis=1)
+
     return data
 
 
