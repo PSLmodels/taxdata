@@ -1705,6 +1705,18 @@ DO N = 1 TO NUNITS ;
                    XXOCAH = 0.0 ;
                    XXOCAWH = 0.0 ;
                    IF( (DEPNE) GT 0.0 )THEN
+				   		EFLAG2 = 0;
+				  		 /* Error flag for dependent age variables */
+				   		IF (N24 > NU18)THEN
+				   			DO;
+								EFALG2 = 1;
+								NU13 = 0;
+								NU05 = 0;
+								N24 = 0;
+								ELDERLY_DEPENDENT = 0;
+								F2441 = 0;
+								EIC = 0;
+							END;
                         DO I = 1 TO DEPNE ;
                                 PPTR = 20 + I ;
                                 DINDEX = TREC(N , PPTR) ;
@@ -1724,10 +1736,29 @@ DO N = 1 TO NUNITS ;
 										ELSE IF (DAGE >= 21)THEN
 											N21 = N21 + 1;
 									END;
+								IF (EFLAG2 EQ 1)THEN
+									DO;
+										IF (DAGE > 0 AND DAGE < 13)THEN
+											NU13 = NU13 + 1;
+										IF (DAGE > 0 AND DAGE < 5)THEN
+											NU05 = NU05 + 1;
+										IF (DAGE > 0 AND DAGE < 17)THEN
+											N24 = N24 + 1;
+										IF (DAGE >= 65)THEN
+											ELDERLY_DEPENDENT = ELDERLY_DEPENDENT + 1;
+										IF (DAGE > 0 AND DAGE < 13)THEN
+											F2441 = F2441 + 1;
+										IF (DAGE > 0 AND DAGE < 19)THEN
+											EIC = EIC + 1;
+									END;
                         END;
 				   /* XTOT and UBI age variable error check*/
 				   AGESUMS = NU18 + N1821 + N21;
 				   XTOTDIFF = XXTOT - AGESUMS;
+
+				   N24ERRORS = 0;
+				   IF (N24 > NU18) THEN
+						N24ERRORS = N24ERRORS + 1;
 
                    XAGEX   = TREC(N , 86) ;
                    XSTATE  = TREC(N , 87) ;
@@ -2491,7 +2522,7 @@ DATA EXTRACT.CPSRETS&CPSYEAR(KEEP=JS IFDEPT AGEDE DEPNE CAHE AGEH AGES
 						  UI UI_VAL1-UI_VAL15 UI_PROB1-UI_PROB15
 						  WIC WIC_VAL1-WIC_VAL15 WIC_PROB1-WIC_PROB15
 						  HOUSING HOUSING_VAL1-HOUSING_VAL15 HOUSING_PROB1-HOUSING_PROB15
-						  NU13 NU05 N24 ELDERLY_DEPENDENT F2441 EIC
+						  NU13 NU05 N24 ELDERLY_DEPENDENT F2441 EIC N24ERRORS
                           /*
                                         New CPS Variables
                           */
