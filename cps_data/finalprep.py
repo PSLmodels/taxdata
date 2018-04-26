@@ -341,7 +341,7 @@ def adjust(data, targets):
 def benefits(data, other_ben):
     """
     Distribute benefits from non-models benefit programs and create total
-    benefits variableself.
+    benefits variable.
     Replaces Medicare and Medicaid values with set amounts
     """
     # replace medicare and medicaid
