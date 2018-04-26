@@ -395,8 +395,26 @@ def adjust(data, targets):
 def benefits(data, other_ben):
     """
     Distribute benefits from non-models benefit programs and create total
-    benefits variable
+    benefits variableself.
+    Replaces Medicare and Medicaid values with set amounts
     """
+    # replace medicare and medicaid
+    count_medicare = np.zeros(len(data))
+    count_medicaid = np.zeros(len(data))
+    for i in range(1, 16):
+        medicare_var = 'MCARE_VAL{}'.format(i)
+        medicaid_var = 'MCAID_VAL{}'.format(i)
+        count_medicare += np.where(data[medicare_var] > 0, 1, 0)
+        count_medicaid += np.where(data[medicaid_var] > 0, 1, 0)
+    new_medicare = count_medicare * 12000
+    new_medicaid = count_medicaid * 6000
+    scale_medicare = ((data['mcare_ben'] * data['s006']).sum() /
+                      (new_medicare * data['s006']).sum())
+    scale_medicaid = ((data['mcaid_ben'] * data['s006']).sum() /
+                      (new_medicaid * data['s006']).sum())
+    data['mcare_ben'] = new_medicare * scale_medicare
+    data['mcaid_ben'] = new_medicaid * scale_medicaid
+
     other_ben['2014_cost'] *= 1e6
 
     # Distribute other benefits
