@@ -63,7 +63,7 @@ def main():
         'XSTATE': 'fips'
     }
     data = data.rename(columns=renames)
-    data['s006'] *= 100
+    data['s006'] *= 100.
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
 
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
