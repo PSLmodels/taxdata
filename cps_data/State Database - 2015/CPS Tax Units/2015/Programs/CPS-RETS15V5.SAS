@@ -779,7 +779,7 @@ END;
 				    TREC(NUNITS, 281) = TREC(NUNITS, 281) + 1;
 			END;
 /* Add imputed variable data */
-		DO NDP = 282 TO 595;
+		DO NDP = 282 TO 599;
 			TREC(NUNITS, NDP) = 0.0;
 		END;
 		TREC(NUNITS, 312) = PREC(&PERSON, 120); * total SSI ;
@@ -1025,6 +1025,13 @@ TREC(&IY, 279) = TREC(&IY, 279) + TREC(&IX, 279);
 TREC(&IY, 280) = TREC(&IY, 280) + TREC(&IX, 280);
 TREC(&IY, 281) = TREC(&IY, 281) + TREC(&IX, 281);
 
+TREC(&IY, 594) = TREC(&IY, 594) + TREC(&IX, 594);
+TREC(&IY, 595) = TREC(&IY, 595) + TREC(&IX, 595);
+TREC(&IY, 596) = TREC(&IY, 596) + TREC(&IX, 596);
+TREC(&IY, 597) = TREC(&IY, 597) + TREC(&IX, 597);
+TREC(&IY, 598) = TREC(&IY, 598) + TREC(&IX, 598);
+TREC(&IY, 599) = TREC(&IY, 599) + TREC(&IX, 599);
+
 %MEND CONVERT ;
 
 %MACRO COMBINE(IX , IY) ;
@@ -1249,6 +1256,25 @@ ELSE IF (PREC(&PERSON, 12) >= 18 AND PREC(&PERSON, 12) < 21) THEN
     TREC(&RETURN, 280) = TREC(&RETURN, 280) + 1;
 ELSE IF (PREC(&PERSON, 12) >= 21) THEN
     TREC(&RETURN, 281) = TREC(&RETURN, 281) + 1;
+
+/* NU13 */
+IF (PREC(&PERSON, 12) > 0 AND PREC(&PERSON, 12) < 13) THEN
+	TREC(&RETURN, 594) = TREC(&RETURN, 594) + 1;
+/* NU05 */
+IF (PREC(&PERSON, 12) > 0 AND PREC(&PERSON, 12) < 5) THEN
+	TREC(&RETURN, 595) = TREC(&RETURN, 595) + 1;
+/* N24 */
+IF (PREC(&PERSON, 12 > 0) AND PREC(&PERSON, 12) < 17) THEN
+	TREC(&RETURN, 596) = TREC(&RETURN, 596) + 1;
+/* ELDERLY DEPENDENT */
+IF (PREC(&PERSON, 12) >= 65) THEN
+	TREC(&RETURN, 597) = TREC(&RETURN, 597) + 1;
+/* F2441 */
+IF (PREC(&PERSON, 12) > 0 AND PREC(&PERSON, 12) < 13) THEN
+	TREC(&RETURN, 598) = TREC(&RETURN, 598) + 1;
+/* EIC */
+IF (PREC(&PERSON, 12) > 0 AND PREC(&PERSON, 12) < 19) THEN
+	TREC(&RETURN, 599) = TREC(&RETURN, 599) + 1;
 %MEND ADDEPT ;
 
 %MACRO OUTPUT ;
@@ -1627,6 +1653,13 @@ DO N = 1 TO NUNITS ;
 					   WIC_PROB14 = TREC(N, 592);
 					   WIC_PROB15 = TREC(n, 593);
 
+					   NU13 = TREC(N, 594);
+					   NU05 = TREC(N, 595);
+					   N24 = TREC(N, 596);
+					   ELDERLY_DEPENDENT = TREC(N, 597);
+					   F2441 = TREC(N, 598);
+					   EIC = TREC(N, 599);
+
 					   A_LINENO = TREC(N, 469);
 /*
                    Additional Fields for Non-Filers
@@ -1672,6 +1705,18 @@ DO N = 1 TO NUNITS ;
                    XXOCAH = 0.0 ;
                    XXOCAWH = 0.0 ;
                    IF( (DEPNE) GT 0.0 )THEN
+				   		EFLAG2 = 0;
+				  		 /* Error flag for dependent age variables */
+				   		IF (N24 > NU18)THEN
+				   			DO;
+								EFALG2 = 1;
+								NU13 = 0;
+								NU05 = 0;
+								N24 = 0;
+								ELDERLY_DEPENDENT = 0;
+								F2441 = 0;
+								EIC = 0;
+							END;
                         DO I = 1 TO DEPNE ;
                                 PPTR = 20 + I ;
                                 DINDEX = TREC(N , PPTR) ;
@@ -1691,10 +1736,29 @@ DO N = 1 TO NUNITS ;
 										ELSE IF (DAGE >= 21)THEN
 											N21 = N21 + 1;
 									END;
+								IF (EFLAG2 EQ 1)THEN
+									DO;
+										IF (DAGE > 0 AND DAGE < 13)THEN
+											NU13 = NU13 + 1;
+										IF (DAGE > 0 AND DAGE < 5)THEN
+											NU05 = NU05 + 1;
+										IF (DAGE > 0 AND DAGE < 17)THEN
+											N24 = N24 + 1;
+										IF (DAGE >= 65)THEN
+											ELDERLY_DEPENDENT = ELDERLY_DEPENDENT + 1;
+										IF (DAGE > 0 AND DAGE < 13)THEN
+											F2441 = F2441 + 1;
+										IF (DAGE > 0 AND DAGE < 19)THEN
+											EIC = EIC + 1;
+									END;
                         END;
 				   /* XTOT and UBI age variable error check*/
 				   AGESUMS = NU18 + N1821 + N21;
 				   XTOTDIFF = XXTOT - AGESUMS;
+
+				   N24ERRORS = 0;
+				   IF (N24 > NU18) THEN
+						N24ERRORS = N24ERRORS + 1;
 
                    XAGEX   = TREC(N , 86) ;
                    XSTATE  = TREC(N , 87) ;
@@ -2458,6 +2522,7 @@ DATA EXTRACT.CPSRETS&CPSYEAR(KEEP=JS IFDEPT AGEDE DEPNE CAHE AGEH AGES
 						  UI UI_VAL1-UI_VAL15 UI_PROB1-UI_PROB15
 						  WIC WIC_VAL1-WIC_VAL15 WIC_PROB1-WIC_PROB15
 						  HOUSING HOUSING_VAL1-HOUSING_VAL15 HOUSING_PROB1-HOUSING_PROB15
+						  NU13 NU05 N24 ELDERLY_DEPENDENT F2441 EIC N24ERRORS
                           /*
                                         New CPS Variables
                           */
@@ -2483,7 +2548,7 @@ ARRAY PREC(16 , 162) _temporary_ ;	/*	NEW CPS FIELDS	*/
 *****
 	ANDERSON: NEED TO INCREASE SIZE TREC(*) ARRAY
 *****;
-ARRAY TREC(16 , 595) _temporary_ ;
+ARRAY TREC(16 , 600) _temporary_ ;
 ARRAY ICPS(*) ICPS01-ICPS50 ;
 ARRAY JCPS(*) JCPS1-JCPS200 ;
 IF (_N_ = 1)THEN PTR = 0;
