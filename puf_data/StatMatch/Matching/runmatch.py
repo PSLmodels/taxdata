@@ -61,6 +61,8 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     print ('Start Phase One')
     filers = filers.fillna(0)
     soi = soi.fillna(0)
+    filers.to_csv('filers.csv')
+    soi.to_csv('soi.csv')
     soi_final, cps_final, counts = phaseone(filers, soi)
 
     print('Start Phase Two')
