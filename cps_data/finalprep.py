@@ -144,7 +144,8 @@ def deduction_limits(data):
     """
     data['CHARITABLE'] = data['CHARITABLE'].fillna(0.)
     half_agi = data['e00100'] * 0.5
-    charity = np.maximum(data.CHARITABLE, half_agi)
+    charity = np.minimum(data.CHARITABLE, half_agi)
+    charity = np.maximum(charity, 0.)
     # Split charitable contributions into cash and non-cash using ratio in PUF
     cash = 0.82013
     non_cash = 1. - cash
