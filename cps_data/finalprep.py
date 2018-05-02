@@ -53,46 +53,87 @@ def main():
         'MEDICAID': 'mcaid_ben',
         'SSI': 'ssi_ben',
         'SNAP': 'snap_ben',
+        'WIC': 'wic_ben',
+        'TANF': 'tanf_ben',
+        'UI': 'ui_ben',
+        'HOUSING': 'housing_ben',
         'SLTX': 'e18400',
         'XHID': 'h_seq',
         'XFID': 'ffpos',
-        'XSTATE': 'fips'
+        'XSTATE': 'fips',
+        'NU13': 'nu13',
+        'NU05': 'nu05',
+        'N24': 'n24',
+        'ELDERLY_DEPENDENT': 'elderly_dependent',
+        'F2441': 'f2441'
     }
     data = data.rename(columns=renames)
+    data['s006'] *= 100.
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
 
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
     data['e00100'] = data['JCPS9'] + data['JCPS19']
-    data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
-    data['e02100'] = data['e02100p'] + data['e02100s']
-    # Determine amount of qualified dividends using IRS ratio
-    data['e00650'] = data.e00600 * 0.7556
 
-    # Split interest income into taxable and tax exempt using IRS ratio
-    taxable = 0.6
-    nontaxable = 1. - taxable
-    data['e00300'] = data.INTST * taxable
-    data['e00400'] = data.INTST * nontaxable
+    np.random.seed(79)
+    # Determine amount of qualified dividends
+    # percent of units where all dividends are qualified
+    all_qualified_prob = 0.429
+    # percent of units where no dividends are qualified
+    no_qualified_prob = 0.093
+    # percent of units where either all or no dividends are qualified
+    non_avg_prob = all_qualified_prob + no_qualified_prob
+    # percent of dividends that are qualified among remaining units
+    qualified_frac = 0.678
+    # Determine qualified dividend percentage
+    probs = np.random.random(len(data['e00600']))
+    qualified = np.ones(len(data['e00600']))
+    qualified = np.where((probs > all_qualified_prob) &
+                         (probs <= non_avg_prob), 0.0, qualified)
+    qualified = np.where(probs > non_avg_prob, qualified_frac, qualified)
+    data['e00650'] = data.e00600 * qualified
 
-    # Split pentions and annuities using PUF ratio
-    data['e01700'] = data['e01500'] * 0.1656
+    # Split interest income into taxable and tax exempt
+    slope = 0.068
+    ratio = 0.46
+    prob = 1. - slope * (data.INTST * 1e-3)
+    uniform_rn = np.random.random(len(prob))
+    data['e00300'] = np.where(uniform_rn < prob,
+                              data.INTST,
+                              data.INTST * ratio)
+    data['e00400'] = data['INTST'] - data['e00300']
 
-    print 'Applying deduction limits'
+    # Split pentions and annuities using random assignment
+    # probabiliies used for random assignment
+    probs = np.random.random(len(data['e01500']))
+    fully_taxable_prob = 0.612
+    zero_tax_prob = 0.073
+    non_avg_prob = fully_taxable_prob + zero_tax_prob
+    avg_taxable_amout = 0.577
+    # determine tax ability
+    taxability = np.ones(len(data['e01500']))
+    taxability = np.where((probs > fully_taxable_prob) &
+                          (probs <= non_avg_prob), 0.0, taxability)
+    taxability = np.where(probs > non_avg_prob, avg_taxable_amout, taxability)
+    data['e01700'] = data['e01500'] * taxability
+
+    print('Applying deduction limits')
     data = deduction_limits(data)
-    print 'Adding dependents'
-    data = add_dependents(data)
-    print 'Adding AGI bins'
+    print('Adding AGI bins')
     data = add_agi_bin(data, 'INCOME')
-    print 'Adjusting distribution'
+    print('Adjusting distribution')
     data = adjust(data, adj_targets)
-    print 'Adding Benefits Data'
+    print('Adding Benefits Data')
     data = benefits(data, other_ben)
-    print 'Dropping unused variables'
+    print('Dropping unused variables')
     data = drop_vars(data)
 
     data = data.fillna(0.)
-    print 'Exporting...'
+    data = data.astype(np.int32)
+    data['e00200'] = data['e00200p'] + data['e00200s']
+    data['e00900'] = data['e00900p'] + data['e00900s']
+    data['e02100'] = data['e02100p'] + data['e02100s']
+    print('Exporting...')
     data.to_csv('cps.csv', index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
 
@@ -121,69 +162,9 @@ def deduction_limits(data):
     return data
 
 
-def add_dependents(data):
-    # Count number of dependents under 13
-    # Max of four to match PUF version of nu13
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 13), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 13), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 13), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 13), 1, 0)
-    nu13 = age1 + age2 + age3 + age4
-    data['nu13'] = nu13
-
-    # Count number of dependents under 5
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 5), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 5), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 5), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 5), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS06 <= 5), 1, 0)
-    nu05 = age1 + age2 + age3 + age4 + age5
-    data['nu05'] = nu05
-
-    # Count number of children eligible for child tax credit
-    # Max of three to mach PUF version of n24
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 <= 17), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 <= 17), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 <= 17), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 <= 17), 1, 0)
-    age5 = np.where((data.ICPS07) > 0 & (data.ICPS07 <= 17), 1, 0)
-    n24 = age1 + age2 + age3 + age4 + age5
-    n24 = np.where(n24 > 3, 3, n24)
-    data['n24'] = n24
-
-    # Count number of elderly dependents
-    age1 = np.where(data.ICPS03 >= 65, 1, 0)
-    age2 = np.where(data.ICPS04 >= 65, 1, 0)
-    age3 = np.where(data.ICPS05 >= 65, 1, 0)
-    age4 = np.where(data.ICPS06 >= 65, 1, 0)
-    age5 = np.where(data.ICPS07 >= 65, 1, 0)
-    elderly = age1 + age2 + age3 + age4 + age5
-    data['elderly_dependent'] = elderly
-
-    # Count number elegible for f2441
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 13), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 13), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 13), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 13), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS07 < 13), 1, 0)
-    qualified = age1 + age2 + age3 + age4 + age5
-    data['f2441'] = np.where(qualified <= 3, qualified, 3)
-
-    # Count number elegible for EIC
-    age1 = np.where((data.ICPS03 > 0) & (data.ICPS03 < 19), 1, 0)
-    age2 = np.where((data.ICPS04 > 0) & (data.ICPS04 < 19), 1, 0)
-    age3 = np.where((data.ICPS05 > 0) & (data.ICPS05 < 19), 1, 0)
-    age4 = np.where((data.ICPS06 > 0) & (data.ICPS06 < 19), 1, 0)
-    age5 = np.where((data.ICPS07 > 0) & (data.ICPS07 < 19), 1, 0)
-    qualified = age1 + age2 + age3 + age4 + age5
-    data['EIC'] = np.where(qualified > 3, 3, qualified)
-
-    return data
-
-
 def drop_vars(data):
     """
-    Returns PDF of data without unuseable variables
+    Returns Pandas DataFrame of data without unuseable variables
     """
     useable_vars = [
         'DSI', 'EIC', 'FLPDYR', 'MARS', 'MIDR', 'RECID', 'XTOT', 'age_head',
@@ -200,7 +181,8 @@ def drop_vars(data):
         'nu05', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
-        'h_seq', 'ffpos', 'fips'
+        'h_seq', 'ffpos', 'fips', 'a_lineno', 'tanf_ben', 'wic_ben',
+        'housing_ben'
     ]
 
     drop_vars = []
@@ -208,6 +190,7 @@ def drop_vars(data):
         if item not in useable_vars:
             drop_vars.append(item)
     data = data.drop(drop_vars, axis=1)
+
     return data
 
 
@@ -361,18 +344,18 @@ def benefits(data, other_ben):
     benefits variable
     """
     other_ben['2014_cost'] *= 1e6
-    # Adjust unemployment compensation
-    ucomp_ratio = (other_ben['2014_cost']['Unemployment Assistance'] /
-                   (data['e02300'] * data['s006']).sum())
-    data['e02300'] *= ucomp_ratio
-    other_ben.drop('Unemployment Assistance', inplace=True)
+
     # Distribute other benefits
     data['dist_ben'] = (data['mcaid_ben'] + data['ssi_ben'] +
                         data['snap_ben'] + data['vet_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] * data['s006']).sum())
+    # remove TANF and WIC from other_ben
+    tanf = (data['tanf_ben'] * data['s006']).sum()
+    wic = (data['wic_ben'] * data['s006']).sum()
+    other_ben_total = other_ben['2014_cost'].sum() - tanf - wic
     # divide by the weight to account for weighting in Tax-Calculator
-    data['other_ben'] = (data['ratio'] * other_ben['2014_cost'].sum() /
+    data['other_ben'] = (data['ratio'] * other_ben_total /
                          data['s006'])
 
     # Convert benefit data to integers
@@ -381,8 +364,12 @@ def benefits(data, other_ben):
     data['ssi_ben'] = data['ssi_ben'].astype(np.int32)
     data['snap_ben'] = data['snap_ben'].astype(np.int32)
     data['vet_ben'] = data['vet_ben'].astype(np.int32)
+    data['tanf_ben'] = data['tanf_ben'].astype(np.int32)
+    data['wic_ben'] = data['wic_ben'].astype(np.int32)
+    data['housing_ben'] *= 12
+    data['housing_ben'] = data['housing_ben'].astype(np.int32)
     data['e02400'] = data['e02400'].astype(np.int32)
-    data['e02300'] = data['e02300'].astype(np.int32)
+    data['e02300'] = data['ui_ben'].astype(np.int32)
     data['other_ben'] = data['other_ben'].astype(np.int32)
 
     return data
