@@ -10,7 +10,8 @@ import pytest
 from extrapolation import Benefits
 
 
-def test_add_participants():
+def test_add_participants(benefit_growth_rates_path, raw_cps_path,
+                          raw_weights_path):
     """
     Checks
         1. those with benefits still have benefits
@@ -18,7 +19,10 @@ def test_add_participants():
     """
     # use medicare since that program needs participants added in 2015
     benefit_names = ["medicare"]
-    ben = Benefits(benefit_names=benefit_names)
+    ben = Benefits(growth_rates=benefit_growth_rates_path,
+                   cps_benefit=raw_cps_path,
+                   cps_weights=raw_weights_path,
+                   benefit_names=benefit_names)
 
     # prepare test data
     recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)], axis=1)
@@ -114,7 +118,8 @@ def test_add_participants():
         )
 
 
-def test_remove_participants():
+def test_remove_participants(benefit_growth_rates_path, raw_cps_path,
+                             raw_weights_path):
     """
     Checks
         1. those without benefits still do not have benefits
@@ -122,7 +127,10 @@ def test_remove_participants():
     """
     # use snap since that program needs participants removed in 2015
     benefit_names = ["snap"]
-    ben = Benefits(benefit_names=benefit_names)
+    ben = Benefits(growth_rates=benefit_growth_rates_path,
+                   cps_benefit=raw_cps_path,
+                   cps_weights=raw_weights_path,
+                   benefit_names=benefit_names)
 
     # prepare test data
     recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)], axis=1)
