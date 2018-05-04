@@ -10,9 +10,6 @@ import numpy as np
 def create_soi(SOI):
     # SOI = pd.read_sas('puf2009.sas7bdat
 
-    # see runmatch.py
-    # SOI = SOI[SOI['recid'] != 999999]
-
     SOI.loc[:, 'filer'] = 1
     SOI.loc[:, 'dmfs'] = 1
     SOI.loc[(SOI['mars'] == 3) | (SOI['mars'] == 6), 'dmfs'] = 0.5
@@ -39,7 +36,7 @@ def create_soi(SOI):
               SOI['e03300'] + SOI['e03400'] + SOI['e03500'])
     SOI.loc[:, 'totincx'] = SOI['e00100'] + adjust
 
-    SOI.rename(columns={'recid': 'retid', 'xocah': 'cahe', 'xocawh': 'cafhe',
+    SOI.rename(columns={'xocah': 'cahe', 'xocawh': 'cafhe',
                         'xoodep': 'othdep', 'dsi': 'ifdept',
                         'xopar': 'parents',
                         'e00200': 'was', 'e00300': 'intst', 'e00400': 'texint',
@@ -72,7 +69,7 @@ def create_soi(SOI):
                        'sche', 'fil', 'ucagix', 'ssinc', 'ssincp', 'ssincs',
                        'ssagix', 'totincx', 'agix', 'tincx', 'returns',
                        'oldest', 'youngest', 'agepsqr', 'xagede', 'xifdept',
-                       'xdepne', 'income', 'retid', 'sequence', 'soiseq',
-                       'wt', 'filer']
+                       'xdepne', 'income', 'recid', 'sequence', 'soiseq',
+                       'wt', 'filer', 's006', 'xtot']
 
     return SOI[columns_to_keep]

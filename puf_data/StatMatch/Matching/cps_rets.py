@@ -220,7 +220,7 @@ class Returns(object):
         if record['a_age'] >= 21:
             record['n21'] += 1
         depne = 0
-        ages = np.nan
+        ages = 0
         wass = 0
         # Single and separated individuals
         if ms_type == 1:
@@ -246,6 +246,8 @@ class Returns(object):
                             spouse = person
                             break
                 ages = spouse['a_age']
+                # record['ages'] = ages
+                # assert not np.isnan(record['ages']), sp_ptr
                 if ages >= 65:
                     agede += 1
                 # Income items
@@ -737,6 +739,10 @@ class Returns(object):
 
         for name, var in zip(namelist, varlist):
             record[name] = var
+        # record['ages'] = ages
+        # if np.isnan(ages) and record['js'] == 2:
+          #  record['ages'] = spouse['a_age']
+           # assert not np.isnan(record['ages'])
         return record
 
     def hhstatus(self, unit):
@@ -969,6 +975,32 @@ class Returns(object):
         else:
             txpye = 1
         xxtot = txpye + depne
+        # check that xxtot equals the sum of the UBI age variables
+        nsums = unit['nu18'] + unit['n1820'] + unit['n21']
+        eflag = False
+        if xxtot != nsums:
+            eflag = True
+        # zero out variables if there's an error
+        if eflag:
+            xxtot = 1
+            unit['nu18'] = 0
+            unit['n1820'] = 0
+            unit['n21'] = 0
+            if unit['ageh'] < 18:
+                unit['nu18'] += 1
+            elif 18 <= unit['ageh'] < 21:
+                unit['n1820'] += 1
+            elif unit['ageh'] >= 21:
+                unit['n21'] += 1
+            # add spouse information
+            if unit['js'] == 2:
+                xxtot += 1
+                if unit['ages'] < 18:
+                    unit['nu18'] += 1
+                elif 18 <= unit['ages'] < 21:
+                    unit['n1820'] += 1
+                elif unit['ages'] >= 21:
+                    unit['n21'] += 1
         # Check relationship codes among dependents
         xxoodep = 0
         xxopar = 0
@@ -985,6 +1017,19 @@ class Returns(object):
                     xxoodep += 1
                 if dage < 18:
                     xxocah += 1
+                # check for errors
+                if eflag:
+                    xxtot += 1
+                    if dage < 18:
+                        unit['nu18'] += 1
+                    elif 18 <= dage < 21:
+                        unit['n1820'] += 1
+                    elif dage >= 21:
+                        unit['n21'] += 1
+        # assertion check
+        nsum = unit['nu18'] + unit['n1820'] + unit['n21']
+        assert nsum == xxtot, (xxtot, nsum, unit['js'],
+                               eflag, unit['ages'], type(unit['ages']))
 
         record['xagex'] = unit['agede']
         record['hhid'] = unit['h_seq']

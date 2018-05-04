@@ -37,6 +37,7 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
     if js == 2:
         people = 2
     people += depne
+    people = min(5, people)
     if ifdept == 1:
         people = np.nan
 
@@ -76,9 +77,9 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
 
 
 def counts(file):
-    count = file.groupby(['idept', 'ijs', 'iagede', 'idepne',
+    count = file.groupby(['idept', 'ijs', 'iagede', 'idepne', 'people',
                           'ikids', 'iself']).size().reset_index(name='count')
-    wgt = file.groupby(['idept', 'ijs', 'iagede', 'idepne',
+    wgt = file.groupby(['idept', 'ijs', 'iagede', 'idepne', 'people',
                         'ikids', 'iself'])['wt'].sum().reset_index(name='wgt')
     count = pd.concat([count, wgt['wgt']], axis=1)
     return count
@@ -152,25 +153,25 @@ def phaseone(CPS, SOI):
 
     countx = pd.merge(SOI_counts, CPS_counts, how='inner',
                       on=['idept', 'ijs', 'iagede', 'idepne',
-                          'ikids', 'iself'])
+                          'ikids', 'iself', 'people'])
     countx['factor'] = np.where(countx['CPS_wgt'] > 0,
                                 countx['SOI_wgt'] / countx['CPS_wgt'], 0)
     countx['cellid'] = countx.index + 1
 
     SOI_reg = pd.merge(SOI, countx, how='inner',
                        on=['idept', 'ijs', 'iagede', 'idepne',
-                           'ikids', 'iself'])
+                           'ikids', 'iself', 'people'])
     params = SOI_reg.groupby('cellid', as_index=False).apply(reg)
     params = params.add_prefix('params_')
     params['cellid'] = params.index + 1
 
     SOI_new = pd.merge(SOI, countx, how='inner',
                        on=['idept', 'ijs', 'iagede', 'idepne',
-                           'ikids', 'iself'])
+                           'ikids', 'iself', 'people'])
     SOI_new = pd.merge(SOI_new, params, on=['cellid'])
     CPS_new = pd.merge(CPS, countx, how='inner',
                        on=['idept', 'ijs', 'iagede', 'idepne',
-                           'ikids', 'iself'])
+                           'ikids', 'iself', 'people'])
     CPS_new = pd.merge(CPS_new, params, on=['cellid'])
 
     SOI_new['yhat'] = predict(SOI_new)
