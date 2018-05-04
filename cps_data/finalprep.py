@@ -142,8 +142,10 @@ def deduction_limits(data):
     """
     Apply limits on itemized deductions
     """
+    data['CHARITABLE'] = data['CHARITABLE'].fillna(0.)
     half_agi = data['e00100'] * 0.5
-    charity = np.where(data.CHARITABLE > half_agi, half_agi, data.CHARITABLE)
+    charity = np.minimum(data.CHARITABLE, half_agi)
+    charity = np.maximum(charity, 0.)
     # Split charitable contributions into cash and non-cash using ratio in PUF
     cash = 0.82013
     non_cash = 1. - cash
