@@ -7,7 +7,7 @@ import time
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
     CPS_BENEFIT_PATH = '../cps_data/cps_raw_rename.csv.gz'
-    CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
+    CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights_raw.csv.gz'
 
     def __init__(self,
                  growth_rates=GROWTH_RATES_PATH,
@@ -25,7 +25,7 @@ class Benefits():
     def increment_year(self, tol=0.01):
         self.current_year += 1
         print("starting year", self.current_year)
-        WT = self.WT.loc[:, 'WT'+str(self.current_year)] * 0.01
+        WT = self.WT.loc[:, 'WT'+str(self.current_year)]
         for benefit in self.benefit_names:
             participant_targets = getattr(self, "{}_participant_targets".format(benefit))
             benefit_targets = getattr(self, "{}_benefit_targets".format(benefit))
