@@ -8,4 +8,3 @@ dependencies:
 - pip:
   - ipython
   - ipykernel
-  - cylp=0.7.1
