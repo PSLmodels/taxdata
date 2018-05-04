@@ -1,6 +1,13 @@
 About taxdata Repository
 ========================
 
+### IMPORTANT
+
+To run `puf_stage2/stage2.py`, you must first install the CyLP package.
+Installation instructions can be found [here](https://github.com/coin-or/CyLP#installation)
+
+---
+
 This repository prepares data used in the [Tax-Calculator
 repository](https://github.com/open-source-economics/Tax-Calculator).
 
