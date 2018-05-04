@@ -3,6 +3,7 @@ dependencies:
 - python>=2.7.14
 - numpy=1.13.3
 - pandas=0.20.3
+- scipy=0.18.1
 - bokeh >=0.12.3
 - pytest
 - pip:
