@@ -5,7 +5,7 @@ dependencies:
 - pandas >=0.22.0
 - bokeh >=0.12.3
 - pytest
-pip:
-- ipython
-- ipykernel
-- cylp==0.7.1
+- pip:
+  - ipython
+  - ipykernel
+  - cylp==0.7.1
