@@ -20,7 +20,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 3
     }
   },
   "FLPDYR": {
@@ -57,7 +57,7 @@
     "availability": "taxdata_puf",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 1
     }
   },
   "RECID": {
@@ -106,7 +106,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e99
+      "max": 85
     }
   },
   "agi_bin": {
@@ -871,7 +871,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 1
     }
   },
   "f2441": {
@@ -895,7 +895,7 @@
     "availability": "taxdata_puf",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 1
     }
   },
   "a_lineno": {
