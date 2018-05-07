@@ -37,11 +37,11 @@ def relationships(data, dataname):
         if not np.allclose(data[lhs], data[rhs].sum(axis=1), atol=tol):
             raise ValueError(eq_str.format(dataname, lhs, rhs))
 
-    less_than_vars = [('XTOT', ['nu18', 'n1820', 'n21']),
-                      ('n24', ['nu18'])]
-    for lhs, rhs in less_than_vars:
-        m = less_than_str.format(lhs, 'sum of {}'.format(rhs))
-        assert np.all(data[lhs] <= data[rhs].sum(axis=1)), m
+    nsums = data[['nu18', 'n1820', 'n21']].sum(axis=1)
+    m = less_than_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
+    assert np.all(data['XTOT'] <= nsums), m
+    m = less_than_str.format(dataname, 'n24', 'nu18')
+    assert np.all(data['n24'] <= data['nu18']), m
 
     m = less_than_str.format(dataname, 'e00650', 'e00600')
     assert np.all(data['e00600'] >= data['e00650']), m

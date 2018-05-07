@@ -20,7 +20,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 3
+      "max": 10
     }
   },
   "FLPDYR": {
@@ -31,7 +31,7 @@
     },
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
-      "min": 2011,
+      "min": 2008,
       "max": 2014
     }
   },
@@ -106,7 +106,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 85
+      "max": 98
     }
   },
   "agi_bin": {
@@ -1015,7 +1015,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 10
     }
   },
   "nu05": {
@@ -1027,7 +1027,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 4
     }
   },
   "nu13": {
@@ -1039,7 +1039,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 10
     }
   },
   "nu18": {
@@ -1051,7 +1051,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 12
     }
   },
   "n1820": {
@@ -1063,7 +1063,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 6
     }
   },
   "n21": {
@@ -1075,7 +1075,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 9e+99
+      "max": 11
     }
   },
   "other_ben": {
@@ -1147,7 +1147,7 @@
     },
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
-      "min": 1,
+      "min": 0,
       "max": 9e+99
     }
   },

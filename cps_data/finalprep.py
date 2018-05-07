@@ -64,10 +64,10 @@ def main():
         'NU13': 'nu13',
         'NU05': 'nu05',
         'N24': 'n24',
-        'ELDERLY_DEPENDENT': 'elderly_dependent',
         'F2441': 'f2441'
     }
     data = data.rename(columns=renames)
+    data['elderly_dependent'] = np.where(data['ELDERLY_DEPENDENT'] > 0, 1, 0)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
 
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
