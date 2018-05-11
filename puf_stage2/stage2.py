@@ -29,7 +29,7 @@ z[:, 3] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
 z[:, 4] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                             year='2015', tol=0.50)
 z[:, 5] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2016', tol=0.51)
+                            year='2016', tol=0.50)
 z[:, 6] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                             year='2017', tol=0.51)
 z[:, 7] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
