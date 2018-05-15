@@ -24,7 +24,12 @@ def min_max(data, meta, dataname):
 
 def relationships(data, dataname):
     """
-    Test the relative relationships between variables
+    Test the relative relationships between variables.
+
+    Note: we have weakened the n24 <= nu18 assertion for the PUF because
+    the only way to ensure it held true would be to create extreamly small
+    bins during the tax unit matching process, which had the potential to
+    reduce the overall match accuracy.
     """
     eq_str = '{}-{} not equal to {}'
     less_than_str = '{}-{} not less than or equal to {}'
@@ -41,7 +46,14 @@ def relationships(data, dataname):
     m = less_than_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
     assert np.all(data['XTOT'] <= nsums), m
     m = less_than_str.format(dataname, 'n24', 'nu18')
-    assert np.all(data['n24'] <= data['nu18']), m
+    if dataname == 'CPS':
+        assert np.all(data['n24'] <= data['nu18']), m
+    else:  # see note in docstring
+        m = 'Number of records where n24 > nu18 has changed'
+        assert (data['n24'] > data['nu18']).sum() == 14928, m
+        subdata = data[data['n24'] > data['nu18']]
+        m = 'n24 > nu18 + 3'
+        assert np.all(subdata['n24'] <= subdata['nu18'] + 3), m
 
     m = less_than_str.format(dataname, 'e00650', 'e00600')
     assert np.all(data['e00600'] >= data['e00650']), m
