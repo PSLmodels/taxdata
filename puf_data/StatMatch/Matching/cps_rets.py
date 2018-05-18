@@ -713,7 +713,7 @@ class Returns(object):
                     if individual['a_age'] >= 21:
                         record['n21'] += 1
                     if individual['a_age'] >= 65:
-                        record['elderly_dependent'] += 1
+                        record['elderly_dependent'] = 1
 
         cahe = np.nan
 
@@ -852,8 +852,8 @@ class Returns(object):
         self.house_units[iy]['nu18'] += self.house_units[ix]['nu18']
         self.house_units[iy]['n1820'] += self.house_units[ix]['n1820']
         self.house_units[iy]['n21'] += self.house_units[ix]['n21']
-        elderly = self.house_units[ix]['elderly_dependent']
-        self.house_units[iy]['elderly_dependent'] += elderly
+        if self.house_units[ix]['elderly_dependent'] == 1:
+            self.house_units[iy]['elderly_dependent'] = 1
 
     def tax_units_search(self):
         """
