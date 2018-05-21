@@ -142,15 +142,11 @@ def deduction_limits(data):
     """
     Apply limits on itemized deductions
     """
-    data['CHARITABLE'] = data['CHARITABLE'].fillna(0.)
-    half_agi = data['e00100'] * 0.5
-    charity = np.minimum(data.CHARITABLE, half_agi)
-    charity = np.maximum(charity, 0.)
     # Split charitable contributions into cash and non-cash using ratio in PUF
     cash = 0.82013
     non_cash = 1. - cash
-    data['e19800'] = charity * cash
-    data['e20100'] = charity * non_cash
+    data['e19800'] = data['CHARITABLE'] * cash
+    data['e20100'] = data['CHARITABLE'] * non_cash
 
     # Apply student loan interest deduction limit
     data['e03210'] = np.where(data.SLINT > 2500, 2500, data.SLINT)
