@@ -13,14 +13,14 @@
   },
   "EIC": {
     "type": "int",
-    "desc": "number of EIC qualifying children",
+    "desc": "number of EIC qualifying children (range: 0 to 3)",
     "form": {
       "2013-2016": "1040 Sch EIC"
     },
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 10
+      "max": 3
     }
   },
   "FLPDYR": {
