@@ -69,6 +69,7 @@ def main():
     data = data.rename(columns=renames)
     data['elderly_dependent'] = np.where(data['ELDERLY_DEPENDENT'] > 0, 1, 0)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
+    data['EIC'] = np.minimum(3, data.EIC)
 
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
     data['e00100'] = data['JCPS9'] + data['JCPS19']
