@@ -62,6 +62,11 @@ Data-Preparation Documentation
 4. [CPS-based adjustment ratios](cps_stage3/README.md).
 
 
+Contributing
+------------
+Before opening up a pull request, run `pytest` to ensure all tests pass.
+
+
 Work-Flow Documentation
 -----------------------
 

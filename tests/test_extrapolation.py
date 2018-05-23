@@ -5,36 +5,46 @@ py.test test_extrapolation.py
 
 import pandas as pd
 import numpy as np
+import sys
+import os
 import pytest
+file_path = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(file_path, '../cps_stage3'))
 
 from extrapolation import Benefits
 
 
-def test_add_participants():
+@pytest.mark.skip
+def test_add_participants(benefit_growth_rates_path, raw_cps_path,
+                          raw_weights_path):
     """
     Checks
         1. those with benefits still have benefits
         2. record with lowest prob and no benefits gets benefits
     """
     # use medicare since that program needs participants added in 2015
-    benefit_names = ["medicare"]
-    ben = Benefits(benefit_names=benefit_names)
+    benefit_names = ["mcare"]
+    ben = Benefits(growth_rates=benefit_growth_rates_path,
+                   cps_benefit=raw_cps_path,
+                   cps_weights=raw_weights_path,
+                   benefit_names=benefit_names)
 
     # prepare test data
-    recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)], axis=1)
+    recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)],
+                          axis=1)
     recid_ext.columns = list(range(15))
     recid_stack = recid_ext.stack()
 
     stack_df = Benefits._stack_df(
         WT=ben.WT.loc[:, 'WT2015'] * 0.01,
-        I=ben.medicare_participation,
-        benefits=ben.medicare_benefits,
-        prob=ben.medicare_prob,
+        I=ben.mcare_participation,
+        benefits=ben.mcare_benefits,
+        prob=ben.mcare_prob,
         J=15
     )
     stack_df = pd.concat((stack_df, recid_stack), axis=1)
 
-    target = ben.medicare_participant_targets[2015]
+    target = ben.mcare_participant_targets[2015]
 
     # check that we are adding
     remove = stack_df.I_wt.sum() > target
@@ -45,7 +55,7 @@ def test_add_participants():
     candidates = stack_df.loc[stack_df.I == 0, ].copy()
     for ix in candidates.index.values[:min(100, len(candidates))]:
         assert np.allclose(
-            ben.medicare_participation.loc[ix[0], ix[1]],
+            ben.mcare_participation.loc[ix[0], ix[1]],
             np.zeros(1)
         )
     assert candidates.I.sum() == 0
@@ -114,7 +124,9 @@ def test_add_participants():
         )
 
 
-def test_remove_participants():
+@pytest.mark.skip
+def test_remove_participants(benefit_growth_rates_path, raw_cps_path,
+                             raw_weights_path):
     """
     Checks
         1. those without benefits still do not have benefits
@@ -122,10 +134,14 @@ def test_remove_participants():
     """
     # use snap since that program needs participants removed in 2015
     benefit_names = ["snap"]
-    ben = Benefits(benefit_names=benefit_names)
+    ben = Benefits(growth_rates=benefit_growth_rates_path,
+                   cps_benefit=raw_cps_path,
+                   cps_weights=raw_weights_path,
+                   benefit_names=benefit_names)
 
     # prepare test data
-    recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)], axis=1)
+    recid_ext = pd.concat([ben.benefit_extrapolation.RECID for i in range(15)],
+                          axis=1)
     recid_ext.columns = list(range(15))
     recid_stack = recid_ext.stack()
 
