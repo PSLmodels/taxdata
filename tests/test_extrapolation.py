@@ -7,12 +7,14 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import pytest
 file_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(file_path, '../cps_stage3'))
 
 from extrapolation import Benefits
 
 
+@pytest.mark.skip
 def test_add_participants(benefit_growth_rates_path, raw_cps_path,
                           raw_weights_path):
     """
@@ -122,6 +124,7 @@ def test_add_participants(benefit_growth_rates_path, raw_cps_path,
         )
 
 
+@pytest.mark.skip
 def test_remove_participants(benefit_growth_rates_path, raw_cps_path,
                              raw_weights_path):
     """
