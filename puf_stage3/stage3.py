@@ -130,7 +130,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
 puf = pd.read_csv('../puf_data/cps-matched-puf.csv')
 targets = pd.read_csv('stage3_targets.csv', index_col=0)
 wght = pd.read_csv('../puf_stage2/puf_weights.csv.gz')
-bf = pd.read_csv('../stage1/growfactors.csv', index_col=0)
+bf = pd.read_csv('../puf_stage1/growfactors.csv', index_col=0)
 
 # Call adjustment function for each variable being adjusted
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
