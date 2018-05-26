@@ -49,3 +49,13 @@ def raw_cps_path(test_path):
 @pytest.fixture(scope='session')
 def raw_weights_path(test_path):
     return os.path.join(test_path, '../cps_stage2/cps_weights_raw.csv.gz')
+
+
+@pytest.fixture(scope='session')
+def growfactors_path(test_path):
+    return os.path.join(test_path, '../stage1/growfactors.csv')
+
+
+@pytest.fixture(scope='session')
+def growfactors(growfactors_path):
+    return pd.read_csv(growfactors_path)
