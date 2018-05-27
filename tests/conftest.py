@@ -1,7 +1,7 @@
 import os
 import json
-import pandas as pd
 import pytest
+import pandas as pd
 
 
 @pytest.fixture(scope='session')
