@@ -3,20 +3,24 @@ Run the tests from the cps_stage3 directory using the following command:
 py.test test_extrapolation.py
 """
 
-import pandas as pd
-import numpy as np
-import sys
 import os
+import sys
 import pytest
+import numpy as np
+import pandas as pd
+
 file_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(file_path, '../cps_stage3'))
+cps_stage3_path = os.path.join(file_path, '../cps_stage3')
+sys.path.append(cps_stage3_path)
+ben_g_r_path = os.path.join(file_path, '../cps_stage3/growth_rates.csv')
+raw_cps_path = os.path.join(file_path, '../cps_data/cps_raw_rename.csv.gz')
+raw_wgt_path = os.path.join(file_path, '../cps_stage2/cps_weights_raw.csv.gz')
 
 from extrapolation import Benefits
 
 
 @pytest.mark.skip
-def test_add_participants(benefit_growth_rates_path, raw_cps_path,
-                          raw_weights_path):
+def test_add_participants(ben_g_r_path, raw_cps_path, raw_wgt_path):
     """
     Checks
         1. those with benefits still have benefits
@@ -24,9 +28,9 @@ def test_add_participants(benefit_growth_rates_path, raw_cps_path,
     """
     # use medicare since that program needs participants added in 2015
     benefit_names = ["mcare"]
-    ben = Benefits(growth_rates=benefit_growth_rates_path,
+    ben = Benefits(growth_rates=ben_g_r_path,
                    cps_benefit=raw_cps_path,
-                   cps_weights=raw_weights_path,
+                   cps_weights=raw_wgt_path,
                    benefit_names=benefit_names)
 
     # prepare test data
@@ -125,8 +129,7 @@ def test_add_participants(benefit_growth_rates_path, raw_cps_path,
 
 
 @pytest.mark.skip
-def test_remove_participants(benefit_growth_rates_path, raw_cps_path,
-                             raw_weights_path):
+def test_remove_participants(ben_g_r_path, raw_cps_path, raw_wgt_path):
     """
     Checks
         1. those without benefits still do not have benefits
@@ -134,9 +137,9 @@ def test_remove_participants(benefit_growth_rates_path, raw_cps_path,
     """
     # use snap since that program needs participants removed in 2015
     benefit_names = ["snap"]
-    ben = Benefits(growth_rates=benefit_growth_rates_path,
+    ben = Benefits(growth_rates=ben_g_r_path,
                    cps_benefit=raw_cps_path,
-                   cps_weights=raw_weights_path,
+                   cps_weights=raw_wgt_path,
                    benefit_names=benefit_names)
 
     # prepare test data
