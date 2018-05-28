@@ -87,3 +87,16 @@ def cps_weights(test_path):
 def puf_weights(test_path):
     pufw_path = os.path.join(test_path, '../puf_stage2/puf_weights.csv.gz')
     return pd.read_csv(pufw_path)
+
+
+@pytest.fixture(scope='session')
+def cps_ratios(test_path):
+    # cpsr_path = os.path.join(test_path, '../cps_stage3/cps_ratios.csv')
+    # return pd.read_csv(cpsr_path, index_col=0)
+    return None
+
+
+@pytest.fixture(scope='session')
+def puf_ratios(test_path):
+    pufr_path = os.path.join(test_path, '../puf_stage3/puf_ratios.csv')
+    return pd.read_csv(pufr_path, index_col=0)
