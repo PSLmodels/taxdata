@@ -741,8 +741,8 @@ class Returns(object):
             record[name] = var
         # record['ages'] = ages
         # if np.isnan(ages) and record['js'] == 2:
-          #  record['ages'] = spouse['a_age']
-           # assert not np.isnan(record['ages'])
+        #     record['ages'] = spouse['a_age']
+        #     assert not np.isnan(record['ages'])
         return record
 
     def hhstatus(self, unit):
