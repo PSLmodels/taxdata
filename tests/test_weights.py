@@ -60,6 +60,6 @@ def test_weights(kind, cps_weights, puf_weights,
         txt = 'number {} records with zero weight in every year = {}'
         msg = txt.format(kind, num_allzero_records)
         if kind == 'puf' and num_allzero_records <= 1:
-            print 'WARNING: ' + msg
+            print('WARNING: ' + msg)
         else:
             raise ValueError(msg)
