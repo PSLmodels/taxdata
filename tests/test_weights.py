@@ -59,7 +59,7 @@ def test_weights(kind, cps_weights, puf_weights,
         num_allzero_records = np.count_nonzero(num_allzero_years)
         txt = 'number {} records with zero weight in every year = {}'
         msg = txt.format(kind, num_allzero_records)
-        if kind == 'puf' and num_allzero_records <= 1:
+        if kind == 'puf' and num_allzero_records == 1:
             print('WARNING: ' + msg)
         else:
             raise ValueError(msg)
