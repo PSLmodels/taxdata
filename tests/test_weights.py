@@ -19,7 +19,7 @@ def test_weights(kind, cps_weights, puf_weights,
         raise ValueError('illegal kind={}'.format(kind))
     # test count of records in weights
     if weights.shape[0] != count:
-        msg = '{} weights.shape[0]={} < {}'
+        msg = '{} weights.shape[0]={} != data_count = {}'
         raise ValueError(msg.format(kind, weights.shape[0], count))
     # test range of years in weights file
     sorted_weights_columns = sorted([col for col in weights])
