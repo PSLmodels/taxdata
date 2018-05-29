@@ -1,5 +1,5 @@
 """
-Run the tests from the cps_stage3 directory using the following command:
+Run the tests from the cps_stage4 directory using the following command:
 py.test test_extrapolation.py
 """
 
@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 
 file_path = os.path.abspath(os.path.dirname(__file__))
-cps_stage3_path = os.path.join(file_path, '../cps_stage3')
-sys.path.append(cps_stage3_path)
-ben_g_r_path = os.path.join(file_path, '../cps_stage3/growth_rates.csv')
+cps_stage4_path = os.path.join(file_path, '../cps_stage4')
+sys.path.append(cps_stage4_path)
+ben_g_r_path = os.path.join(file_path, '../cps_stage4/growth_rates.csv')
 raw_cps_path = os.path.join(file_path, '../cps_data/cps_raw_rename.csv.gz')
 raw_wgt_path = os.path.join(file_path, '../cps_stage2/cps_weights_raw.csv.gz')
 

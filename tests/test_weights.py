@@ -27,7 +27,7 @@ def test_weights(kind, cps_weights, puf_weights,
     assert first_weights_column == 'WT{}'.format(first_year)
     last_weights_column = sorted_weights_columns[-1]
     assert last_weights_column == 'WT{}'.format(growfactors.index.max())
-    # test range of weight values for each year
+    # test weight values for each year
     min_weight = 0  # weight must be non-negative,
     max_weight = 2000000  # but can be quite large
     for col in weights:
@@ -51,15 +51,12 @@ def test_weights(kind, cps_weights, puf_weights,
             msg = '{} weights[{}].max()={:.1f} > {:.1f}'
             raise ValueError(msg.format(kind, col, weight_sum, max_weight_sum))
     # test that there are no weights records with a zero weight in every year
-    num_nonzero_years = np.count_nonzero(weights, axis=1)
-    num_total_years = num_nonzero_years.copy()
-    num_total_years.fill(growfactors.index.max() - first_year + 1)
-    num_allzero_years = num_total_years - num_nonzero_years
-    if np.any(num_allzero_years):
-        num_allzero_records = np.count_nonzero(num_allzero_years)
-        txt = 'number {} records with zero weight in every year = {}'
-        msg = txt.format(kind, num_allzero_records)
-        if kind == 'puf' and num_allzero_records == 1:
+    num_nonzero_weights = np.count_nonzero(weights, axis=1)
+    num_allzeros = np.sum(~np.all(num_nonzero_weights))
+    if num_allzeros > 0:
+        txt = 'number {} records with a zero weight in every year = {}'
+        msg = txt.format(kind, num_allzeros)
+        if kind == 'puf' and num_allzeros == 1:
             print('WARNING: ' + msg)
         else:
             raise ValueError(msg)

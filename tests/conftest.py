@@ -100,3 +100,16 @@ def cps_ratios(test_path):
 def puf_ratios(test_path):
     pufr_path = os.path.join(test_path, '../puf_stage3/puf_ratios.csv')
     return pd.read_csv(pufr_path, index_col=0)
+
+
+@pytest.fixture(scope='session')
+def cps_benefits(test_path):
+    cpsb_path = os.path.join(test_path, '../cps_stage4/cps_benefits.csv.gz')
+    return pd.read_csv(cpsb_path)
+
+
+@pytest.fixture(scope='session')
+def puf_benefits(test_path):
+    # pufb_path = os.path.join(test_path, '../puf_stage4/puf_benefits.csv.gz')
+    # return pd.read_csv(pufb_path)
+    return None

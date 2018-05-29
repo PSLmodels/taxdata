@@ -17,7 +17,7 @@ def test_ratios(kind, cps_ratios, puf_ratios,
         raise ValueError('illegal kind={}'.format(kind))
     ratios = raw_ratios.transpose()
     ratios.index.name = 'agi_bin'
-    # test range of agi_bin
+    # test agi_bin values
     agi_bin_list = [str(bin) for bin in range(0, 19)]  # bins from 0 thru 18
     assert set(ratios.index.values) == set(agi_bin_list)
     # test range of years in ratios file
@@ -29,7 +29,7 @@ def test_ratios(kind, cps_ratios, puf_ratios,
     assert first_ratios_year == first_year
     last_ratios_year = int(sorted_columns[-1][-4:])
     assert last_ratios_year == growfactors.index.max()
-    # test range of ratio values for each year
+    # test ratio values for each year
     min_ratio = 0.2
     max_ratio = 1.8
     for col in ratios:
