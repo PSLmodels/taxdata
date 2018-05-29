@@ -1,4 +1,3 @@
-import string
 import pytest
 import numpy as np
 
@@ -33,7 +32,7 @@ def test_benefits(kind, cps_benefits, puf_benefits,
         if colname == 'RECID':
             recid_included = True
         else:
-            parts = string.split(colname, '_')
+            parts = colname.split('_')
             assert len(parts) == 2
             btype = parts[0]
             assert btype in valid_types
