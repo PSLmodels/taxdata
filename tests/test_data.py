@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 
 
@@ -62,8 +63,12 @@ def relationships(data, dataname):
     assert np.all(data['e01500'] >= data['e01700']), m
 
 
-def test_data(cps, puf, metadata):
-    min_max(cps, metadata, 'cps')
+@pytest.mark.requires_pufcsv
+def test_pufcsv_data(puf, metadata):
     min_max(puf, metadata, 'puf')
-    relationships(cps, 'CPS')
     relationships(puf, 'PUF')
+
+
+def test_cpscsv_data(cps, metadata):
+    min_max(cps, metadata, 'cps')
+    relationships(cps, 'CPS')
