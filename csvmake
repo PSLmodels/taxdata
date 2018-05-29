@@ -85,11 +85,11 @@ fi
 S2=$DTYPE"_stage2"
 cd $S2
 echo "`date` : $S2 START"
-python stage2.py
+./stage2.sh
 RC=$?
 rm -f *.pyc
 if [ $RC -ne 0 ]; then
-    echo "ERROR: executing $S2/stage2.py script"
+    echo "ERROR: executing $S2/.stage2.sh script"
     gitdiffs
     exit 1
 fi
@@ -124,4 +124,3 @@ if [ $LSTAGE -eq 3 ]; then
 fi
 
 exit 0
-
