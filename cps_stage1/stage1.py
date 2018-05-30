@@ -11,7 +11,7 @@ def main():
                                   index_col=0)
     stage_2_targets.drop(['2011', '2012', '2013'], inplace=True, axis=1)
     factors = pd.read_csv('../puf_stage1/Stage_I_factors.csv', index_col=0)
-g
+
     for year in range(int(SYR) + 1, EYR + 1):
         single = soi_estimates[SYR]['Single'] * factors['ARETS'][year]
         joint = soi_estimates[SYR]['Joint'] * factors['ARETS'][year]
