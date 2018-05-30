@@ -13,7 +13,7 @@ def main():
     cps = cps.fillna(0.)
     cps['MARS'] = np.where(cps.JS == 3, 4, cps.JS)
     cps['e00100'] = cps['JCPS9'] + cps['JCPS19']
-    stage_1_factors = pd.read_csv('../cps_stage1/stage_1_factors.csv',
+    stage_1_factors = pd.read_csv('../puf_stage1/Stage_I_factors.csv',
                                   index_col=0)
     stage_2_targets = pd.read_csv('../cps_stage1/stage_2_targets.csv',
                                   index_col=0)
