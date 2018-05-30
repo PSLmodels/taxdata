@@ -1,13 +1,13 @@
 #!/bin/bash
-# copies CSV files produced by csvmake to the specified taxcalc directory
+# copies CSV files produced by csvmake.sh to the specified taxcalc directory
 
 function usage {
-    echo "USAGE: ./csvcopy DATATYPE TAXCALCDIR [dryrun]"
+    echo "USAGE: ./csvcopy.sh DATATYPE TAXCALCDIR [dryrun]"
     echo "       where DATATYPE can be puf or cps"
     echo "         and TAXCALCDIR is path to Tax-Calculator taxcalc directory"
     echo "             (TAXCALCDIR must end with a / character)"
     echo "         and dryrun is optional signal to skip the CSV copying"
-    echo "       Note: run ./csvcopy in top-level taxdata directory"
+    echo "       Note: run ./csvcopy.sh in top-level taxdata directory"
     exit 1
 }
 
@@ -78,9 +78,9 @@ TAXDATADIR="stage1/"
 FILENAME="growfactors.csv"
 copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
 
-# copy $DTYPE_stage2/$DTYPE_weights.csv file if different
+# copy $DTYPE_stage2/$DTYPE_weights.csv.gz file if different
 TAXDATADIR=$DTYPE"_stage2/"
-FILENAME=$DTYPE"_weights.csv"
+FILENAME=$DTYPE"_weights.csv.gz"
 copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
 
 # copy $DTYPE_stage3/$DTYPE_ratios.csv file if different
