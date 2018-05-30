@@ -2,10 +2,10 @@
 # executes taxdata Python scripts through the specified last stage
 
 function usage {
-    echo "USAGE: ./csvmake DATATYPE LASTSTAGE"
+    echo "USAGE: ./cvsmake.sh DATATYPE LASTSTAGE"
     echo "       where DATATYPE can be puf or cps"
     echo "         and LASTSTAGE can be 1 or 2 or 3"
-    echo "       Note: run ./csvmake in top-level taxdata directory"
+    echo "       Note: run ./cvsmake.sh in top-level taxdata directory"
     echo "Execution time will be roughly one hour when LASTSTAGE is 2 or 3" 
     exit 1
 }

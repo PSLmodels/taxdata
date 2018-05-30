@@ -64,7 +64,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 11502.082
 Clp0006I 0  Obj 11502.082
 Clp0000I Optimal - objective value 11502.082
-Clp0032I Optimal objective 11502.08175 - 29370 iterations time 68.882, Presolve 1.07
+Clp0032I Optimal objective 11502.08175 - 29370 iterations time 71.852, Presolve 1.07
 DONE solving LP for year 2012
 Preparing coefficient matrix for year 2013 .....
 Preparing targets for year 2013 .....
@@ -118,7 +118,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 12672.161
 Clp0006I 0  Obj 12672.161
 Clp0000I Optimal - objective value 12672.161
-Clp0032I Optimal objective 12672.16114 - 30224 iterations time 63.092, Presolve 1.07
+Clp0032I Optimal objective 12672.16114 - 30224 iterations time 62.962, Presolve 1.07
 DONE solving LP for year 2013
 Preparing coefficient matrix for year 2014 .....
 Preparing targets for year 2014 .....
@@ -183,7 +183,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 17801.742
 Clp0006I 0  Obj 17801.742
 Clp0000I Optimal - objective value 17801.742
-Clp0032I Optimal objective 17801.74241 - 40775 iterations time 88.442, Presolve 1.07
+Clp0032I Optimal objective 17801.74241 - 40775 iterations time 88.642, Presolve 1.06
 DONE solving LP for year 2014
 Preparing coefficient matrix for year 2015 .....
 Preparing targets for year 2015 .....
@@ -249,7 +249,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 17955.338
 Clp0006I 0  Obj 17955.338
 Clp0000I Optimal - objective value 17955.338
-Clp0032I Optimal objective 17955.33752 - 41025 iterations time 89.672, Presolve 1.07
+Clp0032I Optimal objective 17955.33752 - 41025 iterations time 89.032, Presolve 1.05
 DONE solving LP for year 2015
 Preparing coefficient matrix for year 2016 .....
 Preparing targets for year 2016 .....
@@ -319,7 +319,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 18888.05
 Clp0006I 0  Obj 18888.05
 Clp0000I Optimal - objective value 18888.05
-Clp0032I Optimal objective 18888.05013 - 44032 iterations time 102.152, Presolve 1.08
+Clp0032I Optimal objective 18888.05013 - 44032 iterations time 103.572, Presolve 1.07
 DONE solving LP for year 2016
 Preparing coefficient matrix for year 2017 .....
 Preparing targets for year 2017 .....
@@ -398,7 +398,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 20135.58
 Clp0006I 0  Obj 20135.58
 Clp0000I Optimal - objective value 20135.58
-Clp0032I Optimal objective 20135.58003 - 50215 iterations time 150.342, Presolve 1.07
+Clp0032I Optimal objective 20135.58003 - 50215 iterations time 150.522, Presolve 1.06
 DONE solving LP for year 2017
 Preparing coefficient matrix for year 2018 .....
 Preparing targets for year 2018 .....
@@ -473,7 +473,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 21464.279
 Clp0006I 0  Obj 21464.279
 Clp0000I Optimal - objective value 21464.279
-Clp0032I Optimal objective 21464.27889 - 48178 iterations time 109.982, Presolve 1.09
+Clp0032I Optimal objective 21464.27889 - 48178 iterations time 110.722, Presolve 1.06
 DONE solving LP for year 2018
 Preparing coefficient matrix for year 2019 .....
 Preparing targets for year 2019 .....
@@ -552,7 +552,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 21840.397
 Clp0006I 0  Obj 21840.397
 Clp0000I Optimal - objective value 21840.397
-Clp0032I Optimal objective 21840.3967 - 48395 iterations time 109.522, Presolve 1.07
+Clp0032I Optimal objective 21840.3967 - 48395 iterations time 108.372, Presolve 1.06
 DONE solving LP for year 2019
 Preparing coefficient matrix for year 2020 .....
 Preparing targets for year 2020 .....
@@ -629,7 +629,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 22090.426
 Clp0006I 0  Obj 22090.426
 Clp0000I Optimal - objective value 22090.426
-Clp0032I Optimal objective 22090.42558 - 51167 iterations time 139.282, Presolve 1.08
+Clp0032I Optimal objective 22090.42558 - 51167 iterations time 136.742, Presolve 1.07
 DONE solving LP for year 2020
 Preparing coefficient matrix for year 2021 .....
 Preparing targets for year 2021 .....
@@ -705,7 +705,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 22493.823
 Clp0006I 0  Obj 22493.823
 Clp0000I Optimal - objective value 22493.823
-Clp0032I Optimal objective 22493.82256 - 48673 iterations time 104.382, Presolve 1.09
+Clp0032I Optimal objective 22493.82256 - 48673 iterations time 103.092, Presolve 1.06
 DONE solving LP for year 2021
 Preparing coefficient matrix for year 2022 .....
 Preparing targets for year 2022 .....
@@ -779,7 +779,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 22337.127
 Clp0006I 0  Obj 22337.127
 Clp0000I Optimal - objective value 22337.127
-Clp0032I Optimal objective 22337.12668 - 47730 iterations time 103.852, Presolve 1.07
+Clp0032I Optimal objective 22337.12668 - 47730 iterations time 100.332, Presolve 1.06
 DONE solving LP for year 2022
 Preparing coefficient matrix for year 2023 .....
 Preparing targets for year 2023 .....
@@ -856,7 +856,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 22670.109
 Clp0006I 0  Obj 22670.109
 Clp0000I Optimal - objective value 22670.109
-Clp0032I Optimal objective 22670.10917 - 49988 iterations time 130.492, Presolve 1.16
+Clp0032I Optimal objective 22670.10917 - 49988 iterations time 115.002, Presolve 1.05
 DONE solving LP for year 2023
 Preparing coefficient matrix for year 2024 .....
 Preparing targets for year 2024 .....
@@ -931,7 +931,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 22739.214
 Clp0006I 0  Obj 22739.214
 Clp0000I Optimal - objective value 22739.214
-Clp0032I Optimal objective 22739.21449 - 48807 iterations time 124.822, Presolve 1.19
+Clp0032I Optimal objective 22739.21449 - 48807 iterations time 113.982, Presolve 1.06
 DONE solving LP for year 2024
 Preparing coefficient matrix for year 2025 .....
 Preparing targets for year 2025 .....
@@ -1005,7 +1005,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 22900.531
 Clp0006I 0  Obj 22900.531
 Clp0000I Optimal - objective value 22900.531
-Clp0032I Optimal objective 22900.53062 - 46894 iterations time 112.242, Presolve 1.15
+Clp0032I Optimal objective 22900.53062 - 46894 iterations time 102.002, Presolve 1.07
 DONE solving LP for year 2025
 Preparing coefficient matrix for year 2026 .....
 Preparing targets for year 2026 .....
@@ -1080,7 +1080,7 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 23169.065
 Clp0006I 0  Obj 23169.065
 Clp0000I Optimal - objective value 23169.065
-Clp0032I Optimal objective 23169.06477 - 47083 iterations time 110.822, Presolve 1.23
+Clp0032I Optimal objective 23169.06477 - 47083 iterations time 99.322, Presolve 1.08
 DONE solving LP for year 2026
 Preparing coefficient matrix for year 2027 .....
 Preparing targets for year 2027 .....
@@ -1154,5 +1154,5 @@ Coin0512I Presolved model was optimal, full model needs cleaning up
 Clp0006I 0  Obj 23938.171
 Clp0006I 0  Obj 23938.171
 Clp0000I Optimal - objective value 23938.171
-Clp0032I Optimal objective 23938.17143 - 47639 iterations time 101.602, Presolve 1.08
+Clp0032I Optimal objective 23938.17143 - 47639 iterations time 99.402, Presolve 1.11
 DONE solving LP for year 2027
