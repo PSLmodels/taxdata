@@ -64,7 +64,7 @@ def relationships(data, dataname):
     assert np.all(data['e01500'] >= data['e01700']), m
 
 
-def aggregate(test_path, data, dataname):
+def variable_check(test_path, data, dataname):
     """
     Test aggregate values in the data
     """
@@ -81,22 +81,48 @@ def aggregate(test_path, data, dataname):
     # loop through each column in the dataset and check aggregate total
     actual_txt = '{:17} Value\n'.format('Variable')
     diffs = False
-    var_list_str = ''  # string to hold all of the variables with errors
+    diff_list_str = ''  # string to hold all of the variables with errors
+    new_vars = False
+    new_var_list_str = ''  # srint to hold all of the unexpected variables
     for var in data.columns:
         agg = data[var].sum()
         info_str = '{:17} {}\n'.format(var, agg)
         actual_txt += info_str
-        if agg != expected_dict[var]:
-            diffs = True
-            var_list_str += var + '\n'
-    # if there is a change, write new file
-    if diffs:
+        try:
+            if agg != expected_dict[var]:
+                diffs = True
+                diff_list_str += var + '\n'
+        except KeyError:
+            # if the variable is not expected, print a new message
+            new_var_list_str += var + '\n'
+            new_vars = True
+
+    # check for any missing variables
+    missing_vars = False
+    missing_vars_set = set(expected_dict.keys()) - set(data.columns)
+    if len(missing_vars_set) != 0:
+        missing_vars = True
+        missing_vars_str = '\n'.join(v for v in missing_vars_set)
+
+    # if there is an error, write the new file
+    if diffs or new_vars or missing_vars:
+        msg = '{}\n'.format(dataname.upper)
         actual_file_name = '{}_agg_actual.txt'.format(dataname)
         actual_file_path = os.path.join(test_path, actual_file_name)
         with open(actual_file_path, 'w') as f:
             f.write(actual_txt)
-        msg = '{} - Aggregate results differ for following '
-        msg += 'variables:\n'.format(dataname.upper()) + var_list_str
+        # modify error message based on which errors are raised
+        if diffs:
+            diff_msg = 'Aggregate results differ for following variables:\n'
+            diff_msg += diff_list_str
+            msg += diff_msg + '\n'
+        if new_vars:
+            new_msg = 'The following unexpected variables were discoverd:\n'
+            new_msg += new_var_list_str
+            msg += new_msg + '\n'
+        if missing_vars:
+            msg += 'The following expected variables are missing in the data:'
+            msg += '\n' + missing_vars_str + '\n\n'
         msg += 'If new results are OK copy {} to {}'.format(actual_file_name,
                                                             expected_file_name)
         raise ValueError(msg)
@@ -106,10 +132,10 @@ def aggregate(test_path, data, dataname):
 def test_pufcsv_data(puf, metadata, test_path):
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
-    aggregate(test_path, puf, 'puf')
+    variable_check(test_path, puf, 'puf')
 
 
 def test_cpscsv_data(cps, metadata, test_path):
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
-    aggregate(test_path, cps, 'cps')
+    variable_check(test_path, cps, 'cps')
