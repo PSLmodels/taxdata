@@ -68,8 +68,8 @@ def aggregate(test_path, data, dataname):
     """
     Test aggregate values in the data
     """
-    file_name = '{}_agg_expected.txt'.format(dataname)
-    file_path = os.path.join(test_path, file_name)
+    expected_file_name = '{}_agg_expected.txt'.format(dataname)
+    file_path = os.path.join(test_path, expected_file_name)
     with open(file_path, 'r') as f:
         expected_txt = f.readlines()
     expected_dict = {}
@@ -81,27 +81,24 @@ def aggregate(test_path, data, dataname):
     # loop through each column in the dataset and check aggregate total
     actual_txt = '{:17} Value\n'.format('Variable')
     diffs = False
+    var_list_str = ''  # string to hold all of the variables with errors
     for var in data.columns:
         agg = data[var].sum()
         info_str = '{:17} {}\n'.format(var, agg)
         actual_txt += info_str
         if agg != expected_dict[var]:
             diffs = True
-            m = '{} - New value for {}'.format(dataname, var)
-            raise ValueError(m)
+            var_list_str += var + '\n'
     # if there is a change, write new file
     if diffs:
         actual_file_name = '{}_agg_actual.txt'.format(dataname)
-        actual_file_path = os.join(test_path, actual_file_name)
+        actual_file_path = os.path.join(test_path, actual_file_name)
         with open(actual_file_path, 'w') as f:
             f.write(actual_txt)
-        msg = '{} AGG RESULTS DIFFER\n'.format(dataname.upper())
-        msg += '-------------------------------------------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'.format(actual_file_name)
-        msg += '--- if new OK, copy {} to  ---\n'.format(actual_file_name)
-        msg += '---                 {}     ---\n'.format(actual_file_name)
-        msg += '---            and rerun test.                ---\n'
-        msg += '-------------------------------------------------\n'
+        msg = '{} - Aggregate results differ for following '
+        msg += 'variables:\n'.format(dataname.upper()) + var_list_str
+        msg += 'If new results are OK copy {} to {}'.format(actual_file_name,
+                                                            expected_file_name)
         raise ValueError(msg)
 
 
