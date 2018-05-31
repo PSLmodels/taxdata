@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import os
 
 
 def min_max(data, meta, dataname):
@@ -63,12 +64,55 @@ def relationships(data, dataname):
     assert np.all(data['e01500'] >= data['e01700']), m
 
 
+def aggregate(test_path, data, dataname):
+    """
+    Test aggregate values in the data
+    """
+    file_name = '{}_agg_expected.txt'.format(dataname)
+    file_path = os.path.join(test_path, file_name)
+    with open(file_path, 'r') as f:
+        expected_txt = f.readlines()
+    expected_dict = {}
+    for line in expected_txt[1:]:
+        txt = line.rstrip()
+        split = txt.split()
+        expected_dict[split[0]] = int(split[1])
+
+    # loop through each column in the dataset and check aggregate total
+    actual_txt = '{:17} Value\n'.format('Variable')
+    diffs = False
+    for var in data.columns:
+        agg = data[var].sum()
+        info_str = '{:17} {}\n'.format(var, agg)
+        actual_txt += info_str
+        if agg != expected_dict[var]:
+            diffs = True
+            m = '{} - New value for {}'.format(dataname, var)
+            raise ValueError(m)
+    # if there is a change, write new file
+    if diffs:
+        actual_file_name = '{}_agg_actual.txt'.format(dataname)
+        actual_file_path = os.join(test_path, actual_file_name)
+        with open(actual_file_path, 'w') as f:
+            f.write(actual_txt)
+        msg = '{} AGG RESULTS DIFFER\n'.format(dataname.upper())
+        msg += '-------------------------------------------------\n'
+        msg += '--- NEW RESULTS IN {} FILE ---\n'.format(actual_file_name)
+        msg += '--- if new OK, copy {} to  ---\n'.format(actual_file_name)
+        msg += '---                 {}     ---\n'.format(actual_file_name)
+        msg += '---            and rerun test.                ---\n'
+        msg += '-------------------------------------------------\n'
+        raise ValueError(msg)
+
+
 @pytest.mark.requires_pufcsv
-def test_pufcsv_data(puf, metadata):
+def test_pufcsv_data(puf, metadata, test_path):
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
+    aggregate(test_path, puf, 'puf')
 
 
-def test_cpscsv_data(cps, metadata):
+def test_cpscsv_data(cps, metadata, test_path):
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
+    aggregate(test_path, cps, 'cps')
