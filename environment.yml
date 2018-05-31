@@ -1,4 +1,6 @@
 name: taxdata-dev
+channels:
+- conda-forge
 dependencies:
 - python>=2.7.14
 - numpy=1.12.1
