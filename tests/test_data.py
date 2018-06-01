@@ -27,7 +27,10 @@ def relationships(data, dataname):
     """
     Test the relative relationships between variables.
 
-    Note: we have weakened the n24 <= nu18 assertion for the PUF because
+    Note (1): we have weakened the XTOT == sum of nu18, n1820, n21 assertion
+    for the PUF because in PUF data the value of XTOT is capped by IRS-SOI.
+
+    Note (2): we have weakened the n24 <= nu18 assertion for the PUF because
     the only way to ensure it held true would be to create extreamly small
     bins during the tax unit matching process, which had the potential to
     reduce the overall match accuracy.
@@ -44,12 +47,19 @@ def relationships(data, dataname):
             raise ValueError(eq_str.format(dataname, lhs, rhs))
 
     nsums = data[['nu18', 'n1820', 'n21']].sum(axis=1)
-    m = less_than_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
-    assert np.all(data['XTOT'] <= nsums), m
+    if dataname == 'CPS':
+        m = eq_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
+        assert np.all(data['XTOT'] == nsums), m
+    else:
+        # see Note (1) in docstring
+        m = less_than_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
+        assert np.all(data['XTOT'] <= nsums), m
+
     m = less_than_str.format(dataname, 'n24', 'nu18')
     if dataname == 'CPS':
         assert np.all(data['n24'] <= data['nu18']), m
-    else:  # see note in docstring
+    else:
+        # see Note (2) in docstring
         m = 'Number of records where n24 > nu18 has changed'
         assert (data['n24'] > data['nu18']).sum() == 14928, m
         subdata = data[data['n24'] > data['nu18']]
