@@ -61,17 +61,18 @@ else
     DRYRUN=0
 fi
 
-# TODO TEMPORARY CODE BELOW
-if [ $DTYPE == "cps" ]; then
-    echo "ERROR: DATATYPE cannot be cps yet"
-    usage
-fi
-# TODO TEMPORARY CODE ABOVE
-
-# copy $DTYPE_data/$DTYPE.csv file if different
+# copy $DTYPE_data/$DTYPE CSV file if different
 TAXDATADIR=$DTYPE"_data/"
-FILENAME=$DTYPE".csv"
-copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
+if [ $DTYPE == "cps" ]; then
+    # gzipped file is in TAXCALCDIR directory
+    SRCFILENAME=$DTYPE".csv.gz"
+    DSTFILENAME=$SRCFILENAME
+else
+    # ungzipped file is in parent directory of TAXCALCDIR
+    SRCFILENAME=$DTYPE".csv"
+    DSTFILENAME="../"$SRCFILENAME
+fi
+copyifdiff $SRCFILENAME $TAXDATADIR$SRCFILENAME $TAXCALCDIR$DSTFILENAME $DRYRUN
 
 # copy stage1/growfactors.csv file if different
 TAXDATADIR="stage1/"
@@ -86,6 +87,15 @@ copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
 # copy $DTYPE_stage3/$DTYPE_ratios.csv file if different
 TAXDATADIR=$DTYPE"_stage3/"
 FILENAME=$DTYPE"_ratios.csv"
-copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
+if [ $DTYPE == "puf" ]; then
+    copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
+fi
+
+# copy $DTYPE_stage4/$DTYPE_benefits.csv.gz file if different
+TAXDATADIR=$DTYPE"_stage4/"
+FILENAME=$DTYPE"_benefits.csv.gz"
+if [ $DTYPE == "cps" ]; then
+    copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
+fi
 
 exit 0
