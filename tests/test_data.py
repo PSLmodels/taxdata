@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import os
 
 
 def min_max(data, meta, dataname):
@@ -73,12 +74,78 @@ def relationships(data, dataname):
     assert np.all(data['e01500'] >= data['e01700']), m
 
 
+def variable_check(test_path, data, dataname):
+    """
+    Test aggregate values in the data
+    """
+    expected_file_name = '{}_agg_expected.txt'.format(dataname)
+    file_path = os.path.join(test_path, expected_file_name)
+    with open(file_path, 'r') as f:
+        expected_txt = f.readlines()
+    expected_dict = {}
+    for line in expected_txt[1:]:
+        txt = line.rstrip()
+        split = txt.split()
+        expected_dict[split[0]] = int(split[1])
+
+    # loop through each column in the dataset and check aggregate total
+    actual_txt = '{:17} Value\n'.format('Variable')
+    diffs = False
+    diff_list_str = ''  # string to hold all of the variables with errors
+    new_vars = False
+    new_var_list_str = ''  # srint to hold all of the unexpected variables
+    for var in data.columns:
+        agg = data[var].sum()
+        info_str = '{:17} {}\n'.format(var, agg)
+        actual_txt += info_str
+        try:
+            if agg != expected_dict[var]:
+                diffs = True
+                diff_list_str += var + '\n'
+        except KeyError:
+            # if the variable is not expected, print a new message
+            new_var_list_str += var + '\n'
+            new_vars = True
+
+    # check for any missing variables
+    missing_vars = False
+    missing_vars_set = set(expected_dict.keys()) - set(data.columns)
+    if len(missing_vars_set) != 0:
+        missing_vars = True
+        missing_vars_str = '\n'.join(v for v in missing_vars_set)
+
+    # if there is an error, write the new file
+    if diffs or new_vars or missing_vars:
+        msg = '{}\n'.format(dataname.upper)
+        actual_file_name = '{}_agg_actual.txt'.format(dataname)
+        actual_file_path = os.path.join(test_path, actual_file_name)
+        with open(actual_file_path, 'w') as f:
+            f.write(actual_txt)
+        # modify error message based on which errors are raised
+        if diffs:
+            diff_msg = 'Aggregate results differ for following variables:\n'
+            diff_msg += diff_list_str
+            msg += diff_msg + '\n'
+        if new_vars:
+            new_msg = 'The following unexpected variables were discoverd:\n'
+            new_msg += new_var_list_str
+            msg += new_msg + '\n'
+        if missing_vars:
+            msg += 'The following expected variables are missing in the data:'
+            msg += '\n' + missing_vars_str + '\n\n'
+        msg += 'If new results are OK copy {} to {}'.format(actual_file_name,
+                                                            expected_file_name)
+        raise ValueError(msg)
+
+
 @pytest.mark.requires_pufcsv
-def test_pufcsv_data(puf, metadata):
+def test_pufcsv_data(puf, metadata, test_path):
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
+    variable_check(test_path, puf, 'puf')
 
 
-def test_cpscsv_data(cps, metadata):
+def test_cpscsv_data(cps, metadata, test_path):
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
+    variable_check(test_path, cps, 'cps')
