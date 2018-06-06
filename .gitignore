@@ -1,0 +1,13 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Unit test report
+.pytest_cache/
+
+# Mac OS X
+*.DS_Store
+
+# IRS-SOI PUF data files
+puf_data/puf.csv
+puf_data/cps-matched-puf.csv
