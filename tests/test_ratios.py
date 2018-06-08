@@ -1,10 +1,16 @@
+"""
+Test PUF adjust-ratio file contents.
+"""
 import pytest
-import numpy as np
 
 
 @pytest.mark.parametrize('kind', ['puf'])
 def test_ratios(kind, cps_ratios, puf_ratios,
                 growfactors, cps_start_year, puf_start_year):
+    """
+    Check contents of puf_ratios dataframe.
+    (Note that there are no cps_ratios data.)
+    """
     # specify ratios dataframe and related parameters
     if kind == 'cps':
         raw_ratios = cps_ratios
@@ -18,7 +24,7 @@ def test_ratios(kind, cps_ratios, puf_ratios,
     ratios = raw_ratios.transpose()
     ratios.index.name = 'agi_bin'
     # test agi_bin values
-    agi_bin_list = [str(bin) for bin in range(0, 19)]  # bins from 0 thru 18
+    agi_bin_list = [str(abin) for abin in range(0, 19)]  # bins from 0 thru 18
     assert set(ratios.index.values) == set(agi_bin_list)
     # test range of years in ratios file
     if kind == 'cps':
