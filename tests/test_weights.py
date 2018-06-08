@@ -1,3 +1,6 @@
+"""
+Test CPS and PUF weights file contents.
+"""
 import pytest
 import numpy as np
 
@@ -6,6 +9,9 @@ import numpy as np
 def test_weights(kind, cps_weights, puf_weights,
                  growfactors, cps_count, puf_count,
                  cps_start_year, puf_start_year):
+    """
+    Check value of filing-unit weights in each year.
+    """
     # specify weights dataframe and related parameters
     if kind == 'cps':
         weights = cps_weights

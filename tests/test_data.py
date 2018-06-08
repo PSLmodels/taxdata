@@ -1,12 +1,14 @@
+"""
+Test CPS and PUF data file contents.
+"""
+import os
 import pytest
 import numpy as np
-import os
 
 
 def min_max(data, meta, dataname):
     """
-    Test for ensuring all variables are within their logical minimum and
-    maximum
+    Test that variable variables are within their minimum/maximu range.
     """
     for var in meta.keys():
         availability = meta[var]['availability']
@@ -26,7 +28,7 @@ def min_max(data, meta, dataname):
 
 def relationships(data, dataname):
     """
-    Test the relative relationships between variables.
+    Test the relationships between variables.
 
     Note (1): we have weakened the XTOT == sum of nu18, n1820, n21 assertion
     for the PUF because in PUF data the value of XTOT is capped by IRS-SOI.
@@ -76,7 +78,7 @@ def relationships(data, dataname):
 
 def variable_check(test_path, data, dataname):
     """
-    Test aggregate values in the data
+    Test aggregate values in the data.
     """
     expected_file_name = '{}_agg_expected.txt'.format(dataname)
     file_path = os.path.join(test_path, expected_file_name)
@@ -110,7 +112,7 @@ def variable_check(test_path, data, dataname):
     # check for any missing variables
     missing_vars = False
     missing_vars_set = set(expected_dict.keys()) - set(data.columns)
-    if len(missing_vars_set) != 0:
+    if missing_vars_set:
         missing_vars = True
         missing_vars_str = '\n'.join(v for v in missing_vars_set)
 
@@ -140,12 +142,18 @@ def variable_check(test_path, data, dataname):
 
 @pytest.mark.requires_pufcsv
 def test_pufcsv_data(puf, metadata, test_path):
+    """
+    Test PUF data.
+    """
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
     variable_check(test_path, puf, 'puf')
 
 
 def test_cpscsv_data(cps, metadata, test_path):
+    """
+    Test CPS data.
+    """
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
     variable_check(test_path, cps, 'cps')

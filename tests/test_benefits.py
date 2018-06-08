@@ -1,3 +1,6 @@
+"""
+Test CPS benefits file contents.
+"""
 import pytest
 import numpy as np
 
@@ -6,6 +9,10 @@ import numpy as np
 def test_benefits(kind, cps_benefits, puf_benefits,
                   growfactors, cps_start_year, puf_start_year,
                   cps_count, puf_count):
+    """
+    Check contents of cps_benefits dataframe.
+    (Note that there are no puf_benefits data.)
+    """
     # specify benefits dataframe and related parameters
     if kind == 'cps':
         benefits = cps_benefits
