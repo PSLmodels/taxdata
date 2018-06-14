@@ -3,7 +3,6 @@ import pulp
 
 
 def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
-    puf_length = len(puf.s006)
 
     print("Preparing coefficient matrix for year {} .....".format(year))
 
@@ -176,15 +175,17 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     print('Constructing LP Model')
     LP = pulp.LpProblem('PUF Stage 2', pulp.LpMinimize)
-    r = pulp.LpVariable.dicts('r', puf.index, lowBound=0)
-    s = pulp.LpVariable.dicts('s', puf.index, lowBound=0)
+    r = pulp.LpVariable.dicts('r', puf.index)
+    s = pulp.LpVariable.dicts('s', puf.index)
     # add objective functoin
     LP += pulp.lpSum([r[i] + s[i] for i in puf.index])
     # add constraints
     for i in puf.index:
+        LP += r[i] >= 0
+        LP += s[i] >= 0
         LP += r[i] + s[i] <= tol
     for i in range(len(b)):
-        LP += pulp.lpSum([(A1[i][j] * r[i] + A2[i][j] * s[i])
+        LP += pulp.lpSum([(A1[i][j] * r[j] + A2[i][j] * s[j])
                           for j in puf.index]) == b[i]
 
     print('Solving Model...')
@@ -195,6 +196,6 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
     # apply r and s values to the weights
     r_val = np.array([r[i].varValue for i in r])
     s_val = np.array([s[i].varValue for i in s])
-    z = ((1. + r_val - s_val) * s006 * 100)
+    z = (1. + r_val - s_val) * s006 * 100
 
     return z

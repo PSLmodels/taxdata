@@ -21,37 +21,37 @@ z[:, 0] = puf.s006
 
 # Execute stage2 logic for each year using a year-specific LP tolerance
 z[:, 1] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2012', tol=0.47)
+                            year='2012', tol=0.40)
 z[:, 2] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2013', tol=0.48)
+                            year='2013', tol=0.38)
 z[:, 3] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2014', tol=0.50)
+                            year='2014', tol=0.35)
 z[:, 4] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2015', tol=0.50)
+                            year='2015', tol=0.33)
 z[:, 5] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2016', tol=0.50)
+                            year='2016', tol=0.30)
 z[:, 6] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2017', tol=0.51)
+                            year='2017', tol=0.37)
 z[:, 7] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2018', tol=0.51)
+                            year='2018', tol=0.38)
 z[:, 8] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2019', tol=0.52)
+                            year='2019', tol=0.38)
 z[:, 9] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                            year='2020', tol=0.52)
+                            year='2020', tol=0.39)
 z[:, 10] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2021', tol=0.52)
+                             year='2021', tol=0.39)
 z[:, 11] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2022', tol=0.53)
+                             year='2022', tol=0.38)
 z[:, 12] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2023', tol=0.53)
+                             year='2023', tol=0.40)
 z[:, 13] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2024', tol=0.54)
+                             year='2024', tol=0.39)
 z[:, 14] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2025', tol=0.55)
+                             year='2025', tol=0.41)
 z[:, 15] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2026', tol=0.56)
+                             year='2026', tol=0.41)
 z[:, 16] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
-                             year='2027', tol=0.56)
+                             year='2027', tol=0.42)
 
 # Write all weights (rounded to nearest integer) to puf_weights.csv file
 z = pd.DataFrame(z,
