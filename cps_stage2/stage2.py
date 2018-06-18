@@ -20,7 +20,8 @@ def main():
 
     # DataFrame for holding each year's weights
     weights = pd.DataFrame()
-    weights['WT2014'] = cps.WT * 100
+    weights['WT2014'] = solve_lp_for_year(cps, stage_1_factors,
+                                          stage_2_targets, 2014, .50)
     weights['WT2015'] = solve_lp_for_year(cps, stage_1_factors,
                                           stage_2_targets, 2015, .50)
     weights['WT2016'] = solve_lp_for_year(cps, stage_1_factors,

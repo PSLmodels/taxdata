@@ -154,6 +154,11 @@ def solve_lp_for_year(data, factors, targets, year, tol):
                   'dep_exemptions', 'interest', 'dividend', 'biz_income',
                   'pension', 'ss_income', 'ucomp', 'wage1', 'wage2', 'wage3',
                   'wage4', 'wage5', 'wage6', 'wage7', 'wage8']
+    if year == '2014':
+        model_vars = ['single_returns', 'joint_returns', 'returns_w_ss',
+                      'dep_exemptions', 'interest', 'biz_income',
+                      'pension', 'ss_income', 'wage1', 'wage2', 'wage3',
+                      'wage4', 'wage5', 'wage6', 'wage7', 'wage8']
 
     vstack_vars = []
     b = []  # list to hold the targets
