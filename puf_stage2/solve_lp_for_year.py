@@ -175,14 +175,12 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
 
     print('Constructing LP Model')
     LP = pulp.LpProblem('PUF Stage 2', pulp.LpMinimize)
-    r = pulp.LpVariable.dicts('r', puf.index)
-    s = pulp.LpVariable.dicts('s', puf.index)
+    r = pulp.LpVariable.dicts('r', puf.index, lowBound=0)
+    s = pulp.LpVariable.dicts('s', puf.index, lowBound=0)
     # add objective functoin
     LP += pulp.lpSum([r[i] + s[i] for i in puf.index])
     # add constraints
     for i in puf.index:
-        LP += r[i] >= 0
-        LP += s[i] >= 0
         LP += r[i] + s[i] <= tol
     for i in range(len(b)):
         LP += pulp.lpSum([(A1[i][j] * r[j] + A2[i][j] * s[j])
