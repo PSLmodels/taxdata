@@ -8,3 +8,4 @@ dependencies:
 - scipy=0.18.1
 - bokeh >=0.12.3
 - pytest
+- pulp

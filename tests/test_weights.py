@@ -46,13 +46,13 @@ def test_weights(kind, cps_weights, puf_weights,
             raise ValueError(msg.format(kind, col,
                                         weights[col].max(), max_weight))
     # test sum of weights (in millions) for each year
-    min_weight_sum = 150
+    min_weight_sum = 149
     max_weight_sum = 200
     for col in weights:
         weight_sum = weights[col].sum() * 1e-2 * 1e-6  # in millions
         if weight_sum < min_weight_sum:
             msg = '{} weights[{}].sum()={:.1f} < {:.1f}'
-            raise ValueError(msg.format(kind, col, weight_sum, max_weight_sum))
+            raise ValueError(msg.format(kind, col, weight_sum, min_weight_sum))
         if weight_sum > max_weight_sum:
             msg = '{} weights[{}].max()={:.1f} > {:.1f}'
             raise ValueError(msg.format(kind, col, weight_sum, max_weight_sum))

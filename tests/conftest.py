@@ -17,7 +17,7 @@ def test_path():
 
 @pytest.fixture(scope='session')
 def growfactors(test_path):
-    gf_path = os.path.join(test_path, '../stage1/growfactors.csv')
+    gf_path = os.path.join(test_path, '../puf_stage1/growfactors.csv')
     return pd.read_csv(gf_path, index_col='YEAR')
 
 
