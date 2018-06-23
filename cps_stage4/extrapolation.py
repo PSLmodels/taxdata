@@ -1,8 +1,10 @@
-import pandas as pd
-import numpy as np
+from __future__ import print_function
 import os
-from copy import deepcopy
 import time
+from copy import deepcopy
+import numpy as np
+import pandas as pd
+
 
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
@@ -42,16 +44,26 @@ class Benefits():
                                       benefits.copy(deep=True),
                                       prob,
                                       participant_targets[self.current_year],
+                                      benefit,
+                                      self.current_year,
                                       tol=tol)
             # part_wt = pd.concat(participation.sum(axis=1), WT)
             # extrapolated = part_wt.
             extrapolated = (participation.sum(axis=1) * WT).sum()
+            target_ = participant_targets[self.current_year]
+            msg = '{} benefit in {}: '.format(benefit, self.current_year)
+            msg += 'total= {:.0f} and target= {:.0f}\n'.format(
+                extrapolated, target_)
+            reldiff_ = extrapolated / target_ - 1.
+            msg += '   which implies reldiff= {:.3f}'.format(reldiff_)
+            """
             print(benefit, 'this year total is ', extrapolated,
                   ', target is ', participant_targets[self.current_year],
                   ', diff is ',
                   (extrapolated - participant_targets[self.current_year]), ',',
                   ((extrapolated - participant_targets[self.current_year]) /
                    participant_targets[self.current_year]))
+            """
 
             lab = benefit + '_recipients_' + str(self.current_year)
             self.benefit_extrapolation[lab] = participation.sum(axis=1)
@@ -66,7 +78,8 @@ class Benefits():
             setattr(self, '{}_benefits'.format(benefit), benefits)
 
     @staticmethod
-    def _extrapolate(WT, I, benefits, prob, target, tol=0.01, J=15):
+    def _extrapolate(WT, I, benefits, prob, target,
+                     benefit_name, benefit_year, tol=0.01, J=15):
         """
         Goal: get number of participants as close to target as possible
         Steps:
@@ -127,11 +140,17 @@ class Benefits():
         # get absolute difference between candidates and target
         candidates["_diff"] = candidates.cum_participants - target
 
-        # # check to make results are close enough
-        assert np.allclose(
-            candidates[candidates._diff <= 0].cum_participants.max(), target,
-            atol=0.0, rtol=tol
-        )
+        # check to make sure that results are close enough
+        results_ = candidates[candidates._diff <= 0].cum_participants.max()
+        if not np.allclose(results_, target, atol=0.0, rtol=tol):
+            msg = 'Problem with {} participants in year {}:\n'.format(
+                benefit_name, benefit_year)
+            msg += ' results={:.0f} and target={:.0f} are not close;\n'.format(
+                results_, target)
+            reldiff_ = results_ / target - 1.
+            msg += ' abs of reldiff={:.3f} larger than rtol={:.3f}'.format(
+                reldiff_, tol)
+            raise ValueError(msg)
 
         # individuals prior to min_diff have highest probability of getting
         # benefits in the future ==> they get benefits
@@ -150,10 +169,13 @@ class Benefits():
         del noncandidates
 
         result.I_wt = result.I * result.wt
-        finish = time.time()
-        print('total time', finish - start)
         I = result.I.unstack().sort_index()
         benefits = result.benefits.unstack().sort_index()
+
+        finish = time.time()
+        msg = '{} benefit for {} execution time is {:.1f} seconds'.format(
+            benefit_name, benefit_year, (finish - start))
+        print(msg)
 
         return I, benefits
 
