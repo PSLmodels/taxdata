@@ -46,7 +46,7 @@ ifeq ($(CSV),x)
 	@echo "The CSV=x option logic is not yet implemented"
 #	@rm -f $(MADE_FILES)
 else
-	@echo "No CSV=x option used so skip removal of all made files"
+	@echo "No CSV=x option used so skipping removal of all made files"
 endif
 
 define pytest-cleanup
