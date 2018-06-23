@@ -7,7 +7,7 @@ import time
 class Benefits():
     GROWTH_RATES_PATH = 'growth_rates.csv'
     CPS_BENEFIT_PATH = '../cps_data/cps_raw_rename.csv.gz'
-    CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights_raw.csv.gz'
+    CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
 
     def __init__(self,
                  growth_rates=GROWTH_RATES_PATH,

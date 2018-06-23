@@ -56,27 +56,28 @@ fi
 echo "`date` : $DP FINISH"
 cd ..
 
-# execute stage1 scripts
-cd stage1
-echo "`date` : stage1 START"
+# execute $DTYPE_stage1 scripts
+S1=$DTYPE"_stage1"
+cd $S1
+echo "`date` : $S1 START"
 python stage1.py
 if [ $? -ne 0 ]; then
-    echo "ERROR: executing stage1.py script"
+    echo "ERROR: executing $S1/stage1.py script"
     gitdiffs
     exit 1
 fi
 python factors_finalprep.py
 if [ $? -ne 0 ]; then
-    echo "ERROR: executing stage1/finalprep.py script"
+    echo "ERROR: executing $S1/factors_finalprep.py script"
     gitdiffs
     exit 1
 fi
-echo "`date` : stage1 FINISH"
+echo "`date` : $S1 FINISH"
 cd ..
 
-# consider stopping after stage1 scripts have executed
+# consider stopping after $DTYPE_stage1 scripts have executed
 if [ $LSTAGE -eq 1 ]; then
-    echo "STOPPING AFTER stage1"
+    echo "STOPPING AFTER $S1"
     gitdiffs
     exit 0
 fi
