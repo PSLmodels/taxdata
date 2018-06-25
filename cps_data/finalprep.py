@@ -64,11 +64,12 @@ def main():
         'NU13': 'nu13',
         'NU05': 'nu05',
         'N24': 'n24',
-        'ELDERLY_DEPENDENT': 'elderly_dependent',
         'F2441': 'f2441'
     }
     data = data.rename(columns=renames)
+    data['elderly_dependent'] = np.where(data['ELDERLY_DEPENDENT'] > 0, 1, 0)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
+    data['EIC'] = np.minimum(3, data.EIC)
 
     # Use taxpayer and spouse records to get total tax unit earnings and AGI
     data['e00100'] = data['JCPS9'] + data['JCPS19']
@@ -132,7 +133,7 @@ def main():
     data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']
-    data['s006'] *= 100.
+    data['s006'] *= 100
     print('Exporting...')
     data.to_csv('cps.csv', index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
@@ -142,15 +143,11 @@ def deduction_limits(data):
     """
     Apply limits on itemized deductions
     """
-    data['CHARITABLE'] = data['CHARITABLE'].fillna(0.)
-    half_agi = data['e00100'] * 0.5
-    charity = np.minimum(data.CHARITABLE, half_agi)
-    charity = np.maximum(charity, 0.)
     # Split charitable contributions into cash and non-cash using ratio in PUF
     cash = 0.82013
     non_cash = 1. - cash
-    data['e19800'] = charity * cash
-    data['e20100'] = charity * non_cash
+    data['e19800'] = data['CHARITABLE'] * cash
+    data['e20100'] = data['CHARITABLE'] * non_cash
 
     # Apply student loan interest deduction limit
     data['e03210'] = np.where(data.SLINT > 2500, 2500, data.SLINT)
@@ -351,16 +348,16 @@ def benefits(data, other_ben):
     medicaid_cols = 'MCAID_VAL' + pd.Series((np.arange(15) + 1).astype(str))
     count_medicare = data[medicare_cols].astype(bool).sum(axis=1)
     count_medicaid = data[medicaid_cols].astype(bool).sum(axis=1)
-    insurance_val_medicare = 12000
-    insurance_val_medicaid = 6000
-    new_medicare = count_medicare * insurance_val_medicare
-    new_medicaid = count_medicaid * insurance_val_medicaid
-    scale_medicare = ((data['mcare_ben'] * data['s006']).sum() /
-                      (new_medicare * data['s006']).sum())
-    scale_medicaid = ((data['mcaid_ben'] * data['s006']).sum() /
-                      (new_medicaid * data['s006']).sum())
-    data['mcare_ben'] = new_medicare * scale_medicare
-    data['mcaid_ben'] = new_medicaid * scale_medicaid
+    weighted_count_mcare = (count_medicare * data['s006']).sum()
+    weighted_count_mcaid = (count_medicaid * data['s006']).sum()
+    weighted_mcare = (data['mcare_ben'] * data['s006']).sum()
+    weighted_mcaid = (data['mcaid_ben'] * data['s006']).sum()
+    mcare_amt = weighted_mcare / weighted_count_mcare
+    mcaid_amt = weighted_mcaid / weighted_count_mcaid
+    data[medicare_cols] = data[medicare_cols].astype(bool) * mcare_amt
+    data[medicaid_cols] = data[medicaid_cols].astype(bool) * mcaid_amt
+    data['mcare_ben'] = data[medicare_cols].sum(axis=1)
+    data['mcaid_ben'] = data[medicaid_cols].sum(axis=1)
 
     other_ben['2014_cost'] *= 1e6
 

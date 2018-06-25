@@ -1,0 +1,1158 @@
+Preparing coefficient matrix for year 2012 .....
+Preparing targets for year 2012 .....
+Targets for year 2012 are:
+[  6.13189814e+06  -1.81238943e+06  -7.19245070e+05  -1.23252462e+06
+  -1.15532709e+05  -3.45579101e+08   4.79845286e+09  -3.15553884e+09
+  -3.32538563e+08  -3.30463055e+10  -4.38534581e+10   2.78390906e+10
+   2.26027116e+10  -1.76450464e+10  -2.16721512e+09  -2.42879661e+08
+   2.09628821e+10  -1.63061389e+09  -2.35093206e+10  -2.45988770e+10
+  -2.46820830e+10  -5.27819696e+10  -3.79337815e+10  -4.65159333e+09
+  -3.96804539e+09   1.32572639e+10   6.77332310e+10]
+Adding constraints for year 2012 .....
+/Users/mrh/anaconda/lib/python2.7/site-packages/cylp-0.7.1-py2.7-macosx-10.6-x86_64.egg/cylp/py/modeling/CyLPModel.py:372: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if left == None:
+/Users/mrh/anaconda/lib/python2.7/site-packages/cylp-0.7.1-py2.7-macosx-10.6-x86_64.egg/cylp/py/utils/sparseUtil.py:388: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if b == None:
+/Users/mrh/anaconda/lib/python2.7/site-packages/cylp-0.7.1-py2.7-macosx-10.6-x86_64.egg/cylp/py/utils/sparseUtil.py:387: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if a == None:
+/Users/mrh/anaconda/lib/python2.7/site-packages/cylp-0.7.1-py2.7-macosx-10.6-x86_64.egg/cylp/py/utils/sparseUtil.py:391: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if b == None:
+/Users/mrh/anaconda/lib/python2.7/site-packages/cylp-0.7.1-py2.7-macosx-10.6-x86_64.egg/cylp/py/modeling/CyLPModel.py:193: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if (other == None):
+/Users/mrh/anaconda/lib/python2.7/site-packages/cylp-0.7.1-py2.7-macosx-10.6-x86_64.egg/cylp/py/modeling/CyLPModel.py:516: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if self.lower == None:
+Setting up the LP model for year 2012 .....
+/Users/mrh/work/OSPC/taxdata/puf_stage2/solve_lp_for_year.py:199: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  model = CyClpSimplex(LP)
+Solving LP for year 2012 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 7633948.1 (27)
+Clp0006I 1000  Obj 8410.0593 Primal inf 947868.83 (9636)
+Clp0006I 1848  Obj 9786.42 Primal inf 8029894 (14179)
+Clp0006I 2252  Obj 10497.652 Primal inf 182935.34 (17854)
+Clp0006I 3252  Obj 10558.503 Primal inf 34646.866 (17642)
+Clp0006I 4252  Obj 10613.54 Primal inf 31808.31 (16991)
+Clp0006I 5252  Obj 10661.625 Primal inf 28654.3 (16329)
+Clp0006I 6252  Obj 10703.254 Primal inf 26669.852 (15616)
+Clp0006I 7252  Obj 10738.588 Primal inf 24451.258 (14885)
+Clp0006I 8252  Obj 10764.192 Primal inf 23284.514 (14175)
+Clp0006I 9252  Obj 10785.364 Primal inf 21566.068 (13443)
+Clp0006I 10252  Obj 10816.533 Primal inf 20229.264 (12739)
+Clp0006I 11252  Obj 10847.211 Primal inf 27696.922 (12029)
+Clp0006I 12252  Obj 10875.342 Primal inf 21847.406 (11356)
+Clp0006I 13252  Obj 10904.336 Primal inf 15802.92 (10704)
+Clp0006I 14252  Obj 10927.658 Primal inf 14875.995 (9999)
+Clp0006I 15252  Obj 10951.073 Primal inf 14594.059 (9260)
+Clp0006I 16252  Obj 10977.087 Primal inf 13940.009 (8581)
+Clp0006I 17252  Obj 11030.986 Primal inf 12097.093 (7964)
+Clp0006I 18252  Obj 11091.672 Primal inf 9950.1203 (7370)
+Clp0006I 19252  Obj 11158.232 Primal inf 9230.2083 (6754)
+Clp0006I 20252  Obj 11211.715 Primal inf 10049.998 (6137)
+Clp0006I 21108  Obj 11253.159 Primal inf 9366.75 (5617)
+Clp0006I 22108  Obj 11300.355 Primal inf 6544.5426 (4991)
+Clp0006I 23108  Obj 11343.367 Primal inf 6235.2531 (4336)
+Clp0006I 24108  Obj 11379.36 Primal inf 4605.3508 (3650)
+Clp0006I 25108  Obj 11409.958 Primal inf 4814.1252 (2963)
+Clp0006I 26108  Obj 11432.615 Primal inf 4537.2393 (2247)
+Clp0006I 27108  Obj 11448.217 Primal inf 1822.1526 (1523)
+Clp0006I 28108  Obj 11461.964 Primal inf 1028.5736 (823)
+Clp0006I 29108  Obj 11494.705 Primal inf 216.85315 (174)
+Clp0006I 29370  Obj 11502.082
+Clp0000I Optimal - objective value 11502.082
+Coin0511I After Postsolve, objective 11502.082, infeasibilities - dual 0 (0), primal 0.0007740406 (23)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 11502.082
+Clp0006I 0  Obj 11502.082
+Clp0000I Optimal - objective value 11502.082
+Clp0032I Optimal objective 11502.08175 - 29370 iterations time 71.852, Presolve 1.07
+DONE solving LP for year 2012
+Preparing coefficient matrix for year 2013 .....
+Preparing targets for year 2013 .....
+Targets for year 2013 are:
+[  6.81131128e+06  -2.74507827e+06  -9.33402355e+05  -1.64081735e+06
+  -2.05928452e+06  -2.69501314e+09   1.23301269e+09  -7.15817130e+09
+  -1.05131129e+09  -4.01062588e+10  -4.53825616e+10   1.95549771e+10
+   2.06134126e+10  -1.82893824e+10  -3.26271907e+09  -1.18639708e+09
+   1.92248483e+10  -7.53108678e+09  -2.87841275e+10  -3.94473848e+10
+  -2.14306465e+10  -7.40241004e+10  -4.51955894e+10  -1.38100603e+08
+   2.89850938e+10   1.71937787e+10   1.54902232e+10]
+Adding constraints for year 2013 .....
+Setting up the LP model for year 2013 .....
+Solving LP for year 2013 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 8382667.4 (27)
+Clp0006I 718  Obj 11368.73 Primal inf 68022.994 (21111)
+Clp0006I 1718  Obj 11505.106 Primal inf 42470.48 (19274)
+Clp0006I 2718  Obj 11565.118 Primal inf 36116.782 (18682)
+Clp0006I 3718  Obj 11615.947 Primal inf 33935.766 (18020)
+Clp0006I 4718  Obj 11654.754 Primal inf 31672.056 (17329)
+Clp0006I 5718  Obj 11697.396 Primal inf 29870.427 (16668)
+Clp0006I 6718  Obj 11729.409 Primal inf 27656.694 (15937)
+Clp0006I 7718  Obj 11758.273 Primal inf 25423.412 (15235)
+Clp0006I 8718  Obj 11784.224 Primal inf 26100.849 (14476)
+Clp0006I 9718  Obj 11809.668 Primal inf 25797.937 (13737)
+Clp0006I 10718  Obj 11842.543 Primal inf 21201.581 (13046)
+Clp0006I 11718  Obj 11880.564 Primal inf 19735.459 (12378)
+Clp0006I 12718  Obj 11921.297 Primal inf 19309.068 (11745)
+Clp0006I 13718  Obj 11949.916 Primal inf 24044.508 (11008)
+Clp0006I 14718  Obj 11983.187 Primal inf 16310.42 (10307)
+Clp0006I 15718  Obj 12013.515 Primal inf 15075.908 (9604)
+Clp0006I 16718  Obj 12038.749 Primal inf 13178.139 (8899)
+Clp0006I 17718  Obj 12068.886 Primal inf 18027.466 (8200)
+Clp0006I 18718  Obj 12132.888 Primal inf 15494.81 (7587)
+Clp0006I 19718  Obj 12209.288 Primal inf 10902.854 (6985)
+Clp0006I 20718  Obj 12283.098 Primal inf 9347.9258 (6422)
+Clp0006I 21718  Obj 12350.415 Primal inf 16721.388 (5782)
+Clp0006I 22718  Obj 12406.677 Primal inf 7982.5559 (5144)
+Clp0006I 23718  Obj 12461.47 Primal inf 5895.6887 (4495)
+Clp0006I 24718  Obj 12515.103 Primal inf 5619.6406 (3790)
+Clp0006I 25718  Obj 12557.029 Primal inf 6762.5141 (3130)
+Clp0006I 26718  Obj 12595.035 Primal inf 3976.1402 (2436)
+Clp0006I 27718  Obj 12622.4 Primal inf 7095.2799 (1764)
+Clp0006I 28718  Obj 12641.436 Primal inf 2170.4357 (1050)
+Clp0006I 29718  Obj 12656.73 Primal inf 1269.6314 (310)
+Clp0006I 30224  Obj 12672.161
+Clp0000I Optimal - objective value 12672.161
+Coin0511I After Postsolve, objective 12672.161, infeasibilities - dual 0 (0), primal 0.0011177643 (24)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 12672.161
+Clp0006I 0  Obj 12672.161
+Clp0000I Optimal - objective value 12672.161
+Clp0032I Optimal objective 12672.16114 - 30224 iterations time 62.962, Presolve 1.07
+DONE solving LP for year 2013
+Preparing coefficient matrix for year 2014 .....
+Preparing targets for year 2014 .....
+Targets for year 2014 are:
+[  7.61888227e+06  -4.79285836e+06  -7.91705423e+05  -2.28747982e+06
+  -2.63363513e+06  -3.79083437e+09  -3.10147215e+08  -4.98937043e+09
+  -8.53975080e+08  -4.10126099e+10  -5.47860670e+10   2.17027415e+10
+   2.09943282e+10  -1.89176970e+10  -2.63458499e+09  -2.76525499e+09
+   1.62230170e+10  -2.06121446e+10  -4.13107426e+10  -4.44715082e+10
+  -2.79413799e+10  -1.05656535e+11  -5.73055969e+10   2.67851716e+10
+   7.38971732e+10   4.16270693e+10   5.95037003e+10]
+Adding constraints for year 2014 .....
+Setting up the LP model for year 2014 .....
+Solving LP for year 2014 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 10413675 (27)
+Clp0006I 790  Obj 15543.21 Primal inf 602047.95 (27707)
+Clp0006I 1389  Obj 15845.198 Primal inf 128997.55 (26591)
+Clp0006I 2389  Obj 15926.647 Primal inf 50904.827 (25637)
+Clp0006I 3389  Obj 16000.046 Primal inf 48332.408 (25019)
+Clp0006I 4389  Obj 16060.288 Primal inf 47414.699 (24376)
+Clp0006I 5389  Obj 16114.023 Primal inf 48634.457 (23690)
+Clp0006I 6389  Obj 16172.463 Primal inf 43089.127 (23067)
+Clp0006I 7389  Obj 16221.777 Primal inf 42505.713 (22339)
+Clp0006I 8389  Obj 16264.132 Primal inf 37182.495 (21669)
+Clp0006I 9389  Obj 16305.66 Primal inf 35232.333 (20918)
+Clp0006I 10389  Obj 16339.22 Primal inf 35337.675 (20234)
+Clp0006I 11389  Obj 16377.814 Primal inf 34835.457 (19534)
+Clp0006I 12389  Obj 16422.86 Primal inf 33163.682 (18799)
+Clp0006I 13389  Obj 16477.759 Primal inf 31941.212 (18182)
+Clp0006I 14389  Obj 16540.283 Primal inf 28536.464 (17559)
+Clp0006I 15389  Obj 16608.68 Primal inf 73331.571 (16882)
+Clp0006I 16389  Obj 16660.344 Primal inf 34045.396 (16242)
+Clp0006I 17389  Obj 16696.028 Primal inf 25499.173 (15616)
+Clp0006I 18389  Obj 16734.489 Primal inf 36294.96 (14914)
+Clp0006I 19389  Obj 16778.382 Primal inf 21628.087 (14193)
+Clp0006I 20389  Obj 16815.73 Primal inf 21783.981 (13546)
+Clp0006I 21389  Obj 16855.3 Primal inf 23098.341 (12827)
+Clp0006I 22389  Obj 16896.545 Primal inf 19906.157 (12140)
+Clp0006I 23389  Obj 16934.817 Primal inf 16723.475 (11438)
+Clp0006I 24389  Obj 16983.037 Primal inf 18332.955 (10797)
+Clp0006I 25389  Obj 17057.379 Primal inf 13983.464 (10208)
+Clp0006I 26389  Obj 17144.138 Primal inf 17586.499 (9611)
+Clp0006I 27389  Obj 17225.733 Primal inf 14060.898 (9041)
+Clp0006I 28387  Obj 17287.772 Primal inf 15756.99 (8448)
+Clp0006I 29387  Obj 17345.025 Primal inf 11011.662 (7780)
+Clp0006I 30387  Obj 17410.927 Primal inf 15461.09 (7103)
+Clp0006I 31387  Obj 17468.317 Primal inf 8375.128 (6484)
+Clp0006I 32387  Obj 17526.013 Primal inf 7467.7703 (5829)
+Clp0006I 33387  Obj 17576.523 Primal inf 6710.3324 (5156)
+Clp0006I 34387  Obj 17622.725 Primal inf 9883.9346 (4449)
+Clp0006I 35387  Obj 17658.762 Primal inf 4095.9604 (3737)
+Clp0006I 36387  Obj 17690.273 Primal inf 3909.1334 (3043)
+Clp0006I 37387  Obj 17715.14 Primal inf 2875.6323 (2375)
+Clp0006I 38387  Obj 17737.031 Primal inf 1813.7678 (1655)
+Clp0006I 39387  Obj 17757 Primal inf 5137.4605 (909)
+Clp0006I 40387  Obj 17791.586 Primal inf 502.38349 (247)
+Clp0006I 40775  Obj 17801.742
+Clp0000I Optimal - objective value 17801.742
+Coin0511I After Postsolve, objective 17801.742, infeasibilities - dual 0 (0), primal 0.0013823935 (22)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 17801.742
+Clp0006I 0  Obj 17801.742
+Clp0000I Optimal - objective value 17801.742
+Clp0032I Optimal objective 17801.74241 - 40775 iterations time 88.642, Presolve 1.06
+DONE solving LP for year 2014
+Preparing coefficient matrix for year 2015 .....
+Preparing targets for year 2015 .....
+Targets for year 2015 are:
+[  7.44858288e+06  -5.21607696e+06  -8.21989520e+05  -2.36689994e+06
+  -4.03493732e+06  -5.91629758e+09  -3.50698242e+09  -7.74710656e+09
+  -1.39300150e+09  -4.69045161e+10  -6.86060168e+10   1.54914045e+10
+   1.94739949e+10  -1.95235457e+10  -3.38747497e+09  -2.96501102e+09
+   1.58779126e+10  -2.24356223e+10  -4.39788933e+10  -4.73649931e+10
+  -3.05807525e+10  -1.12494542e+11  -6.30807136e+10   1.70661807e+10
+   6.93226300e+10   4.03926836e+10   5.78678091e+10]
+Adding constraints for year 2015 .....
+Setting up the LP model for year 2015 .....
+Solving LP for year 2015 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 11619228 (27)
+Clp0006I 657  Obj 14939.293 Primal inf 2276017 (29241)
+Clp0006I 1657  Obj 16008.473 Primal inf 55641.343 (26569)
+Clp0006I 2657  Obj 16085.981 Primal inf 51818.578 (25758)
+Clp0006I 3657  Obj 16158.236 Primal inf 47944.289 (25113)
+Clp0006I 4657  Obj 16218.262 Primal inf 47813.028 (24473)
+Clp0006I 5657  Obj 16275.999 Primal inf 42671.104 (23807)
+Clp0006I 6657  Obj 16328.397 Primal inf 41503.255 (23131)
+Clp0006I 7657  Obj 16379.396 Primal inf 39103.665 (22504)
+Clp0006I 8657  Obj 16425.214 Primal inf 36870.98 (21769)
+Clp0006I 9657  Obj 16465.383 Primal inf 37025.611 (21027)
+Clp0006I 10657  Obj 16500.381 Primal inf 33743.195 (20326)
+Clp0006I 11657  Obj 16535.469 Primal inf 33194.958 (19625)
+Clp0006I 12657  Obj 16582.674 Primal inf 30427.864 (18943)
+Clp0006I 13457  Obj 16624.909 Primal inf 30544.495 (18388)
+Clp0006I 14457  Obj 16691.845 Primal inf 27913.7 (17751)
+Clp0006I 15457  Obj 16751.384 Primal inf 32647.558 (17073)
+Clp0006I 16457  Obj 16808.242 Primal inf 26052.627 (16491)
+Clp0006I 17457  Obj 16857.828 Primal inf 23614.699 (15804)
+Clp0006I 18457  Obj 16894.148 Primal inf 22386.355 (15104)
+Clp0006I 19457  Obj 16935.697 Primal inf 32544.363 (14408)
+Clp0006I 20357  Obj 16968.779 Primal inf 38367.196 (13791)
+Clp0006I 21357  Obj 17008.47 Primal inf 18741.687 (13089)
+Clp0006I 22357  Obj 17048.468 Primal inf 28200.006 (12401)
+Clp0006I 23357  Obj 17087.327 Primal inf 17846.056 (11694)
+Clp0006I 24357  Obj 17123.237 Primal inf 27894.312 (11021)
+Clp0006I 25357  Obj 17176.858 Primal inf 38324.953 (10353)
+Clp0006I 26357  Obj 17260.148 Primal inf 208312.78 (9785)
+Clp0006I 27357  Obj 17343.154 Primal inf 74179.844 (9180)
+Clp0006I 28357  Obj 17422.013 Primal inf 11662.931 (8588)
+Clp0006I 29357  Obj 17481.865 Primal inf 11795.197 (7898)
+Clp0006I 30357  Obj 17540.981 Primal inf 12895.407 (7269)
+Clp0006I 31357  Obj 17603.765 Primal inf 8166.2048 (6626)
+Clp0006I 32357  Obj 17663.737 Primal inf 8050.7305 (5937)
+Clp0006I 33357  Obj 17713.496 Primal inf 7341.8521 (5300)
+Clp0006I 34357  Obj 17758.844 Primal inf 6033.259 (4632)
+Clp0006I 35357  Obj 17797.602 Primal inf 8391.655 (3960)
+Clp0006I 36357  Obj 17830.952 Primal inf 17367.941 (3261)
+Clp0006I 37357  Obj 17859.511 Primal inf 2590.3129 (2559)
+Clp0006I 38357  Obj 17885.244 Primal inf 1861.4383 (1861)
+Clp0006I 39357  Obj 17906.37 Primal inf 57482.841 (1098)
+Clp0006I 40024  Obj 17924.946 Primal inf 1595.6227 (640)
+Clp0006I 41024  Obj 17955.337 Primal inf 4.4052452 (3)
+Clp0006I 41025  Obj 17955.337
+Clp0000I Optimal - objective value 17955.338
+Coin0511I After Postsolve, objective 17955.338, infeasibilities - dual 0 (0), primal 0.0012675916 (21)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 17955.338
+Clp0006I 0  Obj 17955.338
+Clp0000I Optimal - objective value 17955.338
+Clp0032I Optimal objective 17955.33752 - 41025 iterations time 89.032, Presolve 1.05
+DONE solving LP for year 2015
+Preparing coefficient matrix for year 2016 .....
+Preparing targets for year 2016 .....
+Targets for year 2016 are:
+[  7.34663988e+06  -5.59775830e+06  -8.50789427e+05  -2.44448078e+06
+  -5.63336178e+06  -8.16583426e+09  -6.92959802e+09  -1.13222941e+10
+  -2.05240537e+09  -5.35673857e+10  -8.27652710e+10   7.95006333e+09
+   1.76728717e+10  -2.01844337e+10  -4.40022991e+09  -3.21099839e+09
+   1.53657864e+10  -2.49276791e+10  -4.76763826e+10  -5.13893673e+10
+  -3.43031090e+10  -1.21776271e+11  -7.09665209e+10   3.33251073e+09
+   6.27695923e+10   3.85687721e+10   5.54829248e+10]
+Adding constraints for year 2016 .....
+Setting up the LP model for year 2016 .....
+Solving LP for year 2016 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 12817631 (27)
+Clp0006I 452  Obj 12329.973 Primal inf 10343016 (21182)
+Clp0006I 835  Obj 14841.204 Primal inf 15563238 (26346)
+Clp0006I 1748  Obj 16646.121 Primal inf 35287184 (27924)
+Clp0006I 2748  Obj 16750.445 Primal inf 62473.288 (27377)
+Clp0006I 3748  Obj 16825.794 Primal inf 53889.666 (26857)
+Clp0006I 4748  Obj 16905.014 Primal inf 50496.545 (26216)
+Clp0006I 5748  Obj 16968.367 Primal inf 48054.583 (25574)
+Clp0006I 6748  Obj 17028.688 Primal inf 48578.025 (24846)
+Clp0006I 7748  Obj 17081.832 Primal inf 46893.608 (24190)
+Clp0006I 8748  Obj 17139.094 Primal inf 46283.961 (23526)
+Clp0006I 9748  Obj 17196.017 Primal inf 39851.816 (22859)
+Clp0006I 10748  Obj 17237.655 Primal inf 38972.407 (22137)
+Clp0006I 11748  Obj 17274.104 Primal inf 36899.994 (21443)
+Clp0006I 12748  Obj 17317.443 Primal inf 37477.816 (20712)
+Clp0006I 13748  Obj 17363.731 Primal inf 33989.531 (20020)
+Clp0006I 14748  Obj 17413.624 Primal inf 30488.92 (19355)
+Clp0006I 15748  Obj 17478.36 Primal inf 33975.614 (18698)
+Clp0006I 16748  Obj 17543.928 Primal inf 29533.34 (18064)
+Clp0006I 17748  Obj 17609.687 Primal inf 29259.201 (17430)
+Clp0006I 18748  Obj 17663.055 Primal inf 45302.556 (16801)
+Clp0006I 19748  Obj 17709.532 Primal inf 25145.957 (16115)
+Clp0006I 20748  Obj 17752.719 Primal inf 28368.239 (15390)
+Clp0006I 21748  Obj 17793.962 Primal inf 24074.087 (14742)
+Clp0006I 22748  Obj 17835.359 Primal inf 30344.813 (14062)
+Clp0006I 23748  Obj 17877.452 Primal inf 19943.023 (13369)
+Clp0006I 24748  Obj 17918.877 Primal inf 18850.26 (12648)
+Clp0006I 25748  Obj 17962.004 Primal inf 18799.021 (11960)
+Clp0006I 26748  Obj 17997.829 Primal inf 17073.074 (11264)
+Clp0006I 27748  Obj 18053.329 Primal inf 19776.169 (10609)
+Clp0006I 28748  Obj 18130.634 Primal inf 14340.723 (10019)
+Clp0006I 29748  Obj 18222.673 Primal inf 15142.817 (9465)
+Clp0006I 30748  Obj 18300.52 Primal inf 23381.155 (8875)
+Clp0006I 31748  Obj 18366.287 Primal inf 11830.315 (8209)
+Clp0006I 32415  Obj 18404.802 Primal inf 10546.667 (7783)
+Clp0006I 33415  Obj 18472.197 Primal inf 9867.9028 (7112)
+Clp0006I 34415  Obj 18529.379 Primal inf 8665.6422 (6491)
+Clp0006I 35415  Obj 18592.967 Primal inf 7461.4537 (5828)
+Clp0006I 36415  Obj 18642.143 Primal inf 7982.8014 (5181)
+Clp0006I 37415  Obj 18688.186 Primal inf 5926.338 (4472)
+Clp0006I 38415  Obj 18726.438 Primal inf 5372.1449 (3793)
+Clp0006I 39415  Obj 18759.702 Primal inf 4104.7767 (3112)
+Clp0006I 40123  Obj 18781.555 Primal inf 4661.8824 (2628)
+Clp0006I 41123  Obj 18809.655 Primal inf 8045.8574 (1941)
+Clp0006I 42123  Obj 18833.427 Primal inf 1625.9991 (1257)
+Clp0006I 43123  Obj 18860.587 Primal inf 3326.4098 (566)
+Clp0006I 43790  Obj 18881.765 Primal inf 984.0937 (176)
+Clp0006I 44032  Obj 18888.05
+Clp0000I Optimal - objective value 18888.05
+Coin0511I After Postsolve, objective 18888.05, infeasibilities - dual 0 (0), primal 0.0015274215 (23)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 18888.05
+Clp0006I 0  Obj 18888.05
+Clp0000I Optimal - objective value 18888.05
+Clp0032I Optimal objective 18888.05013 - 44032 iterations time 103.572, Presolve 1.07
+DONE solving LP for year 2016
+Preparing coefficient matrix for year 2017 .....
+Preparing targets for year 2017 .....
+Targets for year 2017 are:
+[  7.26561051e+06  -5.97661020e+06  -8.81049079e+05  -2.52488828e+06
+  -7.36042973e+06  -1.06025774e+10  -1.06386800e+10  -1.55381868e+10
+  -2.80490946e+09  -6.09427225e+10  -9.77780716e+10  -6.96159435e+08
+   1.56014355e+10  -2.08442113e+10  -5.57104986e+09  -3.49169062e+09
+   1.47277298e+10  -2.78824570e+10  -5.20721508e+10  -5.61796844e+10
+  -3.87632356e+10  -1.32735453e+11  -8.03198299e+10  -1.32297443e+10
+   5.47882803e+10   3.63111760e+10   5.25387254e+10]
+Adding constraints for year 2017 .....
+Setting up the LP model for year 2017 .....
+Solving LP for year 2017 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 14220810 (27)
+Clp0006I 936  Obj 11384.26 Primal inf 60556655 (19648)
+Clp0006I 1145  Obj 11615.811 Primal inf 14237937 (20399)
+Clp0006I 1932  Obj 13348.424 Primal inf 527081.41 (23762)
+Clp0006I 2099  Obj 13818.111 Primal inf 550611.3 (24182)
+Clp0006I 2283  Obj 14839.949 Primal inf 1410621.7 (26153)
+Clp0006I 2739  Obj 15722.517 Primal inf 882198.88 (27235)
+Clp0006I 3459  Obj 16749.565 Primal inf 949258.15 (29883)
+Clp0006I 4459  Obj 17227.002 Primal inf 244513.99 (30197)
+Clp0006I 5331  Obj 17450.202 Primal inf 445610.5 (29260)
+Clp0006I 6177  Obj 17628.465 Primal inf 239122.25 (29002)
+Clp0006I 7177  Obj 17780.505 Primal inf 1491153.4 (28443)
+Clp0006I 8177  Obj 17895.841 Primal inf 112233.69 (27819)
+Clp0006I 9177  Obj 17965.82 Primal inf 289618.23 (27097)
+Clp0006I 10177  Obj 18033.116 Primal inf 88210.969 (26539)
+Clp0006I 10957  Obj 18079.631 Primal inf 96640.148 (26105)
+Clp0006I 11957  Obj 18144.208 Primal inf 58593.089 (25436)
+Clp0006I 12957  Obj 18190.896 Primal inf 61309.639 (24775)
+Clp0006I 13768  Obj 18222.233 Primal inf 2071037.1 (24104)
+Clp0006I 14768  Obj 18266.329 Primal inf 53982.39 (23426)
+Clp0006I 15768  Obj 18312.864 Primal inf 39696.333 (22743)
+Clp0006I 16768  Obj 18361.907 Primal inf 37765.525 (22031)
+Clp0006I 17768  Obj 18417.833 Primal inf 34984.151 (21371)
+Clp0006I 18768  Obj 18463.841 Primal inf 34320.465 (20624)
+Clp0006I 19768  Obj 18527.156 Primal inf 33809.938 (19971)
+Clp0006I 20768  Obj 18594.569 Primal inf 30596.619 (19313)
+Clp0006I 21768  Obj 18663.352 Primal inf 30147.388 (18696)
+Clp0006I 22768  Obj 18739.238 Primal inf 33013.739 (18053)
+Clp0006I 23768  Obj 18802.875 Primal inf 28040.206 (17345)
+Clp0006I 24768  Obj 18859.941 Primal inf 26858.798 (16730)
+Clp0006I 25768  Obj 18903.374 Primal inf 24867.447 (16041)
+Clp0006I 26768  Obj 18948.933 Primal inf 24593.621 (15346)
+Clp0006I 27768  Obj 18992.965 Primal inf 24065.144 (14652)
+Clp0006I 28768  Obj 19039.849 Primal inf 22302.777 (13952)
+Clp0006I 29768  Obj 19081.044 Primal inf 42790.581 (13263)
+Clp0006I 30768  Obj 19129.489 Primal inf 19188.543 (12579)
+Clp0006I 31768  Obj 19169.842 Primal inf 23775.786 (11912)
+Clp0006I 32768  Obj 19206.294 Primal inf 16372.098 (11232)
+Clp0006I 33768  Obj 19275.363 Primal inf 14996.101 (10634)
+Clp0006I 34614  Obj 19341.561 Primal inf 14160.631 (10151)
+Clp0006I 35614  Obj 19430.727 Primal inf 13914.195 (9565)
+Clp0006I 36614  Obj 19509.204 Primal inf 13576.734 (9022)
+Clp0006I 37614  Obj 19576.8 Primal inf 11754.371 (8373)
+Clp0006I 38614  Obj 19634.835 Primal inf 10308.665 (7763)
+Clp0006I 39614  Obj 19700.874 Primal inf 8667.7598 (7111)
+Clp0006I 40614  Obj 19759.687 Primal inf 8069.6286 (6467)
+Clp0006I 41614  Obj 19822.882 Primal inf 7309.7162 (5809)
+Clp0006I 42614  Obj 19872.888 Primal inf 8346.5471 (5150)
+Clp0006I 43614  Obj 19919.033 Primal inf 7578.015 (4483)
+Clp0006I 44614  Obj 19957.863 Primal inf 8353.0996 (3848)
+Clp0006I 45614  Obj 19992.948 Primal inf 5444.0539 (3215)
+Clp0006I 46281  Obj 20017.706 Primal inf 3419.1114 (2742)
+Clp0006I 46948  Obj 20038.053 Primal inf 2442.0683 (2314)
+Clp0006I 47943  Obj 20066.649 Primal inf 1641.68 (1600)
+Clp0006I 48754  Obj 20087.043 Primal inf 5813.7376 (1008)
+Clp0006I 49511  Obj 20112.824 Primal inf 742.02082 (482)
+Clp0006I 50215  Obj 20135.58
+Clp0000I Optimal - objective value 20135.58
+Coin0511I After Postsolve, objective 20135.58, infeasibilities - dual 0 (0), primal 0.0018996129 (22)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 20135.58
+Clp0006I 0  Obj 20135.58
+Clp0000I Optimal - objective value 20135.58
+Clp0032I Optimal objective 20135.58003 - 50215 iterations time 150.522, Presolve 1.06
+DONE solving LP for year 2017
+Preparing coefficient matrix for year 2018 .....
+Preparing targets for year 2018 .....
+Targets for year 2018 are:
+[  7.14005843e+06  -6.39722487e+06  -9.11810845e+05  -2.61028024e+06
+  -8.94240173e+06  -1.30705062e+10  -1.43652407e+10  -1.93720078e+10
+  -3.50835812e+09  -6.81347246e+10  -1.13298894e+11  -8.83979129e+09
+   1.36211393e+10  -2.15485567e+10  -6.61158743e+09  -3.75517262e+09
+   1.41687086e+10  -3.05342839e+10  -5.59930235e+10  -6.04463575e+10
+  -4.27166491e+10  -1.42592942e+11  -8.87186061e+10  -2.79252879e+10
+   4.77312284e+10   3.43335018e+10   4.99458242e+10]
+Adding constraints for year 2018 .....
+Setting up the LP model for year 2018 .....
+Solving LP for year 2018 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 15852996 (27)
+Clp0006I 551  Obj 16877.913 Primal inf 451120.32 (32279)
+Clp0006I 1374  Obj 18635.924 Primal inf 154031.8 (31177)
+Clp0006I 2374  Obj 18782.04 Primal inf 65650.901 (30203)
+Clp0006I 3374  Obj 18883.307 Primal inf 60440.843 (29487)
+Clp0006I 4374  Obj 18974.188 Primal inf 58455.158 (28925)
+Clp0006I 5374  Obj 19051.619 Primal inf 55136.391 (28252)
+Clp0006I 6374  Obj 19113.249 Primal inf 51379.012 (27621)
+Clp0006I 7374  Obj 19183.069 Primal inf 50477.022 (26925)
+Clp0006I 8374  Obj 19242.373 Primal inf 53286.689 (26262)
+Clp0006I 9374  Obj 19302.008 Primal inf 47756.724 (25581)
+Clp0006I 10374  Obj 19364.343 Primal inf 43507.496 (24935)
+Clp0006I 11374  Obj 19418.797 Primal inf 45776.946 (24158)
+Clp0006I 12374  Obj 19466.027 Primal inf 46077.012 (23519)
+Clp0006I 13374  Obj 19510.108 Primal inf 39163.187 (22816)
+Clp0006I 14374  Obj 19562.848 Primal inf 36811.784 (22125)
+Clp0006I 15374  Obj 19616.963 Primal inf 38171.269 (21443)
+Clp0006I 16374  Obj 19683.265 Primal inf 33290.19 (20793)
+Clp0006I 17374  Obj 19754.949 Primal inf 39498.246 (20178)
+Clp0006I 18374  Obj 19832.362 Primal inf 30482.037 (19546)
+Clp0006I 19374  Obj 19911.255 Primal inf 31195.762 (18990)
+Clp0006I 20374  Obj 19976.519 Primal inf 27600.881 (18328)
+Clp0006I 21374  Obj 20040.395 Primal inf 32701.682 (17652)
+Clp0006I 22374  Obj 20090.454 Primal inf 25663.194 (16954)
+Clp0006I 23374  Obj 20135.368 Primal inf 23899.22 (16313)
+Clp0006I 24374  Obj 20183.125 Primal inf 27177.689 (15583)
+Clp0006I 25374  Obj 20231.415 Primal inf 33772.063 (14906)
+Clp0006I 26374  Obj 20278.23 Primal inf 20809.277 (14220)
+Clp0006I 27374  Obj 20325.447 Primal inf 23186.8 (13553)
+Clp0006I 28374  Obj 20374.349 Primal inf 17797.33 (12898)
+Clp0006I 29374  Obj 20420.593 Primal inf 32952.777 (12171)
+Clp0006I 30374  Obj 20454.563 Primal inf 16155.719 (11509)
+Clp0006I 31374  Obj 20541.126 Primal inf 14154.264 (10936)
+Clp0006I 32086  Obj 20601.152 Primal inf 15092.828 (10530)
+Clp0006I 33086  Obj 20690.528 Primal inf 15543.748 (9951)
+Clp0006I 34086  Obj 20779.863 Primal inf 18288.388 (9334)
+Clp0006I 35086  Obj 20853.054 Primal inf 11748.224 (8695)
+Clp0006I 36086  Obj 20912.653 Primal inf 10583.481 (8052)
+Clp0006I 37086  Obj 20981.4 Primal inf 9572.2504 (7425)
+Clp0006I 37753  Obj 21024.346 Primal inf 8687.4579 (6966)
+Clp0006I 38753  Obj 21090.137 Primal inf 7643.1988 (6331)
+Clp0006I 39420  Obj 21127.912 Primal inf 6654.4172 (5905)
+Clp0006I 40420  Obj 21181.095 Primal inf 7150.2004 (5182)
+Clp0006I 41087  Obj 21211.568 Primal inf 6630.6216 (4776)
+Clp0006I 41754  Obj 21242.999 Primal inf 8530.6682 (4336)
+Clp0006I 42489  Obj 21275.748 Primal inf 8235.0701 (3876)
+Clp0006I 43489  Obj 21313.981 Primal inf 4244.7967 (3222)
+Clp0006I 44156  Obj 21335.969 Primal inf 4504.559 (2797)
+Clp0006I 45156  Obj 21371.082 Primal inf 2116.9635 (2088)
+Clp0006I 46156  Obj 21402.236 Primal inf 5807.8656 (1369)
+Clp0006I 47156  Obj 21429.063 Primal inf 4424.0901 (681)
+Clp0006I 48156  Obj 21463.987 Primal inf 78.570901 (25)
+Clp0006I 48178  Obj 21464.279
+Clp0000I Optimal - objective value 21464.279
+Coin0511I After Postsolve, objective 21464.279, infeasibilities - dual 0 (0), primal 0.0025636967 (23)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 21464.279
+Clp0006I 0  Obj 21464.279
+Clp0000I Optimal - objective value 21464.279
+Clp0032I Optimal objective 21464.27889 - 48178 iterations time 110.722, Presolve 1.06
+DONE solving LP for year 2018
+Preparing coefficient matrix for year 2019 .....
+Preparing targets for year 2019 .....
+Targets for year 2019 are:
+[  6.95288158e+06  -6.87085749e+06  -9.44827511e+05  -2.69930030e+06
+  -1.03328914e+07  -1.55334092e+10  -1.80995179e+10  -2.27113463e+10
+  -4.15326354e+09  -7.50423480e+10  -1.29231882e+11  -1.62653869e+10
+   1.17931921e+10  -2.22827284e+10  -7.54148707e+09  -3.99191870e+09
+   1.37245629e+10  -3.27464915e+10  -5.92298620e+10  -6.39596330e+10
+  -4.59423167e+10  -1.50851567e+11  -9.57306141e+10  -3.99227250e+10
+   4.20132518e+10   3.27608343e+10   4.78639445e+10]
+Adding constraints for year 2019 .....
+Setting up the LP model for year 2019 .....
+Solving LP for year 2019 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 17346536 (27)
+Clp0006I 319  Obj 14844.607 Primal inf 2245886.7 (26887)
+Clp0006I 782  Obj 16090.704 Primal inf 2765266.1 (25339)
+Clp0006I 1281  Obj 17987.008 Primal inf 418915.57 (28574)
+Clp0006I 1596  Obj 18762.734 Primal inf 155874.52 (31223)
+Clp0006I 2103  Obj 19040.918 Primal inf 101838.56 (31571)
+Clp0006I 2857  Obj 19182.168 Primal inf 103848.63 (30788)
+Clp0006I 3857  Obj 19285.029 Primal inf 75879.519 (29773)
+Clp0006I 4356  Obj 19330.158 Primal inf 61156.369 (29366)
+Clp0006I 5356  Obj 19414.542 Primal inf 57305.316 (28800)
+Clp0006I 6356  Obj 19485.182 Primal inf 55338.044 (28084)
+Clp0006I 7356  Obj 19547.727 Primal inf 52430.005 (27378)
+Clp0006I 8356  Obj 19615.815 Primal inf 49241.716 (26715)
+Clp0006I 9356  Obj 19680.939 Primal inf 47570.028 (26059)
+Clp0006I 10356  Obj 19741.361 Primal inf 46137.066 (25375)
+Clp0006I 11356  Obj 19805.736 Primal inf 48778.207 (24655)
+Clp0006I 12356  Obj 19854.634 Primal inf 45864.754 (23881)
+Clp0006I 13356  Obj 19897.501 Primal inf 41230.048 (23298)
+Clp0006I 14356  Obj 19942.045 Primal inf 38340.62 (22583)
+Clp0006I 15356  Obj 20003.967 Primal inf 40509.304 (21822)
+Clp0006I 16356  Obj 20058.408 Primal inf 37123.114 (21218)
+Clp0006I 17356  Obj 20125.187 Primal inf 33015.468 (20542)
+Clp0006I 18356  Obj 20197.833 Primal inf 34232.688 (19931)
+Clp0006I 19356  Obj 20275.917 Primal inf 31785.836 (19292)
+Clp0006I 20356  Obj 20353.141 Primal inf 30330.452 (18680)
+Clp0006I 21356  Obj 20419.596 Primal inf 29854.29 (17980)
+Clp0006I 22356  Obj 20480.053 Primal inf 26528.672 (17341)
+Clp0006I 23356  Obj 20528.66 Primal inf 28106.664 (16632)
+Clp0006I 24356  Obj 20574.241 Primal inf 33535.463 (15923)
+Clp0006I 25356  Obj 20621.842 Primal inf 22983.116 (15241)
+Clp0006I 26356  Obj 20667.689 Primal inf 22008.416 (14527)
+Clp0006I 27356  Obj 20712.805 Primal inf 19419.57 (13886)
+Clp0006I 28356  Obj 20762.287 Primal inf 18578.712 (13168)
+Clp0006I 29356  Obj 20811.334 Primal inf 17187.571 (12490)
+Clp0006I 30356  Obj 20853.614 Primal inf 25676.293 (11770)
+Clp0006I 31356  Obj 20893.666 Primal inf 19674.644 (11028)
+Clp0006I 32356  Obj 20978.397 Primal inf 13862.179 (10451)
+Clp0006I 33068  Obj 21042.716 Primal inf 13626.458 (10034)
+Clp0006I 34068  Obj 21132.803 Primal inf 12986.649 (9445)
+Clp0006I 35068  Obj 21214.952 Primal inf 12473.844 (8809)
+Clp0006I 35735  Obj 21258.355 Primal inf 15294.111 (8406)
+Clp0006I 36735  Obj 21318.371 Primal inf 10144.235 (7763)
+Clp0006I 37735  Obj 21384.283 Primal inf 8754.5965 (7124)
+Clp0006I 38735  Obj 21447.016 Primal inf 11348.135 (6434)
+Clp0006I 39402  Obj 21489.784 Primal inf 7605.9625 (6010)
+Clp0006I 40402  Obj 21543.294 Primal inf 27031.525 (5340)
+Clp0006I 41402  Obj 21586.593 Primal inf 8782.6412 (4737)
+Clp0006I 42402  Obj 21636.08 Primal inf 5363.5531 (4058)
+Clp0006I 43340  Obj 21677.356 Primal inf 4887.8161 (3402)
+Clp0006I 44340  Obj 21714.687 Primal inf 5582.0374 (2759)
+Clp0006I 45340  Obj 21747.139 Primal inf 2974.3688 (2097)
+Clp0006I 46007  Obj 21767.87 Primal inf 5304.9198 (1637)
+Clp0006I 46839  Obj 21791.14 Primal inf 1423.4853 (1000)
+Clp0006I 47506  Obj 21810.455 Primal inf 765.23016 (602)
+Clp0006I 48394  Obj 21840.397
+Clp0006I 48394  Obj 21840.397 Dual inf 9.6644494e-07 (1)
+Clp0006I 48395  Obj 21840.397
+Clp0000I Optimal - objective value 21840.397
+Coin0511I After Postsolve, objective 21840.397, infeasibilities - dual 0 (0), primal 0.0014499529 (24)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 21840.397
+Clp0006I 0  Obj 21840.397
+Clp0000I Optimal - objective value 21840.397
+Clp0032I Optimal objective 21840.3967 - 48395 iterations time 108.372, Presolve 1.06
+DONE solving LP for year 2019
+Preparing coefficient matrix for year 2020 .....
+Preparing targets for year 2020 .....
+Targets for year 2020 are:
+[  6.70903030e+06  -7.39660308e+06  -9.79567336e+05  -2.79124619e+06
+  -1.16442924e+07  -1.80494627e+10  -2.18861919e+10  -2.56288844e+10
+  -4.74235210e+09  -8.17757551e+10  -1.45797305e+11  -2.31564676e+10
+   1.00913939e+10  -2.30774420e+10  -8.31989909e+09  -4.20748027e+09
+   1.33766647e+10  -3.45898842e+10  -6.18892349e+10  -6.68362782e+10
+  -4.85521057e+10  -1.57768967e+11  -1.01580350e+11  -4.96489978e+10
+   3.74202231e+10   3.15288009e+10   4.62099204e+10]
+Adding constraints for year 2020 .....
+Setting up the LP model for year 2020 .....
+Solving LP for year 2020 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 18732556 (27)
+Clp0006I 1000  Obj 14919.138 Primal inf 258886.64 (20136)
+Clp0006I 2000  Obj 15651.999 Primal inf 178734.17 (17402)
+Clp0006I 2540  Obj 18550.884 Primal inf 250462.11 (28494)
+Clp0006I 3381  Obj 19192.678 Primal inf 86174.818 (31016)
+Clp0006I 4370  Obj 19340.549 Primal inf 134133.84 (30490)
+Clp0006I 5370  Obj 19462.03 Primal inf 74862.637 (30177)
+Clp0006I 6370  Obj 19573.598 Primal inf 177169.37 (29573)
+Clp0006I 7178  Obj 19634.069 Primal inf 65511.849 (29252)
+Clp0006I 8178  Obj 19698.4 Primal inf 67990.972 (28724)
+Clp0006I 9178  Obj 19759.056 Primal inf 58051.964 (28108)
+Clp0006I 10178  Obj 19823.704 Primal inf 54857.174 (27337)
+Clp0006I 11178  Obj 19886.354 Primal inf 57490.647 (26768)
+Clp0006I 12178  Obj 19949.919 Primal inf 47950.142 (26071)
+Clp0006I 13178  Obj 20014.161 Primal inf 44857.813 (25418)
+Clp0006I 14178  Obj 20071.094 Primal inf 44237.636 (24669)
+Clp0006I 15178  Obj 20123.634 Primal inf 42179.004 (23961)
+Clp0006I 16178  Obj 20174.932 Primal inf 42001.693 (23268)
+Clp0006I 17178  Obj 20227.665 Primal inf 37520.453 (22583)
+Clp0006I 18178  Obj 20286.427 Primal inf 36955.228 (21897)
+Clp0006I 19178  Obj 20345.538 Primal inf 33860.261 (21200)
+Clp0006I 20178  Obj 20411.667 Primal inf 35500.371 (20525)
+Clp0006I 21178  Obj 20492.921 Primal inf 32132.834 (19919)
+Clp0006I 22178  Obj 20575.443 Primal inf 31306.46 (19289)
+Clp0006I 23178  Obj 20648.404 Primal inf 30666.968 (18653)
+Clp0006I 24178  Obj 20713.745 Primal inf 28899.813 (17896)
+Clp0006I 25178  Obj 20772.063 Primal inf 28763.601 (17278)
+Clp0006I 26178  Obj 20819.734 Primal inf 25828.919 (16590)
+Clp0006I 27178  Obj 20864.227 Primal inf 43131.688 (15835)
+Clp0006I 28178  Obj 20907.692 Primal inf 23695.1 (15194)
+Clp0006I 29178  Obj 20954.893 Primal inf 23168.38 (14455)
+Clp0006I 30178  Obj 20996.871 Primal inf 20160.572 (13831)
+Clp0006I 31178  Obj 21049.914 Primal inf 32678.865 (13125)
+Clp0006I 32178  Obj 21095.036 Primal inf 18833.862 (12460)
+Clp0006I 33178  Obj 21134.891 Primal inf 16557.711 (11771)
+Clp0006I 34178  Obj 21171.523 Primal inf 15772.176 (11069)
+Clp0006I 35178  Obj 21244.142 Primal inf 16570.424 (10383)
+Clp0006I 36178  Obj 21330.76 Primal inf 18602.851 (9879)
+Clp0006I 36845  Obj 21376.123 Primal inf 12767.487 (9511)
+Clp0006I 37725  Obj 21445.551 Primal inf 13905.628 (8994)
+Clp0006I 38725  Obj 21523.053 Primal inf 12837.629 (8314)
+Clp0006I 39725  Obj 21580.261 Primal inf 12406.205 (7669)
+Clp0006I 40725  Obj 21646.798 Primal inf 32760.161 (7032)
+Clp0006I 41725  Obj 21706.37 Primal inf 23527.276 (6345)
+Clp0006I 42647  Obj 21762.763 Primal inf 8544.0849 (5754)
+Clp0006I 43314  Obj 21793.361 Primal inf 21402.395 (5354)
+Clp0006I 43981  Obj 21824.684 Primal inf 13370.57 (4920)
+Clp0006I 44981  Obj 21872.195 Primal inf 5368.7169 (4235)
+Clp0006I 45981  Obj 21916.7 Primal inf 4473.9315 (3586)
+Clp0006I 46648  Obj 21944.599 Primal inf 5415.4475 (3119)
+Clp0006I 47648  Obj 21982.355 Primal inf 4408.3839 (2385)
+Clp0006I 48648  Obj 22012.732 Primal inf 3094.1187 (1739)
+Clp0006I 49648  Obj 22040.877 Primal inf 5192.6893 (1031)
+Clp0006I 50648  Obj 22074.846 Primal inf 536.70363 (343)
+Clp0006I 51167  Obj 22090.425
+Clp0000I Optimal - objective value 22090.426
+Coin0511I After Postsolve, objective 22090.426, infeasibilities - dual 0 (0), primal 0.0015095503 (26)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 22090.426
+Clp0006I 0  Obj 22090.426
+Clp0000I Optimal - objective value 22090.426
+Clp0032I Optimal objective 22090.42558 - 51167 iterations time 136.742, Presolve 1.07
+DONE solving LP for year 2020
+Preparing coefficient matrix for year 2021 .....
+Preparing targets for year 2021 .....
+Targets for year 2021 are:
+[  6.47599193e+06  -7.91018370e+06  -1.01396242e+06  -2.88418070e+06
+  -1.28879236e+07  -2.05318897e+10  -2.56350525e+10  -2.86408918e+10
+  -5.34372800e+09  -8.84908524e+10  -1.62145637e+11  -3.00661104e+10
+   8.35207086e+09  -2.38013545e+10  -9.13880823e+09  -4.42559353e+09
+   1.30125277e+10  -3.64894791e+10  -6.46375358e+10  -6.98113136e+10
+  -5.12586252e+10  -1.64888379e+11  -1.07607264e+11  -5.97363581e+10
+   3.26447677e+10   3.02399028e+10   4.44847943e+10]
+Adding constraints for year 2021 .....
+Setting up the LP model for year 2021 .....
+Solving LP for year 2021 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 20022044 (27)
+Clp0006I 660  Obj 17710.235 Primal inf 1212471.6 (25016)
+Clp0006I 1317  Obj 19660.515 Primal inf 78072.304 (31209)
+Clp0006I 2317  Obj 19785.193 Primal inf 65609.087 (30905)
+Clp0006I 3317  Obj 19903.517 Primal inf 78406.468 (30206)
+Clp0006I 4317  Obj 19997.568 Primal inf 59815.161 (29715)
+Clp0006I 5317  Obj 20081.767 Primal inf 59405.035 (29065)
+Clp0006I 6317  Obj 20152.196 Primal inf 55836.901 (28398)
+Clp0006I 7317  Obj 20225.304 Primal inf 51788.424 (27740)
+Clp0006I 8317  Obj 20287.703 Primal inf 49590.313 (27069)
+Clp0006I 9317  Obj 20353.388 Primal inf 48293.373 (26400)
+Clp0006I 10317  Obj 20413.375 Primal inf 48146.699 (25682)
+Clp0006I 11317  Obj 20475.946 Primal inf 44290.71 (25052)
+Clp0006I 12317  Obj 20527.143 Primal inf 48288.804 (24345)
+Clp0006I 13317  Obj 20577.691 Primal inf 40210.886 (23631)
+Clp0006I 14317  Obj 20624.032 Primal inf 87455.75 (22908)
+Clp0006I 15317  Obj 20682.158 Primal inf 37864.375 (22231)
+Clp0006I 16317  Obj 20739.996 Primal inf 36071.302 (21510)
+Clp0006I 17317  Obj 20811.029 Primal inf 33504.804 (20840)
+Clp0006I 18317  Obj 20890.792 Primal inf 33637.268 (20223)
+Clp0006I 19317  Obj 20972.263 Primal inf 32696.485 (19580)
+Clp0006I 20317  Obj 21041.53 Primal inf 30646.105 (19000)
+Clp0006I 21317  Obj 21105.611 Primal inf 30286.407 (18327)
+Clp0006I 22317  Obj 21162.685 Primal inf 27041.451 (17654)
+Clp0006I 23317  Obj 21214.273 Primal inf 37958.825 (16981)
+Clp0006I 24317  Obj 21257.758 Primal inf 25418.055 (16291)
+Clp0006I 25317  Obj 21302.331 Primal inf 27808.852 (15594)
+Clp0006I 26317  Obj 21348.389 Primal inf 28021.01 (14873)
+Clp0006I 27317  Obj 21391.707 Primal inf 33000.777 (14184)
+Clp0006I 28317  Obj 21445.116 Primal inf 19524.278 (13514)
+Clp0006I 28984  Obj 21475.381 Primal inf 26382.166 (13071)
+Clp0006I 29984  Obj 21520.587 Primal inf 20626.96 (12337)
+Clp0006I 30984  Obj 21561.992 Primal inf 16132.446 (11621)
+Clp0006I 31984  Obj 21597.185 Primal inf 15019.897 (10921)
+Clp0006I 32651  Obj 21645.423 Primal inf 18333.88 (10462)
+Clp0006I 33651  Obj 21725.958 Primal inf 14692.458 (9916)
+Clp0006I 34651  Obj 21806.341 Primal inf 12833.922 (9303)
+Clp0006I 35318  Obj 21859.144 Primal inf 15229.275 (8971)
+Clp0006I 36318  Obj 21928.797 Primal inf 10516.212 (8324)
+Clp0006I 37318  Obj 21989.701 Primal inf 9466.6466 (7654)
+Clp0006I 38318  Obj 22053.251 Primal inf 14312.412 (7007)
+Clp0006I 39269  Obj 22105.22 Primal inf 19761.592 (6418)
+Clp0006I 40094  Obj 22156.841 Primal inf 9991.4912 (5850)
+Clp0006I 40761  Obj 22195.266 Primal inf 15623.555 (5386)
+Clp0006I 41521  Obj 22231.652 Primal inf 7324.1962 (4882)
+Clp0006I 42521  Obj 22276.19 Primal inf 5225.8454 (4211)
+Clp0006I 43521  Obj 22324.663 Primal inf 5694.5365 (3511)
+Clp0006I 44521  Obj 22362.253 Primal inf 6214.8548 (2865)
+Clp0006I 45521  Obj 22397.216 Primal inf 2889.1095 (2149)
+Clp0006I 46227  Obj 22418.518 Primal inf 6936.7461 (1681)
+Clp0006I 47227  Obj 22445.999 Primal inf 3791.8305 (952)
+Clp0006I 47894  Obj 22468.206 Primal inf 2022.6249 (508)
+Clp0006I 48561  Obj 22491.355 Primal inf 139.98976 (69)
+Clp0006I 48673  Obj 22493.822
+Clp0000I Optimal - objective value 22493.823
+Coin0511I After Postsolve, objective 22493.823, infeasibilities - dual 0 (0), primal 0.0012970796 (25)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 22493.823
+Clp0006I 0  Obj 22493.823
+Clp0000I Optimal - objective value 22493.823
+Clp0032I Optimal objective 22493.82256 - 48673 iterations time 103.092, Presolve 1.06
+DONE solving LP for year 2021
+Preparing coefficient matrix for year 2022 .....
+Preparing targets for year 2022 .....
+Targets for year 2022 are:
+[  6.21094064e+06  -8.45843461e+06  -1.05066674e+06  -2.97857817e+06
+  -1.39704027e+07  -2.31033841e+10  -2.94970048e+10  -3.15460488e+10
+  -5.93898524e+09  -9.53116460e+10  -1.79204472e+11  -3.70186294e+10
+   6.62366383e+09  -2.46116412e+10  -9.95174911e+09  -4.64206085e+09
+   1.26663837e+10  -3.83110585e+10  -6.72541874e+10  -7.26398660e+10
+  -5.38226764e+10  -1.71721456e+11  -1.13391801e+11  -6.93397312e+10
+   2.80979070e+10   2.90193206e+10   4.28401399e+10]
+Adding constraints for year 2022 .....
+Setting up the LP model for year 2022 .....
+Solving LP for year 2022 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 21263710 (27)
+Clp0006I 653  Obj 18535.111 Primal inf 213972.63 (34290)
+Clp0006I 1320  Obj 19475.282 Primal inf 95296.218 (32856)
+Clp0006I 2250  Obj 19752.188 Primal inf 1847337.8 (30993)
+Clp0006I 3250  Obj 19856.293 Primal inf 63282.978 (30059)
+Clp0006I 4250  Obj 19962.912 Primal inf 63059.297 (29409)
+Clp0006I 5250  Obj 20050.32 Primal inf 59584.626 (28837)
+Clp0006I 6250  Obj 20128.673 Primal inf 54516.406 (28195)
+Clp0006I 7250  Obj 20194.321 Primal inf 51552.531 (27560)
+Clp0006I 8250  Obj 20266.486 Primal inf 52179.121 (26802)
+Clp0006I 9250  Obj 20329.867 Primal inf 47248.529 (26158)
+Clp0006I 10250  Obj 20393.719 Primal inf 45873.829 (25483)
+Clp0006I 11250  Obj 20454.776 Primal inf 44486.311 (24784)
+Clp0006I 12250  Obj 20510.447 Primal inf 43323.991 (24096)
+Clp0006I 13250  Obj 20557.642 Primal inf 42199.819 (23368)
+Clp0006I 14250  Obj 20607.44 Primal inf 38971.683 (22612)
+Clp0006I 15250  Obj 20655.731 Primal inf 37236.859 (21929)
+Clp0006I 16250  Obj 20713.707 Primal inf 38481.375 (21235)
+Clp0006I 17250  Obj 20773.351 Primal inf 39712.65 (20552)
+Clp0006I 18250  Obj 20850.601 Primal inf 34351.935 (19936)
+Clp0006I 19250  Obj 20924.437 Primal inf 30736.902 (19304)
+Clp0006I 20250  Obj 21002.203 Primal inf 33896.409 (18654)
+Clp0006I 21250  Obj 21063.68 Primal inf 29192.105 (18001)
+Clp0006I 22250  Obj 21120.194 Primal inf 53987.891 (17274)
+Clp0006I 23250  Obj 21174.983 Primal inf 30039.643 (16557)
+Clp0006I 24250  Obj 21215.442 Primal inf 24264.395 (15895)
+Clp0006I 25250  Obj 21256.541 Primal inf 23196.622 (15206)
+Clp0006I 26250  Obj 21299.489 Primal inf 36261.753 (14431)
+Clp0006I 27250  Obj 21345.687 Primal inf 21723.607 (13741)
+Clp0006I 28250  Obj 21394.761 Primal inf 18521.982 (13056)
+Clp0006I 29250  Obj 21441.475 Primal inf 37328.446 (12293)
+Clp0006I 30250  Obj 21478.039 Primal inf 42847.118 (11635)
+Clp0006I 31250  Obj 21513.283 Primal inf 16149.344 (10974)
+Clp0006I 32250  Obj 21548.72 Primal inf 37886.367 (10146)
+Clp0006I 33250  Obj 21653.003 Primal inf 168529.25 (9211)
+Clp0006I 34250  Obj 21747.389 Primal inf 54829.519 (8440)
+Clp0006I 35250  Obj 21803.524 Primal inf 30723.693 (8383)
+Clp0006I 36250  Obj 21839.543 Primal inf 11962.865 (7786)
+Clp0006I 37250  Obj 21894.237 Primal inf 9099.9638 (7129)
+Clp0006I 38250  Obj 21953.927 Primal inf 13170.403 (6458)
+Clp0006I 38917  Obj 21990.528 Primal inf 11458.27 (6004)
+Clp0006I 39917  Obj 22045.704 Primal inf 10830.99 (5343)
+Clp0006I 40917  Obj 22092.678 Primal inf 7225.1144 (4689)
+Clp0006I 41917  Obj 22138.431 Primal inf 6051.3205 (3969)
+Clp0006I 42584  Obj 22166.055 Primal inf 4038.5034 (3551)
+Clp0006I 43584  Obj 22206.375 Primal inf 8596.999 (2871)
+Clp0006I 44321  Obj 22233.898 Primal inf 8748.5084 (2358)
+Clp0006I 45049  Obj 22257.205 Primal inf 14201.193 (1828)
+Clp0006I 46049  Obj 22285.265 Primal inf 1386.8026 (1121)
+Clp0006I 46716  Obj 22302.856 Primal inf 1846.9634 (670)
+Clp0006I 47716  Obj 22336.947 Primal inf 2.9872526 (11)
+Clp0006I 47730  Obj 22337.127
+Clp0000I Optimal - objective value 22337.127
+Coin0511I After Postsolve, objective 22337.127, infeasibilities - dual 0 (0), primal 0.0037079446 (25)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 22337.127
+Clp0006I 0  Obj 22337.127
+Clp0000I Optimal - objective value 22337.127
+Clp0032I Optimal objective 22337.12668 - 47730 iterations time 100.332, Presolve 1.06
+DONE solving LP for year 2022
+Preparing coefficient matrix for year 2023 .....
+Preparing targets for year 2023 .....
+Targets for year 2023 are:
+[  5.95602369e+06  -8.99592220e+06  -1.08609745e+06  -3.07374436e+06
+  -1.50787344e+07  -2.56463432e+10  -3.33333775e+10  -3.44804025e+10
+  -6.53110895e+09  -1.02085070e+11  -1.96026632e+11  -4.39251710e+10
+   4.88676301e+09  -2.54037682e+10  -1.07382939e+10  -4.85823697e+09
+   1.23182047e+10  -4.01436835e+10  -6.98912813e+10  -7.54913934e+10
+  -5.64091538e+10  -1.78595664e+11  -1.19209979e+11  -7.90117915e+10
+   2.35208778e+10   2.77899626e+10   4.11862383e+10]
+Adding constraints for year 2023 .....
+Setting up the LP model for year 2023 .....
+Solving LP for year 2023 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 22439041 (27)
+Clp0006I 1000  Obj 12396.751 Primal inf 7506340.3 (20580)
+Clp0006I 1757  Obj 18524.063 Primal inf 276290.93 (32891)
+Clp0006I 2318  Obj 19387.638 Primal inf 297830.81 (32599)
+Clp0006I 3024  Obj 19835.42 Primal inf 218269.24 (32583)
+Clp0006I 4024  Obj 20054.5 Primal inf 133427.94 (31456)
+Clp0006I 4768  Obj 20159.488 Primal inf 153353.66 (30730)
+Clp0006I 5768  Obj 20260.371 Primal inf 73136.959 (29985)
+Clp0006I 6768  Obj 20343.917 Primal inf 129297.43 (29387)
+Clp0006I 7768  Obj 20417.267 Primal inf 60376.954 (28769)
+Clp0006I 8768  Obj 20488.37 Primal inf 54428.631 (28109)
+Clp0006I 9768  Obj 20560.636 Primal inf 53492.263 (27418)
+Clp0006I 10768  Obj 20627.929 Primal inf 51852.559 (26751)
+Clp0006I 11768  Obj 20691.301 Primal inf 47655.138 (26062)
+Clp0006I 12768  Obj 20753.364 Primal inf 45165.57 (25370)
+Clp0006I 13768  Obj 20825.163 Primal inf 43882.274 (24702)
+Clp0006I 14768  Obj 20878.863 Primal inf 47416.575 (23963)
+Clp0006I 15768  Obj 20925.737 Primal inf 42210.56 (23232)
+Clp0006I 16768  Obj 20973.813 Primal inf 44353.902 (22517)
+Clp0006I 17768  Obj 21025.311 Primal inf 39694.114 (21843)
+Clp0006I 18768  Obj 21082.586 Primal inf 35514.935 (21170)
+Clp0006I 19768  Obj 21143.123 Primal inf 33059.328 (20475)
+Clp0006I 20768  Obj 21223.063 Primal inf 31456.074 (19872)
+Clp0006I 21768  Obj 21304.421 Primal inf 31730.043 (19231)
+Clp0006I 22768  Obj 21372.51 Primal inf 32813.371 (18577)
+Clp0006I 23768  Obj 21434.329 Primal inf 30144.137 (17895)
+Clp0006I 24768  Obj 21488.111 Primal inf 27729.887 (17188)
+Clp0006I 25768  Obj 21538.181 Primal inf 25603.729 (16495)
+Clp0006I 26768  Obj 21579.233 Primal inf 24202.876 (15761)
+Clp0006I 27768  Obj 21619.907 Primal inf 22079.719 (15058)
+Clp0006I 28768  Obj 21660.658 Primal inf 27533.927 (14336)
+Clp0006I 29768  Obj 21709.418 Primal inf 21393.261 (13630)
+Clp0006I 30768  Obj 21760.831 Primal inf 19384.69 (12914)
+Clp0006I 31768  Obj 21804.782 Primal inf 18610.433 (12196)
+Clp0006I 32768  Obj 21843.911 Primal inf 19506.735 (11438)
+Clp0006I 33768  Obj 21881.059 Primal inf 15888.736 (10735)
+Clp0006I 34768  Obj 21914.284 Primal inf 13829.738 (10034)
+Clp0006I 35768  Obj 21988.092 Primal inf 13298.361 (9405)
+Clp0006I 36768  Obj 22059.52 Primal inf 14923.54 (8822)
+Clp0006I 37768  Obj 22136.41 Primal inf 12733.016 (8190)
+Clp0006I 38768  Obj 22197.434 Primal inf 11600.562 (7588)
+Clp0006I 39605  Obj 22245.667 Primal inf 10978.186 (7007)
+Clp0006I 40272  Obj 22279.446 Primal inf 12547.611 (6531)
+Clp0006I 41269  Obj 22336.922 Primal inf 20520.306 (5876)
+Clp0006I 41936  Obj 22371.619 Primal inf 8668.2615 (5443)
+Clp0006I 42936  Obj 22424.24 Primal inf 9224.2265 (4765)
+Clp0006I 43936  Obj 22469.72 Primal inf 8946.0171 (4031)
+Clp0006I 44603  Obj 22493.782 Primal inf 5067.4722 (3624)
+Clp0006I 45264  Obj 22519.603 Primal inf 7612.8531 (3241)
+Clp0006I 45931  Obj 22544.632 Primal inf 3897.066 (2792)
+Clp0006I 46839  Obj 22574.597 Primal inf 8196.3726 (2174)
+Clp0006I 47506  Obj 22594.067 Primal inf 3759.2975 (1721)
+Clp0006I 48506  Obj 22620.653 Primal inf 8949.3414 (1014)
+Clp0006I 49506  Obj 22653.023 Primal inf 1216.4097 (327)
+Clp0006I 49988  Obj 22670.109
+Clp0000I Optimal - objective value 22670.109
+Coin0511I After Postsolve, objective 22670.109, infeasibilities - dual 0 (0), primal 0.0018870313 (23)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 22670.109
+Clp0006I 0  Obj 22670.109
+Clp0000I Optimal - objective value 22670.109
+Clp0032I Optimal objective 22670.10917 - 49988 iterations time 115.002, Presolve 1.05
+DONE solving LP for year 2023
+Preparing coefficient matrix for year 2024 .....
+Preparing targets for year 2024 .....
+Targets for year 2024 are:
+[  5.71897541e+06  -9.51215570e+06  -1.11966209e+06  -3.16349446e+06
+  -1.62280068e+07  -2.81326194e+10  -3.70808422e+10  -3.74235257e+10
+  -7.12352324e+09  -1.08770999e+11  -2.12403300e+11  -5.08175646e+10
+   3.16765310e+09  -2.61564750e+10  -1.15468988e+10  -5.07280558e+09
+   1.19670837e+10  -4.19886553e+10  -7.25544335e+10  -7.83727714e+10
+  -5.90261873e+10  -1.85514597e+11  -1.25064916e+11  -8.87737426e+10
+   1.89035990e+10   2.65477297e+10   3.95197906e+10]
+Adding constraints for year 2024 .....
+Setting up the LP model for year 2024 .....
+Solving LP for year 2024 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 23547458 (27)
+Clp0006I 1000  Obj 17015.889 Primal inf 449293.99 (20871)
+Clp0006I 2000  Obj 17518.064 Primal inf 177177.22 (19424)
+Clp0006I 2776  Obj 19466.504 Primal inf 1982346.7 (27392)
+Clp0006I 3776  Obj 20221.535 Primal inf 73075.241 (30811)
+Clp0006I 4776  Obj 20334.41 Primal inf 65515.268 (30014)
+Clp0006I 5776  Obj 20444.119 Primal inf 61081.404 (29458)
+Clp0006I 6776  Obj 20537.91 Primal inf 60460.052 (28865)
+Clp0006I 7776  Obj 20620.182 Primal inf 58846.194 (28217)
+Clp0006I 8776  Obj 20690.683 Primal inf 54577.523 (27509)
+Clp0006I 9776  Obj 20762.665 Primal inf 52028.512 (26847)
+Clp0006I 10776  Obj 20827.678 Primal inf 48224.034 (26157)
+Clp0006I 11776  Obj 20890.557 Primal inf 46984.782 (25480)
+Clp0006I 12776  Obj 20955.231 Primal inf 44519.661 (24741)
+Clp0006I 13776  Obj 21022.093 Primal inf 61664.707 (24068)
+Clp0006I 14776  Obj 21072.066 Primal inf 42213.718 (23335)
+Clp0006I 15776  Obj 21114.907 Primal inf 44796.229 (22625)
+Clp0006I 16776  Obj 21165.082 Primal inf 40658.518 (21895)
+Clp0006I 17776  Obj 21217.521 Primal inf 36476.537 (21213)
+Clp0006I 18776  Obj 21278.096 Primal inf 35341.487 (20494)
+Clp0006I 19776  Obj 21344.43 Primal inf 32566.161 (19860)
+Clp0006I 20776  Obj 21422.351 Primal inf 30429.545 (19191)
+Clp0006I 21776  Obj 21496.542 Primal inf 30438.655 (18589)
+Clp0006I 22776  Obj 21562.479 Primal inf 28214.096 (17910)
+Clp0006I 23776  Obj 21620.72 Primal inf 26105.103 (17185)
+Clp0006I 24776  Obj 21669.317 Primal inf 28079.727 (16469)
+Clp0006I 25516  Obj 21702.313 Primal inf 52526.753 (15959)
+Clp0006I 26516  Obj 21740.007 Primal inf 23786.315 (15296)
+Clp0006I 27516  Obj 21781.042 Primal inf 22721.126 (14546)
+Clp0006I 28516  Obj 21821.01 Primal inf 20071.976 (13845)
+Clp0006I 29516  Obj 21873.165 Primal inf 20145.117 (13103)
+Clp0006I 30516  Obj 21916.431 Primal inf 19720.151 (12415)
+Clp0006I 31516  Obj 21957.219 Primal inf 18472.654 (11691)
+Clp0006I 32516  Obj 21993.873 Primal inf 14793.585 (10975)
+Clp0006I 33516  Obj 22029.899 Primal inf 13764.8 (10263)
+Clp0006I 34516  Obj 22063.088 Primal inf 21694.86 (9500)
+Clp0006I 35516  Obj 22138.049 Primal inf 13740.956 (8851)
+Clp0006I 36183  Obj 22184.659 Primal inf 11106.485 (8465)
+Clp0006I 37183  Obj 22246.693 Primal inf 13393.794 (7821)
+Clp0006I 38183  Obj 22311.468 Primal inf 12008.715 (7190)
+Clp0006I 39183  Obj 22363.114 Primal inf 9469.3884 (6508)
+Clp0006I 40183  Obj 22415.112 Primal inf 18165.253 (5821)
+Clp0006I 40768  Obj 22443.452 Primal inf 76172.218 (5430)
+Clp0006I 41435  Obj 22475.733 Primal inf 7813.1275 (5004)
+Clp0006I 42435  Obj 22524.1 Primal inf 6993.1608 (4323)
+Clp0006I 43435  Obj 22565.918 Primal inf 4935.2967 (3610)
+Clp0006I 44435  Obj 22603.712 Primal inf 5205.7176 (2974)
+Clp0006I 45435  Obj 22640.82 Primal inf 2697.2254 (2278)
+Clp0006I 46102  Obj 22663.392 Primal inf 8439.5642 (1778)
+Clp0006I 46774  Obj 22680.772 Primal inf 4114.378 (1364)
+Clp0006I 47463  Obj 22695.543 Primal inf 9782.07 (901)
+Clp0006I 48463  Obj 22727.949 Primal inf 1432.9652 (229)
+Clp0006I 48807  Obj 22739.214
+Clp0000I Optimal - objective value 22739.214
+Coin0511I After Postsolve, objective 22739.214, infeasibilities - dual 0 (0), primal 0.0041202217 (23)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 22739.214
+Clp0006I 0  Obj 22739.214
+Clp0000I Optimal - objective value 22739.214
+Clp0032I Optimal objective 22739.21449 - 48807 iterations time 113.982, Presolve 1.06
+DONE solving LP for year 2024
+Preparing coefficient matrix for year 2025 .....
+Preparing targets for year 2025 .....
+Targets for year 2025 are:
+[  5.46228865e+06  -1.00559325e+07  -1.15589552e+06  -3.25912381e+06
+  -1.73965562e+07  -3.07744722e+10  -4.10542185e+10  -4.05834853e+10
+  -7.75518349e+09  -1.15855681e+11  -2.29713825e+11  -5.81753610e+10
+   1.33837917e+09  -2.69287066e+10  -1.24047690e+10  -5.30110060e+09
+   1.15713313e+10  -4.39725121e+10  -7.54135395e+10  -8.14675021e+10
+  -6.18503725e+10  -1.92928237e+11  -1.31366085e+11  -9.94074736e+10
+   1.38214728e+10   2.51598174e+10   3.76579435e+10]
+Adding constraints for year 2025 .....
+Setting up the LP model for year 2025 .....
+Solving LP for year 2025 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 24680017 (27)
+Clp0006I 924  Obj 20204.511 Primal inf 113836.8 (31071)
+Clp0006I 1924  Obj 20366.459 Primal inf 69651.534 (30639)
+Clp0006I 2924  Obj 20504.906 Primal inf 65299.554 (30162)
+Clp0006I 3924  Obj 20621.699 Primal inf 63863.83 (29554)
+Clp0006I 4924  Obj 20722.801 Primal inf 61334.305 (28933)
+Clp0006I 5924  Obj 20811.726 Primal inf 57985.361 (28282)
+Clp0006I 6924  Obj 20891.262 Primal inf 62981.029 (27615)
+Clp0006I 7924  Obj 20957.885 Primal inf 51792.059 (26974)
+Clp0006I 8924  Obj 21026.814 Primal inf 50155.743 (26317)
+Clp0006I 9924  Obj 21093.321 Primal inf 52752.9 (25594)
+Clp0006I 10924  Obj 21156.957 Primal inf 45630.105 (24910)
+Clp0006I 11924  Obj 21220.756 Primal inf 43733.921 (24207)
+Clp0006I 12924  Obj 21279.121 Primal inf 42330.87 (23551)
+Clp0006I 13924  Obj 21329.076 Primal inf 39308.94 (22821)
+Clp0006I 14924  Obj 21373.987 Primal inf 37472.41 (22101)
+Clp0006I 15924  Obj 21425.387 Primal inf 46251.871 (21342)
+Clp0006I 16924  Obj 21478.572 Primal inf 37490.512 (20673)
+Clp0006I 17924  Obj 21538.017 Primal inf 35818.054 (19980)
+Clp0006I 18924  Obj 21609.267 Primal inf 33007.253 (19327)
+Clp0006I 19924  Obj 21684.922 Primal inf 31399.648 (18684)
+Clp0006I 20924  Obj 21756.459 Primal inf 34203.977 (17992)
+Clp0006I 21924  Obj 21818.252 Primal inf 35636.473 (17305)
+Clp0006I 22924  Obj 21869.517 Primal inf 37009.965 (16621)
+Clp0006I 23924  Obj 21917.32 Primal inf 28004.437 (15898)
+Clp0006I 24924  Obj 21958.21 Primal inf 28410.035 (15179)
+Clp0006I 25924  Obj 21997.494 Primal inf 24242.674 (14444)
+Clp0006I 26924  Obj 22036.35 Primal inf 20737.531 (13756)
+Clp0006I 27924  Obj 22087.231 Primal inf 21963.681 (12949)
+Clp0006I 28924  Obj 22126.583 Primal inf 25297.159 (12319)
+Clp0006I 29924  Obj 22168.098 Primal inf 27440.457 (11520)
+Clp0006I 30924  Obj 22202.977 Primal inf 19677.902 (10863)
+Clp0006I 31924  Obj 22235.96 Primal inf 14012.881 (10129)
+Clp0006I 32924  Obj 22269.224 Primal inf 14538.178 (9400)
+Clp0006I 33638  Obj 22300.731 Primal inf 12308.649 (8897)
+Clp0006I 34339  Obj 22345.749 Primal inf 11745.96 (8495)
+Clp0006I 35143  Obj 22399.009 Primal inf 13720.053 (7972)
+Clp0006I 35810  Obj 22439.678 Primal inf 10164.883 (7564)
+Clp0006I 36477  Obj 22481.447 Primal inf 55097.52 (7147)
+Clp0006I 37144  Obj 22518.596 Primal inf 10319.873 (6691)
+Clp0006I 38068  Obj 22565.559 Primal inf 16318.385 (6049)
+Clp0006I 39068  Obj 22614.099 Primal inf 9095.1101 (5368)
+Clp0006I 39735  Obj 22642.455 Primal inf 9207.2165 (4929)
+Clp0006I 40735  Obj 22690.347 Primal inf 7928.9517 (4270)
+Clp0006I 41432  Obj 22718.254 Primal inf 4405.0083 (3808)
+Clp0006I 42161  Obj 22746.746 Primal inf 4793.9568 (3304)
+Clp0006I 43161  Obj 22784.302 Primal inf 4387.1234 (2612)
+Clp0006I 44161  Obj 22819.528 Primal inf 3821.2535 (1911)
+Clp0006I 45161  Obj 22846.291 Primal inf 3688.2182 (1207)
+Clp0006I 46161  Obj 22874.545 Primal inf 858.32452 (503)
+Clp0006I 46828  Obj 22899.011 Primal inf 109.03893 (56)
+Clp0006I 46894  Obj 22900.53
+Clp0000I Optimal - objective value 22900.531
+Coin0511I After Postsolve, objective 22900.531, infeasibilities - dual 0 (0), primal 0.0032344144 (24)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 22900.531
+Clp0006I 0  Obj 22900.531
+Clp0000I Optimal - objective value 22900.531
+Clp0032I Optimal objective 22900.53062 - 46894 iterations time 102.002, Presolve 1.07
+DONE solving LP for year 2025
+Preparing coefficient matrix for year 2026 .....
+Preparing targets for year 2026 .....
+Targets for year 2026 are:
+[  5.23292312e+06  -1.05632461e+07  -1.19133318e+06  -3.34946908e+06
+  -1.85915508e+07  -3.32673217e+10  -4.48187290e+10  -4.36851296e+10
+  -8.36524781e+09  -1.22644127e+11  -2.46037721e+11  -6.52844845e+10
+  -4.41384826e+08  -2.76994352e+10  -1.32468147e+10  -5.52450404e+09
+   1.11768387e+10  -4.59611680e+10  -7.82963434e+10  -8.45908360e+10
+  -6.47047654e+10  -2.00361588e+11  -1.37676793e+11  -1.10089176e+11
+   8.73062462e+09   2.37693575e+10   3.58018224e+10]
+Adding constraints for year 2026 .....
+Setting up the LP model for year 2026 .....
+Solving LP for year 2026 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 25735590 (27)
+Clp0006I 604  Obj 17247.02 Primal inf 9130602.7 (25169)
+Clp0006I 866  Obj 18862.808 Primal inf 706475.96 (30161)
+Clp0006I 1251  Obj 20052.22 Primal inf 420874.04 (32834)
+Clp0006I 2251  Obj 20647.832 Primal inf 109948.92 (30970)
+Clp0006I 2866  Obj 20709.891 Primal inf 72547.82 (30588)
+Clp0006I 3866  Obj 20843.233 Primal inf 68170.691 (29896)
+Clp0006I 4866  Obj 20955.953 Primal inf 62634.821 (29337)
+Clp0006I 5866  Obj 21052.825 Primal inf 60233.705 (28690)
+Clp0006I 6866  Obj 21136.838 Primal inf 72782.669 (28069)
+Clp0006I 7866  Obj 21217.961 Primal inf 54093.471 (27405)
+Clp0006I 8866  Obj 21287.625 Primal inf 55891.172 (26726)
+Clp0006I 9866  Obj 21358.365 Primal inf 51533.217 (26015)
+Clp0006I 10866  Obj 21422.241 Primal inf 51187.29 (25328)
+Clp0006I 11866  Obj 21489.755 Primal inf 44489.179 (24689)
+Clp0006I 12866  Obj 21559.367 Primal inf 42008.656 (23975)
+Clp0006I 13866  Obj 21615.994 Primal inf 41912.982 (23252)
+Clp0006I 14866  Obj 21665.46 Primal inf 38844.735 (22525)
+Clp0006I 15866  Obj 21710.494 Primal inf 39896.68 (21767)
+Clp0006I 16866  Obj 21758.213 Primal inf 35803.175 (21112)
+Clp0006I 17866  Obj 21808.8 Primal inf 33957.951 (20381)
+Clp0006I 18866  Obj 21873.848 Primal inf 34634.115 (19639)
+Clp0006I 19866  Obj 21939.572 Primal inf 32360.525 (19024)
+Clp0006I 20866  Obj 22014.397 Primal inf 30668.981 (18365)
+Clp0006I 21866  Obj 22084.438 Primal inf 31744.337 (17643)
+Clp0006I 22866  Obj 22146.1 Primal inf 39538.26 (17032)
+Clp0006I 23866  Obj 22194.52 Primal inf 25641.545 (16297)
+Clp0006I 24866  Obj 22241.522 Primal inf 25191.501 (15592)
+Clp0006I 25866  Obj 22281.586 Primal inf 24029.2 (14890)
+Clp0006I 26866  Obj 22316.864 Primal inf 22905.082 (14172)
+Clp0006I 27866  Obj 22361.429 Primal inf 24702.362 (13480)
+Clp0006I 28866  Obj 22403.69 Primal inf 20035.726 (12783)
+Clp0006I 29866  Obj 22444.54 Primal inf 18752.82 (12019)
+Clp0006I 30866  Obj 22480.881 Primal inf 22918.12 (11324)
+Clp0006I 31682  Obj 22511.263 Primal inf 16809.28 (10703)
+Clp0006I 32682  Obj 22543.622 Primal inf 19614.908 (10022)
+Clp0006I 33524  Obj 22572.373 Primal inf 16626.215 (9404)
+Clp0006I 34524  Obj 22607.497 Primal inf 43489.879 (8670)
+Clp0006I 35524  Obj 22669.97 Primal inf 12943.18 (8028)
+Clp0006I 36191  Obj 22710.544 Primal inf 12373.214 (7606)
+Clp0006I 37191  Obj 22772.085 Primal inf 9397.6935 (6952)
+Clp0006I 37858  Obj 22807.489 Primal inf 10399.35 (6509)
+Clp0006I 38858  Obj 22855.557 Primal inf 8978.3568 (5818)
+Clp0006I 39858  Obj 22905.469 Primal inf 6909.3096 (5104)
+Clp0006I 40546  Obj 22938.152 Primal inf 7048.9126 (4596)
+Clp0006I 41546  Obj 22985.764 Primal inf 8973.3969 (3882)
+Clp0006I 42546  Obj 23022.487 Primal inf 3662.3598 (3200)
+Clp0006I 43546  Obj 23059.196 Primal inf 3412.2305 (2511)
+Clp0006I 44213  Obj 23083.351 Primal inf 3765.3951 (2023)
+Clp0006I 45213  Obj 23112.118 Primal inf 2491.4233 (1293)
+Clp0006I 46213  Obj 23139.462 Primal inf 691.06673 (593)
+Clp0006I 46880  Obj 23162.869 Primal inf 590.4098 (119)
+Clp0006I 47083  Obj 23169.065
+Clp0000I Optimal - objective value 23169.065
+Coin0511I After Postsolve, objective 23169.065, infeasibilities - dual 0 (0), primal 0.0031650653 (24)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 23169.065
+Clp0006I 0  Obj 23169.065
+Clp0000I Optimal - objective value 23169.065
+Clp0032I Optimal objective 23169.06477 - 47083 iterations time 99.322, Presolve 1.08
+DONE solving LP for year 2026
+Preparing coefficient matrix for year 2027 .....
+Preparing targets for year 2027 .....
+Targets for year 2027 are:
+[  5.04520877e+06  -1.10194846e+07  -1.22126741e+06  -3.43452629e+06
+  -1.98193538e+07  -3.55917381e+10  -4.83271649e+10  -4.66890439e+10
+  -8.95405384e+09  -1.29065946e+11  -2.61174903e+11  -7.20928592e+10
+  -2.12246292e+09  -2.83763080e+10  -1.40645207e+10  -5.74033402e+09
+   1.07889486e+10  -4.79266121e+10  -8.11607916e+10  -8.76969600e+10
+  -6.75471645e+10  -2.07709761e+11  -1.43908648e+11  -1.20666659e+11
+   3.70230280e+09   2.23957983e+10   3.39766019e+10]
+Adding constraints for year 2027 .....
+Setting up the LP model for year 2027 .....
+Solving LP for year 2027 .....
+Coin0506I Presolve 235444 (-3585) rows, 470834 (-7170) columns and 2545390 (-7170) elements
+Clp0006I 0  Obj 0 Primal inf 26741948 (27)
+Clp0006I 587  Obj 20435.942 Primal inf 304574.09 (32751)
+Clp0006I 1587  Obj 21245.071 Primal inf 72299.909 (31583)
+Clp0006I 2587  Obj 21407.99 Primal inf 70263.198 (31054)
+Clp0006I 3587  Obj 21527.337 Primal inf 65222.067 (30458)
+Clp0006I 4587  Obj 21636.217 Primal inf 61882.453 (29870)
+Clp0006I 5587  Obj 21731.734 Primal inf 65400.413 (29217)
+Clp0006I 6587  Obj 21823.692 Primal inf 56482.584 (28557)
+Clp0006I 7587  Obj 21902.463 Primal inf 63956.164 (27835)
+Clp0006I 8587  Obj 21976.053 Primal inf 52935.613 (27187)
+Clp0006I 9587  Obj 22048.754 Primal inf 50685.792 (26509)
+Clp0006I 10587  Obj 22118.161 Primal inf 50330.752 (25834)
+Clp0006I 11587  Obj 22186.178 Primal inf 47106.043 (25163)
+Clp0006I 12587  Obj 22255.258 Primal inf 43651.103 (24483)
+Clp0006I 13587  Obj 22321.071 Primal inf 40742.638 (23755)
+Clp0006I 14587  Obj 22368.833 Primal inf 39086.371 (23037)
+Clp0006I 15587  Obj 22417.072 Primal inf 42127.398 (22221)
+Clp0006I 16587  Obj 22469.285 Primal inf 46964.824 (21527)
+Clp0006I 17587  Obj 22520.528 Primal inf 38159.098 (20867)
+Clp0006I 18587  Obj 22590.185 Primal inf 32925.07 (20182)
+Clp0006I 19587  Obj 22657.183 Primal inf 32652.321 (19555)
+Clp0006I 20587  Obj 22735.247 Primal inf 34171.458 (18897)
+Clp0006I 21587  Obj 22804.48 Primal inf 33193.04 (18205)
+Clp0006I 22587  Obj 22868.451 Primal inf 29401.795 (17499)
+Clp0006I 23587  Obj 22919.526 Primal inf 25952.575 (16776)
+Clp0006I 24587  Obj 22968.198 Primal inf 32111.819 (16045)
+Clp0006I 25587  Obj 23010.89 Primal inf 23228.811 (15331)
+Clp0006I 26587  Obj 23051.102 Primal inf 22131.714 (14593)
+Clp0006I 27587  Obj 23100.698 Primal inf 24408.023 (13871)
+Clp0006I 28587  Obj 23141.6 Primal inf 20302.009 (13165)
+Clp0006I 29587  Obj 23181.678 Primal inf 20468.544 (12416)
+Clp0006I 30587  Obj 23220.347 Primal inf 18051.911 (11682)
+Clp0006I 31587  Obj 23258.616 Primal inf 17315.292 (10912)
+Clp0006I 32587  Obj 23294.24 Primal inf 24187.964 (10185)
+Clp0006I 33587  Obj 23325.978 Primal inf 14366.571 (9489)
+Clp0006I 34587  Obj 23365.661 Primal inf 23268.134 (8791)
+Clp0006I 35587  Obj 23431.828 Primal inf 11183.723 (8112)
+Clp0006I 36254  Obj 23469.601 Primal inf 14438.173 (7722)
+Clp0006I 37254  Obj 23533.28 Primal inf 11910.526 (7067)
+Clp0006I 38254  Obj 23587.917 Primal inf 10287.316 (6378)
+Clp0006I 38921  Obj 23616.116 Primal inf 9299.8604 (5941)
+Clp0006I 39743  Obj 23654.819 Primal inf 9931.5781 (5370)
+Clp0006I 40733  Obj 23699.682 Primal inf 7835.9752 (4647)
+Clp0006I 41733  Obj 23743.131 Primal inf 5828.5854 (4020)
+Clp0006I 42733  Obj 23782.475 Primal inf 3874.6834 (3306)
+Clp0006I 43446  Obj 23805.394 Primal inf 49351.384 (2876)
+Clp0006I 44446  Obj 23842.331 Primal inf 2447.8084 (2189)
+Clp0006I 45113  Obj 23863.312 Primal inf 2018.2468 (1727)
+Clp0006I 45780  Obj 23880.014 Primal inf 3481.689 (1300)
+Clp0006I 46447  Obj 23895.098 Primal inf 1345.3975 (820)
+Clp0006I 47250  Obj 23925.041 Primal inf 1029.4732 (258)
+Clp0006I 47639  Obj 23938.171
+Clp0000I Optimal - objective value 23938.171
+Coin0511I After Postsolve, objective 23938.171, infeasibilities - dual 0 (0), primal 0.0031454095 (22)
+Coin0512I Presolved model was optimal, full model needs cleaning up
+Clp0006I 0  Obj 23938.171
+Clp0006I 0  Obj 23938.171
+Clp0000I Optimal - objective value 23938.171
+Clp0032I Optimal objective 23938.17143 - 47639 iterations time 99.402, Presolve 1.11
+DONE solving LP for year 2027
