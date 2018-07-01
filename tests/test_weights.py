@@ -5,9 +5,9 @@ import pytest
 import numpy as np
 
 
-DUMP_WEIGHTS = True  # normally set to False
+DUMP_WEIGHTS = False  # normally set to False; True implies dump and test fail
 
-@pytest.mark.one
+
 @pytest.mark.parametrize('kind', ['cps', 'puf'])
 def test_weights(kind, cps_weights, puf_weights,
                  growfactors, cps_count, puf_count,
