@@ -56,9 +56,12 @@ stage2 work, but for the time being you can execute `make puf-files`
 and `make cps-files` in separate terminal windows to have the two
 stage2 linear programs run in parallel.  If you try this, be sure to
 wait a bit until the `make puf-files` starts on stage2 before running
-the `make cps-files` command in the other terminal window.  If you are
-generating the taxdata made files in an overnight run, then simply
-execute the `make all` command.
+the `make cps-files` command in the other terminal window. (This delay
+before executing `make cps-files` allows the `make puf-files` command
+to execute --- without any interference --- the stage1 logic, which is
+part of making both sets of files.) If you are generating the taxdata
+made files in an overnight run, then simply execute the `make all`
+command.
 
 You can copy the made files to your local Tax-Calculator directory
 tree using the [`csvcopy.sh` bash script](csvcopy.sh).  Use the dryrun

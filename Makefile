@@ -71,8 +71,8 @@ git-pr:
 	@./gitpr $(N)
 
 .PHONY=puf-files
-puf-files: puf_data/puf.csv \
-           puf_stage1/growfactors.csv \
+puf-files: puf_stage1/growfactors.csv \
+           puf_data/puf.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
 
@@ -110,8 +110,8 @@ puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
 	cd puf_stage3 ; python stage3.py
 
 .PHONY=cps-files
-cps-files: cps_data/cps.csv.gz \
-           cps_stage1/stage_2_targets.csv \
+cps-files: cps_stage1/stage_2_targets.csv \
+           cps_data/cps.csv.gz \
            cps_stage2/cps_weights.csv.gz \
            cps_stage4/cps_benefits.csv.gz
 
