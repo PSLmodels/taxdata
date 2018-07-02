@@ -17,16 +17,16 @@ taxdata repository or the Tax-Calculator repository.
 
 Each of these two sets of data files contains several types of files:
 
-1. a sample data file containing variables for each tax filing unit;
+0. a sample data file containing variables for each tax filing unit;
 
-2. a factors file containing annual variable extrapolation factors;
+1. a factors file containing annual variable extrapolation factors;
 
-3. a weights file containing annual weights for each filing unit;
+2. a weights file containing annual weights for each filing unit;
 
-4. a ratios file containing annual adjustment ratios for some variables
+3. a ratios file containing annual adjustment ratios for some variables
    (currently only the PUF data set includes a ratios file);
 
-5. a benefits file containing extrapolated benefits for each filing unit
+4. a benefits file containing extrapolated benefits for each filing unit
    (currently only the CPS data set includes a benefits file).
 
 Note that the factors file is the same in both sets of data files
@@ -52,7 +52,7 @@ running the `make help` command.
 Note that the stage2 linear program that generates the weights file is
 very long-running, taking five or more hours depending on your
 computer's CPU speed.  We are considering options for speeding up this
-stage2 work, but for the time being your can execute `make puf-files`
+stage2 work, but for the time being you can execute `make puf-files`
 and `make cps-files` in separate terminal windows to have the two
 stage2 linear programs run in parallel.  If you try this, be sure to
 wait a bit until the `make puf-files` starts on stage2 before running
@@ -64,8 +64,8 @@ You can copy the made files to your local Tax-Calculator directory
 tree using the [`csvcopy.sh` bash script](csvcopy.sh).  Use the dryrun
 option to see which files would be copied (because they are newer than
 the corresponding files in the Tax-Calculator directory tree) without
-doing the actual copy.  At the terminal command-prompt in the top-level
-taxdata directory, execute `./csvcopy` to get help.
+actually doing the file copies.  At the terminal command-prompt in the
+top-level taxdata directory, execute `./csvcopy.sh` to get help.
 
 
 Contributing to taxdata Repository
