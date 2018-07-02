@@ -74,8 +74,8 @@ else
 fi
 copyifdiff $SRCFILENAME $TAXDATADIR$SRCFILENAME $TAXCALCDIR$DSTFILENAME $DRYRUN
 
-# copy stage1/growfactors.csv file if different
-TAXDATADIR="stage1/"
+# copy puf_stage1/growfactors.csv file if different
+TAXDATADIR="puf_stage1/"
 FILENAME="growfactors.csv"
 copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
 
