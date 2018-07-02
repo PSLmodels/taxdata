@@ -88,7 +88,6 @@ puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/SOI_estimates.csv \
                                 puf_stage1/US-EST00INT-ALLDATA.csv
 	cd puf_stage1 ; python stage1.py
-# above recipe also makes puf_stage1/Stage_I_factors_transpose.csv
 # above recipe also makes puf_stage1/Stage_II_targets.csv
 
 puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
@@ -98,7 +97,7 @@ puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_stage2/solve_lp_for_year.py \
                                puf_data/cps-matched-puf.csv \
-                               puf_stage1/Stage_I_factors_transpose.csv \
+                               puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
 	cd puf_stage2 ; python stage2.py
 

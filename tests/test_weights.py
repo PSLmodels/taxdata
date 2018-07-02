@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 
 
-DUMP_WEIGHTS = False  # normally set to False; True implies dump and test fail
+DUMP_WEIGHTS = False  # normally set to False; True implies dump with test fail
 
 
 @pytest.mark.parametrize('kind', ['cps', 'puf'])
