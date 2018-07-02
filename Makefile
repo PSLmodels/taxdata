@@ -76,10 +76,6 @@ puf-files: puf_stage1/growfactors.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
 
-puf_data/puf.csv: puf_data/finalprep.py \
-                  puf_data/cps-matched-puf.csv
-	cd puf_data ; python finalprep.py
-
 puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/CBO_baseline.csv \
                                 puf_stage1/IRS_return_projection.csv \
@@ -94,6 +90,10 @@ puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
 puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
                             puf_stage1/Stage_I_factors.csv
 	cd puf_stage1 ; python factors_finalprep.py
+
+puf_data/puf.csv: puf_data/finalprep.py \
+                  puf_data/cps-matched-puf.csv
+	cd puf_data ; python finalprep.py
 
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_stage2/solve_lp_for_year.py \
@@ -115,17 +115,17 @@ cps-files: cps_stage1/stage_2_targets.csv \
            cps_stage2/cps_weights.csv.gz \
            cps_stage4/cps_benefits.csv.gz
 
-cps_data/cps.csv.gz: cps_data/finalprep.py \
-                     cps_data/cps_raw.csv.gz \
-                     cps_data/adjustment_targets.csv \
-                     cps_data/benefitprograms.csv
-	cd cps_data ; python finalprep.py
-
 cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
                                 cps_stage1/SOI_estimates.csv \
                                 puf_stage1/Stage_I_factors.csv \
                                 puf_stage1/Stage_II_targets.csv
 	cd cps_stage1 ; python stage1.py
+
+cps_data/cps.csv.gz: cps_data/finalprep.py \
+                     cps_data/cps_raw.csv.gz \
+                     cps_data/adjustment_targets.csv \
+                     cps_data/benefitprograms.csv
+	cd cps_data ; python finalprep.py
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_data/cps_raw.csv.gz \
