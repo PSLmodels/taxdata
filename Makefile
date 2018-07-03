@@ -34,7 +34,6 @@ help:
 	@echo "                puf_ratios.csv"
 	@echo "cps-files   : make each of the following files:"
 	@echo "                cps.csv.gz"
-	@echo "                growfactors.csv"
 	@echo "                cps_weights.csv.gz"
 	@echo "                cps_benefits.csv.gz"
 	@echo "all         : make both puf-files and cps-files"
