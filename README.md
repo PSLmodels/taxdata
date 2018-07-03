@@ -44,22 +44,28 @@ The best documentation of the data-preparation workflow is the
 the Python script that generates each made file.  The files made in
 early stages of the workflow serve as input files in later stages,
 which means there is a cascading effect of changes in the scripts
-and/or input files.  The Makefile handles all this complexity in an
-economical way because it executes scripts to make new versions of
+and/or input files.  The Makefile automates this complex workflow in
+an economical way because it executes scripts to make new versions of
 made files only when necessary.  Start exploring the Makefile by
-running the `make help` command.
+running the `make help` command.  If you want more background on the
+make utility and makefiles, search for Internet links with the
+keywords `makefile` and `automate`.
 
 Note that the stage2 linear program that generates the weights file is
 very long-running, taking five or more hours depending on your
 computer's CPU speed.  We are considering options for speeding up this
 stage2 work, but for the time being you can execute `make puf-files`
 and `make cps-files` in separate terminal windows to have the two
-stage2 linear programs run in parallel.  If you are generating the
+stage2 linear programs run in parallel.  (If you try this parallel
+execution approach, be sure to wait for the `make puf-files` job to
+begin stage2 work before executing the `make cps-files` command in
+the other terminal window.  This is necessary because the CPS stage1
+work depends on output from PUF stage1.)  If you are generating the
 taxdata made files in an overnight run, then simply execute the `make
 all` command.
 
 You can copy the made files to your local Tax-Calculator directory
-tree using the [`csvcopy.sh` bash script](csvcopy.sh).  Use the dryrun
+tree using the [`csvcopy.sh`](csvcopy.sh) bash script.  Use the `dryrun`
 option to see which files would be copied (because they are newer than
 the corresponding files in the Tax-Calculator directory tree) without
 actually doing the file copies.  At the terminal command-prompt in the
