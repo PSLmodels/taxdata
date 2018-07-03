@@ -141,4 +141,5 @@ final_ratios = pd.concat(var_ratios_list, axis=1)
 final_ratios = final_ratios.transpose()
 
 # Create CSV from the final ratios
-final_ratios.to_csv('puf_ratios.csv', index_label='agi_bin')
+final_ratios.to_csv('puf_ratios.csv', float_format='%.4f',
+                    index_label='agi_bin')

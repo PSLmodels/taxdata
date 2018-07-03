@@ -282,16 +282,16 @@ Stage_II_targets = Stage_II_targets.drop([2008, 2009, 2010])
 # add on benefit factors
 Stage_I_factors['ABENEFITS'] = benefit_factors.transpose()[0]
 # write Stage_I_factors for final preparation and then use by Tax-Calculator
-Stage_I_factors.to_csv(path_or_buf="Stage_I_factors.csv",
+Stage_I_factors.to_csv('Stage_I_factors.csv',
                        float_format='%.4f',
                        index_label='YEAR')
 
 # write Stage_II_targets for use in stage2 weights calculation
 Stage_II_targets = Stage_II_targets.transpose()
-Stage_II_targets.to_csv(path_or_buf="Stage_II_targets.csv",
-                        float_format='%.4f')
+Stage_II_targets.to_csv('Stage_II_targets.csv',
+                        float_format='%.0f')
 
 # write TRANSPOSE of Stage_I_factors for use in stage2 weights calculation
 Stage_I_factors_t = Stage_I_factors.transpose()
-Stage_I_factors_t.to_csv(path_or_buf="Stage_I_factors_transpose.csv",
+Stage_I_factors_t.to_csv('Stage_I_factors_transpose.csv',
                          float_format='%.4f')

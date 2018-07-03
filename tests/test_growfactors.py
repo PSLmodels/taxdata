@@ -2,6 +2,7 @@
 Test growfactors.csv file contents.
 """
 
+
 def test_growfactor_start_year(growfactors):
     """
     Check that growfactors.csv can support Tax-Calculator Policy needs.
