@@ -34,7 +34,6 @@ help:
 	@echo "                puf_ratios.csv"
 	@echo "cps-files   : make each of the following files:"
 	@echo "                cps.csv.gz"
-	@echo "                growfactors.csv"
 	@echo "                cps_weights.csv.gz"
 	@echo "                cps_benefits.csv.gz"
 	@echo "all         : make both puf-files and cps-files"
@@ -71,10 +70,14 @@ git-pr:
 	@./gitpr $(N)
 
 .PHONY=puf-files
-puf-files: puf_stage1/growfactors.csv \
-           puf_data/puf.csv \
+puf-files: puf_data/puf.csv \
+           puf_stage1/growfactors.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
+
+puf_data/puf.csv: puf_data/finalprep.py \
+                  puf_data/cps-matched-puf.csv
+	cd puf_data ; python finalprep.py
 
 puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/CBO_baseline.csv \
@@ -91,10 +94,6 @@ puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
                             puf_stage1/Stage_I_factors.csv
 	cd puf_stage1 ; python factors_finalprep.py
 
-puf_data/puf.csv: puf_data/finalprep.py \
-                  puf_data/cps-matched-puf.csv
-	cd puf_data ; python finalprep.py
-
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_stage2/solve_lp_for_year.py \
                                puf_data/cps-matched-puf.csv \
@@ -110,22 +109,22 @@ puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
 	cd puf_stage3 ; python stage3.py
 
 .PHONY=cps-files
-cps-files: cps_stage1/stage_2_targets.csv \
-           cps_data/cps.csv.gz \
+cps-files: cps_data/cps.csv.gz \
+           cps_stage1/stage_2_targets.csv \
            cps_stage2/cps_weights.csv.gz \
            cps_stage4/cps_benefits.csv.gz
-
-cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
-                                cps_stage1/SOI_estimates.csv \
-                                puf_stage1/Stage_I_factors.csv \
-                                puf_stage1/Stage_II_targets.csv
-	cd cps_stage1 ; python stage1.py
 
 cps_data/cps.csv.gz: cps_data/finalprep.py \
                      cps_data/cps_raw.csv.gz \
                      cps_data/adjustment_targets.csv \
                      cps_data/benefitprograms.csv
 	cd cps_data ; python finalprep.py
+
+cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
+                                cps_stage1/SOI_estimates.csv \
+                                puf_stage1/Stage_I_factors.csv \
+                                puf_stage1/Stage_II_targets.csv
+	cd cps_stage1 ; python stage1.py
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_data/cps_raw.csv.gz \
