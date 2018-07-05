@@ -4,8 +4,8 @@
 #              command-line tools installed), so this Makefile is designed
 #              to work in that environment (and not on Windows).
 # Note that the re-zipping of each .csv.gz file "removes" the time-stamp
-#              from the GZIP file header, which is necessary for correct
-#              operation of this Makefile.
+#              from the GZIP file header, which is necessary for git to
+#              report the correct status of each .csv.gz file's contents.
 # USAGE: taxdata$ make [TARGET]
 
 MADE_FILES = puf_data/puf.csv \
