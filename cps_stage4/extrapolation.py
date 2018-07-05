@@ -24,7 +24,7 @@ class Benefits():
         self.benefit_names = benefit_names
 
 
-    def increment_year(self, tol=0.01):
+    def increment_year(self, tol):
         self.current_year += 1
         print("starting year", self.current_year)
         WT = self.WT.loc[:, 'WT'+str(self.current_year)]
@@ -79,7 +79,7 @@ class Benefits():
 
     @staticmethod
     def _extrapolate(WT, I, benefits, prob, target,
-                     benefit_name, benefit_year, tol=0.01, J=15):
+                     benefit_name, benefit_year, tol, J=15):
         """
         Goal: get number of participants as close to target as possible
         Steps:
@@ -283,7 +283,7 @@ if __name__ == "__main__":
     ben = Benefits()
 
     for _ in range(13):
-        ben.increment_year()
+        ben.increment_year(tol=0.05)
 
     # drop unnecessary variables
     drop_list = []
