@@ -3,6 +3,9 @@
 # Development is typically conducted on Linux or Max OS X (with the Xcode
 #              command-line tools installed), so this Makefile is designed
 #              to work in that environment (and not on Windows).
+# Note that the re-zipping of each .csv.gz file "removes" the time-stamp
+#              from the GZIP file header, which is necessary for correct
+#              operation of this Makefile.
 # USAGE: taxdata$ make [TARGET]
 
 MADE_FILES = puf_data/puf.csv \
@@ -98,7 +101,8 @@ puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_data/cps-matched-puf.csv \
                                puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
-	cd puf_stage2 ; python stage2.py
+	cd puf_stage2 ; python stage2.py && \
+        gunzip puf_weights.csv.gz && gzip -n puf_weights.csv
 
 puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
                            puf_stage3/stage3_targets.csv \
@@ -117,7 +121,8 @@ cps_data/cps.csv.gz: cps_data/finalprep.py \
                      cps_data/cps_raw.csv.gz \
                      cps_data/adjustment_targets.csv \
                      cps_data/benefitprograms.csv
-	cd cps_data ; python finalprep.py
+	cd cps_data ; python finalprep.py && \
+        gunzip cps.csv.gz && gzip -n cps.csv
 
 cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
                                 cps_stage1/SOI_estimates.csv \
@@ -129,7 +134,8 @@ cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_data/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
                                cps_stage1/stage_2_targets.csv
-	cd cps_stage2 ; python stage2.py
+	cd cps_stage2 ; python stage2.py && \
+        gunzip cps_weights.csv.gz && gzip -n cps_weights.csv
 
 cps_stage4/cps_benefits.csv.gz: cps_stage4/rename_columns.py \
                                 cps_stage4/extrapolation.py \
@@ -137,7 +143,8 @@ cps_stage4/cps_benefits.csv.gz: cps_stage4/rename_columns.py \
                                 cps_data/cps_raw.csv.gz \
                                 cps_stage2/cps_weights.csv.gz
 	cd cps_stage4 ; \
-        python rename_columns.py && python extrapolation.py ; \
+        python rename_columns.py && python extrapolation.py && \
+        gunzip cps_benefits.csv.gz && gzip -n cps_benefits.csv ; \
         rm -f ../cps_data/cps_raw_rename.csv.gz
 
 .PHONY=all
