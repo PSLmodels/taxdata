@@ -65,11 +65,11 @@ class Benefits(object):
             setattr(self, '{}_benefits'.format(bname), benefits)
 
     @staticmethod
-    def extrapolate(WT, III, benefits, prob, target,
+    def extrapolate(WT, part, benefits, prob, target,
                     benefit_name, benefit_year, tol, maxsize=15):
         """
         Arguments:
-          - III is boolean array of benefit program participation.
+          - part is boolean array indicating benefit program participation.
           - maxsize is the assumed maximum number of people in a filing unit.
         Goal: get number of participants as close to target as possible
         Steps:
@@ -96,37 +96,37 @@ class Benefits(object):
         """
         start = time.time()
 
-        extrap_df = Benefits._stack_df(WT, III, benefits, prob, maxsize)
+        extrap_df = Benefits._stack_df(WT, part, benefits, prob, maxsize)
 
-        receives = extrap_df.loc[extrap_df.III > 0, ]
-        avg_benefit = receives.benefits_wt.sum() / receives.III_wt.sum()
+        receives = extrap_df.loc[extrap_df.part > 0, ]
+        avg_benefit = receives.benefits_wt.sum() / receives.part_wt.sum()
 
-        actual = extrap_df.III_wt.sum()
+        actual = extrap_df.part_wt.sum()
         diff = actual - target
         if diff < 0:
             remove = False
-            candidates = extrap_df.loc[extrap_df.III == 0, ].copy()
-            assert candidates.III.sum() == 0
+            candidates = extrap_df.loc[extrap_df.part == 0, ].copy()
+            assert candidates.part.sum() == 0
             # set everyone as a participant and then remove surplus below
-            # this is necessary since III * wt will all be zeroes
-            candidates.loc[:, 'III'] = np.ones(len(candidates))
-            candidates.loc[:, 'III_wt'] = candidates.III * candidates.wt
-            noncandidates = extrap_df.loc[extrap_df.III == 1, ].copy()
-            assert noncandidates.III.sum() == len(noncandidates)
+            #   this is necessary since part * wt will all be zeroes
+            candidates.loc[:, 'part'] = np.ones(len(candidates))
+            candidates.loc[:, 'part_wt'] = candidates.part * candidates.wt
+            noncandidates = extrap_df.loc[extrap_df.part == 1, ].copy()
+            assert noncandidates.part.sum() == len(noncandidates)
         else:
             remove = True
-            candidates = extrap_df.loc[extrap_df.III == 1, ].copy()
-            assert candidates.III.sum() == len(candidates)
-            noncandidates = extrap_df.loc[extrap_df.III == 0, ].copy()
-            assert noncandidates.III.sum() == 0
-        noncan_part = noncandidates.III_wt.sum()
+            candidates = extrap_df.loc[extrap_df.part == 1, ].copy()
+            assert candidates.part.sum() == len(candidates)
+            noncandidates = extrap_df.loc[extrap_df.part == 0, ].copy()
+            assert noncandidates.part.sum() == 0
+        noncan_part = noncandidates.part_wt.sum()
         del extrap_df
         # sort by probability of getting benefits in descending order
-        # of prob so that we only keep those with highest prob of
-        # receiving benefits in the future
+        #   of prob so that we only keep those with highest prob of
+        #   receiving benefits in the future
         candidates.sort_values(by='prob', ascending=False, inplace=True)
         # create running sum of weighted participants
-        candidates['cum_participants'] = (candidates.III_wt.cumsum() +
+        candidates['cum_participants'] = (candidates.part_wt.cumsum() +
                                           noncan_part)
         # get absolute difference between candidates and target
         candidates['_diff'] = candidates.cum_participants - target
@@ -144,15 +144,15 @@ class Benefits(object):
             raise ValueError(msg)
 
         # individuals prior to min_diff have highest probability of getting
-        # benefits in the future ==> they get benefits
-        candidates.loc[candidates._diff <= 0, 'III'] = 1
-        candidates.loc[candidates._diff > 0, 'III'] = 0
+        #   benefits in the future ==> they get benefits
+        candidates.loc[candidates._diff <= 0, 'part'] = 1
+        candidates.loc[candidates._diff > 0, 'part'] = 0
 
         if remove:
             candidates.loc[candidates._diff > 0, 'benefits'] = 0
         else:
             # all added candidates have indicator 1 but no benefits
-            candidates.loc[(candidates.III == 1) & (candidates.benefits == 0),
+            candidates.loc[(candidates.part == 1) & (candidates.benefits == 0),
                            'benefits'] = avg_benefit
 
         result = pd.concat([noncandidates, candidates], axis=0,
@@ -160,8 +160,8 @@ class Benefits(object):
         del candidates
         del noncandidates
 
-        result.III_wt = result.III * result.wt
-        III = result.III.unstack().sort_index()
+        result.part_wt = result.part * result.wt
+        part = result.part.unstack().sort_index()
         benefits = result.benefits.unstack().sort_index()
 
         finish = time.time()
@@ -169,24 +169,24 @@ class Benefits(object):
             benefit_name, benefit_year, (finish - start))
         print(msg)
 
-        return III, benefits
+        return part, benefits
 
     @staticmethod
-    def _stack_df(WT, III, benefits, prob, maxsize):
+    def _stack_df(WT, part, benefits, prob, maxsize):
         wt_ext = pd.concat([WT for _ in range(0, maxsize)], axis=1)
         wt_ext.columns = list(range(0, maxsize))
 
         wt_stack = wt_ext.stack()
-        III_stack = III.stack()
+        part_stack = part.stack()
         ben_stack = benefits.stack()
         prob_stack = prob.stack()
 
         extrap_df = pd.concat(
-            (wt_stack, III_stack, ben_stack, prob_stack),
+            (wt_stack, part_stack, ben_stack, prob_stack),
             axis=1
         )
-        extrap_df.columns = ['wt', 'III', 'benefits', 'prob']
-        extrap_df['III_wt'] = extrap_df.III * extrap_df.wt
+        extrap_df.columns = ['wt', 'part', 'benefits', 'prob']
+        extrap_df['part_wt'] = extrap_df.part * extrap_df.wt
         extrap_df['benefits_wt'] = extrap_df.benefits * extrap_df.wt
 
         return extrap_df
