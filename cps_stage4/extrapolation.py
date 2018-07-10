@@ -1,10 +1,12 @@
 from __future__ import print_function
-import os
 import time
 from copy import deepcopy
 import numpy as np
 import pandas as pd
 
+
+SYEAR = 2014
+LYEAR = 2027
 
 BENEFIT_NAMES = ['ssi', 'mcaid', 'mcare', 'vet',
                  'snap', 'tanf', 'housing', 'wic']
@@ -14,62 +16,65 @@ class Benefits(object):
 
     def __init__(self):
         self.read_data()
-        self.current_year = 2014
+        self.current_year = SYEAR
 
     def increment_year(self, tol):
         self.current_year += 1
         print('starting year', self.current_year)
         WT = self.WT.loc[:, 'WT'+str(self.current_year)]
-        for benefit in BENEFIT_NAMES:
+        for bname in BENEFIT_NAMES:
             participant_targets = getattr(
                 self,
-                '{}_participant_targets'.format(benefit)
+                '{}_participant_targets'.format(bname)
             )
             benefit_targets = getattr(
                 self,
-                '{}_benefit_targets'.format(benefit)
+                '{}_benefit_targets'.format(bname)
             )
-            participation = getattr(self, '{}_participation'.format(benefit))
-            benefits = getattr(self, '{}_benefits'.format(benefit))
-            prob = getattr(self, '{}_prob'.format(benefit))
+            participation = getattr(self, '{}_participation'.format(bname))
+            benefits = getattr(self, '{}_benefits'.format(bname))
+            prob = getattr(self, '{}_prob'.format(bname))
 
             diff = participant_targets[self.current_year] - \
                 (participation.sum(axis=1) * WT).sum()
             if abs(diff)/participant_targets[self.current_year] > tol:
                 participation, benefits = \
-                    self._extrapolate(WT,
-                                      participation.copy(deep=True),
-                                      benefits.copy(deep=True),
-                                      prob,
-                                      participant_targets[self.current_year],
-                                      benefit,
-                                      self.current_year,
-                                      tol=tol)
+                    self.extrapolate(WT,
+                                     participation.copy(deep=True),
+                                     benefits.copy(deep=True),
+                                     prob,
+                                     participant_targets[self.current_year],
+                                     bname,
+                                     self.current_year,
+                                     tol=tol)
             extrapolated = (participation.sum(axis=1) * WT).sum()
             target_ = participant_targets[self.current_year]
-            msg = '{} benefit in {}: '.format(benefit, self.current_year)
+            msg = '{} benefit in {}: '.format(bname, self.current_year)
             msg += 'total= {:.0f} and target= {:.0f}\n'.format(
                 extrapolated, target_)
             reldiff_ = extrapolated / target_ - 1.
             msg += '   which implies reldiff= {:.3f}'.format(reldiff_)
-            lab = benefit + '_recipients_' + str(self.current_year)
+            lab = bname + '_recipients_' + str(self.current_year)
             self.benefit_extrapolation[lab] = participation.sum(axis=1)
             total_current_benefits = (benefits.sum(axis=1) * WT).sum()
-            lab = benefit + '_' + str(self.current_year)
+            lab = bname + '_' + str(self.current_year)
             self.benefit_extrapolation[lab] = \
                 (benefits.sum(axis=1) *
                  benefit_targets[self.current_year] / total_current_benefits)
-            setattr(self, '{}_participation'.format(benefit), participation)
-            setattr(self, '{}_benefits'.format(benefit), benefits)
+            setattr(self, '{}_participation'.format(bname), participation)
+            setattr(self, '{}_benefits'.format(bname), benefits)
 
     @staticmethod
-    def _extrapolate(WT, III, benefits, prob, target,
-                     benefit_name, benefit_year, tol, maxsize=15):
+    def extrapolate(WT, III, benefits, prob, target,
+                    benefit_name, benefit_year, tol, maxsize=15):
         """
+        Arguments:
+          - III is boolean array of benefit program participation.
+          - maxsize is the assumed maximum number of people in a filing unit.
         Goal: get number of participants as close to target as possible
         Steps:
-            1. Data is currently in N x 15 shape. Reshape it to be
-                N * 15 dim vector
+            1. Data is currently in N x maxsize shape. Reshape it to be
+                N * maxsize dim vector
             2. Determine if adding or removing
                 if adding, only consider those who are not receiving benefits
                 if removing, only consider those who are receiving benefits
@@ -80,14 +85,14 @@ class Benefits(object):
                 cum. sum and target is minimized
             5. All those with index <= minimimizing index receive benefits
                 and all those with index > minimizing index do not
-            6. Stack dataframes, unravel (go back to N x 15 dim), return result
-
+            6. Stack dataframes, unravel (go back to N x maxsize dim), and
+                return result
             Note: Unraveling is done by keeping track of each individual's
                 location in the matrix (i, j).  Sorting by i and then j gives
-                us a vector of tuples (1,1), (1,2),...,(1,15),(2,1),(2,2),
-                ...,(N,15). Then by reshaping to n rows, 15 columns we
-                get the same matrix that we started with but with the
-                updated values
+                us a vector of tuples (1,1),(1,2),...,(1,maxsize),(2,1),(2,2),
+                ...,(N,maxsize). Then by reshaping to n rows, maxsize columns
+                we get the same matrix that we started with but with the
+                updated values.
         """
         start = time.time()
 
@@ -204,63 +209,57 @@ class Benefits(object):
 
         self.WT = cps_weights
         growth_rates = pd.read_csv('growth_rates.csv', index_col=0)
-        for benefit in BENEFIT_NAMES:
 
+        for bname in BENEFIT_NAMES:
             # create benefit targets
-            benefit_2014 = (cps_benefit[benefit] * cps_benefit.WT).sum()
-            benefit_targets = (benefit_2014 *
+            benefit_syear = (cps_benefit[bname] * cps_benefit.WT).sum()
+            benefit_targets = (benefit_syear *
                                (1 + growth_rates['{}_benefit_growth'
-                                                 .format(benefit)]))
+                                                 .format(bname)]))
             benefit_targets = benefit_targets[1:]
-
-            # extract program benefit in 2014 to base_benefits array
+            # extract program benefit in SYEAR to base_benefits array
+            ubn = bname.upper()
             base_benefits_col = [col for col in list(cps_benefit)
-                                 if col.startswith(
-                                         '{}_VAL'.format(benefit.upper())
-                                 )]
+                                 if col.startswith('{}_VAL'.format(ubn))]
             base_benefits = cps_benefit[base_benefits_col]
             base_benefits.columns = list(range(len(base_benefits.columns)))
-            # Create Participation targets from tax-unit individual
-            # level markers and growth rates from SSA
+            # create Participation targets from tax-unit individual
+            #   level markers and growth rates from SSA
             col_list = list(range(len(base_benefits.columns)))
             base_participation = pd.DataFrame(np.where(base_benefits > 0,
                                                        1, 0),
                                               index=self.index,
                                               columns=col_list)
-
-            # print(benefit,'value_counts baseline')
-            # print(base_participation.sum(axis=1).value_counts())
             total_particpants = (base_participation.sum(axis=1) *
                                  cps_benefit.WT).sum()
             participant_targets = total_particpants * \
-                (1 + growth_rates['{}_participation_growth'.format(benefit)])
+                (1 + growth_rates['{}_participation_growth'.format(bname)])
             # extract probability of participation in program from
-            # tax-unit database
+            #   tax-unit database
             prob_col = [col for col in list(cps_benefit)
-                        if col.startswith('{}_PROB'.format(benefit.upper()))]
+                        if col.startswith('{}_PROB'.format(bname.upper()))]
             prob = cps_benefit[prob_col]
             prob.columns = list(range(len(prob.columns)))
-
             # dataframe of number participants and total benefits from program
-            idx = '{}_recipients_2014'.format(benefit)
+            idx = '{}_recipients_{}'.format(bname, SYEAR)
             benefit_extrapolation[idx] = base_participation.sum(axis=1)
-            idx = '{}_2014'.format(benefit)
-            benefit_extrapolation[idx] = cps_benefit[benefit]
-            setattr(self, '{}_prob'.format(benefit),
+            idx = '{}_{}'.format(bname, SYEAR)
+            benefit_extrapolation[idx] = cps_benefit[bname]
+            setattr(self, '{}_prob'.format(bname),
                     prob)
-            setattr(self, '{}_base_participation'.format(benefit),
+            setattr(self, '{}_base_participation'.format(bname),
                     base_participation)
-            setattr(self, '{}_base_benefits'.format(benefit),
+            setattr(self, '{}_base_benefits'.format(bname),
                     base_benefits)
-            setattr(self, '{}_participant_targets'.format(benefit),
+            setattr(self, '{}_participant_targets'.format(bname),
                     participant_targets)
-            setattr(self, '{}_benefit_targets'.format(benefit),
+            setattr(self, '{}_benefit_targets'.format(bname),
                     benefit_targets)
-            setattr(self, '{}_benefit_extrapolation'.format(benefit),
+            setattr(self, '{}_benefit_extrapolation'.format(bname),
                     benefit_extrapolation)
-            setattr(self, '{}_participation'.format(benefit),
+            setattr(self, '{}_participation'.format(bname),
                     base_participation)
-            setattr(self, '{}_benefits'.format(benefit),
+            setattr(self, '{}_benefits'.format(bname),
                     base_benefits)
 
         # add record ID
@@ -271,17 +270,17 @@ class Benefits(object):
 if __name__ == '__main__':
     # create extrapolated benefits
     ben = Benefits()
-    for _ in range(13):
+    for _ in range(SYEAR + 1, LYEAR + 1):
         ben.increment_year(tol=0.05)
     # drop unnecessary variables
     drop_list = []
     # drop all recipient columns
-    for year in range(2014, 2027 + 1):
-        for benefit in BENEFIT_NAMES:
-            drop_list.append('{}_recipients_{}'.format(benefit, year))
-    # drop 2014 values
-    for benefit in BENEFIT_NAMES:
-        drop_list.append('{}_2014'.format(benefit))
+    for year in range(SYEAR, LYEAR + 1):
+        for bname in BENEFIT_NAMES:
+            drop_list.append('{}_recipients_{}'.format(bname, year))
+    # drop SYEAR benefit values
+    for bname in BENEFIT_NAMES:
+        drop_list.append('{}_{}'.format(bname, SYEAR))
     extrapolated_benefit = ben.benefit_extrapolation.drop(drop_list, axis=1)
     # drop records with no benefits and write to file
     col_list = extrapolated_benefit.columns
