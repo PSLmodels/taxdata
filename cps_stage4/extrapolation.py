@@ -6,28 +6,21 @@ import numpy as np
 import pandas as pd
 
 
-class Benefits():
-    GROWTH_RATES_PATH = 'growth_rates.csv'
-    CPS_BENEFIT_PATH = '../cps_data/cps_raw_rename.csv.gz'
-    CPS_WEIGHTS_PATH = '../cps_stage2/cps_weights.csv.gz'
+BENEFIT_NAMES = ['ssi', 'mcaid', 'mcare', 'vet',
+                 'snap', 'tanf', 'housing', 'wic']
 
-    def __init__(self,
-                 growth_rates=GROWTH_RATES_PATH,
-                 cps_benefit=CPS_BENEFIT_PATH,
-                 cps_weights=CPS_WEIGHTS_PATH,
-                 benefit_names=['ssi', 'mcaid', 'mcare',
-                                'vet', 'snap', 'tanf', 'housing', 'wic']):
-        benefit_names = [bn.lower() for bn in benefit_names]
-        self._read_data(growth_rates, cps_benefit, cps_weights,
-                        benefit_names=benefit_names)
+
+class Benefits(object):
+
+    def __init__(self):
+        self.read_data()
         self.current_year = 2014
-        self.benefit_names = benefit_names
 
     def increment_year(self, tol):
         self.current_year += 1
         print('starting year', self.current_year)
         WT = self.WT.loc[:, 'WT'+str(self.current_year)]
-        for benefit in self.benefit_names:
+        for benefit in BENEFIT_NAMES:
             participant_targets = getattr(
                 self,
                 '{}_participant_targets'.format(benefit)
@@ -52,8 +45,6 @@ class Benefits():
                                       benefit,
                                       self.current_year,
                                       tol=tol)
-            # part_wt = pd.concat(participation.sum(axis=1), WT)
-            # extrapolated = part_wt.
             extrapolated = (participation.sum(axis=1) * WT).sum()
             target_ = participant_targets[self.current_year]
             msg = '{} benefit in {}: '.format(benefit, self.current_year)
@@ -61,30 +52,19 @@ class Benefits():
                 extrapolated, target_)
             reldiff_ = extrapolated / target_ - 1.
             msg += '   which implies reldiff= {:.3f}'.format(reldiff_)
-            """
-            print(benefit, 'this year total is ', extrapolated,
-                  ', target is ', participant_targets[self.current_year],
-                  ', diff is ',
-                  (extrapolated - participant_targets[self.current_year]), ',',
-                  ((extrapolated - participant_targets[self.current_year]) /
-                   participant_targets[self.current_year]))
-            """
-
             lab = benefit + '_recipients_' + str(self.current_year)
             self.benefit_extrapolation[lab] = participation.sum(axis=1)
-
             total_current_benefits = (benefits.sum(axis=1) * WT).sum()
             lab = benefit + '_' + str(self.current_year)
             self.benefit_extrapolation[lab] = \
                 (benefits.sum(axis=1) *
                  benefit_targets[self.current_year] / total_current_benefits)
-
             setattr(self, '{}_participation'.format(benefit), participation)
             setattr(self, '{}_benefits'.format(benefit), benefits)
 
     @staticmethod
     def _extrapolate(WT, III, benefits, prob, target,
-                     benefit_name, benefit_year, tol, JJJ=15):
+                     benefit_name, benefit_year, tol, maxsize=15):
         """
         Goal: get number of participants as close to target as possible
         Steps:
@@ -111,7 +91,7 @@ class Benefits():
         """
         start = time.time()
 
-        extrap_df = Benefits._stack_df(WT, III, benefits, prob, JJJ)
+        extrap_df = Benefits._stack_df(WT, III, benefits, prob, maxsize)
 
         receives = extrap_df.loc[extrap_df.III > 0, ]
         avg_benefit = receives.benefits_wt.sum() / receives.III_wt.sum()
@@ -187,9 +167,9 @@ class Benefits():
         return III, benefits
 
     @staticmethod
-    def _stack_df(WT, III, benefits, prob, JJJ):
-        wt_ext = pd.concat([WT for i in range(0, JJJ)], axis=1)
-        wt_ext.columns = list(range(0, JJJ))
+    def _stack_df(WT, III, benefits, prob, maxsize):
+        wt_ext = pd.concat([WT for _ in range(0, maxsize)], axis=1)
+        wt_ext.columns = list(range(0, maxsize))
 
         wt_stack = wt_ext.stack()
         III_stack = III.stack()
@@ -206,19 +186,14 @@ class Benefits():
 
         return extrap_df
 
-    def _read_data(self, growth_rates, cps_benefit, cps_weights,
-                   cps=None, benefit_names=[]):
+    def read_data(self):
         """
         prepare data
         """
-        cps_benefit = pd.read_csv(cps_benefit)
+        cps_benefit = pd.read_csv('../cps_data/cps_raw_rename.csv.gz')
         self.index = cps_benefit['SEQUENCE']
 
-        if isinstance(cps_weights, str):
-            assert(os.path.exists(cps_weights))
-            cps_weights = pd.read_csv(cps_weights)
-        else:
-            assert(isinstance(cps_weights, pd.DataFrame))
+        cps_weights = pd.read_csv('../cps_stage2/cps_weights.csv.gz')
         cps_weights['SEQUENCE'] = self.index
         cps_weights.set_index('SEQUENCE', inplace=True)
 
@@ -228,8 +203,8 @@ class Benefits():
         cps_benefit.set_index('SEQUENCE', inplace=True)
 
         self.WT = cps_weights
-        growth_rates = pd.read_csv(growth_rates, index_col=0)
-        for benefit in benefit_names:
+        growth_rates = pd.read_csv('growth_rates.csv', index_col=0)
+        for benefit in BENEFIT_NAMES:
 
             # create benefit targets
             benefit_2014 = (cps_benefit[benefit] * cps_benefit.WT).sum()
@@ -294,26 +269,24 @@ class Benefits():
 
 
 if __name__ == '__main__':
+    # create extrapolated benefits
     ben = Benefits()
-
     for _ in range(13):
         ben.increment_year(tol=0.05)
-
     # drop unnecessary variables
     drop_list = []
     # drop all recipient columns
     for year in range(2014, 2027 + 1):
-        for benefit in ben.benefit_names:
+        for benefit in BENEFIT_NAMES:
             drop_list.append('{}_recipients_{}'.format(benefit, year))
     # drop 2014 values
-    for benefit in ben.benefit_names:
+    for benefit in BENEFIT_NAMES:
         drop_list.append('{}_2014'.format(benefit))
-    ben.benefit_extrapolation = ben.benefit_extrapolation.drop(drop_list,
-                                                               axis=1)
-    # drop records with no benefits
-    col_list = ben.benefit_extrapolation.columns
-    mask = ben.benefit_extrapolation.loc[:, col_list != 'RECID'].sum(1)
-    gets_benefits = deepcopy(ben.benefit_extrapolation[mask != 0])
-    int_gets_benefits = gets_benefits.astype(np.int32)
-    int_gets_benefits.to_csv('cps_benefits.csv.gz', index=False,
-                             compression='gzip')
+    extrapolated_benefit = ben.benefit_extrapolation.drop(drop_list, axis=1)
+    # drop records with no benefits and write to file
+    col_list = extrapolated_benefit.columns
+    mask = extrapolated_benefit.loc[:, col_list != 'RECID'].sum(1)
+    gets_benefits = deepcopy(extrapolated_benefit[mask != 0])
+    integer_gets_benefits = gets_benefits.astype(np.int32)
+    integer_gets_benefits.to_csv('cps_benefits.csv.gz', index=False,
+                                 compression='gzip')
