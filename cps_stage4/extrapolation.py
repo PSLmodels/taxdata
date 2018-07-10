@@ -283,8 +283,8 @@ if __name__ == '__main__':
         drop_list.append('{}_{}'.format(bname, SYEAR))
     extrapolated_benefit = ben.benefit_extrapolation.drop(drop_list, axis=1)
     # drop records with no benefits and write to file
-    col_list = extrapolated_benefit.columns
-    mask = extrapolated_benefit.loc[:, col_list != 'RECID'].sum(1)
+    column_list = extrapolated_benefit.columns
+    mask = extrapolated_benefit.loc[:, column_list != 'RECID'].sum(1)
     gets_benefits = deepcopy(extrapolated_benefit[mask != 0])
     integer_gets_benefits = gets_benefits.astype(np.int32)
     integer_gets_benefits.to_csv('cps_benefits.csv.gz', index=False,
