@@ -156,7 +156,7 @@ class Benefits(object):
                            'benefits'] = avg_benefit
 
         result = pd.concat([noncandidates, candidates], axis=0,
-                           ignore_index=False)
+                           sort=False, ignore_index=False)
         del candidates
         del noncandidates
 
