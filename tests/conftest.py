@@ -124,4 +124,4 @@ def puf_benefits(test_path):
 @pytest.fixture(scope='session')
 def growth_rates(test_path):
     gr_path = os.path.join(test_path, '../cps_stage4/growth_rates.csv')
-    return pd.read_csv(gr_path)
+    return pd.read_csv(gr_path, index_col=0)

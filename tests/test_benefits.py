@@ -87,6 +87,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     Compare actual and target extrapolated benefit amounts and counts.
     (Note that there are no puf_benefits data.)
     """
+    rel_tol = 0.05
+    dump_res = False
     # specify several DataFrames and related parameters
     if kind == 'cps':
         basedata = cps
@@ -115,7 +117,6 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     del full_benefits
     assert len(extrapolated_benefits.index) == data_count
     # compute benefit amounts and counts for first_year
-    dump = False
     fyr_amount = dict()
     fyr_count = dict()
     wght = basedata['s006'] * 0.01
@@ -123,10 +124,50 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
         ben = basedata['{}_ben'.format(bname)]
         benamt = (ben * wght).sum() * 1e-9
         fyr_amount[bname] = round(benamt, 3)
-        benrec = wght[ben > 0].sum() * 1e-6
-        fyr_count[bname] = round(benrec, 3)
-        if dump:
-            benavg = benamt / benrec
+        bencnt = wght[ben > 0].sum() * 1e-6
+        fyr_count[bname] = round(bencnt, 3)
+        if dump_res:
+            benavg = benamt / bencnt
             res = '{} {}\t{:8.3f}{:8.3f}{:8.1f}'.format(first_year, bname,
-                                                        benamt, benrec, benavg)
+                                                        benamt, bencnt, benavg)
             print(res)
+    # compare actual and target amounts/counts for each subsequent year
+    for year in range(first_year + 1, last_year + 1):
+        # compute actual amuonts/counts for year
+        wght = weights['WT{}'.format(year)] * 0.01
+        actual_amount = dict()
+        actual_count = dict()
+        for bname in benefit_names:
+            ben = extrapolated_benefits['{}_{}'.format(bname, year)]
+            assert len(ben.index) == len(wght.index)
+            benamt = (ben * wght).sum() * 1e-9
+            actual_amount[bname] = round(benamt, 3)
+            bencnt = wght[ben > 0].sum() * 1e-6
+            actual_count[bname] = round(bencnt, 3)
+            if dump_res:
+                benavg = benamt / bencnt
+                res = '{} {}\t{:8.3f}{:8.3f}{:8.1f} A'.format(year, bname,
+                                                              benamt, bencnt,
+                                                              benavg)
+                print(res)
+        # compute target amuonts/counts for year
+        target_amount = dict()
+        target_count = dict()
+        for bname in benefit_names:
+            benfyr = fyr_amount[bname]
+            col = '{}_benefit_growth'.format(bname)
+            benfactor = 1.0 + growth_rates.loc[year, col]
+            benamt = benfyr * benfactor
+            target_amount[bname] = round(benamt, 3)
+            cntfyr = fyr_count[bname]
+            col = '{}_participation_growth'.format(bname)
+            cntfactor = 1.0 + growth_rates.loc[year, col]
+            bencnt = cntfyr * cntfactor
+            target_count[bname] = round(bencnt, 3)
+            if dump_res:
+                benavg = benamt / bencnt
+                res = '{} {}\t{:8.3f}{:8.3f}{:8.1f} T'.format(year, bname,
+                                                              benamt, bencnt,
+                                                              benavg)
+                print(res)
+        # compare actual and target amuonts/counts for year
