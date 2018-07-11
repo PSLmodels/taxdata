@@ -3,6 +3,7 @@ Test CPS benefits file contents.
 """
 import pytest
 import numpy as np
+import pandas as pd
 
 
 @pytest.mark.parametrize('kind', ['cps'])
@@ -74,3 +75,58 @@ def test_benefits(kind, cps_benefits, puf_benefits,
     if num_allzeros > 0:
         msg = 'number {} records with all zero benefits in every year = {}'
         raise ValueError(msg.format(kind, num_allzeros))
+
+@pytest.mark.one
+@pytest.mark.parametrize('kind', ['cps'])
+def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
+                               cps, puf, cps_weights, puf_weights,
+                               cps_start_year, puf_start_year,
+                               cps_count, puf_count, 
+                               growfactors, growth_rates, last_year):
+    """
+    Compare actual and target extrapolated benefit amounts and counts.
+    (Note that there are no puf_benefits data.)
+    """
+    # specify several DataFrames and related parameters
+    if kind == 'cps':
+        basedata = cps
+        benefits = cps_benefits
+        weights = cps_weights
+        first_year = cps_start_year
+        data_count = cps_count
+    elif kind == 'puf':
+        basedata = puf
+        benefits = puf_benefits
+        weights = puf_weights
+        first_year = puf_start_year
+        data_count = puf_count
+        raise ValueError('illegal kind={}'.format(kind))
+    else:
+        raise ValueError('illegal kind={}'.format(kind))
+    benefit_names = ['ssi', 'mcare', 'mcaid', 'snap', 'wic',
+                     'tanf', 'vet', 'housing']
+    # expand benefits DataFrame to include those who don't receive benefits
+    recid_df = pd.DataFrame({'RECID': basedata.RECID})
+    full_benefits = recid_df.merge(benefits, on='RECID', how='left')
+    full_benefits.fillna(0, inplace=True)
+    assert len(recid_df.index) == len(full_benefits.index)
+    extrapolated_benefits = full_benefits.astype(np.float32)
+    del recid_df
+    del full_benefits
+    assert len(extrapolated_benefits.index) == data_count
+    # compute benefit amounts and counts for first_year
+    dump = False
+    fyr_amount = dict()
+    fyr_count = dict()
+    wght = basedata['s006'] * 0.01
+    for bname in benefit_names:
+        ben = basedata['{}_ben'.format(bname)]
+        benamt = (ben * wght).sum() * 1e-9
+        fyr_amount[bname] = round(benamt, 3)
+        benrec = wght[ben > 0].sum() * 1e-6
+        fyr_count[bname] = round(benrec, 3)
+        if dump:
+            benavg = benamt / benrec
+            res = '{} {}\t{:8.3f}{:8.3f}{:8.1f}'.format(first_year, bname,
+                                                        benamt, benrec, benavg)
+            print(res)
