@@ -270,7 +270,7 @@ class Benefits(object):
 if __name__ == '__main__':
     # create extrapolated benefits
     ben = Benefits()
-    for _ in range(SYEAR + 1, LYEAR + 1):
+    for _ in range(SYEAR, LYEAR):
         ben.increment_year(tol=0.05)
     # drop unnecessary variables
     drop_list = []
