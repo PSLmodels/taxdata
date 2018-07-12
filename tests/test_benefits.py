@@ -88,7 +88,7 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     (Note that there are no puf_benefits data.)
     """
     rtol_amt = 0.002
-    rtol_cnt = 0.05
+    rtol_cnt = 0.0
     dump_res = False
     # specify several DataFrames and related parameters
     if kind == 'cps':
