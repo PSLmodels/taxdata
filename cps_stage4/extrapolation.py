@@ -199,6 +199,7 @@ class Benefits(object):
         self.index = cps_benefit['SEQUENCE']
 
         cps_weights = pd.read_csv('../cps_stage2/cps_weights.csv.gz')
+        cps_weights = cps_weights.astype(np.float64).mul(0.01)
         cps_weights['SEQUENCE'] = self.index
         cps_weights.set_index('SEQUENCE', inplace=True)
 
