@@ -272,7 +272,7 @@ if __name__ == '__main__':
     # create extrapolated benefits
     ben = Benefits()
     for _ in range(SYEAR, LYEAR):
-        ben.increment_year(tol=0.05)
+        ben.increment_year(tol=9e99)
     # drop unnecessary variables
     drop_list = []
     # drop all recipient columns
