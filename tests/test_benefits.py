@@ -132,6 +132,10 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
             res = '{} {}\t{:8.3f}{:8.3f}{:8.1f}'.format(first_year, bname,
                                                         benamt, bencnt, benavg)
             print(res)
+        msg = '{} {}\tAMT\t{:9.3f}'
+        print(msg.format(first_year, bname, fyr_amount[bname]))
+        msg = '{} {}\tCNT\t{:9.3f}'
+        print(msg.format(first_year, bname, fyr_count[bname]))
     # compare actual and target amounts/counts for each subsequent year
     differences = False
     for year in range(first_year + 1, last_year + 1):
