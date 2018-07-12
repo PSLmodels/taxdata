@@ -76,7 +76,8 @@ def test_benefits(kind, cps_benefits, puf_benefits,
         msg = 'number {} records with all zero benefits in every year = {}'
         raise ValueError(msg.format(kind, num_allzeros))
 
-@pytest.mark.one
+
+@pytest.mark.extrapolated_benefits
 @pytest.mark.parametrize('kind', ['cps'])
 def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
                                cps, puf, cps_weights, puf_weights,
@@ -87,8 +88,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     Compare actual and target extrapolated benefit amounts and counts.
     (Note that there are no puf_benefits data.)
     """
-    rtol_amt = 0.002
-    rtol_cnt = 0.0
+    rtol_amt = -0.002
+    rtol_cnt = -0.10
     dump_res = False
     # specify several DataFrames and related parameters
     if kind == 'cps':
