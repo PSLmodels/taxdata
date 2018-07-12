@@ -87,7 +87,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     Compare actual and target extrapolated benefit amounts and counts.
     (Note that there are no puf_benefits data.)
     """
-    rel_tolerance = 0.15  # should be not much more than 0.05
+    rtol_amt = 0.13
+    rtol_cnt = 0.15
     dump_res = False
     # specify several DataFrames and related parameters
     if kind == 'cps':
@@ -175,7 +176,7 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
         for bname in benefit_names:
             if not np.allclose([actual_amount[bname]],
                                [target_amount[bname]],
-                               atol=0.0, rtol=rel_tolerance):
+                               atol=0.0, rtol=rtol_amt):
                 differences = True
                 reldiff = actual_amount[bname] / target_amount[bname] - 1.0
                 msg = '{} {}\tAMT\t{:9.3f}{:9.3f}{:8.1f}'
@@ -185,7 +186,7 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
                                  reldiff * 100))
             if not np.allclose([actual_count[bname]],
                                [target_count[bname]],
-                               atol=0.0, rtol=rel_tolerance):
+                               atol=0.0, rtol=rtol_cnt):
                 differences = True
                 reldiff = actual_count[bname] / target_count[bname] - 1.0
                 msg = '{} {}\tCNT\t{:9.3f}{:9.3f}{:8.1f}'
