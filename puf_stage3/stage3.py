@@ -3,16 +3,16 @@ import numpy as np
 import pandas as pd
 
 
-def adjustment(agi, var, var_name, target, weight, blowup):
+def adjustment(agi, var, var_name, target, weights, blowup):
     """
     Parameters
     ----------
     agi: AGI provided in PUF
-    var: Variable being adjusted
-    var_name: Three letter code to identify variable being adjusted
-    target: Target bin levels
-    weight: Weights file
-    blowup: Blowup factors created in Stage 1 of the extrapolation process
+    var: variable being adjusted
+    var_name: three letter code to identify variable being adjusted
+    target: target bin levels
+    weights: integer*100 weights dataframe
+    blowup: blowup factors created in Stage 1 of the extrapolation process
 
     Returns
     -------
@@ -24,7 +24,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
     goal_total = pd.DataFrame()
     for year in range(2011, 2028):
         wt_year = 'WT{}'.format(year)
-        s006 = weight[wt_year] * 0.01
+        s006 = weights[wt_year] * 0.01
         var_copy *= blowup[year]
         total = (var_copy * s006).sum()
         goal_total[year] = [total]
@@ -47,7 +47,7 @@ def adjustment(agi, var, var_name, target, weight, blowup):
         goal_amts = goal_total[year][0] * distribution[year]
 
         wt_year = 'WT{}'.format(year)
-        s006 = weight[wt_year] * 0.01
+        s006 = weights[wt_year] * 0.01
         var = var * blowup[year]
         # Find current total in each bin
         bin_0 = np.where(agi < 0,
