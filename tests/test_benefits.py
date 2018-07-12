@@ -87,8 +87,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     Compare actual and target extrapolated benefit amounts and counts.
     (Note that there are no puf_benefits data.)
     """
-    rtol_amt = 0.13
-    rtol_cnt = 0.15
+    rtol_amt = 0.002
+    rtol_cnt = 0.10
     dump_res = False
     # specify several DataFrames and related parameters
     if kind == 'cps':
