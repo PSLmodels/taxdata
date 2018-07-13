@@ -134,7 +134,7 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
         ben = basedata['{}_ben'.format(bname)]
         benamt = (ben * wght).sum() * 1e-9
         fyr_amount[bname] = round(benamt, 3)
-        bencnt = (size * wght[ben > 0]).sum() * 1e-6
+        bencnt = (size[ben > 0] * wght[ben > 0]).sum() * 1e-6
         fyr_count[bname] = round(bencnt, 3)
         msg = '{} {}\tAMT\t{:9.3f}'
         print(msg.format(first_year, bname, fyr_amount[bname]))
@@ -152,7 +152,7 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
             assert len(ben.index) == len(wght.index)
             benamt = (ben * wght).sum() * 1e-9
             actual_amount[bname] = round(benamt, 3)
-            bencnt = (size * wght[ben > 0]).sum() * 1e-6
+            bencnt = (size[ben > 0] * wght[ben > 0]).sum() * 1e-6
             actual_count[bname] = round(bencnt, 3)
         # compute target amuonts/counts for year
         target_amount = dict()
