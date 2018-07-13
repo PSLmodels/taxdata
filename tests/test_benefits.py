@@ -87,7 +87,7 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     Compare actual and target extrapolated benefit amounts and counts.
     (Note that there are no puf_benefits data.)
     """
-    # specify nature of counts
+    # specify nature of counts (benefit recipients are in the [1,XTOT] range)
     size_is_xtot = True
     # ... True implies size is XTOT (i.e., individual counts)
     # ... False implies size is one (i.e., filing-unit counts)
