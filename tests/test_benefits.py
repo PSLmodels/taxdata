@@ -76,20 +76,24 @@ def test_benefits(kind, cps_benefits, puf_benefits,
         msg = 'number {} records with all zero benefits in every year = {}'
         raise ValueError(msg.format(kind, num_allzeros))
 
-
+@pytest.mark.one
 @pytest.mark.parametrize('kind', ['cps'])
 def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
                                cps, puf, cps_weights, puf_weights,
                                cps_start_year, puf_start_year,
                                cps_count, puf_count,
-                               growfactors, growth_rates, last_year):
+                               growth_rates, last_year):
     """
     Compare actual and target extrapolated benefit amounts and counts.
     (Note that there are no puf_benefits data.)
     """
+    # specify nature of counts
+    size_is_xtot = False
+    # ... True implies size is XTOT (i.e., individual counts)
+    # ... False implies size is one (i.e., filing-unit counts)
+    # specify maximum relative tolerances allowed to avoid test failure
     rtol_amt = 0.002
-    rtol_cnt = 0.10
-    dump_res = False
+    rtol_cnt = 0.0  # ... 0.10
     # specify several DataFrames and related parameters
     if kind == 'cps':
         basedata = cps
@@ -106,8 +110,11 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
         raise ValueError('illegal kind={}'.format(kind))
     else:
         raise ValueError('illegal kind={}'.format(kind))
-    benefit_names = ['ssi', 'mcare', 'mcaid', 'snap', 'wic',
-                     'tanf', 'vet', 'housing']
+    # specify size array
+    size = basedata['XTOT']
+    if not size_is_xtot:
+        size[:] = 1
+    assert len(size.index) == data_count
     # expand benefits DataFrame to include those who don't receive benefits
     recid_df = pd.DataFrame({'RECID': basedata.RECID})
     full_benefits = recid_df.merge(benefits, on='RECID', how='left')
@@ -118,6 +125,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     del full_benefits
     assert len(extrapolated_benefits.index) == data_count
     # compute benefit amounts and counts for first_year
+    benefit_names = ['ssi', 'mcare', 'mcaid', 'snap', 'wic',
+                     'tanf', 'vet', 'housing']
     fyr_amount = dict()
     fyr_count = dict()
     wght = basedata['s006'] * 0.01
@@ -125,13 +134,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
         ben = basedata['{}_ben'.format(bname)]
         benamt = (ben * wght).sum() * 1e-9
         fyr_amount[bname] = round(benamt, 3)
-        bencnt = wght[ben > 0].sum() * 1e-6
+        bencnt = (size * wght[ben > 0]).sum() * 1e-6
         fyr_count[bname] = round(bencnt, 3)
-        if dump_res:
-            benavg = benamt / bencnt
-            res = '{} {}\t{:8.3f}{:8.3f}{:8.1f}'.format(first_year, bname,
-                                                        benamt, bencnt, benavg)
-            print(res)
         msg = '{} {}\tAMT\t{:9.3f}'
         print(msg.format(first_year, bname, fyr_amount[bname]))
         msg = '{} {}\tCNT\t{:9.3f}'
@@ -148,14 +152,8 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
             assert len(ben.index) == len(wght.index)
             benamt = (ben * wght).sum() * 1e-9
             actual_amount[bname] = round(benamt, 3)
-            bencnt = wght[ben > 0].sum() * 1e-6
+            bencnt = (size * wght[ben > 0]).sum() * 1e-6
             actual_count[bname] = round(bencnt, 3)
-            if dump_res:
-                benavg = benamt / bencnt
-                res = '{} {}\t{:8.3f}{:8.3f}{:8.1f} A'.format(year, bname,
-                                                              benamt, bencnt,
-                                                              benavg)
-                print(res)
         # compute target amuonts/counts for year
         target_amount = dict()
         target_count = dict()
@@ -170,12 +168,6 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
             cntfactor = 1.0 + growth_rates.loc[year, col]
             bencnt = cntfyr * cntfactor
             target_count[bname] = round(bencnt, 3)
-            if dump_res:
-                benavg = benamt / bencnt
-                res = '{} {}\t{:8.3f}{:8.3f}{:8.1f} T'.format(year, bname,
-                                                              benamt, bencnt,
-                                                              benavg)
-                print(res)
         # compare actual and target amuonts/counts for year
         for bname in benefit_names:
             if not np.allclose([actual_amount[bname]],
