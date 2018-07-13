@@ -76,7 +76,7 @@ def test_benefits(kind, cps_benefits, puf_benefits,
         msg = 'number {} records with all zero benefits in every year = {}'
         raise ValueError(msg.format(kind, num_allzeros))
 
-@pytest.mark.one
+
 @pytest.mark.parametrize('kind', ['cps'])
 def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
                                cps, puf, cps_weights, puf_weights,
@@ -88,12 +88,12 @@ def test_extrapolated_benefits(kind, cps_benefits, puf_benefits,
     (Note that there are no puf_benefits data.)
     """
     # specify nature of counts
-    size_is_xtot = False
+    size_is_xtot = True
     # ... True implies size is XTOT (i.e., individual counts)
     # ... False implies size is one (i.e., filing-unit counts)
     # specify maximum relative tolerances allowed to avoid test failure
     rtol_amt = 0.002
-    rtol_cnt = 0.0  # ... 0.10
+    rtol_cnt = 0.12
     # specify several DataFrames and related parameters
     if kind == 'cps':
         basedata = cps
