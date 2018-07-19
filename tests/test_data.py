@@ -6,6 +6,24 @@ import pytest
 import numpy as np
 
 
+def unique_recid(data, dataname):
+    """
+    Test that RECID values are unique.
+    """
+    recid = data['RECID']
+    unique, counts = np.unique(recid, return_counts=True)
+    recid_count = dict(zip(unique, counts))
+    duplicates = False
+    msg = ''
+    for rid in sorted(recid_count.keys()):
+        if recid_count[rid] > 1:
+            duplicates = True
+            msg += '\nRECID={} has COUNT={}'.format(rid, recid_count[rid])
+    if duplicates:
+        title = 'The following {} RECIDs have COUNTS greater than one:'
+        raise ValueError(title.format(dataname) + msg)
+
+
 def min_max(data, meta, dataname):
     """
     Test that variable variables are within their minimum/maximu range.
@@ -145,6 +163,7 @@ def test_pufcsv_data(puf, metadata, test_path):
     """
     Test PUF data.
     """
+    unique_recid(puf, 'PUF')
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
     variable_check(test_path, puf, 'puf')
@@ -154,6 +173,7 @@ def test_cpscsv_data(cps, metadata, test_path):
     """
     Test CPS data.
     """
+    unique_recid(cps, 'CPS')
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
     variable_check(test_path, cps, 'cps')
