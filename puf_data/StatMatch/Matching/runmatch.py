@@ -58,7 +58,7 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     soi = create_soi(puf.copy())
 
     print('PUF Created')
-    print ('Start Phase One')
+    print('Start Phase One')
     filers = filers.fillna(0)
     soi = soi.fillna(0)
     soi_final, cps_final, counts = phaseone(filers, soi)
