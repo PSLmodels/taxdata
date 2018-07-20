@@ -776,7 +776,7 @@ def create_cps(raw_cps):
 
     # Empty list to hold the completed records
     cps_list = []
-    print ('Creating Records')
+    print('Creating Records')
     for record in tqdm(cps):
         # Find the type of record
         rectype = record[0][0]
@@ -795,6 +795,6 @@ def create_cps(raw_cps):
     # Create the data set by combining all of the records
     cps_mar = pd.concat(cps_list)
     # Export the data
-    print ('Exporting Data')
+    print('Exporting Data')
     cps_mar.to_csv('cpsmar2016.csv', index=False)
     return cps_mar
