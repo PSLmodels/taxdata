@@ -862,7 +862,7 @@
       "max": 9e+99
     }
   },
-  "elderly_dependent": {
+  "elderly_dependents": {
     "type": "int",
     "desc": "1 if filing unit has a dependent age 65+; otherwise 0",
     "form": {
