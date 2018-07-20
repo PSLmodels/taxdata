@@ -862,7 +862,7 @@
       "max": 9e+99
     }
   },
-  "elderly_dependent": {
+  "elderly_dependents": {
     "type": "int",
     "desc": "1 if filing unit has a dependent age 65+; otherwise 0",
     "form": {
@@ -871,7 +871,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 1
+      "max": 3
     }
   },
   "f2441": {
