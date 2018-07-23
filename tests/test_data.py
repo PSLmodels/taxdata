@@ -108,21 +108,21 @@ def variable_check(test_path, data, dataname):
     for line in expected_txt[1:]:
         txt = line.rstrip()
         split = txt.split()
-        assert len(split) == 2  # should be 4 <<<<<<<<<<<<<<<<<<<<<<<<<<
+        assert len(split) == 4
         var = split[0]
         expected_sum[var] = int(split[1])
-        expected_min[var] = 0   # int(split[2]) <<<<<<<<<<<<<<<<<
-        expected_max[var] = -1  # int(split[3]) <<<<<<<<<<<<<<<<<
+        expected_min[var] = int(split[2])
+        expected_max[var] = int(split[3])
 
     # loop through each column in the dataset and check sum, min, max
     actual_txt = '{:20}{:>15}{:>15}{:>15}\n'.format('VARIABLE',
                                                     'SUM', 'MIN', 'MAX')
-    var_inform = '{:20s}{:15d}{:15d}{:15d}\n'
+    var_inform = '{:20}{:15d}{:15d}{:15d}\n'
     diffs = False
     diff_list_str = ''  # string to hold all of the variables with errors
     new_vars = False
     new_var_list_str = ''  # srint to hold all of the unexpected variables
-    for var in data.columns:
+    for var in sorted(data.columns):
         sum = int(data[var].sum())
         min = int(data[var].min())
         max = int(data[var].max())
@@ -151,8 +151,8 @@ def variable_check(test_path, data, dataname):
         msg = '{}\n'.format(dataname.upper)
         actual_file_name = '{}_agg_actual.txt'.format(dataname)
         actual_file_path = os.path.join(test_path, actual_file_name)
-        with open(actual_file_path, 'w') as f:
-            f.write(actual_txt)
+        with open(actual_file_path, 'w') as afile:
+            afile.write(actual_txt)
         # modify error message based on which errors are raised
         if diffs:
             diff_msg = 'Aggregate results differ for following variables:\n'
