@@ -7,7 +7,7 @@ import pandas as pd
 # TODO: revise the following constants when using new or revised CPS/PUF data
 CPS_START_YEAR = 2014
 PUF_START_YEAR = 2011
-PUF_COUNT = 239002
+PUF_COUNT = 248591
 LAST_YEAR = 2027
 
 

@@ -81,7 +81,7 @@
     },
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
-      "min": 1,
+      "min": 0,
       "max": 14
     }
   },
@@ -106,7 +106,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 98
+      "max": 99
     }
   },
   "agi_bin": {
