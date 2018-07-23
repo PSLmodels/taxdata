@@ -26,7 +26,7 @@ def unique_recid(data, dataname):
 
 def min_max(data, meta, dataname):
     """
-    Test that variable variables are within their minimum/maximu range.
+    Test that variable variables are within their minimum/maximum range.
     """
     for var in meta.keys():
         availability = meta[var]['availability']
@@ -99,42 +99,54 @@ def variable_check(test_path, data, dataname):
     Test aggregate values in the data.
     """
     expected_file_name = '{}_agg_expected.txt'.format(dataname)
-    file_path = os.path.join(test_path, expected_file_name)
-    with open(file_path, 'r') as f:
-        expected_txt = f.readlines()
-    expected_dict = {}
+    efile_path = os.path.join(test_path, expected_file_name)
+    with open(efile_path, 'r') as efile:
+        expected_txt = efile.readlines()
+    expected_sum = dict()
+    expected_min = dict()
+    expected_max = dict()
     for line in expected_txt[1:]:
         txt = line.rstrip()
         split = txt.split()
-        expected_dict[split[0]] = int(split[1])
+        assert len(split) == 2  # should be 4 <<<<<<<<<<<<<<<<<<<<<<<<<<
+        var = split[0]
+        expected_sum[var] = int(split[1])
+        expected_min[var] = 0   # int(split[2]) <<<<<<<<<<<<<<<<<
+        expected_max[var] = -1  # int(split[3]) <<<<<<<<<<<<<<<<<
 
-    # loop through each column in the dataset and check aggregate total
-    actual_txt = '{:17} Value\n'.format('Variable')
+    # loop through each column in the dataset and check sum, min, max
+    actual_txt = '{:20}{:>15}{:>15}{:>15}\n'.format('VARIABLE',
+                                                    'SUM', 'MIN', 'MAX')
+    var_inform = '{:20s}{:15d}{:15d}{:15d}\n'
     diffs = False
     diff_list_str = ''  # string to hold all of the variables with errors
     new_vars = False
     new_var_list_str = ''  # srint to hold all of the unexpected variables
     for var in data.columns:
-        agg = data[var].sum()
-        info_str = '{:17} {}\n'.format(var, agg)
-        actual_txt += info_str
+        sum = int(data[var].sum())
+        min = int(data[var].min())
+        max = int(data[var].max())
+        actual_txt += var_inform.format(var, sum, min, max)
         try:
-            if agg != expected_dict[var]:
+            var_diff = (sum != expected_sum[var] or
+                        min != expected_min[var] or
+                        max != expected_max[var])
+            if var_diff:
                 diffs = True
                 diff_list_str += var + '\n'
         except KeyError:
             # if the variable is not expected, print a new message
-            new_var_list_str += var + '\n'
             new_vars = True
+            new_var_list_str += var + '\n'
 
     # check for any missing variables
     missing_vars = False
-    missing_vars_set = set(expected_dict.keys()) - set(data.columns)
+    missing_vars_set = set(expected_sum.keys()) - set(data.columns)
     if missing_vars_set:
         missing_vars = True
         missing_vars_str = '\n'.join(v for v in missing_vars_set)
 
-    # if there is an error, write the new file
+    # if there is an error, write the actual file
     if diffs or new_vars or missing_vars:
         msg = '{}\n'.format(dataname.upper)
         actual_file_name = '{}_agg_actual.txt'.format(dataname)
@@ -153,8 +165,8 @@ def variable_check(test_path, data, dataname):
         if missing_vars:
             msg += 'The following expected variables are missing in the data:'
             msg += '\n' + missing_vars_str + '\n\n'
-        msg += 'If new results are OK copy {} to {}'.format(actual_file_name,
-                                                            expected_file_name)
+        msg += 'If new results OK, copy {} to {}'.format(actual_file_name,
+                                                         expected_file_name)
         raise ValueError(msg)
 
 
