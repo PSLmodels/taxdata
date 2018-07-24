@@ -78,6 +78,13 @@ puf-files: puf_data/puf.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
 
+PM_DIR=./puf_data/StatMatch/Matching
+PM_PY_FILES := $(shell ls -l $(PM_DIR)/*py | awk '{print $$9}')
+puf_data/cps-matched-puf.csv: $(PM_PY_FILES) \
+                              $(PM_DIR)/puf2011.csv \
+                              $(PM_DIR)/cpsmar2016.csv
+	cd $(PM_DIR) ; python runmatch.py
+
 puf_data/puf.csv: puf_data/finalprep.py \
                   puf_data/cps-matched-puf.csv
 	cd puf_data ; python finalprep.py
