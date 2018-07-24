@@ -8,6 +8,8 @@ __pycache__/
 # Mac OS X
 *.DS_Store
 
-# IRS-SOI PUF data files
+# IRS-SOI PUF and related CPS matching data files
 puf_data/puf.csv
 puf_data/cps-matched-puf.csv
+puf_data/StatMatch/Matching/puf2011.csv
+puf_data/StatMatch/Matching/cpsmar2016.csv

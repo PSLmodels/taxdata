@@ -266,7 +266,6 @@ def add_nonfiler(cpsrets, nonfiler):
     # weight
     nonfiler['matched_weight'] = wt
 
-    final = pd.concat([cpsrets, nonfiler], ignore_index=True)
+    final = pd.concat([cpsrets, nonfiler], sort=True, ignore_index=True)
     final['finalseq'] = final.index + 1
-    # final.to_csv('prod2009_v2.csv', index=False)
     return final
