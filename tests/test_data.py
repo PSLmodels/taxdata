@@ -82,7 +82,7 @@ def relationships(data, dataname):
     else:
         # see Note (2) in docstring
         m = 'Number of records where n24 > nu18 has changed'
-        assert (data['n24'] > data['nu18']).sum() == 14700, m
+        assert (data['n24'] > data['nu18']).sum() == 14717, m
         subdata = data[data['n24'] > data['nu18']]
         max_diff = 3
         m = 'n24 > nu18 + {}'.format(max_diff)
