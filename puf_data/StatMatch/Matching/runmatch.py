@@ -19,8 +19,8 @@ def match():
     # convert the .DAT file to a .CSV
     cps_csv_path = 'cpsmar2016.csv'
     if os.path.isfile(cps_csv_path):
-        print('Reading CPS Data')
-        mar_cps = pd.read_csv('cpsmar2016.csv')
+        print('Reading CPS Data from .CSV')
+        mar_cps = pd.read_csv(cps_csv_path)
     else:
         cps_dat_path = 'asec2016_pubuse_v3.dat'
         if os.path.isfile(cps_dat_path):
