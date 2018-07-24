@@ -7,39 +7,31 @@ from phase2 import phasetwo
 from add_cps_vars import add_cps
 from add_nonfilers import add_nonfiler
 import pandas as pd
-import argparse
+import os
 
 """
     Script to run each phase of the matching process
 """
 
 
-def match(mar_cps_path='asec2016_pubuse_v3.dat',
-          puf_path='puf2011.csv'):
-    # Add arguments for specifying path to CPS file in CSV format
-    # this will allow the program to skip the process of creating the CPS from
-    # a .DAT file.
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cps', help='path to CPS file in CSV format')
-    parser.add_argument('-d', '--dat', help='path to CPS file in DAT format')
-    parser.add_argument('-p', '--puf', help='path to PUF file in CSV format')
-    args = parser.parse_args()
-
-    # Create CPS file either from a CPS or through create_cps method
-    if args.cps is not None:
-        mar_cps = pd.read_csv(args.cps)
+def match():
+    # If there is a .CSV version of the CPS, simply read that in. Otherwise
+    # convert the .DAT file to a .CSV
+    cps_csv_path = 'cpsmar2016.csv'
+    if os.path.isfile(cps_csv_path):
+        print('Reading CPS Data')
+        mar_cps = pd.read_csv('cpsmar2016.csv')
     else:
-        if args.dat is not None:
-            mar_cps_path = args.dat
-        mar_cps = cpsmar.create_cps(mar_cps_path)
-
-    # If you already have the CPS in CSV format, comment out the line above and
-    # uncomment the line bellow to skip creation from the DAT file and use CSV
-
-    # do this initially in an effort to fix warning:
-    # "A value is trying to be set on a copy of a slice from a DataFrame"
-    if args.puf is not None:
-        puf_path = args.puf
+        cps_dat_path = 'asec2016_pubuse_v3.dat'
+        if os.path.isfile(cps_dat_path):
+            print('Converting .DAT to .CSV')
+            mar_cps = cpsmar.create_cps(cps_dat_path)
+        else:
+            m = ('You must have either the .DAT or .CSV version of the 2016' +
+                 ' CPS in your directory')
+            raise IOError(m)
+    print('Reading PUF Data')
+    puf_path = 'puf2011.csv'
     puf = pd.read_csv(puf_path)
     # Change PUF columns to lowercase
     puf.columns = map(str.lower, puf.columns)
@@ -47,7 +39,7 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     puf = puf[(puf['recid'] != 999996) & (puf['recid'] != 999997) &
               (puf['recid'] != 999998) & (puf['recid'] != 999999)]
 
-    print('CPS Created')
+    print('Creating CPS Tax Units')
     rets = Returns(mar_cps)
     cps = rets.computation()
 
@@ -57,7 +49,6 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
     print('Adjustment Complete')
     soi = create_soi(puf.copy())
 
-    print('PUF Created')
     print('Start Phase One')
     filers = filers.fillna(0)
     soi = soi.fillna(0)
