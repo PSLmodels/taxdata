@@ -29,7 +29,7 @@ def match():
         else:
             m = ('You must have either the .DAT or .CSV version of the 2016' +
                  ' CPS in your directory')
-            raise IOError(m)
+            raise OSError(m)
     print('Reading PUF Data')
     puf_path = 'puf2011.csv'
     puf = pd.read_csv(puf_path)
