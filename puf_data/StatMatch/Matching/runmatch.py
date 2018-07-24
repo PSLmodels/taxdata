@@ -85,4 +85,5 @@ def match(mar_cps_path='asec2016_pubuse_v3.dat',
 
 if __name__ == "__main__":
     cps_matched = match()
-    cps_matched.to_csv('../../cps-matched-puf.csv', index=False)
+    cps_matched.to_csv('../../cps-matched-puf.csv', index=False,
+                       float_format='%.2f')
