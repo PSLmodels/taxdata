@@ -82,10 +82,11 @@ def relationships(data, dataname):
     else:
         # see Note (2) in docstring
         m = 'Number of records where n24 > nu18 has changed'
-        assert (data['n24'] > data['nu18']).sum() == 14928, m
+        assert (data['n24'] > data['nu18']).sum() == 14700, m
         subdata = data[data['n24'] > data['nu18']]
-        m = 'n24 > nu18 + 3'
-        assert np.all(subdata['n24'] <= subdata['nu18'] + 3), m
+        max_diff = 3
+        m = 'n24 > nu18 + {}'.format(max_diff)
+        assert np.all(subdata['n24'] <= subdata['nu18'] + max_diff), m
 
     m = less_than_str.format(dataname, 'e00650', 'e00600')
     assert np.all(data['e00600'] >= data['e00650']), m
@@ -169,7 +170,7 @@ def variable_check(test_path, data, dataname):
                                                          expected_file_name)
         raise ValueError(msg)
 
-
+@pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_pufcsv_data(puf, metadata, test_path):
     """
