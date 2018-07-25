@@ -67,7 +67,7 @@ def main():
         'ELDERLY_DEPENDENT': 'elderly_dependents',
         'F2441': 'f2441'
     }
-    
+
     data = data.rename(columns=renames)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
     data['EIC'] = np.minimum(3, data.EIC)
