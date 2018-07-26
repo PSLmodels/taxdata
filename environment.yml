@@ -7,6 +7,7 @@ dependencies:
 - pandas>=0.20.3
 - scipy>=0.18.1
 - bokeh >=0.12.3
+- statsmodels
 - pytest
 - pulp
 - tqdm
