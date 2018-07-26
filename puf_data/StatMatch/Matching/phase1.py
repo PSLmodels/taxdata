@@ -39,7 +39,7 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
     people += depne
     people = min(5, people)
     if ifdept == 1:
-        people = np.nan
+        people = 1
 
     # dependent filers
     idept = 1
