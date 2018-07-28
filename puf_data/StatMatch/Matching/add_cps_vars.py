@@ -21,7 +21,7 @@ def add_cps(cps_recs, match, puffile):
                       (puffile['recid'] != 999997) &
                       (puffile['recid'] != 999996)]
     puffile['filer'] = 1
-    puffile['wt'] = puffile['s006'] / 100
+    puffile['wt'] = puffile['s006'] / 100.0
     puffile['soiseq'] = puffile.index + 1
 
     match.sort_values(['cpsseq'], inplace=True)

@@ -17,7 +17,7 @@ def phasetwo(SOI, CPS):
     CPS.loc[:, 'wt_adj'] = CPS['wt'] * CPS['factor']
     factor = 1.
     if CPS['wt'].sum() > 0:
-        factor = SOI['wt'].sum() / CPS['wt'].sum()
+        factor = SOI['wt'].sum() / float(CPS['wt'].sum())
 
     # CPS['wt_adj'] = CPS['wt'] * factor
 

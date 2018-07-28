@@ -82,7 +82,7 @@ def relationships(data, dataname):
     else:
         # see Note (2) in docstring
         m = 'Number of records where n24 > nu18 has changed'
-        assert (data['n24'] > data['nu18']).sum() == 14928, m
+        assert (data['n24'] > data['nu18']).sum() == 14911, m
         subdata = data[data['n24'] > data['nu18']]
         m = 'n24 > nu18 + 3'
         assert np.all(subdata['n24'] <= subdata['nu18'] + 3), m

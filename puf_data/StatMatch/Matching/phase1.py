@@ -61,11 +61,11 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
         idepne = 1
 
     # independent variables
-    tpi = (was + intst + texint + dbe + max(0, sche) + max(0, bil) +
-           max(0, fil) + ssinc + pensions + alimony + ucagix)
-    wageshr = 0
-    capshr = 0
-    if tpi != 0:
+    tpi = float(was + intst + texint + dbe + max(0, sche) + max(0, bil) +
+                max(0, fil) + ssinc + pensions + alimony + ucagix)
+    wageshr = 0.
+    capshr = 0.
+    if tpi != 0.:
         wageshr = was / tpi
         capshr = (intst + texint + dbe) / tpi
 
@@ -155,7 +155,9 @@ def phaseone(CPS, SOI):
                       on=['idept', 'ijs', 'iagede', 'idepne',
                           'ikids', 'iself', 'people'])
     countx['factor'] = np.where(countx['CPS_wgt'] > 0,
-                                countx['SOI_wgt'] / countx['CPS_wgt'], 0)
+                                countx['SOI_wgt'] /
+                                countx['CPS_wgt'].astype(float),
+                                0.)
     countx['cellid'] = countx.index + 1
 
     SOI_reg = pd.merge(SOI, countx, how='inner',
