@@ -1,17 +1,46 @@
 """
-Transform Stage_I_factors.csv (written by stage1.py)
-into growfactors.csv (used by Tax-Calculator)
+Transform Stage_I_factors.csv (written by stage1.py) and
+benefit_growth_rates.csv into growfactors.csv (used by Tax-Calculator).
 """
-
+import numpy as np
 import pandas as pd
 
 # pylint: disable=invalid-name
+
+first_benefit_year = 2014
+inben_filename = 'benefit_growth_rates.csv'
 first_data_year = 2011
-input_filename = 'Stage_I_factors.csv'
+infac_filename = 'Stage_I_factors.csv'
 output_filename = 'growfactors.csv'
 
+# --------------------------------------------------------------------------
+# read in raw rates of aggregate benefit growth and
+# convert rates into "one plus annual proportion change" factors
+bgr_all = pd.read_csv(inben_filename, index_col='YEAR')
+bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic', 'housing', 'tanf', 'vet']
+keep_cols = ['{}_benefit_growth'.format(bname) for bname in bnames]
+bgr_raw = bgr_all[keep_cols]
+gf_bnames = ['ABEN{}'.format(bname.upper()) for bname in bnames]
+bgr_raw.columns = gf_bnames
+bgf = 1.0 + (bgr_raw + 1.0).pct_change()
+
+# specify first row values because pct_change() leaves first year undefined
+for var in list(bgf):
+    bgf[var][first_benefit_year] = 1.0
+
+# add rows of ones for years from first_data_year thru first_benefit_year-1
+ones = [1.0] * len(bnames)
+for year in range(first_data_year, first_benefit_year):
+    row = pd.DataFrame(data=[ones], columns=gf_bnames, index=[year])
+    bgf = pd.concat([bgf, row], verify_integrity=True)
+bgf.sort_index(inplace=True)
+
+# round converted factors to six decimal digits of accuracy
+bgf = bgf.round(6)
+
+# --------------------------------------------------------------------------
 # read in blowup factors used internally in taxdata repository
-data = pd.read_csv(input_filename, index_col='YEAR')
+data = pd.read_csv(infac_filename, index_col='YEAR')
 
 # convert some aggregate factors into per-capita factors
 elderly_pop = data['APOPSNR']
@@ -29,30 +58,23 @@ data['ASCHEL'] = data['ASCHEL'] / pop
 data['ACGNS'] = data['ACGNS'] / pop
 data['ABOOK'] = data['ABOOK'] / pop
 data['ABENEFITS'] = data['ABENEFITS'] / pop
+data.rename(columns={'ABENEFITS': 'ABENOTHER'}, inplace=True)
 
 # convert factors into "one plus annual proportion change" format
 data = 1.0 + data.pct_change()
 
 # specify first row values because pct_change() leaves first year undefined
-# (these values have been transferred from Tax-Calculator records.py)
 for var in list(data):
     data[var][first_data_year] = 1.0
-"""
-Double check that these are still needed
-data['ACGNS'][first_data_year] = 1.1781
-data['ADIVS'][first_data_year] = 1.0606
-data['AINTS'][first_data_year] = 1.0357
-data['ASCHCI'][first_data_year] = 1.0041
-data['ASCHCL'][first_data_year] = 1.1629
-data['ASCHEI'][first_data_year] = 1.1089
-data['ASCHEL'][first_data_year] = 1.2953
-data['AUCOMP'][first_data_year] = 1.0034
-data['AWAGE'][first_data_year] = 1.0053
-"""
 
 # round converted factors to six decimal digits of accuracy
 data = data.round(6)
 
+# --------------------------------------------------------------------------
+# combine data and bgf DataFrames
+gfdf = pd.concat([data, bgf], axis='columns', verify_integrity=True)
+
+# --------------------------------------------------------------------------
 # delete from data the variables not used by Tax-Calculator (TC)
 TC_USED_VARS = set(['ABOOK',
                     'ACGNS',
@@ -70,10 +92,10 @@ TC_USED_VARS = set(['ABOOK',
                     'ATXPY',
                     'AUCOMP',
                     'AWAGE',
-                    'ABENEFITS'])
-ALL_VARS = set(list(data))
+                    'ABENOTHER'] + gf_bnames)
+ALL_VARS = set(list(gfdf))
 TC_UNUSED_VARS = ALL_VARS - TC_USED_VARS
-data = data.drop(TC_UNUSED_VARS, axis=1)
+gfdf = gfdf.drop(TC_UNUSED_VARS, axis=1)
 
 # write out blowup factors used in Tax-Calculator repository
-data.to_csv(output_filename, index='YEAR')
+gfdf.to_csv(output_filename, index='YEAR')
