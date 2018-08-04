@@ -1,5 +1,5 @@
 """
-Transform Stage_I_factors.csv (written by stage1.py) and
+Transform Stage_I_factors.csv (written by the stage1.py script) and
 benefit_growth_rates.csv into growfactors.csv (used by Tax-Calculator).
 """
 import numpy as np
@@ -14,15 +14,15 @@ infac_filename = 'Stage_I_factors.csv'
 output_filename = 'growfactors.csv'
 
 # --------------------------------------------------------------------------
-# read in raw rates of aggregate benefit growth and
-# convert rates into "one plus annual proportion change" factors
+# read in raw average benefit amounts by year and
+# convert into "one plus annual proportion change" factors
 bgr_all = pd.read_csv(inben_filename, index_col='YEAR')
 bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic', 'housing', 'tanf', 'vet']
-keep_cols = ['{}_benefit_growth'.format(bname) for bname in bnames]
+keep_cols = ['{}_average_benefit'.format(bname) for bname in bnames]
 bgr_raw = bgr_all[keep_cols]
 gf_bnames = ['ABEN{}'.format(bname.upper()) for bname in bnames]
 bgr_raw.columns = gf_bnames
-bgf = 1.0 + (bgr_raw + 1.0).pct_change()
+bgf = 1.0 + bgr_raw.astype('float64').pct_change()
 
 # specify first row values because pct_change() leaves first year undefined
 for var in list(bgf):
@@ -97,5 +97,5 @@ ALL_VARS = set(list(gfdf))
 TC_UNUSED_VARS = ALL_VARS - TC_USED_VARS
 gfdf = gfdf.drop(TC_UNUSED_VARS, axis=1)
 
-# write out blowup factors used in Tax-Calculator repository
+# write out grow factors used in blowup logic in Tax-Calculator repository
 gfdf.to_csv(output_filename, index='YEAR')
