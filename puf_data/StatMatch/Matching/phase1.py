@@ -110,7 +110,7 @@ def predict(file):
     X = file[indep_vars]
     P = file[parameters]
     predictions = X.mul(P.values, axis="index").sum(axis=1)
-    return predictions
+    return predictions.astype(int)
 
 
 def phaseone(CPS, SOI):
