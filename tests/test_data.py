@@ -175,12 +175,13 @@ def check_benefits(data, dataname):
     Test benefit variables in the data.
     """
     if dataname == 'PUF':
-        return  # PUF data contain no non-zero benefit information
-    # check for presence of each benefit variable in data and benefit range
+        return  # PUF data contain no benefit variables
     bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
               'tanf', 'housing', 'vet', 'other']
-    min_benefit = 0
-    max_benefit = {
+    expect_minben = 0
+    # specify expected benefit maximum and weighted positive mean in CPS data 
+    expect_ben_stat = dict()
+    expect_ben_stat['max'] = {
         'mcare': 691961,
         'mcaid': 692753,
         'ssi': 64378,
@@ -191,18 +192,57 @@ def check_benefits(data, dataname):
         'vet': 169920,
         'other': 232456
     }
+    expect_ben_stat['avg'] = {
+        'mcare': 14928,
+        'mcaid': 13191,
+        'ssi': 7913,
+        'snap': 2907,
+        'wic': 748,
+        'tanf': 9117,
+        'housing': 7048,
+        'vet': 29912,
+        'other': 4323
+    }
+    # compare actual and expected benefit statistics
     error_msg = ''
+    # .. check actual minimum and maximum benefit values against expected range
     for bname in bnames:
         col = '{}_ben'.format(bname)
         assert col in data.columns
-        if data[col].min() < min_benefit:
+        minben = data[col].min()
+        if minben < expect_minben:
             msg = '\n{} benefits[{}].min()={} < {}'
-            error_msg += msg.format(dataname, col,
-                                    data[col].min(), min_benefit)
-        if data[col].max() > max_benefit[bname]:
+            error_msg += msg.format(dataname, col, minben, expect_minben)
+        maxben = data[col].max()
+        expect_maxben = expect_ben_stat['max'][bname]
+        if maxben > expect_maxben:
             msg = '\n{} benefits[{}].max()={} > {}'
-            error_msg += msg.format(dataname, col,
-                                    data[col].max(), max_benefit[bname])
+            error_msg += msg.format(dataname, col, maxben, expect_maxben)
+    # .. check actual weighted average benefit for those with positive benefit
+    for bname in bnames:
+        col = '{}_ben'.format(bname)
+        ben = data[col]
+        posben = ben > 0
+        wgt = data['s006'] * 0.01
+        wsum = (ben[posben] * wgt[posben]).sum()
+        wnum = wgt[posben].sum()
+        avgben = wsum / wnum
+        expect_avgben = expect_ben_stat['avg'][bname]
+        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.5):
+            msg = '\n{} benefits[{}].wavgp={:.2f} > {:.2f}'
+            error_msg += msg.format(dataname, col, avgben, expect_avgben)
+    # .. check that health insurance benefits are actuarial values, and
+    #    therefore, constant across those with a positive benefit
+    for bname in bnames[:2]:
+        col = '{}_ben'.format(bname)
+        ben = data[col]
+        posben = ben > 0
+        minposben = ben[posben].min()
+        maxposben = ben[posben].max()
+        if not np.allclose([minposben], [maxposben], rtol=0, atol=0.5):
+            msg = '\n{} benefits[{}].minpos= {:.2f} != .maxpos= {:.2f}'
+            # TODO:error_msg += msg.format(dataname, col, minposben, maxposben)
+    # .. repost test error is any significant comparison problems
     if error_msg:
         raise ValueError(error_msg)
 
