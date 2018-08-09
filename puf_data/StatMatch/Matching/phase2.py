@@ -30,8 +30,8 @@ def phasetwo(SOI, CPS):
     for cid in tqdm(cellid):
             soi = SOI[SOI['cellid'] == cid]
             cps = CPS[CPS['cellid'] == cid]
-            soi = soi.sort_values('yhat')
-            cps = cps.sort_values('yhat')
+            soi = soi.sort_values('yhat', kind='mergesort')
+            cps = cps.sort_values('yhat', kind='mergesort')
 
             soi = soi.to_dict('records')
             cps = cps.to_dict('records')

@@ -24,9 +24,9 @@ def add_cps(cps_recs, match, puffile):
     puffile['wt'] = puffile['s006'] / 100.0
     puffile['soiseq'] = puffile.index + 1
 
-    match.sort_values(['cpsseq'], inplace=True)
+    match.sort_values(['cpsseq'], inplace=True, kind='mergesort')
     merge_1 = pd.merge(match, cpsfile,  how='left', on=['cpsseq'])
-    merge_1.sort_values(['soiseq'], inplace=True)
+    merge_1.sort_values(['soiseq'], inplace=True, kind='mergesort')
     merge_2 = pd.merge(merge_1, puffile,  how='left', on=['soiseq'])
 
     merge_2['prodseq'] = merge_2.index + 1

@@ -76,7 +76,7 @@ class Returns(object):
             del self.house_units[:]
             # Pull households from CPS
             household = self.cps[self.cps['h_seq'] == num]
-            household = household.sort_values('a_lineno')
+            household = household.sort_values('a_lineno', kind='mergesort')
             house_dict = household.to_dict('records')
 
             # Set flags for household type
