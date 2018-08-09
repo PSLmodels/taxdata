@@ -170,6 +170,43 @@ def variable_check(test_path, data, dataname):
         raise ValueError(msg)
 
 
+def check_benefits(data, dataname):
+    """
+    Test benefit variables in the data.
+    """
+    if dataname == 'PUF':
+        return  # PUF data contain no non-zero benefit information
+    # check for presence of each benefit variable in data and benefit range
+    bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
+              'tanf', 'housing', 'vet', 'other']
+    min_benefit = 0
+    max_benefit = {
+        'mcare': 691961,
+        'mcaid': 692753,
+        'ssi': 64378,
+        'snap': 26569,
+        'wic': 4972,
+        'tanf': 159407,
+        'housing': 53253,
+        'vet': 169920,
+        'other': 232456
+    }
+    error_msg = ''
+    for bname in bnames:
+        col = '{}_ben'.format(bname)
+        assert col in data.columns
+        if data[col].min() < min_benefit:
+            msg = '\n{} benefits[{}].min()={} < {}'
+            error_msg += msg.format(dataname, col,
+                                    data[col].min(), min_benefit)
+        if data[col].max() > max_benefit[bname]:
+            msg = '\n{} benefits[{}].max()={} > {}'
+            error_msg += msg.format(dataname, col,
+                                    data[col].max(), max_benefit[bname])
+    if error_msg:
+        raise ValueError(error_msg)
+
+
 @pytest.mark.requires_pufcsv
 def test_pufcsv_data(puf, metadata, test_path):
     """
@@ -179,6 +216,7 @@ def test_pufcsv_data(puf, metadata, test_path):
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
     variable_check(test_path, puf, 'puf')
+    check_benefits(puf, 'PUF')
 
 
 def test_cpscsv_data(cps, metadata, test_path):
@@ -189,3 +227,4 @@ def test_cpscsv_data(cps, metadata, test_path):
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
     variable_check(test_path, cps, 'cps')
+    check_benefits(cps, 'CPS')
