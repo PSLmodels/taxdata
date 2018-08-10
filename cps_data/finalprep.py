@@ -341,8 +341,25 @@ def adjust(data, targets):
 def benefits(data, other_ben):
     """
     Distribute benefits from non-models benefit programs and create total
-    benefits variable
+    benefits variable.
+    Replaces Medicare and Medicaid values with set amounts
     """
+    # replace medicare and medicaid
+    medicare_cols = 'MCARE_VAL' + pd.Series((np.arange(15) + 1).astype(str))
+    medicaid_cols = 'MCAID_VAL' + pd.Series((np.arange(15) + 1).astype(str))
+    count_medicare = data[medicare_cols].astype(bool).sum(axis=1)
+    count_medicaid = data[medicaid_cols].astype(bool).sum(axis=1)
+    weighted_count_mcare = (count_medicare * data['s006']).sum()
+    weighted_count_mcaid = (count_medicaid * data['s006']).sum()
+    weighted_mcare = (data['mcare_ben'] * data['s006']).sum()
+    weighted_mcaid = (data['mcaid_ben'] * data['s006']).sum()
+    mcare_amt = weighted_mcare / weighted_count_mcare
+    mcaid_amt = weighted_mcaid / weighted_count_mcaid
+    data[medicare_cols] = data[medicare_cols].astype(bool) * mcare_amt
+    data[medicaid_cols] = data[medicaid_cols].astype(bool) * mcaid_amt
+    data['mcare_ben'] = data[medicare_cols].sum(axis=1)
+    data['mcaid_ben'] = data[medicaid_cols].sum(axis=1)
+
     other_ben['2014_cost'] *= 1e6
 
     # Distribute other benefits
