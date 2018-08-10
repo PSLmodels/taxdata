@@ -30,9 +30,10 @@ def add_nonfiler(cpsrets, nonfiler):
     socsec = nonfiler['socsec']
     wt = nonfiler['wt']
 
-    nonfiler = copy.deepcopy(nonfiler.filter(regex='jcps\d{1,2}$|icps\d{1}$|' +
+    nonfiler = copy.deepcopy(nonfiler.filter(regex=r'jcps\d{1,2}$|' +
+                                                   r'icps\d{1}$|' +
                                                    'jcps100| cpsseq|' +
-                                                   'nu\d{1,2}|nu18_dep|' +
+                                                   r'nu\d{1,2}|nu18_dep|' +
                                                    'n1820|n21|' +
                                                    'elderly_dependent|wasp|' +
                                                    'wass|xstate'))
