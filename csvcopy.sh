@@ -91,11 +91,4 @@ if [ $DTYPE == "puf" ]; then
     copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
 fi
 
-# copy $DTYPE_stage4/$DTYPE_benefits.csv.gz file if different
-TAXDATADIR=$DTYPE"_stage4/"
-FILENAME=$DTYPE"_benefits.csv.gz"
-if [ $DTYPE == "cps" ]; then
-    copyifdiff $FILENAME $TAXDATADIR$FILENAME $TAXCALCDIR$FILENAME $DRYRUN
-fi
-
 exit 0
