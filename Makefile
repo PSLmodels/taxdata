@@ -15,8 +15,7 @@ MADE_FILES = puf_data/puf.csv \
              puf_stage3/puf_ratios.csv.gz \
              cps_data/cps.csv.gz \
              cps_stage1/stage_2_targets.csv \
-             cps_stage2/cps_weights.csv.gz \
-             cps_stage4/cps_benefits.csv.gz
+             cps_stage2/cps_weights.csv.gz
 
 .PHONY=help
 help:
@@ -122,8 +121,7 @@ puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
 .PHONY=cps-files
 cps-files: cps_data/cps.csv.gz \
            cps_stage1/stage_2_targets.csv \
-           cps_stage2/cps_weights.csv.gz \
-           cps_stage4/cps_benefits.csv.gz
+           cps_stage2/cps_weights.csv.gz
 
 cps_data/cps.csv.gz: cps_data/finalprep.py \
                      cps_data/cps_raw.csv.gz \
@@ -144,16 +142,6 @@ cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_stage1/stage_2_targets.csv
 	cd cps_stage2 ; python stage2.py && \
         gunzip cps_weights.csv.gz && gzip -n cps_weights.csv
-
-cps_stage4/cps_benefits.csv.gz: cps_stage4/rename_columns.py \
-                                cps_stage4/extrapolation.py \
-                                cps_stage4/growth_rates.csv \
-                                cps_data/cps_raw.csv.gz \
-                                cps_stage2/cps_weights.csv.gz
-	cd cps_stage4 ; \
-        python rename_columns.py && python extrapolation.py && \
-        gunzip cps_benefits.csv.gz && gzip -n cps_benefits.csv ; \
-        rm -f ../cps_data/cps_raw_rename.csv.gz
 
 .PHONY=all
 all: puf-files cps-files
