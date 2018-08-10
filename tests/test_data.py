@@ -181,15 +181,15 @@ def check_cps_benefits(data):
     expect_ben_stat = dict()
     # .. maximum value per filing unit for benefit
     expect_ben_stat['max'] = {
-        'mcare': 691961,  # <--- will be fixed after switch to actuarial value
-        'mcaid': 692753,  # <--- will be fixed after switch to actuarial value
+        'mcare': 92976,
+        'mcaid': 98440,
         'ssi': 64378,
         'snap': 26569,
         'wic': 4972,
         'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
         'housing': 53253,
         'vet': 169920,    # <--- HIGH ($14,160/month)VA hospital costs or what?
-        'other': 232456   # <--- SEEMS ABSURD ($19,371/month)
+        'other': 53790
     }
     # .. minimum value per filing unit for positive benefit
     expect_ben_stat['min'] = {
@@ -237,7 +237,7 @@ def check_cps_benefits(data):
         exp_maxben = expect_ben_stat['max'][bname]
         if not np.allclose([maxben], [exp_maxben], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben maxben={} != {}'
-            error_msg += msg.format(bname, minben, exp_maxben)
+            error_msg += msg.format(bname, maxben, exp_maxben)
         expect_avgben = expect_ben_stat['avg'][bname]
         if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.6):
             msg = '\nCPS {}_ben avgben={:.2f} != {:.2f}'
