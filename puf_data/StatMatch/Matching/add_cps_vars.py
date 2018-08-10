@@ -10,8 +10,9 @@ import pandas as pd
 
 def add_cps(cps_recs, match, puffile):
     # cps_recs = pd.read_csv('cpsrets14.csv')
-    cpsfile = cps_recs.filter(regex='jcps\d{1,2}$|icps\d{1}$|jcps100|cpsseq|' +
-                                    'nu\d{1,2}|nu18_dep|n1820|n21|' +
+    cpsfile = cps_recs.filter(regex=r'jcps\d{1,2}$|icps\d{1}$|' +
+                                    'jcps100|cpsseq|' +
+                                    r'nu\d{1,2}|nu18_dep|n1820|n21|' +
                                     'elderly_dependent|wasp|wass|xstate')
     # cpsfile = cps_recs
     # match = pd.read_csv('match.csv')
@@ -21,12 +22,12 @@ def add_cps(cps_recs, match, puffile):
                       (puffile['recid'] != 999997) &
                       (puffile['recid'] != 999996)]
     puffile['filer'] = 1
-    puffile['wt'] = puffile['s006'] / 100
+    puffile['wt'] = puffile['s006'] / 100.0
     puffile['soiseq'] = puffile.index + 1
 
-    match.sort_values(['cpsseq'], inplace=True)
+    match.sort_values(['cpsseq'], inplace=True, kind='mergesort')
     merge_1 = pd.merge(match, cpsfile,  how='left', on=['cpsseq'])
-    merge_1.sort_values(['soiseq'], inplace=True)
+    merge_1.sort_values(['soiseq'], inplace=True, kind='mergesort')
     merge_2 = pd.merge(merge_1, puffile,  how='left', on=['soiseq'])
 
     merge_2['prodseq'] = merge_2.index + 1

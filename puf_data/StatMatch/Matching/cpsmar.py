@@ -785,15 +785,17 @@ def create_cps(raw_cps):
             house_rec = h_recs(record[0])
         elif rectype == '2':
             # If it's a family record, concat to household record and store
-            house_fam = pd.concat([house_rec, f_recs(record[0])], axis=1)
+            house_fam = pd.concat([house_rec, f_recs(record[0])], axis=1,
+                                  sort=False)
         else:
             # If it's a person record, concat to household and family record
-            final_rec = pd.concat([house_fam, p_recs(record[0])], axis=1)
+            final_rec = pd.concat([house_fam, p_recs(record[0])], axis=1,
+                                  sort=False)
             # Append final record to the list of records
             cps_list.append(final_rec)
 
     # Create the data set by combining all of the records
-    cps_mar = pd.concat(cps_list)
+    cps_mar = pd.concat(cps_list, sort=False)
     # Export the data
     print('Exporting Data')
     cps_mar.to_csv('cpsmar2016.csv', index=False)

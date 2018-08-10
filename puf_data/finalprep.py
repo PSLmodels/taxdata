@@ -439,7 +439,7 @@ def split_earnings_variables(data, data_year):
     """
     # split wage-and-salary earnings subject to FICA taxation
     total = np.where(data['MARS'] == 2,
-                     data['wage_head'] + data['wage_spouse'], 0)
+                     data['wage_head'] + data['wage_spouse'], 0).astype(float)
     frac_p = np.where(total != 0, data['wage_head'] / total, 1.)
     frac_s = 1.0 - frac_p
     data['e00200p'] = np.around(frac_p * data['e00200'], 2)
@@ -459,7 +459,7 @@ def split_earnings_variables(data, data_year):
     secatis = np.minimum(mte, data['e30500'])  # for spouse
     # split self-employment earnings subject to SECA taxation
     # ... compute secati?-derived frac_p and frac_s
-    total = np.where(data['MARS'] == 2, secatip + secatis, 0)
+    total = np.where(data['MARS'] == 2, secatip + secatis, 0).astype(float)
     frac_p = np.where(total != 0, secatip / total, 1.)
     frac_s = 1.0 - frac_p
     # ... split e00900 (Schedule C) and e02100 (Schedule F) net earnings/loss

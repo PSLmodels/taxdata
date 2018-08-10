@@ -56,7 +56,7 @@ def create_soi(SOI):
     SOI.loc[:, 'xagede'] = SOI['agede']
     SOI.loc[:, 'income'] = SOI['totincx']
 
-    wt = SOI['s006'] / 100
+    wt = SOI['s006'] / 100.0
     SOI.loc[:, 'wt'] = wt * 1.03  # TODO: check the number
 
     SOI.loc[:, 'sequence'] = SOI.index + 1

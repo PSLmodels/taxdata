@@ -17,7 +17,7 @@ def phasetwo(SOI, CPS):
     CPS.loc[:, 'wt_adj'] = CPS['wt'] * CPS['factor']
     factor = 1.
     if CPS['wt'].sum() > 0:
-        factor = SOI['wt'].sum() / CPS['wt'].sum()
+        factor = SOI['wt'].sum() / float(CPS['wt'].sum())
 
     # CPS['wt_adj'] = CPS['wt'] * factor
 
@@ -30,8 +30,8 @@ def phasetwo(SOI, CPS):
     for cid in tqdm(cellid):
             soi = SOI[SOI['cellid'] == cid]
             cps = CPS[CPS['cellid'] == cid]
-            soi = soi.sort_values('yhat')
-            cps = cps.sort_values('yhat')
+            soi = soi.sort_values('yhat', kind='mergesort')
+            cps = cps.sort_values('yhat', kind='mergesort')
 
             soi = soi.to_dict('records')
             cps = cps.to_dict('records')
