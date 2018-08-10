@@ -6,9 +6,27 @@ import pytest
 import numpy as np
 
 
+def unique_recid(data, dataname):
+    """
+    Test that RECID values are unique.
+    """
+    recid = data['RECID']
+    unique, counts = np.unique(recid, return_counts=True)
+    recid_count = dict(zip(unique, counts))
+    duplicates = False
+    msg = ''
+    for rid in sorted(recid_count.keys()):
+        if recid_count[rid] > 1:
+            duplicates = True
+            msg += '\nRECID={} has COUNT={}'.format(rid, recid_count[rid])
+    if duplicates:
+        title = 'The following {} RECIDs have COUNTS greater than one:'
+        raise ValueError(title.format(dataname) + msg)
+
+
 def min_max(data, meta, dataname):
     """
-    Test that variable variables are within their minimum/maximu range.
+    Test that variable variables are within their minimum/maximum range.
     """
     for var in meta.keys():
         availability = meta[var]['availability']
@@ -64,7 +82,7 @@ def relationships(data, dataname):
     else:
         # see Note (2) in docstring
         m = 'Number of records where n24 > nu18 has changed'
-        assert (data['n24'] > data['nu18']).sum() == 14928, m
+        assert (data['n24'] > data['nu18']).sum() == 14941, m
         subdata = data[data['n24'] > data['nu18']]
         m = 'n24 > nu18 + 3'
         assert np.all(subdata['n24'] <= subdata['nu18'] + 3), m
@@ -81,48 +99,60 @@ def variable_check(test_path, data, dataname):
     Test aggregate values in the data.
     """
     expected_file_name = '{}_agg_expected.txt'.format(dataname)
-    file_path = os.path.join(test_path, expected_file_name)
-    with open(file_path, 'r') as f:
-        expected_txt = f.readlines()
-    expected_dict = {}
+    efile_path = os.path.join(test_path, expected_file_name)
+    with open(efile_path, 'r') as efile:
+        expected_txt = efile.readlines()
+    expected_sum = dict()
+    expected_min = dict()
+    expected_max = dict()
     for line in expected_txt[1:]:
         txt = line.rstrip()
         split = txt.split()
-        expected_dict[split[0]] = int(split[1])
+        assert len(split) == 4
+        var = split[0]
+        expected_sum[var] = int(split[1])
+        expected_min[var] = int(split[2])
+        expected_max[var] = int(split[3])
 
-    # loop through each column in the dataset and check aggregate total
-    actual_txt = '{:17} Value\n'.format('Variable')
+    # loop through each column in the dataset and check sum, min, max
+    actual_txt = '{:20}{:>15}{:>15}{:>15}\n'.format('VARIABLE',
+                                                    'SUM', 'MIN', 'MAX')
+    var_inform = '{:20}{:15d}{:15d}{:15d}\n'
     diffs = False
     diff_list_str = ''  # string to hold all of the variables with errors
     new_vars = False
     new_var_list_str = ''  # srint to hold all of the unexpected variables
-    for var in data.columns:
-        agg = data[var].sum()
-        info_str = '{:17} {}\n'.format(var, agg)
-        actual_txt += info_str
+    for var in sorted(data.columns):
+        sum = int(data[var].sum())
+        min = int(data[var].min())
+        max = int(data[var].max())
+        actual_txt += var_inform.format(var, sum, min, max)
         try:
-            if agg != expected_dict[var]:
+            var_diff = (sum != expected_sum[var] or
+                        min != expected_min[var] or
+                        max != expected_max[var])
+            if var_diff:
                 diffs = True
                 diff_list_str += var + '\n'
         except KeyError:
             # if the variable is not expected, print a new message
-            new_var_list_str += var + '\n'
             new_vars = True
+            new_var_list_str += var + '\n'
 
     # check for any missing variables
     missing_vars = False
-    missing_vars_set = set(expected_dict.keys()) - set(data.columns)
+    missing_vars_set = set(expected_sum.keys()) - set(data.columns)
     if missing_vars_set:
         missing_vars = True
         missing_vars_str = '\n'.join(v for v in missing_vars_set)
 
-    # if there is an error, write the new file
+    # if there is an error, write the actual file
     if diffs or new_vars or missing_vars:
         msg = '{}\n'.format(dataname.upper)
         actual_file_name = '{}_agg_actual.txt'.format(dataname)
         actual_file_path = os.path.join(test_path, actual_file_name)
-        with open(actual_file_path, 'w') as f:
-            f.write(actual_txt)
+        with open(actual_file_path, 'w') as afile:
+            afile.write(actual_txt)
         # modify error message based on which errors are raised
         if diffs:
             diff_msg = 'Aggregate results differ for following variables:\n'
@@ -135,9 +165,85 @@ def variable_check(test_path, data, dataname):
         if missing_vars:
             msg += 'The following expected variables are missing in the data:'
             msg += '\n' + missing_vars_str + '\n\n'
-        msg += 'If new results are OK copy {} to {}'.format(actual_file_name,
-                                                            expected_file_name)
+        msg += 'If new results OK, copy {} to {}'.format(actual_file_name,
+                                                         expected_file_name)
         raise ValueError(msg)
+
+
+def check_cps_benefits(data):
+    """
+    Test benefit variables in CPS data.
+    """
+    bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
+              'tanf', 'housing', 'vet', 'other']
+    expect_minben = 0
+    # specify expected benefit statistics in CPS data
+    expect_ben_stat = dict()
+    # .. maximum value per filing unit for benefit
+    expect_ben_stat['max'] = {
+        'mcare': 691961,  # <--- will be fixed after switch to actuarial value
+        'mcaid': 692753,  # <--- will be fixed after switch to actuarial value
+        'ssi': 64378,
+        'snap': 26569,
+        'wic': 4972,
+        'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
+        'housing': 53253,
+        'vet': 169920,    # <--- HIGH ($14,160/month)VA hospital costs or what?
+        'other': 232456   # <--- SEEMS ABSURD ($19,371/month)
+    }
+    # .. minimum value per filing unit for positive benefit
+    expect_ben_stat['min'] = {
+        'mcare': 11622,
+        'mcaid': 7031,
+        'ssi': 1,         # <--- SEEMS LOW
+        'snap': 9,        # <--- SEEMS LOW
+        'wic': 241,
+        'tanf': 1,        # <--- SEEMS LOW
+        'housing': 1265,
+        'vet': 9890,      # <--- is this actuarial value of VA hospital costs?
+        'other': 3
+    }
+    # .. mean value per filing unit of positive benefit
+    expect_ben_stat['avg'] = {
+        'mcare': 14928,
+        'mcaid': 13191,
+        'ssi': 7913,
+        'snap': 2907,
+        'wic': 748,
+        'tanf': 9117,
+        'housing': 7048,
+        'vet': 29912,
+        'other': 4321
+    }
+    # compare actual and expected benefit statistics
+    error_msg = ''
+    wgt = data['s006'] * 0.01
+    for bname in bnames:
+        col = '{}_ben'.format(bname)
+        assert col in data.columns
+        ben = data[col]
+        minben = ben.min()
+        maxben = ben.max()
+        pos = ben > 0
+        minpben = ben[pos].min()
+        avgben = (ben[pos] * wgt[pos]).sum() / wgt[pos].sum()
+        if not np.allclose([minben], [0], rtol=0, atol=0.1):
+            msg = '\nCPS {}_ben minben={} != 0'
+            error_msg += msg.format(bname, minben)
+        exp_minpben = expect_ben_stat['min'][bname]
+        if not np.allclose([minpben], [exp_minpben], rtol=0, atol=0.1):
+            msg = '\nCPS {}_ben minpben={} != {}'
+            error_msg += msg.format(bname, minpben, exp_minpben)
+        exp_maxben = expect_ben_stat['max'][bname]
+        if not np.allclose([maxben], [exp_maxben], rtol=0, atol=0.1):
+            msg = '\nCPS {}_ben maxben={} != {}'
+            error_msg += msg.format(bname, minben, exp_maxben)
+        expect_avgben = expect_ben_stat['avg'][bname]
+        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.6):
+            msg = '\nCPS {}_ben avgben={:.2f} != {:.2f}'
+            error_msg += msg.format(bname, avgben, expect_avgben)
+    if error_msg:
+        raise ValueError(error_msg)
 
 
 @pytest.mark.requires_pufcsv
@@ -145,6 +251,7 @@ def test_pufcsv_data(puf, metadata, test_path):
     """
     Test PUF data.
     """
+    unique_recid(puf, 'PUF')
     min_max(puf, metadata, 'puf')
     relationships(puf, 'PUF')
     variable_check(test_path, puf, 'puf')
@@ -154,6 +261,8 @@ def test_cpscsv_data(cps, metadata, test_path):
     """
     Test CPS data.
     """
+    unique_recid(cps, 'CPS')
     min_max(cps, metadata, 'cps')
     relationships(cps, 'CPS')
     variable_check(test_path, cps, 'cps')
+    check_cps_benefits(cps)

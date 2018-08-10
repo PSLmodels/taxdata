@@ -76,7 +76,7 @@ class Returns(object):
             del self.house_units[:]
             # Pull households from CPS
             household = self.cps[self.cps['h_seq'] == num]
-            household = household.sort_values('a_lineno')
+            household = household.sort_values('a_lineno', kind='mergesort')
             house_dict = household.to_dict('records')
 
             # Set flags for household type
@@ -212,7 +212,7 @@ class Returns(object):
         record['nu18'] = 0
         record['n1820'] = 0
         record['n21'] = 0
-        record['elderly_dependent'] = 0
+        record['elderly_dependents'] = 0
         if 0 < record['a_age'] < 18:
             record['nu18'] += 1
         if 18 <= record['a_age'] < 21:
@@ -713,7 +713,7 @@ class Returns(object):
                     if individual['a_age'] >= 21:
                         record['n21'] += 1
                     if individual['a_age'] >= 65:
-                        record['elderly_dependent'] = 1
+                        record['elderly_dependents'] += 1
 
         cahe = np.nan
 
@@ -852,8 +852,8 @@ class Returns(object):
         self.house_units[iy]['nu18'] += self.house_units[ix]['nu18']
         self.house_units[iy]['n1820'] += self.house_units[ix]['n1820']
         self.house_units[iy]['n21'] += self.house_units[ix]['n21']
-        if self.house_units[ix]['elderly_dependent'] == 1:
-            self.house_units[iy]['elderly_dependent'] = 1
+        elderly = self.house_units[ix]['elderly_dependents']
+        self.house_units[iy]['elderly_dependents'] += elderly
 
     def tax_units_search(self):
         """
@@ -1067,7 +1067,7 @@ class Returns(object):
                          'zssinc', 'zpubas', 'zvetbe', 'zfinas', 'zowner',
                          'zwaspt', 'zwassp', 'wasp', 'wass', 'nu05', 'nu13',
                          'nu18_dep', 'nu18', 'n1820', 'n21',
-                         'elderly_dependent']
+                         'elderly_dependents']
         for var in repeated_vars:
             record[var] = unit[var]
 

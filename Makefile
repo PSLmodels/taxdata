@@ -3,6 +3,9 @@
 # Development is typically conducted on Linux or Max OS X (with the Xcode
 #              command-line tools installed), so this Makefile is designed
 #              to work in that environment (and not on Windows).
+# Note that the re-zipping of each .csv.gz file "removes" the time-stamp
+#              from the GZIP file header, which is necessary for git to
+#              report the correct status of each .csv.gz file's contents.
 # USAGE: taxdata$ make [TARGET]
 
 MADE_FILES = puf_data/puf.csv \
@@ -12,8 +15,7 @@ MADE_FILES = puf_data/puf.csv \
              puf_stage3/puf_ratios.csv.gz \
              cps_data/cps.csv.gz \
              cps_stage1/stage_2_targets.csv \
-             cps_stage2/cps_weights.csv.gz \
-             cps_stage4/cps_benefits.csv.gz
+             cps_stage2/cps_weights.csv.gz
 
 .PHONY=help
 help:
@@ -34,7 +36,6 @@ help:
 	@echo "                puf_ratios.csv"
 	@echo "cps-files   : make each of the following files:"
 	@echo "                cps.csv.gz"
-	@echo "                growfactors.csv"
 	@echo "                cps_weights.csv.gz"
 	@echo "                cps_benefits.csv.gz"
 	@echo "all         : make both puf-files and cps-files"
@@ -76,6 +77,13 @@ puf-files: puf_data/puf.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
 
+PM_DIR=./puf_data/StatMatch/Matching
+PM_PY_FILES := $(shell ls -l $(PM_DIR)/*py | awk '{print $$9}')
+puf_data/cps-matched-puf.csv: $(PM_PY_FILES) \
+                              $(PM_DIR)/puf2011.csv \
+                              $(PM_DIR)/cpsmar2016.csv
+	cd $(PM_DIR) ; python runmatch.py
+
 puf_data/puf.csv: puf_data/finalprep.py \
                   puf_data/cps-matched-puf.csv
 	cd puf_data ; python finalprep.py
@@ -88,19 +96,20 @@ puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/SOI_estimates.csv \
                                 puf_stage1/US-EST00INT-ALLDATA.csv
 	cd puf_stage1 ; python stage1.py
-# above recipe also makes puf_stage1/Stage_I_factors_transpose.csv
 # above recipe also makes puf_stage1/Stage_II_targets.csv
 
 puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
-                            puf_stage1/Stage_I_factors.csv
+                            puf_stage1/Stage_I_factors.csv \
+                            puf_stage1/benefit_growth_rates.csv
 	cd puf_stage1 ; python factors_finalprep.py
 
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_stage2/solve_lp_for_year.py \
                                puf_data/cps-matched-puf.csv \
-                               puf_stage1/Stage_I_factors_transpose.csv \
+                               puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
-	cd puf_stage2 ; python stage2.py
+	cd puf_stage2 ; python stage2.py && \
+        gunzip puf_weights.csv.gz && gzip -n puf_weights.csv
 
 puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
                            puf_stage3/stage3_targets.csv \
@@ -112,14 +121,14 @@ puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
 .PHONY=cps-files
 cps-files: cps_data/cps.csv.gz \
            cps_stage1/stage_2_targets.csv \
-           cps_stage2/cps_weights.csv.gz \
-           cps_stage4/cps_benefits.csv.gz
+           cps_stage2/cps_weights.csv.gz
 
 cps_data/cps.csv.gz: cps_data/finalprep.py \
                      cps_data/cps_raw.csv.gz \
                      cps_data/adjustment_targets.csv \
                      cps_data/benefitprograms.csv
-	cd cps_data ; python finalprep.py
+	cd cps_data ; python finalprep.py && \
+        gunzip cps.csv.gz && gzip -n cps.csv
 
 cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
                                 cps_stage1/SOI_estimates.csv \
@@ -131,16 +140,8 @@ cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_data/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
                                cps_stage1/stage_2_targets.csv
-	cd cps_stage2 ; python stage2.py
-
-cps_stage4/cps_benefits.csv.gz: cps_stage4/rename_columns.py \
-                                cps_stage4/extrapolation.py \
-                                cps_stage4/growth_rates.csv \
-                                cps_data/cps_raw.csv.gz \
-                                cps_stage2/cps_weights.csv.gz
-	cd cps_stage4 ; \
-        python rename_columns.py && python extrapolation.py ; \
-        rm -f ../cps_data/cps_raw_rename.csv.gz
+	cd cps_stage2 ; python stage2.py && \
+        gunzip cps_weights.csv.gz && gzip -n cps_weights.csv
 
 .PHONY=all
 all: puf-files cps-files

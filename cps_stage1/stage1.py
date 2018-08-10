@@ -45,7 +45,7 @@ def main():
                                  index=soi_estimates.index)
         soi_estimates[year] = current_year
 
-    soi_estimates.to_csv('stage_2_targets.csv')
+    soi_estimates.to_csv('stage_2_targets.csv', float_format='%.0f')
 
 
 if __name__ == '__main__':

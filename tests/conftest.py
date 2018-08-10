@@ -7,7 +7,8 @@ import pandas as pd
 # TODO: revise the following constants when using new or revised CPS/PUF data
 CPS_START_YEAR = 2014
 PUF_START_YEAR = 2011
-PUF_COUNT = 239002
+PUF_COUNT = 248591
+LAST_YEAR = 2027
 
 
 @pytest.fixture(scope='session')
@@ -78,6 +79,11 @@ def puf_start_year():
 
 
 @pytest.fixture(scope='session')
+def last_year():
+    return LAST_YEAR
+
+
+@pytest.fixture(scope='session')
 def cps_weights(test_path):
     cpsw_path = os.path.join(test_path, '../cps_stage2/cps_weights.csv.gz')
     return pd.read_csv(cpsw_path)
@@ -100,16 +106,3 @@ def cps_ratios(test_path):
 def puf_ratios(test_path):
     pufr_path = os.path.join(test_path, '../puf_stage3/puf_ratios.csv')
     return pd.read_csv(pufr_path, index_col=0)
-
-
-@pytest.fixture(scope='session')
-def cps_benefits(test_path):
-    cpsb_path = os.path.join(test_path, '../cps_stage4/cps_benefits.csv.gz')
-    return pd.read_csv(cpsb_path)
-
-
-@pytest.fixture(scope='session')
-def puf_benefits(test_path):
-    # pufb_path = os.path.join(test_path, '../puf_stage4/puf_benefits.csv.gz')
-    # return pd.read_csv(pufb_path)
-    return None

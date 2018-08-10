@@ -30,9 +30,10 @@ def add_nonfiler(cpsrets, nonfiler):
     socsec = nonfiler['socsec']
     wt = nonfiler['wt']
 
-    nonfiler = copy.deepcopy(nonfiler.filter(regex='jcps\d{1,2}$|icps\d{1}$|' +
+    nonfiler = copy.deepcopy(nonfiler.filter(regex=r'jcps\d{1,2}$|' +
+                                                   r'icps\d{1}$|' +
                                                    'jcps100| cpsseq|' +
-                                                   'nu\d{1,2}|nu18_dep|' +
+                                                   r'nu\d{1,2}|nu18_dep|' +
                                                    'n1820|n21|' +
                                                    'elderly_dependent|wasp|' +
                                                    'wass|xstate'))
@@ -266,7 +267,6 @@ def add_nonfiler(cpsrets, nonfiler):
     # weight
     nonfiler['matched_weight'] = wt
 
-    final = pd.concat([cpsrets, nonfiler], ignore_index=True)
+    final = pd.concat([cpsrets, nonfiler], sort=False, ignore_index=True)
     final['finalseq'] = final.index + 1
-    # final.to_csv('prod2009_v2.csv', index=False)
     return final

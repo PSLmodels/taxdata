@@ -5,6 +5,9 @@ import pytest
 import numpy as np
 
 
+DUMP_WEIGHTS = False  # normally set to False; True implies dump with test fail
+
+
 @pytest.mark.parametrize('kind', ['cps', 'puf'])
 def test_weights(kind, cps_weights, puf_weights,
                  growfactors, cps_count, puf_count,
@@ -48,14 +51,19 @@ def test_weights(kind, cps_weights, puf_weights,
     # test sum of weights (in millions) for each year
     min_weight_sum = 149
     max_weight_sum = 200
-    for col in weights:
+    for col in sorted_weights_columns:
         weight_sum = weights[col].sum() * 1e-2 * 1e-6  # in millions
+        if DUMP_WEIGHTS:
+            msg = '{} {} {:.3f}'
+            print(msg.format(kind, col, weight_sum))
         if weight_sum < min_weight_sum:
             msg = '{} weights[{}].sum()={:.1f} < {:.1f}'
             raise ValueError(msg.format(kind, col, weight_sum, min_weight_sum))
         if weight_sum > max_weight_sum:
             msg = '{} weights[{}].max()={:.1f} > {:.1f}'
             raise ValueError(msg.format(kind, col, weight_sum, max_weight_sum))
+    if DUMP_WEIGHTS:
+        raise ValueError('STOPPING because DUMP_WEIGHTS = True')
     # test that there are no weights records with a zero weight in every year
     num_nonzero_weights = np.count_nonzero(weights, axis=1)
     num_allzeros = np.sum(~np.all(num_nonzero_weights))

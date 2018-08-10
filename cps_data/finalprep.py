@@ -64,10 +64,11 @@ def main():
         'NU13': 'nu13',
         'NU05': 'nu05',
         'N24': 'n24',
+        'ELDERLY_DEPENDENT': 'elderly_dependents',
         'F2441': 'f2441'
     }
+
     data = data.rename(columns=renames)
-    data['elderly_dependent'] = np.where(data['ELDERLY_DEPENDENT'] > 0, 1, 0)
     data['MARS'] = np.where(data.JS == 3, 4, data.JS)
     data['EIC'] = np.minimum(3, data.EIC)
 
@@ -176,7 +177,7 @@ def drop_vars(data):
         'e07400', 'e07600', 'e09700', 'e09800', 'e09900', 'e11200', 'e17500',
         'e18400', 'e18500', 'e19200', 'e19800', 'e20100', 'e20400', 'g20500',
         'e24515', 'e24518', 'e26270', 'e27200', 'e32800', 'e58990', 'e62900',
-        'e87530', 'elderly_dependent', 'f2441', 'f6251', 'filer', 'n24',
+        'e87530', 'elderly_dependents', 'f2441', 'f6251', 'filer', 'n24',
         'nu05', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',

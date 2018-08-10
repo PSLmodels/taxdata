@@ -39,7 +39,7 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
     people += depne
     people = min(5, people)
     if ifdept == 1:
-        people = np.nan
+        people = 1
 
     # dependent filers
     idept = 1
@@ -61,13 +61,13 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
         idepne = 1
 
     # independent variables
-    tpi = (was + intst + texint + dbe + max(0, sche) + max(0, bil) +
-           max(0, fil) + ssinc + pensions + alimony + ucagix)
-    wageshr = 0
-    capshr = 0
-    if tpi != 0:
+    tpi = float(was + intst + texint + dbe + max(0, sche) + max(0, bil) +
+                max(0, fil) + ssinc + pensions + alimony + ucagix)
+    wageshr = 0.
+    capshr = 0.
+    if tpi != 0.:
         wageshr = was / tpi
-        capshr = (intst + texint + dbe) / tpi
+        capshr = float(intst + texint + dbe) / tpi
 
     return pd.Series({'idept': idept, 'ijs': ijs, 'iagede': iagede,
                       'ikids': ikids, 'iself': iself, 'wageflag': wageflag,
@@ -81,7 +81,7 @@ def counts(file):
                           'ikids', 'iself']).size().reset_index(name='count')
     wgt = file.groupby(['idept', 'ijs', 'iagede', 'idepne', 'people',
                         'ikids', 'iself'])['wt'].sum().reset_index(name='wgt')
-    count = pd.concat([count, wgt['wgt']], axis=1)
+    count = pd.concat([count, wgt['wgt']], axis=1, sort=False)
     return count
 
 
@@ -110,7 +110,7 @@ def predict(file):
     X = file[indep_vars]
     P = file[parameters]
     predictions = X.mul(P.values, axis="index").sum(axis=1)
-    return predictions
+    return predictions.astype(int)
 
 
 def phaseone(CPS, SOI):
@@ -141,8 +141,8 @@ def phaseone(CPS, SOI):
                                                 row['alimony'], row['ucagix']),
                        axis=1)
 
-    CPS = pd.concat([CPS, df_CPS], axis=1)
-    SOI = pd.concat([SOI, df_SOI], axis=1)
+    CPS = pd.concat([CPS, df_CPS], axis=1, sort=False)
+    SOI = pd.concat([SOI, df_SOI], axis=1, sort=False)
 
     SOI_counts = counts(SOI)
     CPS_counts = counts(CPS)
@@ -155,7 +155,9 @@ def phaseone(CPS, SOI):
                       on=['idept', 'ijs', 'iagede', 'idepne',
                           'ikids', 'iself', 'people'])
     countx['factor'] = np.where(countx['CPS_wgt'] > 0,
-                                countx['SOI_wgt'] / countx['CPS_wgt'], 0)
+                                countx['SOI_wgt'] /
+                                countx['CPS_wgt'].astype(float),
+                                0.)
     countx['cellid'] = countx.index + 1
 
     SOI_reg = pd.merge(SOI, countx, how='inner',
