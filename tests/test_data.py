@@ -181,8 +181,8 @@ def check_cps_benefits(data):
     expect_ben_stat = dict()
     # .. maximum value per filing unit for benefit
     expect_ben_stat['max'] = {
-        'mcare': 92976,
-        'mcaid': 98440,
+        'mcare': 92976,   # <--- implies a filing unit with 8 beneficiaries
+        'mcaid': 98440,   # <--- implies a filing unit with 14 beneficiaries
         'ssi': 64378,
         'snap': 26569,
         'wic': 4972,
@@ -193,8 +193,8 @@ def check_cps_benefits(data):
     }
     # .. minimum value per filing unit for positive benefit
     expect_ben_stat['min'] = {
-        'mcare': 11622,
-        'mcaid': 7031,
+        'mcare': 11622,   # <--- the actuarial value of Medicare insurance
+        'mcaid': 7031,    # <--- the actuarial value of Medicaid insurance
         'ssi': 1,         # <--- SEEMS LOW
         'snap': 9,        # <--- SEEMS LOW
         'wic': 241,
@@ -206,7 +206,7 @@ def check_cps_benefits(data):
     # .. mean value per filing unit of positive benefit
     expect_ben_stat['avg'] = {
         'mcare': 14928,
-        'mcaid': 13191,
+        'mcaid': 13192,
         'ssi': 7913,
         'snap': 2907,
         'wic': 748,
@@ -239,9 +239,16 @@ def check_cps_benefits(data):
             msg = '\nCPS {}_ben maxben={} != {}'
             error_msg += msg.format(bname, maxben, exp_maxben)
         expect_avgben = expect_ben_stat['avg'][bname]
-        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.6):
+        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.5):
             msg = '\nCPS {}_ben avgben={:.2f} != {:.2f}'
             error_msg += msg.format(bname, avgben, expect_avgben)
+        # check that mc??? benefits are actuarial values of health insurance
+        if bname == 'mcare' or bname == 'mcaid':
+            ratio = float(maxben) / minpben
+            expect_ratio = round(ratio)
+            if not np.allclose([ratio], [expect_ratio], rtol=0, atol=0.01):
+                msg = '\nCPS {}_ben ratio={:.6f} != {:.0f}'
+                error_msg += msg.format(bname, ratio, expect_ratio)
     if error_msg:
         raise ValueError(error_msg)
 
