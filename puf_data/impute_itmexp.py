@@ -38,7 +38,7 @@ def standard_deduction(row):
         raise ValueError('illegal value of MARS')
 
 # extract selected variables and construct new variables
-varnames = iev_names + ['MARS', 'inPUF']
+varnames = iev_names + ['MARS', 'inPUF', 'filer']
 data = alldata[varnames]
 pd.set_option('mode.chained_assignment', None)
 data['stdded'] = data.apply(standard_deduction, axis=1)
@@ -48,6 +48,9 @@ pd.reset_option('mode.chained_assignment')
 
 # descriptive statistics for the data variables
 if dump:
+    diff = data['filer'] != data['inPUF']
+    print 'ALL diff number {}'.format(diff.sum())
+    del diff
     print 'ALL inPUF mean {:.4f}'.format(data['inPUF'].mean())
     ier = data['itemizer']
     print 'ALL itemizer mean {:.4f}'.format(ier.mean())
