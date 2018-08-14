@@ -10,7 +10,7 @@ dump = True
 
 
 # read in puf-new.csv file
-alldata = pd.read_csv('puf-new.csv')
+alldata = pd.read_csv('puf.csv')
 
 # specify variable names of itemized-expense variables
 iev_names = ['e17500',  # medical expenses
@@ -38,7 +38,7 @@ def standard_deduction(row):
         raise ValueError('illegal value of MARS')
 
 # extract selected variables and construct new variables
-varnames = iev_names + ['MARS', 'inPUF', 'filer']
+varnames = iev_names + ['MARS', 'filer']
 data = alldata[varnames]
 pd.set_option('mode.chained_assignment', None)
 data['stdded'] = data.apply(standard_deduction, axis=1)
@@ -48,14 +48,11 @@ pd.reset_option('mode.chained_assignment')
 
 # descriptive statistics for the data variables
 if dump:
-    diff = data['filer'] != data['inPUF']
-    print 'ALL diff number {}'.format(diff.sum())
-    del diff
-    print 'ALL inPUF mean {:.4f}'.format(data['inPUF'].mean())
+    print 'ALL filer mean {:.4f}'.format(data['filer'].mean())
     ier = data['itemizer']
     print 'ALL itemizer mean {:.4f}'.format(ier.mean())
-    print 'PUF itemizer mean {:.4f}'.format(ier[data['inPUF'] == 1].mean())
-    print 'CPS itemizer mean {:.4f}'.format(ier[data['inPUF'] == 0].mean())
+    print 'PUF itemizer mean {:.4f}'.format(ier[data['filer'] == 1].mean())
+    print 'CPS itemizer mean {:.4f}'.format(ier[data['filer'] == 0].mean())
     del ier
     for iev in iev_names:
         var = data[iev]
@@ -63,7 +60,7 @@ if dump:
         print 'fraction with positive {} is {:.4f}'.format(iev, varpos.mean())
 
 # set itmexp variable values in alldata
-# TODO: add code here
+# TODO: add code here to update alldata
 
 # write augmented puf-new-plus.csv file
-data.to_csv('puf-new-plus.csv', index=False, float_format='%.2f')
+alldata.to_csv('puf-updated.csv', index=False, float_format='%.2f')
