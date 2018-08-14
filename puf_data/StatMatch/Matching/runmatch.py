@@ -38,10 +38,12 @@ def match():
     # Remove aggregated variables from the PUF
     puf = puf[(puf['recid'] != 999996) & (puf['recid'] != 999997) &
               (puf['recid'] != 999998) & (puf['recid'] != 999999)]
+    puf['inPUF'] = 1
 
     print('Creating CPS Tax Units')
     rets = Returns(mar_cps)
     cps = rets.computation()
+    cps['inPUF'] = 0
 
     print('CPS Tax Units Created')
     filers, nonfilers = adjfilst(cps)
