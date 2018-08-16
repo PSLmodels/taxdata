@@ -48,11 +48,14 @@ pd.reset_option('mode.chained_assignment')
 
 # descriptive statistics for the data variables
 if dump:
-    print 'ALL filer mean {:.4f}'.format(data['filer'].mean())
+    print 'ALL raw count = {:6d}'.format(len(data.index))
+    print 'PUF raw count = {:6d}'.format(len(data[data['filer'] == 1].index))
+    print 'CPS raw count = {:6d}'.format(len(data[data['filer'] == 0].index))
+    print 'PUF fraction of ALL = {:.4f}'.format(data['filer'].mean())
     ier = data['itemizer']
-    print 'ALL itemizer mean {:.4f}'.format(ier.mean())
-    print 'PUF itemizer mean {:.4f}'.format(ier[data['filer'] == 1].mean())
-    print 'CPS itemizer mean {:.4f}'.format(ier[data['filer'] == 0].mean())
+    print 'ALL itemizer mean = {:.4f}'.format(ier.mean())
+    print 'PUF itemizer mean = {:.4f}'.format(ier[data['filer'] == 1].mean())
+    print 'CPS itemizer mean = {:.4f}'.format(ier[data['filer'] == 0].mean())
     ier_data = data[data['itemizer'] == 1]
     for iev in iev_names:
         var = ier_data[iev]
@@ -70,7 +73,7 @@ if dump:
 
 
 # set imputed itmexp variable values in alldata
-# TODO: add code here to update alldata
+# TODO: ... add code here to update alldata
 
 # write augmented puf-new.csv file
-alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
+# TODO: ... alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
