@@ -9,7 +9,7 @@ import statsmodels as sm
 dump = True
 
 
-# read in puf-new.csv file
+# read in puf.csv file
 alldata = pd.read_csv('puf.csv')
 
 # specify variable names of itemized-expense variables
@@ -53,14 +53,24 @@ if dump:
     print 'ALL itemizer mean {:.4f}'.format(ier.mean())
     print 'PUF itemizer mean {:.4f}'.format(ier[data['filer'] == 1].mean())
     print 'CPS itemizer mean {:.4f}'.format(ier[data['filer'] == 0].mean())
-    del ier
+    ier_data = data[data['itemizer'] == 1]
     for iev in iev_names:
-        var = data[iev]
+        var = ier_data[iev]
         varpos = var > 0
-        print 'fraction with positive {} is {:.4f}'.format(iev, varpos.mean())
+        print 'frac of itemizers with {}>0 = {:.4f}'.format(iev,
+                                                            varpos.mean())
+    del ier_data
+    nonier_data = data[data['itemizer'] == 0]
+    for iev in iev_names:
+        var = nonier_data[iev]
+        varpos = var > 0
+        print 'frac of non-itemizers with {}>0 = {:.4f}'.format(iev,
+                                                                varpos.mean())
+    del nonier_data
 
-# set itmexp variable values in alldata
+
+# set imputed itmexp variable values in alldata
 # TODO: add code here to update alldata
 
-# write augmented puf-new-plus.csv file
-alldata.to_csv('puf-updated.csv', index=False, float_format='%.2f')
+# write augmented puf-new.csv file
+alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
