@@ -28,11 +28,12 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     prob = logit_res.predict(nonitemizer_data[logit_x_vars])
     np.random.seed(int(ievar[1:]))
     urn = np.random.uniform(size=len(prob))
-    positive_imputed = np.where(urn <= prob, 1, 0)
+    positive_imputed = np.where(urn <= prob, True, False)
     if dump1:
         print logit_res.summary()
         print prob.head()
         print positive_imputed.mean()
+        print len(nonitemizer_data)
     # estimate OLS parameters for the positive amount using a sample of
     # itemizers who have positive ievar amounts than are less than the
     # itemizer's standard deduction amount
@@ -40,50 +41,24 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     # Heckman sample selection problems present in this imputation process.)
     tpi_data = itemizer_data[(itemizer_data[ievar] > 0) &
                              (itemizer_data[ievar] < itemizer_data['stdded'])]
-    ols_y = tpi_data[ievar]
+    ols_y = np.log(tpi_data[ievar])
     ols_x = tpi_data[ols_x_vars]
     ols_res = sm.OLS(ols_y, ols_x).fit()
-    pini_data = nonitemizer_data[positive_imputed == 1]
-    imputed_positive_amt = ols_res.predict(pini_data[ols_x_vars])
+    ols_se = np.sqrt(ols_res.scale)
+    error = np.random.normal(loc=0.0, scale=ols_se,
+                             size=len(nonitemizer_data))
+    full_imputed_amt = ols_res.predict(nonitemizer_data[ols_x_vars]) + error
+    imputed_amt = np.where(positive_imputed,
+                           np.exp(full_imputed_amt).round().astype(int), 0)
     if dump1:
         print 'size of {} OLS sample = {}'.format(ievar, len(ols_y))
         print 'max {} value = {}'.format(ievar, ols_y.max())
-        print 'avg {} value = {:.0f}'.format(ievar, ols_y.mean())
-        #print "STARTING SUMMARY"
+        print 'avg {} value = {:.2f}'.format(ievar, ols_y.mean())
         print ols_res.summary()
-        #print "FINISHING SUMMARY"
-        #print ols_y.head()
-        #print ols_res.resid.round().head()
+        print 'OLS std error of regression = {:.2f}'.format(ols_se)
         print 'size(nonitemizer_data)=', len(nonitemizer_data)
-        print 'size(pini_data)=', len(pini_data)
-        print 'size(imputed_postive_amt)=', len(imputed_positive_amt)
-        N = 9
-        print nonitemizer_data.index[0:N]
-        print imputed_positive_amt[0:N]
-        """
-123672
-123672
-0     1
-2     1
-3     1
-4     1
-6     1
-7     1
-8     1
-9     1
-10    1
-Name: constant, dtype: int64
-0     3596.160528
-2     3596.160528
-3     3596.160528
-4     3596.160528
-6     3596.160528
-7     3596.160528
-8     3596.160528
-9     3596.160528
-10    3596.160528
-dtype: float64
-        """
+        print 'size(imputed_amt)=', len(imputed_amt)
+        print 'mean imputed_amt = {:.2f}'.format(imputed_amt.mean())
     return nonitemizer_data
 
 
