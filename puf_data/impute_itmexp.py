@@ -26,9 +26,9 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     logit_x = itemizer_data[logit_x_vars]
     logit_res = sm.Logit(logit_y, logit_x).fit()
     prob = logit_res.predict(nonitemizer_data[logit_x_vars])
-    np.random.seed(len(prob))
+    np.random.seed(int(ievar[1:]))
     urn = np.random.uniform(size=len(prob))
-    positive_imputed = np.where(urn <= prob, True, False)
+    positive_imputed = np.where(urn <= prob, 1, 0)
     if dump1:
         print logit_res.summary()
         print prob.head()
@@ -43,8 +43,8 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     ols_y = tpi_data[ievar]
     ols_x = tpi_data[ols_x_vars]
     ols_res = sm.OLS(ols_y, ols_x).fit()
-    pini_data = nonitemizer_data[positive_imputed]
-    positive_amt = ols_res.predict(pini_data[ols_x_vars])
+    pini_data = nonitemizer_data[positive_imputed == 1]
+    imputed_positive_amt = ols_res.predict(pini_data[ols_x_vars])
     if dump1:
         print 'size of {} OLS sample = {}'.format(ievar, len(ols_y))
         print 'max {} value = {}'.format(ievar, ols_y.max())
@@ -54,32 +54,34 @@ def impute(ievar, logit_x_vars, ols_x_vars,
         #print "FINISHING SUMMARY"
         #print ols_y.head()
         #print ols_res.resid.round().head()
-        print len(pini_data)
-        print len(positive_amt)
-        print pini_data['constant'][0:9]
-        print positive_amt[0:9]
+        print 'size(nonitemizer_data)=', len(nonitemizer_data)
+        print 'size(pini_data)=', len(pini_data)
+        print 'size(imputed_postive_amt)=', len(imputed_positive_amt)
+        N = 9
+        print nonitemizer_data.index[0:N]
+        print imputed_positive_amt[0:N]
         """
-123727
-123727
+123672
+123672
+0     1
 2     1
 3     1
 4     1
 6     1
 7     1
 8     1
+9     1
 10    1
-11    1
-12    1
 Name: constant, dtype: int64
+0     3596.160528
 2     3596.160528
 3     3596.160528
 4     3596.160528
 6     3596.160528
 7     3596.160528
 8     3596.160528
+9     3596.160528
 10    3596.160528
-11    3596.160528
-12    3596.160528
 dtype: float64
         """
     return nonitemizer_data
