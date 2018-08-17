@@ -13,36 +13,42 @@ dump1 = True
 def impute(ievar, logit_x_vars, ols_x_vars,
            itemizer_data, nonitemizer_data):
     """
-    Function that estimates imputation equations for ievar using itemizer_data
+    Function that estimates imputation equations for ievar with itemizer_data
     using the lists of exogenous variables in logit_x_vars and ols_x_vars.
     The estimated equations are then used to impute amounts for ievar for
-    nonitemizers with the imputed nonitemizer amounts being added to the
+    nonitemizers with the imputed nonitemizer amounts being inserted into the
     nonitemizer_data structure, which is returned by this function.
     """
     if dump1:
         print '*** IMPUTE({}):'.format(ievar)
+    # specify imputed array of correct dimension filled with zeros
+    imputed = np.zeros_like(nonitemizer_data[ievar], dtype=np.int64)
     # estimate Logit parameters for probability of having a positive amount
     logit_y = (itemizer_data[ievar] > 0).astype(int)
     logit_x = itemizer_data[logit_x_vars]
     logit_res = sm.Logit(logit_y, logit_x).fit()
+    prob = logit_res.predict(nonitemizer_data[logit_x_vars])
+    np.random.seed(len(prob))
+    urn = np.random.uniform(size=len(prob))
+    positive_imputed = np.where(urn <= prob, 1, 0)
     if dump1:
         print logit_res.summary()
-        prob = logit_res.predict(nonitemizer_data[logit_x_vars])
         print prob.head()
-    """
-    # estimate OLS parameters for the positive amount
-    pos_itemizer_data = itemizer_data[itemizer_data[ievar] > 0]
-    ols_y = pos_itemizer_data[ievar]
-    ols_x = pos_itemizer_data[ols_x_vars]
+        print positive_imputed.mean()
+    # estimate OLS parameters for the positive amount using a sample of
+    # itemizers who have positive ievar amounts than are less than the
+    # itemizer's standard deduction amount
+    # (This approach is part of an ad hoc procedure to deal with the
+    # Heckman sample selection problems present in this imputation process.)
+    tpidata = itemizer_data[(itemizer_data[ievar] > 0) &
+                            (itemizer_data[ievar] < itemizer_data['stdded'])]
+    ols_y = tpidata[ievar]
+    ols_x = tpidata[ols_x_vars]
     ols_res = sm.OLS(ols_y, ols_x).fit()
     if dump1:
-        print 'num of positive {} values = {}'.format(ievar, len(ols_y.index))
+        print 'size of {} OLS sample = {}'.format(ievar, len(ols_y))
         print 'max {} value = {}'.format(ievar, ols_y.max())
-        large = 1e6
-        num_large = (ols_y > large).sum()
-        print 'num {} values > {} = {}'.format(ievar, large, num_large)
         print 'avg {} value = {:.0f}'.format(ievar, ols_y.mean())
-        exit(1)
         #print "STARTING SUMMARY"
         print ols_res.summary()
         #print "FINISHING SUMMARY"
@@ -50,7 +56,6 @@ def impute(ievar, logit_x_vars, ols_x_vars,
         print ols_res.resid.round().head()
         #amt = ols_res.predict(nonitemizer_data[logit_x_vars])
         #print amt.head()
-    """
     return nonitemizer_data
 
 
@@ -98,9 +103,9 @@ nonitemizer_data = data[data['itemizer'] == 0]
     
 # descriptive statistics for the data variables
 if dump0:
-    print 'ALL raw count = {:6d}'.format(len(data.index))
-    print 'PUF raw count = {:6d}'.format(len(data[data['filer'] == 1].index))
-    print 'CPS raw count = {:6d}'.format(len(data[data['filer'] == 0].index))
+    print 'ALL raw count = {:6d}'.format(len(data))
+    print 'PUF raw count = {:6d}'.format(len(data[data['filer'] == 1]))
+    print 'CPS raw count = {:6d}'.format(len(data[data['filer'] == 0]))
     print 'PUF fraction of ALL = {:.4f}'.format(data['filer'].mean())
     ier = data['itemizer']
     print 'ALL itemizer mean = {:.4f}'.format(ier.mean())
