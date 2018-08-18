@@ -26,12 +26,14 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     logit_x = itemizer_data[logit_x_vars]
     logit_res = sm.Logit(logit_y, logit_x).fit(disp=0)
     prob = logit_res.predict(nonitemizer_data[logit_x_vars])
+    adj_prob = prob * 1.0  # TODO: add logic here
     np.random.seed(int(ievar[1:]))
     urn = np.random.uniform(size=len(prob))
-    positive_imputed = np.where(urn <= prob, True, False)
+    positive_imputed = np.where(urn < adj_prob, True, False)
     if dump1:
         print logit_res.summary()
         print prob.head()
+        print adj_prob.head()
         print positive_imputed.mean()
         print len(nonitemizer_data)
     # estimate OLS parameters for the positive amount using a sample of
