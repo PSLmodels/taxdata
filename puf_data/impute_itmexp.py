@@ -1,17 +1,25 @@
 """
-Script that imputes itemized expense amounts to non-itemizers in puf.csv file.
+Impute itemized expense amounts to nonitemizers in the puf.csv file.
 
-It does this by using the distribution of itemized expense amounts
+This is done by using the distribution of itemized expense amounts
 among filing units who are itemizers to generate the distribution of
-imputed itemized expense amounts among filing units who are nonitemizers.  
+imputed itemized expense amounts among filing units who are
+nonitemizers.  We do this using a recursive (or sequential) model in
+which the imputed values of previously imputed itemized expense
+variables are use as explanatory variables.  This is done to better
+represent the correlations between the several itemized expense
+variables.  This method is sometimes called sequential regression
+multiple imputation.  See Raghunathan, et al., "A Multivariate
+Technique for Multiply Imputing Missing Values Using a Sequence of
+Regression Models" (2001).
 
-But such an approach requires that we handle the Heckman sample
-selection problem: that any statistical model of the itemizers that is
-used to impute itemized expense amounts for nonitemizers will
-over-estimate the imputed amounts.  This problem is handled by using
-three different ad hoc procedures to handle the Heckman sample
-selection problem.  (Comments below contain more detail on these three
-procedures.)
+Imputing amounts for nonitemizers using statistical models estimated
+on itemizers requires that we handle the resulting Heckman sample
+selection problem: any statistical model of the itemizers that is used
+to impute itemized expense amounts for nonitemizers will over-estimate
+the imputed amounts.  This problem is handled by using three different
+ad hoc procedures to handle the Heckman sample selection problem.
+(Comments below contain more detail on these three procedures.)
 
 And one additional procedure is used in this work: we scale the
 distribution of each itemized expense variable so that the weighted
@@ -21,7 +29,8 @@ in JCX-75-15, "Estimating Changes in the Federal Individual Income
 Tax: Description of the Individual Tax Model," April 23, 2015, pages
 18-22, as summarized in Table 2 on page 22, which is entitled "Number
 of Tax Filing Units and Amounts of Imputed Itemized Deductions for
-Non-Itemizers, 2011"
+Non-Itemizers, 2011."  (Comments below contain more detail on this
+procedure.)
 """
 import numpy as np
 import pandas as pd
@@ -157,7 +166,8 @@ def impute_itmexp(alldata):
             raise ValueError('illegal value of MARS')
 
     # extract selected variables and construct new variables
-    varnames = iev_names + ['MARS', 'filer', 's006']
+    nonconstant_exog_vars = []
+    varnames = iev_names + ['MARS', 'filer', 's006'] + nonconstant_exog_vars
     data = alldata[varnames].copy()
     data['stdded'] = data.apply(standard_deduction, axis=1)
     data['sum_itmexp'] = data[iev_names].sum(axis=1)
@@ -200,6 +210,10 @@ def impute_itmexp(alldata):
             )
 
     # specify 2011 JCT count/amount targets for nonitemizers
+    # (When JCX-75-15 Table 2 contains more than one line item for a
+    #  PUF variable, we assume the largest count represents the count
+    #  for the PUF variable, and we assume that the sum of the amounts
+    #  for the line items represents the amount for the PUF variable.)
     target_cnt = dict(zip(iev_names, [0.0]*len(iev_names)))
     target_amt = dict(zip(iev_names, [0.0]*len(iev_names)))
     target_cnt['e18400'] = 113.2
@@ -217,7 +231,13 @@ def impute_itmexp(alldata):
     target_cnt['e17500'] = 5.5
     target_amt['e17500'] = 20.4
 
-    # specify logit-probability and log-amount additive factors
+    # specify calibrated logit-probability and log-amount additive factors
+    # (Note that the logit_prob_af value will affect both the count and
+    #  the amount for that itmexp variable, so calibrate logit_prob_af
+    #  first and then calibrate the log_amount_af value.  Also, note that
+    #  because of the recursive nature of the imputation equations, the
+    #  two additive factors for each itemexp variable must be calibrated
+    #  in the order the equations are estimated.)
     logit_prob_af = dict(zip(iev_names, [0.0]*len(iev_names)))
     log_amount_af = dict(zip(iev_names, [0.0]*len(iev_names)))
     logit_prob_af['e18400'] = 1.49
@@ -236,8 +256,8 @@ def impute_itmexp(alldata):
     log_amount_af['e17500'] = -0.3
 
     # estimate itemizer equations and use to impute nonitemizer itmexp amounts
-    logit_prob_vars = ['constant']
-    log_amount_vars = ['constant']
+    logit_prob_vars = ['constant'] + nonconstant_exog_vars
+    log_amount_vars = ['constant'] + nonconstant_exog_vars
     errmsg = ''
     for iev in iev_names:
         if iev == 'g20500':
