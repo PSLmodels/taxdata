@@ -8,9 +8,11 @@ import statsmodels.api as sm
 
 dump0 = True
 dump1 = True
+dump2 = True
 
 
-def impute(ievar, logit_x_vars, ols_x_vars,
+def impute(ievar, logit_prob_af, log_amount_af,
+           logit_x_vars, ols_x_vars,
            itemizer_data, nonitemizer_data):
     """
     Function that estimates imputation equations for ievar with itemizer_data
@@ -25,14 +27,14 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     logit_y = (itemizer_data[ievar] > 0).astype(int)
     logit_x = itemizer_data[logit_x_vars]
     logit_res = sm.Logit(logit_y, logit_x).fit(disp=0)
-    prob = logit_res.predict(nonitemizer_data[logit_x_vars])
-    adj_prob = prob * 1.0  # TODO: add logic here
+    x_b = logit_res.predict(nonitemizer_data[logit_x_vars], linear=True)
+    exp_x_b = np.exp(x_b + logit_prob_af)
+    adj_prob = exp_x_b / (1.0 + exp_x_b)
     np.random.seed(int(ievar[1:]))
-    urn = np.random.uniform(size=len(prob))
+    urn = np.random.uniform(size=len(x_b))
     positive_imputed = np.where(urn < adj_prob, True, False)
     if dump1:
         print logit_res.summary()
-        print prob.head()
         print adj_prob.head()
         print positive_imputed.mean()
         print len(nonitemizer_data)
@@ -57,7 +59,7 @@ def impute(ievar, logit_x_vars, ols_x_vars,
     log_stdded = np.log(nonitemizer_data['stdded'])
     capped_imputed_amt = np.where(raw_imputed_amt > log_stdded,
                                   log_stdded, raw_imputed_amt)
-    adj_imputed_amt = capped_imputed_amt
+    adj_imputed_amt = capped_imputed_amt + log_amount_af
     imputed_amount = np.where(positive_imputed,
                               np.exp(adj_imputed_amt).round().astype(int), 0)
     if dump1:
@@ -103,7 +105,7 @@ def standard_deduction(row):
         raise ValueError('illegal value of MARS')
 
 # extract selected variables and construct new variables
-varnames = iev_names + ['MARS', 'filer']
+varnames = iev_names + ['MARS', 'filer', 's006']
 data = alldata[varnames].copy()
 data['stdded'] = data.apply(standard_deduction, axis=1)
 data['sum_itmexp'] = data[iev_names].sum(axis=1)
@@ -136,6 +138,15 @@ if dump0:
         varpos = var > 0
         print 'frac of non-itemizers with {}>0 = {:.4f}'.format(iev,
                                                                 varpos.mean())
+
+# specify logit-probability and log-amount additive factors
+logit_prob_af = {
+    'e18400': 1.49
+}
+log_amount_af = {
+    'e18400': -1.02
+}
+
 # estimate itemizer equations & use to impute itmexp amounts for nonitemizers
 nonitemizer_data['g20500'] = 0
 for iev in iev_names:
@@ -143,8 +154,17 @@ for iev in iev_names:
         continue  # to next loop iteration
     if iev != 'e18400':  # TODO: debugging statement that needs to be removed
         continue
-    nonitemizer_data[iev] = impute(iev, ['constant'], ['constant'],
+    nonitemizer_data[iev] = impute(iev, logit_prob_af[iev], log_amount_af[iev],
+                                   ['constant'], ['constant'],
                                    itemizer_data, nonitemizer_data)
+    if dump2:
+        var = nonitemizer_data[iev]
+        pos = var > 0
+        wgt = nonitemizer_data['s006'] * 0.01
+        assert len(var) == len(wgt)
+        wnum = wgt[pos].sum() * 1e-6
+        wamt = (var[pos] * wgt[pos]).sum() * 1e-9
+        print 'nonitemizer {}>0: #M $B = {:.1f} {:.1f}'.format(iev, wnum, wamt)
 
 # set imputed itmexp variable values in alldata
 combined_data = pd.concat([nonitemizer_data, itemizer_data]).sort_index()
