@@ -56,9 +56,9 @@ def impute(ievar, logit_prob_af, log_amount_af,
     # deduction is a second part of the ad hoc procedure to deal with the
     # Heckman sample selection problems present in this imputation process.
     log_stdded = np.log(nonitemizer_data['stdded'])
-    capped_imputed_amt = np.where(raw_imputed_amt > log_stdded,
-                                  log_stdded, raw_imputed_amt)
-    adj_imputed_amt = capped_imputed_amt + log_amount_af[ievar]
+    cap_imputed_amt = np.where(raw_imputed_amt > log_stdded,
+                               log_stdded, raw_imputed_amt)
+    adj_imputed_amt = cap_imputed_amt + log_amount_af[ievar]
     imputed_amount = np.where(positive_imputed,
                               np.exp(adj_imputed_amt).round().astype(int), 0)
     if dump1:
@@ -67,8 +67,8 @@ def impute(ievar, logit_prob_af, log_amount_af,
         print 'avg {} value = {:.2f}'.format(ievar, ols_y.mean())
         print ols_res.summary()
         print 'OLS std error of regression = {:.2f}'.format(ols_se)
-        print 'size(nonitemizer_data)=', len(nonitemizer_data)
-        print 'size(imputed_amount)=', len(imputed_amount)
+        print 'mean cap_imputed_amt = {:.3f}'.format(cap_imputed_amt.mean())
+        print 'mean adj_imputed_amt = {:.3f}'.format(adj_imputed_amt.mean())
         print 'mean imputed_amount = {:.2f}'.format(imputed_amount.mean())
     # return imputed_amount array
     return imputed_amount
@@ -167,12 +167,37 @@ target_cnt = dict(zip(iev_names, [0.0]*len(iev_names)))
 target_amt = dict(zip(iev_names, [0.0]*len(iev_names)))
 target_cnt['e18400'] = 113.2
 target_amt['e18400'] = 128.1
+target_cnt['e18500'] = 34.7
+target_amt['e18500'] = 46.2
+target_cnt['e19200'] = 16.7
+target_amt['e19200'] = 58.5
+target_cnt['e19800'] = 63.0
+target_amt['e19800'] = 27.7
+target_cnt['e20100'] = 31.5
+target_amt['e20100'] = 15.6
+target_cnt['e20400'] = 16.2
+target_amt['e20400'] = 18.6 
+target_cnt['e17500'] = 5.5
+target_amt['e17500'] = 20.4
 
 # specify logit-probability and log-amount additive factors
 logit_prob_af = dict(zip(iev_names, [0.0]*len(iev_names)))
 log_amount_af = dict(zip(iev_names, [0.0]*len(iev_names)))
 logit_prob_af['e18400'] = 1.49
 log_amount_af['e18400'] = -1.04
+logit_prob_af['e18500'] = -3.07
+log_amount_af['e18500'] = -0.98
+logit_prob_af['e19200'] = -3.0
+log_amount_af['e19200'] = -0.21
+
+logit_prob_af['e19800'] = 0.0
+log_amount_af['e19800'] = 0.0
+logit_prob_af['e20100'] = 0.0
+log_amount_af['e20100'] = 0.0
+logit_prob_af['e20400'] = 0.0
+log_amount_af['e20400'] = 0.0
+logit_prob_af['e17500'] = 0.0
+log_amount_af['e17500'] = 0.0
 
 # estimate itemizer equations and use to impute itmexp amounts for nonitemizers
 logit_prob_vars = ['constant']
@@ -182,8 +207,6 @@ for iev in iev_names:
     if iev == 'g20500':
         nonitemizer_data['g20500'] = 0
     else:
-        if iev != 'e18400':  # TODO: debugging statement to remove
-            continue
         nonitemizer_data[iev] = impute(iev, logit_prob_af, log_amount_af,
                                        logit_prob_vars, log_amount_vars,
                                        itemizer_data, nonitemizer_data)
@@ -192,6 +215,8 @@ for iev in iev_names:
     # correlation between the imputed variables
     logit_prob_vars.append(iev)
     log_amount_vars.append(iev)
+    if calibrating and iev == 'e19200':  # TODO: remove after finished
+        break
 if errmsg:
     if calibrating:
         print errmsg
