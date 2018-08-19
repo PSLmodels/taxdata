@@ -8,6 +8,7 @@ import statsmodels.api as sm
 
 dump0 = True
 dump1 = True
+dump2 = True
 calibrating = True
 
 
@@ -222,6 +223,28 @@ if errmsg:
         print errmsg
     else:
         raise ValueError(errmsg)
+
+# proportionally reduce imputed amounts in cases where nonitemizer's
+# sum of imputed amounts exceeds the nonitemizer's standard deduction
+ratio_ = nonitemizer_data[iev_names].sum(axis=1) / nonitemizer_data['stdded']
+ratio = np.maximum(ratio_, 1.0)
+if dump2:
+    print 'BEFORE: number of nonitemizers with sum>stdded = {}'.format(
+        len(ratio[ratio > 1])
+    )
+    print 'BEFORE: fraction of nonitemizers with sum>stdded = {:.4f}'.format(
+        len(ratio[ratio > 1]) / float(len(ratio))
+    )
+for iev in iev_names:
+    nonitemizer_data[iev] = np.trunc(nonitemizer_data[iev] / ratio).astype(int)
+if dump2:
+    r_a = nonitemizer_data[iev_names].sum(axis=1) / nonitemizer_data['stdded']
+    print 'AFTER: number of nonitemizers with sum>stdded = {}'.format(
+        len(r_a[r_a > 1])
+    )
+    print 'AFTER: number of nonitemizers with sum>stdded = {}'.format(
+        len(r_a[r_a > 1]) / float(len(r_a))
+    )
 
 # set imputed itmexp variable values in alldata
 combined_data = pd.concat([nonitemizer_data, itemizer_data]).sort_index()
