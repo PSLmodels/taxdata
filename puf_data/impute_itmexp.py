@@ -8,7 +8,7 @@ import statsmodels.api as sm
 
 dump0 = True
 dump1 = True
-dump2 = True
+calibrating = True
 
 
 def impute(ievar, logit_prob_af, log_amount_af,
@@ -18,8 +18,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     Function that estimates imputation equations for ievar with itemizer_data
     using the lists of exogenous variables in logit_x_vars and ols_x_vars.
     The estimated equations are then used to impute amounts for ievar for
-    nonitemizers with the imputed nonitemizer amounts being inserted into the
-    nonitemizer_data structure, which is returned by this function.
+    nonitemizers with the imputed nonitemizer amounts being returned.
     """
     if dump1:
         print '*** IMPUTE({}):'.format(ievar)
@@ -28,7 +27,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     logit_x = itemizer_data[logit_x_vars]
     logit_res = sm.Logit(logit_y, logit_x).fit(disp=0)
     x_b = logit_res.predict(nonitemizer_data[logit_x_vars], linear=True)
-    exp_x_b = np.exp(x_b + logit_prob_af)
+    exp_x_b = np.exp(x_b + logit_prob_af[ievar])
     adj_prob = exp_x_b / (1.0 + exp_x_b)
     np.random.seed(int(ievar[1:]))
     urn = np.random.uniform(size=len(x_b))
@@ -59,7 +58,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     log_stdded = np.log(nonitemizer_data['stdded'])
     capped_imputed_amt = np.where(raw_imputed_amt > log_stdded,
                                   log_stdded, raw_imputed_amt)
-    adj_imputed_amt = capped_imputed_amt + log_amount_af
+    adj_imputed_amt = capped_imputed_amt + log_amount_af[ievar]
     imputed_amount = np.where(positive_imputed,
                               np.exp(adj_imputed_amt).round().astype(int), 0)
     if dump1:
@@ -71,9 +70,33 @@ def impute(ievar, logit_prob_af, log_amount_af,
         print 'size(nonitemizer_data)=', len(nonitemizer_data)
         print 'size(imputed_amount)=', len(imputed_amount)
         print 'mean imputed_amount = {:.2f}'.format(imputed_amount.mean())
-    # insert imputed_amount into nonitemizer_data
-    nonitemizer_data.loc[:, ievar] = imputed_amount
-    return nonitemizer_data
+    # return imputed_amount array
+    return imputed_amount
+
+
+def check(iev, nonitemizer_data, target_cnt, target_amt):
+    """
+    Function that returns error message if weighted nonitemizer_data for iev
+    does not imply filing unit counts and itemized expenses amounts that are
+    close to the targets.
+    """
+    max_diff = 0.2
+    var = nonitemizer_data[iev]
+    pos = var > 0
+    wgt = nonitemizer_data['s006'] * 0.01
+    assert len(var) == len(wgt)
+    wcnt = wgt[pos].sum() * 1e-6  # millions of filing units
+    wamt = (var[pos] * wgt[pos]).sum() * 1e-9  # billions of dollars
+    msg = ''
+    if not np.allclose([wcnt], [target_cnt[iev]], rtol=0.0, atol=max_diff):
+        msg += '\nNONITEMIZER {}>0 CNT TARGET ACTUAL= {:.1f} {:.1f}'.format(
+            iev, target_cnt[iev], wcnt
+        )
+    if not np.allclose([wamt], [target_amt[iev]], rtol=0.0, atol=max_diff):
+        msg += '\nNONITEMIZER {}>0 AMT TARGET ACTUAL= {:.1f} {:.1f}'.format(
+            iev, target_amt[iev], wamt
+        )
+    return msg
 
 
 # read in puf.csv file
@@ -139,32 +162,41 @@ if dump0:
         print 'frac of non-itemizers with {}>0 = {:.4f}'.format(iev,
                                                                 varpos.mean())
 
-# specify logit-probability and log-amount additive factors
-logit_prob_af = {
-    'e18400': 1.49
-}
-log_amount_af = {
-    'e18400': -1.02
-}
+# specify 2011 JCT count/amount targets for nonitemizers
+target_cnt = dict(zip(iev_names, [0.0]*len(iev_names)))
+target_amt = dict(zip(iev_names, [0.0]*len(iev_names)))
+target_cnt['e18400'] = 113.2
+target_amt['e18400'] = 128.1
 
-# estimate itemizer equations & use to impute itmexp amounts for nonitemizers
-nonitemizer_data['g20500'] = 0
+# specify logit-probability and log-amount additive factors
+logit_prob_af = dict(zip(iev_names, [0.0]*len(iev_names)))
+log_amount_af = dict(zip(iev_names, [0.0]*len(iev_names)))
+logit_prob_af['e18400'] = 1.49
+log_amount_af['e18400'] = -1.04
+
+# estimate itemizer equations and use to impute itmexp amounts for nonitemizers
+logit_prob_vars = ['constant']
+log_amount_vars = ['constant']
+errmsg = ''
 for iev in iev_names:
     if iev == 'g20500':
-        continue  # to next loop iteration
-    if iev != 'e18400':  # TODO: debugging statement that needs to be removed
-        continue
-    nonitemizer_data[iev] = impute(iev, logit_prob_af[iev], log_amount_af[iev],
-                                   ['constant'], ['constant'],
-                                   itemizer_data, nonitemizer_data)
-    if dump2:
-        var = nonitemizer_data[iev]
-        pos = var > 0
-        wgt = nonitemizer_data['s006'] * 0.01
-        assert len(var) == len(wgt)
-        wnum = wgt[pos].sum() * 1e-6
-        wamt = (var[pos] * wgt[pos]).sum() * 1e-9
-        print 'nonitemizer {}>0: #M $B = {:.1f} {:.1f}'.format(iev, wnum, wamt)
+        nonitemizer_data['g20500'] = 0
+    else:
+        if iev != 'e18400':  # TODO: debugging statement to remove
+            continue
+        nonitemizer_data[iev] = impute(iev, logit_prob_af, log_amount_af,
+                                       logit_prob_vars, log_amount_vars,
+                                       itemizer_data, nonitemizer_data)
+    errmsg += check(iev, nonitemizer_data, target_cnt, target_amt)
+    # add imputed variable to exogenous variable lists to better estimate
+    # correlation between the imputed variables
+    logit_prob_vars.append(iev)
+    log_amount_vars.append(iev)
+if errmsg:
+    if calibrating:
+        print errmsg
+    else:
+        raise ValueError(errmsg)
 
 # set imputed itmexp variable values in alldata
 combined_data = pd.concat([nonitemizer_data, itemizer_data]).sort_index()
@@ -173,3 +205,11 @@ for iev in iev_names:
 
 # write augmented puf-new.csv file
 alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
+
+
+"""
+if __name__ == "__main__":
+    read in puf.csv
+    call main() function
+    alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
+"""
