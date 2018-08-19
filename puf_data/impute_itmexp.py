@@ -1,15 +1,37 @@
 """
 Script that imputes itemized expense amounts to non-itemizers in puf.csv file.
+
+It does this by using the distribution of itemized expense amounts
+among filing units who are itemizers to generate the distribution of
+imputed itemized expense amounts among filing units who are nonitemizers.  
+
+But such an approach requires that we handle the Heckman sample
+selection problem: that any statistical model of the itemizers that is
+used to impute itemized expense amounts for nonitemizers will
+over-estimate the imputed amounts.  This problem is handled by using
+three different ad hoc procedures to handle the Heckman sample
+selection problem.  (Comments below contain more detail on these three
+procedures.)
+
+And one additional procedure is used in this work: we scale the
+distribution of each itemized expense variable so that the weighted
+count of nonitemizers with a positive imputed amount and the weighted
+dollar sum of the imputed amounts approximate those estimated by JCT
+in JCX-75-15, "Estimating Changes in the Federal Individual Income
+Tax: Description of the Individual Tax Model," April 23, 2015, pages
+18-22, as summarized in Table 2 on page 22, which is entitled "Number
+of Tax Filing Units and Amounts of Imputed Itemized Deductions for
+Non-Itemizers, 2011"
 """
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
 
-dump0 = True
-dump1 = True
-dump2 = True
-calibrating = True
+DUMP0 = True
+DUMP1 = True
+DUMP2 = True
+CALIBRATING = True
 
 
 def impute(ievar, logit_prob_af, log_amount_af,
@@ -21,7 +43,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     The estimated equations are then used to impute amounts for ievar for
     nonitemizers with the imputed nonitemizer amounts being returned.
     """
-    if dump1:
+    if DUMP1:
         print '*** IMPUTE({}):'.format(ievar)
     # estimate Logit parameters for probability of having a positive amount
     logit_y = (itemizer_data[ievar] > 0).astype(int)
@@ -33,7 +55,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     np.random.seed(int(ievar[1:]))
     urn = np.random.uniform(size=len(x_b))
     positive_imputed = np.where(urn < adj_prob, True, False)
-    if dump1:
+    if DUMP1:
         print logit_res.summary()
         print adj_prob.head()
         print positive_imputed.mean()
@@ -62,7 +84,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     adj_imputed_amt = cap_imputed_amt + log_amount_af[ievar]
     imputed_amount = np.where(positive_imputed,
                               np.exp(adj_imputed_amt).round().astype(int), 0)
-    if dump1:
+    if DUMP1:
         print 'size of {} OLS sample = {}'.format(ievar, len(ols_y))
         print 'max {} value = {}'.format(ievar, ols_y.max())
         print 'avg {} value = {:.2f}'.format(ievar, ols_y.mean())
@@ -73,6 +95,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
         print 'mean imputed_amount = {:.2f}'.format(imputed_amount.mean())
     # return imputed_amount array
     return imputed_amount
+# end of impute() function
 
 
 def check(iev, nonitemizer_data, target_cnt, target_amt):
@@ -98,166 +121,179 @@ def check(iev, nonitemizer_data, target_cnt, target_amt):
             iev, target_amt[iev], wamt
         )
     return msg
+# end of check() function
 
 
-# read in puf.csv file
-alldata = pd.read_csv('puf.csv')
-
-# specify variable names of itemized-expense variables
-iev_names = ['e18400',  # state and local taxes
-             'e18500',  # real-estate taxes
-             'e19200',  # interest paid
-             'e19800',  # charity cash contributions
-             'e20100',  # charity non-cash contributions
-             'e20400',  # misc itemizable expenses
-             'e17500',  # medical expenses
-             'g20500']  # gross casualty/theft loss
-
-def standard_deduction(row):
+def impute_itmexp(alldata):
     """
-    Specifies 2011 standard deduction amount by MARS
+    Main function in impute_itmexp.py file.
+    Argument: puf.csv DataFrame just before imputation is done.
+    Returns: puf.csv DataFrame with imputed itemized expense amounts for
+             nonitemizers.
     """
-    if row['MARS'] == 1 :
-        return 5800   # single
-    elif row['MARS'] == 2:
-        return 11600  # married filing jointly
-    elif row['MARS'] == 3:
-        return 5800   # married filing separately
-    elif row['MARS'] == 4:
-        return 8500   # head of household
-    else:
-        raise ValueError('illegal value of MARS')
+    # specify variable names of itemized-expense variables
+    iev_names = ['e18400',  # state and local taxes
+                 'e18500',  # real-estate taxes
+                 'e19200',  # interest paid
+                 'e19800',  # charity cash contributions
+                 'e20100',  # charity non-cash contributions
+                 'e20400',  # misc itemizable expenses
+                 'e17500',  # medical expenses
+                 'g20500']  # gross casualty/theft loss
 
-# extract selected variables and construct new variables
-varnames = iev_names + ['MARS', 'filer', 's006']
-data = alldata[varnames].copy()
-data['stdded'] = data.apply(standard_deduction, axis=1)
-data['sum_itmexp'] = data[iev_names].sum(axis=1)
-data['itemizer'] = np.where(data['sum_itmexp'] > data['stdded'], 1, 0)
-data['constant'] = 1
+    def standard_deduction(row):
+        """
+        Specifies 2011 standard deduction amount by MARS
+        """
+        if row['MARS'] == 1:
+            return 5800   # single
+        elif row['MARS'] == 2:
+            return 11600  # married filing jointly
+        elif row['MARS'] == 3:
+            return 5800   # married filing separately
+        elif row['MARS'] == 4:
+            return 8500   # head of household
+        else:
+            raise ValueError('illegal value of MARS')
 
-# separate all the data into data for itemizers and data for nonitemizers
-itemizer_data = data[data['itemizer'] == 1].copy()
-nonitemizer_data = data[data['itemizer'] == 0].copy()
-    
-# descriptive statistics for the data variables
-if dump0:
-    print 'ALL raw count = {:6d}'.format(len(data))
-    print 'PUF raw count = {:6d}'.format(len(data[data['filer'] == 1]))
-    print 'CPS raw count = {:6d}'.format(len(data[data['filer'] == 0]))
-    print 'PUF fraction of ALL = {:.4f}'.format(data['filer'].mean())
-    ier = data['itemizer']
-    print 'ALL itemizer mean = {:.4f}'.format(ier.mean())
-    print 'PUF itemizer mean = {:.4f}'.format(ier[data['filer'] == 1].mean())
-    print 'CPS itemizer mean = {:.4f}'.format(ier[data['filer'] == 0].mean())
-    for iev in iev_names:
-        var = itemizer_data[iev]
-        varpos = var > 0
-        print '{} with {}>0 = {:.4f}  {:.2f}'.format(
-            'frac and mean for itemizers',
-            iev, varpos.mean(), var[varpos].mean()
+    # extract selected variables and construct new variables
+    varnames = iev_names + ['MARS', 'filer', 's006']
+    data = alldata[varnames].copy()
+    data['stdded'] = data.apply(standard_deduction, axis=1)
+    data['sum_itmexp'] = data[iev_names].sum(axis=1)
+    data['itemizer'] = np.where(data['sum_itmexp'] > data['stdded'], 1, 0)
+    data['constant'] = 1
+
+    # separate all the data into data for itemizers and data for nonitemizers
+    itemizer_data = data[data['itemizer'] == 1].copy()
+    nonitemizer_data = data[data['itemizer'] == 0].copy()
+
+    # descriptive statistics for the data variables
+    if DUMP0:
+        print 'ALL raw count = {:6d}'.format(len(data))
+        print 'PUF raw count = {:6d}'.format(len(data[data['filer'] == 1]))
+        print 'CPS raw count = {:6d}'.format(len(data[data['filer'] == 0]))
+        print 'PUF fraction of ALL = {:.4f}'.format(data['filer'].mean())
+        ier = data['itemizer']
+        print 'ALL itemizer mean = {:.4f}'.format(ier.mean())
+        print 'PUF itemizer mean = {:.4f}'.format(
+            ier[data['filer'] == 1].mean()
         )
-    print 'itmexp correlation coefficients for itemizers:'
-    print itemizer_data[iev_names].corr()[iev_names[:4]]
-    print itemizer_data[iev_names].corr()[iev_names[-4:]]
+        print 'CPS itemizer mean = {:.4f}'.format(
+            ier[data['filer'] == 0].mean()
+        )
+        for iev in iev_names:
+            var = itemizer_data[iev]
+            varpos = var > 0
+            print '{} with {}>0 = {:.4f}  {:.2f}'.format(
+                'frac and mean for itemizers',
+                iev, varpos.mean(), var[varpos].mean()
+            )
+        print 'itmexp correlation coefficients for itemizers:'
+        print itemizer_data[iev_names].corr()[iev_names[:4]]
+        print itemizer_data[iev_names].corr()[iev_names[-4:]]
+        for iev in iev_names:
+            var = nonitemizer_data[iev]
+            varpos = var > 0
+            print 'frac of non-itemizers with {}>0 = {:.4f}'.format(
+                iev, varpos.mean()
+            )
+
+    # specify 2011 JCT count/amount targets for nonitemizers
+    target_cnt = dict(zip(iev_names, [0.0]*len(iev_names)))
+    target_amt = dict(zip(iev_names, [0.0]*len(iev_names)))
+    target_cnt['e18400'] = 113.2
+    target_amt['e18400'] = 128.1
+    target_cnt['e18500'] = 34.7
+    target_amt['e18500'] = 46.2
+    target_cnt['e19200'] = 16.7
+    target_amt['e19200'] = 58.5
+    target_cnt['e19800'] = 63.0
+    target_amt['e19800'] = 27.7
+    target_cnt['e20100'] = 31.5
+    target_amt['e20100'] = 15.6
+    target_cnt['e20400'] = 16.2
+    target_amt['e20400'] = 18.6
+    target_cnt['e17500'] = 5.5
+    target_amt['e17500'] = 20.4
+
+    # specify logit-probability and log-amount additive factors
+    logit_prob_af = dict(zip(iev_names, [0.0]*len(iev_names)))
+    log_amount_af = dict(zip(iev_names, [0.0]*len(iev_names)))
+    logit_prob_af['e18400'] = 1.49
+    log_amount_af['e18400'] = -1.04
+    logit_prob_af['e18500'] = -3.07
+    log_amount_af['e18500'] = -0.98
+    logit_prob_af['e19200'] = -3.0
+    log_amount_af['e19200'] = -0.21
+    logit_prob_af['e19800'] = -0.9
+    log_amount_af['e19800'] = -1.57
+    logit_prob_af['e20100'] = -0.9
+    log_amount_af['e20100'] = -0.68
+    logit_prob_af['e20400'] = -2.25
+    log_amount_af['e20400'] = -0.33
+    logit_prob_af['e17500'] = -2.3
+    log_amount_af['e17500'] = -0.3
+
+    # estimate itemizer equations and use to impute nonitemizer itmexp amounts
+    logit_prob_vars = ['constant']
+    log_amount_vars = ['constant']
+    errmsg = ''
     for iev in iev_names:
-        var = nonitemizer_data[iev]
-        varpos = var > 0
-        print 'frac of non-itemizers with {}>0 = {:.4f}'.format(iev,
-                                                                varpos.mean())
+        if iev == 'g20500':
+            nonitemizer_data['g20500'] = 0
+        else:
+            nonitemizer_data[iev] = impute(iev, logit_prob_af, log_amount_af,
+                                           logit_prob_vars, log_amount_vars,
+                                           itemizer_data, nonitemizer_data)
+            errmsg += check(iev, nonitemizer_data, target_cnt, target_amt)
+            # add imputed variable to both exogenous variable lists in order
+            # to better estimate correlation between the imputed variables
+        logit_prob_vars.append(iev)
+        log_amount_vars.append(iev)
+    if errmsg:
+        if CALIBRATING:
+            print errmsg
+        else:
+            raise ValueError(errmsg)
 
-# specify 2011 JCT count/amount targets for nonitemizers
-target_cnt = dict(zip(iev_names, [0.0]*len(iev_names)))
-target_amt = dict(zip(iev_names, [0.0]*len(iev_names)))
-target_cnt['e18400'] = 113.2
-target_amt['e18400'] = 128.1
-target_cnt['e18500'] = 34.7
-target_amt['e18500'] = 46.2
-target_cnt['e19200'] = 16.7
-target_amt['e19200'] = 58.5
-target_cnt['e19800'] = 63.0
-target_amt['e19800'] = 27.7
-target_cnt['e20100'] = 31.5
-target_amt['e20100'] = 15.6
-target_cnt['e20400'] = 16.2
-target_amt['e20400'] = 18.6 
-target_cnt['e17500'] = 5.5
-target_amt['e17500'] = 20.4
+    # proportionally reduce imputed amounts in cases where nonitemizer's
+    # sum of imputed amounts exceeds the nonitemizer's standard deduction
+    # (3) Reducing the imputed amounts so that their sum is no more than
+    # the nonitemizer filing unit's standard deduction is a third part of
+    # the ad hoc procedure to deal with the Heckman sample selection problems
+    # present in this imputation process.
+    stdded = nonitemizer_data['stdded']
+    ratio_ = nonitemizer_data[iev_names].sum(axis=1) / stdded
+    ratio = np.maximum(ratio_, 1.0)
+    if DUMP2:
+        print 'BEFORE: num of nonitemizers with sum>stdded = {}'.format(
+            len(ratio[ratio > 1])
+        )
+        print 'BEFORE: frac of nonitemizers with sum>stdded = {:.4f}'.format(
+            len(ratio[ratio > 1]) / float(len(ratio))
+        )
+    for iev in iev_names:
+        reduced_amt = np.trunc(nonitemizer_data[iev] / ratio)
+        nonitemizer_data[iev] = reduced_amt.astype(int)
+    if DUMP2:
+        r_a = nonitemizer_data[iev_names].sum(axis=1) / stdded
+        print 'AFTER: num of nonitemizers with sum>stdded = {}'.format(
+            len(r_a[r_a > 1])
+        )
+        print 'AFTER: frac of nonitemizers with sum>stdded = {}'.format(
+            len(r_a[r_a > 1]) / float(len(r_a))
+        )
 
-# specify logit-probability and log-amount additive factors
-logit_prob_af = dict(zip(iev_names, [0.0]*len(iev_names)))
-log_amount_af = dict(zip(iev_names, [0.0]*len(iev_names)))
-logit_prob_af['e18400'] = 1.49
-log_amount_af['e18400'] = -1.04
-logit_prob_af['e18500'] = -3.07
-log_amount_af['e18500'] = -0.98
-logit_prob_af['e19200'] = -3.0
-log_amount_af['e19200'] = -0.21
-logit_prob_af['e19800'] = -0.9
-log_amount_af['e19800'] = -1.57
-logit_prob_af['e20100'] = -0.9
-log_amount_af['e20100'] = -0.68
-logit_prob_af['e20400'] = -2.25
-log_amount_af['e20400'] = -0.33
-logit_prob_af['e17500'] = -2.3
-log_amount_af['e17500'] = -0.3
-
-# estimate itemizer equations and use to impute itmexp amounts for nonitemizers
-logit_prob_vars = ['constant']
-log_amount_vars = ['constant']
-errmsg = ''
-for iev in iev_names:
-    if iev == 'g20500':
-        nonitemizer_data['g20500'] = 0
-    else:
-        nonitemizer_data[iev] = impute(iev, logit_prob_af, log_amount_af,
-                                       logit_prob_vars, log_amount_vars,
-                                       itemizer_data, nonitemizer_data)
-    errmsg += check(iev, nonitemizer_data, target_cnt, target_amt)
-    # add imputed variable to both exogenous variable lists in order
-    # to better estimate correlation between the imputed variables
-    logit_prob_vars.append(iev)
-    log_amount_vars.append(iev)
-if errmsg:
-    if calibrating:
-        print errmsg
-    else:
-        raise ValueError(errmsg)
-
-# proportionally reduce imputed amounts in cases where nonitemizer's
-# sum of imputed amounts exceeds the nonitemizer's standard deduction
-ratio_ = nonitemizer_data[iev_names].sum(axis=1) / nonitemizer_data['stdded']
-ratio = np.maximum(ratio_, 1.0)
-if dump2:
-    print 'BEFORE: number of nonitemizers with sum>stdded = {}'.format(
-        len(ratio[ratio > 1])
-    )
-    print 'BEFORE: fraction of nonitemizers with sum>stdded = {:.4f}'.format(
-        len(ratio[ratio > 1]) / float(len(ratio))
-    )
-for iev in iev_names:
-    nonitemizer_data[iev] = np.trunc(nonitemizer_data[iev] / ratio).astype(int)
-if dump2:
-    r_a = nonitemizer_data[iev_names].sum(axis=1) / nonitemizer_data['stdded']
-    print 'AFTER: number of nonitemizers with sum>stdded = {}'.format(
-        len(r_a[r_a > 1])
-    )
-    print 'AFTER: number of nonitemizers with sum>stdded = {}'.format(
-        len(r_a[r_a > 1]) / float(len(r_a))
-    )
-
-# set imputed itmexp variable values in alldata
-combined_data = pd.concat([nonitemizer_data, itemizer_data]).sort_index()
-for iev in iev_names:
-    alldata[iev] = combined_data[iev]
-
-# write augmented puf-new.csv file
-alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
+    # set imputed itmexp variable values in alldata and return alldata
+    combined_data = pd.concat([nonitemizer_data, itemizer_data]).sort_index()
+    for iev in iev_names:
+        alldata[iev] = combined_data[iev]
+    return alldata
+# end of impute_itmexp() function
 
 
-"""
-if __name__ == "__main__":
-    read in puf.csv
-    call main() function
-    alldata.to_csv('puf-new.csv', index=False, float_format='%.2f')
-"""
+if __name__ == '__main__':
+    RAWDATA = pd.read_csv('puf.csv')
+    AUGDATA = impute_itmexp(RAWDATA)
+    AUGDATA.to_csv('puf-aug.csv', index=False, float_format='%.2f')
