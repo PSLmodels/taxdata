@@ -156,6 +156,9 @@ if dump0:
             'frac and mean for itemizers',
             iev, varpos.mean(), var[varpos].mean()
         )
+    print 'itmexp correlation coefficients for itemizers:'
+    print itemizer_data[iev_names].corr()[iev_names[:4]]
+    print itemizer_data[iev_names].corr()[iev_names[-4:]]
     for iev in iev_names:
         var = nonitemizer_data[iev]
         varpos = var > 0
@@ -189,15 +192,14 @@ logit_prob_af['e18500'] = -3.07
 log_amount_af['e18500'] = -0.98
 logit_prob_af['e19200'] = -3.0
 log_amount_af['e19200'] = -0.21
-
-logit_prob_af['e19800'] = 0.0
-log_amount_af['e19800'] = 0.0
-logit_prob_af['e20100'] = 0.0
-log_amount_af['e20100'] = 0.0
-logit_prob_af['e20400'] = 0.0
-log_amount_af['e20400'] = 0.0
-logit_prob_af['e17500'] = 0.0
-log_amount_af['e17500'] = 0.0
+logit_prob_af['e19800'] = -0.9
+log_amount_af['e19800'] = -1.57
+logit_prob_af['e20100'] = -0.9
+log_amount_af['e20100'] = -0.68
+logit_prob_af['e20400'] = -2.25
+log_amount_af['e20400'] = -0.33
+logit_prob_af['e17500'] = -2.3
+log_amount_af['e17500'] = -0.3
 
 # estimate itemizer equations and use to impute itmexp amounts for nonitemizers
 logit_prob_vars = ['constant']
@@ -211,12 +213,10 @@ for iev in iev_names:
                                        logit_prob_vars, log_amount_vars,
                                        itemizer_data, nonitemizer_data)
     errmsg += check(iev, nonitemizer_data, target_cnt, target_amt)
-    # add imputed variable to exogenous variable lists to better estimate
-    # correlation between the imputed variables
+    # add imputed variable to both exogenous variable lists in order
+    # to better estimate correlation between the imputed variables
     logit_prob_vars.append(iev)
     log_amount_vars.append(iev)
-    if calibrating and iev == 'e19200':  # TODO: remove after finished
-        break
 if errmsg:
     if calibrating:
         print errmsg
