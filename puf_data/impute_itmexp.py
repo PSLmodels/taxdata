@@ -318,4 +318,4 @@ def impute_itemized_expenses(alldata):
 if __name__ == '__main__':
     RAWDATA = pd.read_csv('puf.csv')
     AUGDATA = impute_itemized_expenses(RAWDATA)
-    AUGDATA.to_csv('puf-aug.csv', index=False, float_format='%.2f')
+    AUGDATA.to_csv('puf-aug.csv', index=False)
