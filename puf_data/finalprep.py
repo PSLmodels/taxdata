@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 import pandas
+from impute_itmexp import impute_itemized_expenses
 
 
 BENPUF = False  # set temporarily to True to generate a benpuf.csv file
@@ -54,7 +55,7 @@ def main():
     # - Add AGI bin indicator used for adjustment factors:
     data = add_agi_bin(data)
 
-    # - Replace e20500 with g20500
+    # - Replace e20500 with g20500:
     data = replace_20500(data)
 
     # - Remove variables not expected by Tax-Calculator:
@@ -65,8 +66,12 @@ def main():
     if not BENPUF:
         data = remove_benefits_variables(data)
 
-    # Convert data to integers
+    # - Convert data to integers:
     data = data.round(0).astype('int64')
+
+    # - Impute itemized expense amounts for non-itemizers:
+    data = impute_itemized_expenses(data.copy())
+
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
         data.to_csv('benpuf.csv', index=False)

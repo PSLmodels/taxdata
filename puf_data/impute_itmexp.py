@@ -38,10 +38,10 @@ import pandas as pd
 import statsmodels.api as sm
 
 
-DUMP0 = True
-DUMP1 = True
-DUMP2 = True
-CALIBRATING = True
+DUMP0 = False
+DUMP1 = False
+DUMP2 = False
+CALIBRATING = False
 
 
 def impute(ievar, logit_prob_af, log_amount_af,
