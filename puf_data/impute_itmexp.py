@@ -32,6 +32,7 @@ of Tax Filing Units and Amounts of Imputed Itemized Deductions for
 Non-Itemizers, 2011."  (Comments below contain more detail on this
 procedure.)
 """
+from __future__ import print_function
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
@@ -53,7 +54,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
     nonitemizers with the imputed nonitemizer amounts being returned.
     """
     if DUMP1:
-        print '*** IMPUTE({}):'.format(ievar)
+        print('****** IMPUTE {} ******'.format(ievar))
     # estimate Logit parameters for probability of having a positive amount
     logit_y = (itemizer_data[ievar] > 0).astype(int)
     logit_x = itemizer_data[logit_x_vars]
@@ -65,10 +66,10 @@ def impute(ievar, logit_prob_af, log_amount_af,
     urn = np.random.uniform(size=len(x_b))
     positive_imputed = np.where(urn < adj_prob, True, False)
     if DUMP1:
-        print logit_res.summary()
-        print adj_prob.head()
-        print positive_imputed.mean()
-        print len(nonitemizer_data)
+        print(logit_res.summary())
+        print(adj_prob.head())
+        print(round(positive_imputed.mean(), 4))
+        print(len(nonitemizer_data))
     # estimate OLS parameters for the positive amount using a sample of
     # itemizers who have positive ievar amounts than are less than the
     # itemizer's standard deduction amount
@@ -94,14 +95,14 @@ def impute(ievar, logit_prob_af, log_amount_af,
     imputed_amount = np.where(positive_imputed,
                               np.exp(adj_imputed_amt).round().astype(int), 0)
     if DUMP1:
-        print 'size of {} OLS sample = {}'.format(ievar, len(ols_y))
-        print 'max {} value = {}'.format(ievar, ols_y.max())
-        print 'avg {} value = {:.2f}'.format(ievar, ols_y.mean())
-        print ols_res.summary()
-        print 'OLS std error of regression = {:.2f}'.format(ols_se)
-        print 'mean cap_imputed_amt = {:.3f}'.format(cap_imputed_amt.mean())
-        print 'mean adj_imputed_amt = {:.3f}'.format(adj_imputed_amt.mean())
-        print 'mean imputed_amount = {:.2f}'.format(imputed_amount.mean())
+        print('size of {} OLS sample = {}'.format(ievar, len(ols_y)))
+        print('max {} value = {}'.format(ievar, ols_y.max()))
+        print('avg {} value = {:.2f}'.format(ievar, ols_y.mean()))
+        print(ols_res.summary())
+        print('OLS std error of regression = {:.2f}'.format(ols_se))
+        print('mean cap_imputed_amt = {:.3f}'.format(cap_imputed_amt.mean()))
+        print('mean adj_imputed_amt = {:.3f}'.format(adj_imputed_amt.mean()))
+        print('mean imputed_amount = {:.2f}'.format(imputed_amount.mean()))
     # return imputed_amount array
     return imputed_amount
 # end of impute() function
@@ -133,7 +134,7 @@ def check(iev, nonitemizer_data, target_cnt, target_amt):
 # end of check() function
 
 
-def impute_itmexp(alldata):
+def impute_itemized_expenses(alldata):
     """
     Main function in impute_itmexp.py file.
     Argument: puf.csv DataFrame just before imputation is done.
@@ -180,34 +181,34 @@ def impute_itmexp(alldata):
 
     # descriptive statistics for the data variables
     if DUMP0:
-        print 'ALL raw count = {:6d}'.format(len(data))
-        print 'PUF raw count = {:6d}'.format(len(data[data['filer'] == 1]))
-        print 'CPS raw count = {:6d}'.format(len(data[data['filer'] == 0]))
-        print 'PUF fraction of ALL = {:.4f}'.format(data['filer'].mean())
+        print('ALL raw count = {:6d}'.format(len(data)))
+        print('PUF raw count = {:6d}'.format(len(data[data['filer'] == 1])))
+        print('CPS raw count = {:6d}'.format(len(data[data['filer'] == 0])))
+        print('PUF fraction of ALL = {:.4f}'.format(data['filer'].mean()))
         ier = data['itemizer']
-        print 'ALL itemizer mean = {:.4f}'.format(ier.mean())
-        print 'PUF itemizer mean = {:.4f}'.format(
+        print('ALL itemizer mean = {:.4f}'.format(ier.mean()))
+        print('PUF itemizer mean = {:.4f}'.format(
             ier[data['filer'] == 1].mean()
-        )
-        print 'CPS itemizer mean = {:.4f}'.format(
+        ))
+        print('CPS itemizer mean = {:.4f}'.format(
             ier[data['filer'] == 0].mean()
-        )
+        ))
         for iev in iev_names:
             var = itemizer_data[iev]
             varpos = var > 0
-            print '{} with {}>0 = {:.4f}  {:.2f}'.format(
+            print('{} with {}>0 = {:.4f}  {:.2f}'.format(
                 'frac and mean for itemizers',
                 iev, varpos.mean(), var[varpos].mean()
-            )
-        print 'itmexp correlation coefficients for itemizers:'
-        print itemizer_data[iev_names].corr()[iev_names[:4]]
-        print itemizer_data[iev_names].corr()[iev_names[-4:]]
+            ))
+        print('itmexp correlation coefficients for itemizers:')
+        print(itemizer_data[iev_names].corr()[iev_names[:4]])
+        print(itemizer_data[iev_names].corr()[iev_names[-4:]])
         for iev in iev_names:
             var = nonitemizer_data[iev]
             varpos = var > 0
-            print 'frac of non-itemizers with {}>0 = {:.4f}'.format(
+            print('frac of non-itemizers with {}>0 = {:.4f}'.format(
                 iev, varpos.mean()
-            )
+            ))
 
     # specify 2011 JCT count/amount targets for nonitemizers
     # (When JCX-75-15 Table 2 contains more than one line item for a
@@ -273,7 +274,7 @@ def impute_itmexp(alldata):
         log_amount_vars.append(iev)
     if errmsg:
         if CALIBRATING:
-            print errmsg
+            print(errmsg)
         else:
             raise ValueError(errmsg)
 
@@ -287,33 +288,33 @@ def impute_itmexp(alldata):
     ratio_ = nonitemizer_data[iev_names].sum(axis=1) / stdded
     ratio = np.maximum(ratio_, 1.0)
     if DUMP2:
-        print 'BEFORE: num of nonitemizers with sum>stdded = {}'.format(
+        print('BEFORE: num of nonitemizers with sum>stdded = {}'.format(
             len(ratio[ratio > 1])
-        )
-        print 'BEFORE: frac of nonitemizers with sum>stdded = {:.4f}'.format(
+        ))
+        print('BEFORE: frac of nonitemizers with sum>stdded = {:.4f}'.format(
             len(ratio[ratio > 1]) / float(len(ratio))
-        )
+        ))
     for iev in iev_names:
         reduced_amt = np.trunc(nonitemizer_data[iev] / ratio)
         nonitemizer_data[iev] = reduced_amt.astype(int)
     if DUMP2:
         r_a = nonitemizer_data[iev_names].sum(axis=1) / stdded
-        print 'AFTER: num of nonitemizers with sum>stdded = {}'.format(
+        print('AFTER: num of nonitemizers with sum>stdded = {}'.format(
             len(r_a[r_a > 1])
-        )
-        print 'AFTER: frac of nonitemizers with sum>stdded = {}'.format(
+        ))
+        print('AFTER: frac of nonitemizers with sum>stdded = {:.4f}'.format(
             len(r_a[r_a > 1]) / float(len(r_a))
-        )
+        ))
 
     # set imputed itmexp variable values in alldata and return alldata
     combined_data = pd.concat([nonitemizer_data, itemizer_data]).sort_index()
     for iev in iev_names:
         alldata[iev] = combined_data[iev]
     return alldata
-# end of impute_itmexp() function
+# end of impute_itemized_expenses() function
 
 
 if __name__ == '__main__':
     RAWDATA = pd.read_csv('puf.csv')
-    AUGDATA = impute_itmexp(RAWDATA)
+    AUGDATA = impute_itemized_expenses(RAWDATA)
     AUGDATA.to_csv('puf-aug.csv', index=False, float_format='%.2f')
