@@ -19,7 +19,7 @@ selection problem: any statistical model of the itemizers that is used
 to impute itemized expense amounts for nonitemizers will over-estimate
 the imputed amounts.  This problem is handled by using three different
 ad hoc procedures to handle the Heckman sample selection problem.
-(Comments below contain more detail on these three procedures.)
+(Numbered comments below contain more detail on these three procedures.)
 
 And one additional procedure is used in this work: we scale the
 distribution of each itemized expense variable so that the weighted
@@ -45,21 +45,20 @@ CALIBRATING = True
 
 
 def impute(ievar, logit_prob_af, log_amount_af,
-           logit_x_vars, ols_x_vars,
-           itemizer_data, nonitemizer_data):
+           exogenous_vars, itemizer_data, nonitemizer_data):
     """
     Function that estimates imputation equations for ievar with itemizer_data
-    using the lists of exogenous variables in logit_x_vars and ols_x_vars.
-    The estimated equations are then used to impute amounts for ievar for
-    nonitemizers with the imputed nonitemizer amounts being returned.
+    using the list of exogenous variables.  The estimated equations are then
+    used (along with the two additive factors) to impute amounts for ievar
+    for nonitemizers with the imputed nonitemizer amounts being returned.
     """
     if DUMP1:
         print('****** IMPUTE {} ******'.format(ievar))
     # estimate Logit parameters for probability of having a positive amount
     logit_y = (itemizer_data[ievar] > 0).astype(int)
-    logit_x = itemizer_data[logit_x_vars]
+    logit_x = itemizer_data[exogenous_vars]
     logit_res = sm.Logit(logit_y, logit_x).fit(disp=0)
-    x_b = logit_res.predict(nonitemizer_data[logit_x_vars], linear=True)
+    x_b = logit_res.predict(nonitemizer_data[exogenous_vars], linear=True)
     exp_x_b = np.exp(x_b + logit_prob_af[ievar])
     adj_prob = exp_x_b / (1.0 + exp_x_b)
     np.random.seed(int(ievar[1:]))
@@ -79,12 +78,12 @@ def impute(ievar, logit_prob_af, log_amount_af,
     tpi_data = itemizer_data[(itemizer_data[ievar] > 0) &
                              (itemizer_data[ievar] < itemizer_data['stdded'])]
     ols_y = np.log(tpi_data[ievar])
-    ols_x = tpi_data[ols_x_vars]
+    ols_x = tpi_data[exogenous_vars]
     ols_res = sm.OLS(ols_y, ols_x).fit()
     ols_se = np.sqrt(ols_res.scale)
     error = np.random.normal(loc=0.0, scale=ols_se,
                              size=len(nonitemizer_data))
-    raw_imputed_amt = ols_res.predict(nonitemizer_data[ols_x_vars]) + error
+    raw_imputed_amt = ols_res.predict(nonitemizer_data[exogenous_vars]) + error
     # (2) Limiting the imputed amount to be no more than the standard
     # deduction is a second part of the ad hoc procedure to deal with the
     # Heckman sample selection problems present in this imputation process.
@@ -167,13 +166,16 @@ def impute_itemized_expenses(alldata):
             raise ValueError('illegal value of MARS')
 
     # extract selected variables and construct new variables
-    nonconstant_exog_vars = []
-    varnames = iev_names + ['MARS', 'filer', 's006'] + nonconstant_exog_vars
+    varnames = iev_names + ['MARS', 'filer', 's006', 'XTOT',
+                            'e00200', 'e00600', 'e00900', 'e02000']
     data = alldata[varnames].copy()
     data['stdded'] = data.apply(standard_deduction, axis=1)
     data['sum_itmexp'] = data[iev_names].sum(axis=1)
     data['itemizer'] = np.where(data['sum_itmexp'] > data['stdded'], 1, 0)
     data['constant'] = 1
+    data['MARS2'] = np.where(data['MARS'] == 2, 1, 0)
+    data['MARS3'] = np.where(data['MARS'] == 3, 1, 0)
+    data['MARS4'] = np.where(data['MARS'] == 4, 1, 0)
 
     # separate all the data into data for itemizers and data for nonitemizers
     itemizer_data = data[data['itemizer'] == 1].copy()
@@ -241,37 +243,36 @@ def impute_itemized_expenses(alldata):
     #  in the order the equations are estimated.)
     logit_prob_af = dict(zip(iev_names, [0.0]*len(iev_names)))
     log_amount_af = dict(zip(iev_names, [0.0]*len(iev_names)))
-    logit_prob_af['e18400'] = 1.49
-    log_amount_af['e18400'] = -1.04
-    logit_prob_af['e18500'] = -3.07
-    log_amount_af['e18500'] = -0.98
-    logit_prob_af['e19200'] = -3.0
-    log_amount_af['e19200'] = -0.21
-    logit_prob_af['e19800'] = -0.9
-    log_amount_af['e19800'] = -1.57
-    logit_prob_af['e20100'] = -0.9
-    log_amount_af['e20100'] = -0.68
+    logit_prob_af['e18400'] = 1.40
+    log_amount_af['e18400'] = -0.753
+    logit_prob_af['e18500'] = -2.73
+    log_amount_af['e18500'] = -0.93
+    logit_prob_af['e19200'] = -2.90
+    log_amount_af['e19200'] = -0.282
+    logit_prob_af['e19800'] = -0.70
+    log_amount_af['e19800'] = -1.47
+    logit_prob_af['e20100'] = -0.73
+    log_amount_af['e20100'] = -0.63
     logit_prob_af['e20400'] = -2.25
-    log_amount_af['e20400'] = -0.33
-    logit_prob_af['e17500'] = -2.3
-    log_amount_af['e17500'] = -0.3
+    log_amount_af['e20400'] = -0.28
+    logit_prob_af['e17500'] = -2.70
+    log_amount_af['e17500'] = -0.31
 
     # estimate itemizer equations and use to impute nonitemizer itmexp amounts
-    logit_prob_vars = ['constant'] + nonconstant_exog_vars
-    log_amount_vars = ['constant'] + nonconstant_exog_vars
+    exogenous_vars = ['constant', 'MARS2', 'MARS3', 'MARS4', 'XTOT',
+                      'e00200', 'e00600', 'e00900', 'e02000']
     errmsg = ''
     for iev in iev_names:
         if iev == 'g20500':
             nonitemizer_data['g20500'] = 0
         else:
             nonitemizer_data[iev] = impute(iev, logit_prob_af, log_amount_af,
-                                           logit_prob_vars, log_amount_vars,
+                                           exogenous_vars,
                                            itemizer_data, nonitemizer_data)
             errmsg += check(iev, nonitemizer_data, target_cnt, target_amt)
-            # add imputed variable to both exogenous variable lists in order
+            # add imputed variable to exogenous variable list in order
             # to better estimate correlation between the imputed variables
-        logit_prob_vars.append(iev)
-        log_amount_vars.append(iev)
+        exogenous_vars.append(iev)
     if errmsg:
         if CALIBRATING:
             print(errmsg)
