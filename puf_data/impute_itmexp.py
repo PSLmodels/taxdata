@@ -70,7 +70,7 @@ def impute(ievar, logit_prob_af, log_amount_af,
         print(round(positive_imputed.mean(), 4))
         print(len(nonitemizer_data))
     # estimate OLS parameters for the positive amount using a sample of
-    # itemizers who have positive ievar amounts than are less than the
+    # itemizers who have positive ievar amounts that are less than the
     # itemizer's standard deduction amount
     # (1) This sample limitation is one part of an ad hoc procedure to deal
     # with the Heckman sample selection problems present in this imputation
