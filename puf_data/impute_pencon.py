@@ -11,7 +11,7 @@ else:
     from io import StringIO
 
 
-DUMP0 = True
+DUMP0 = False
 DUMP1 = False
 
 
@@ -124,7 +124,7 @@ MAX_PENCON_AMT = 16500
 
 def impute(idata, target_cnt, target_amt):
     """
-    Impute idata[pencon] given other idata variables and targets
+    Impute idata[pencon] given other idata variables and targets.
     """
     # loop through the positive-age and positive-wage cells
     for agrp in range(0, len(UNDER_AGE)):
@@ -207,14 +207,14 @@ def impute_pension_contributions(alldata):
         print('avg(target_amt)= {:.3f}'.format(avg))
     # construct individual-level idata from filing-unit alldata
     # ... construct _p DataFrame with renamed variables
-    ivars = ['RECID', 'age_head', 'e00200p']
+    ivars = ['age_head', 'e00200p']
     idata_p = alldata[ivars].copy()
     idata_p['spouse'] = np.zeros(len(idata_p.index), dtype=np.int8)
     idata_p['weight'] = alldata['s006'] * 0.01
     idata_p.rename({'age_head': 'age', 'e00200p': 'e00200'},
                    axis='columns', inplace=True)
     # ... construct _s DataFrame with renamed variables
-    ivars = ['RECID', 'age_spouse', 'e00200s']
+    ivars = ['age_spouse', 'e00200s']
     idata_s = alldata[ivars].copy()
     idata_s['spouse'] = np.ones(len(idata_s.index), dtype=np.int8)
     idata_s['weight'] = alldata['s006'] * 0.01
@@ -254,9 +254,9 @@ def impute_pension_contributions(alldata):
         print('wgt_pencon_amt($B)= {:.3f}'.format(amt))
         avg = amt / cnt
         print('avg_pencon_amt($K)= {:.3f}'.format(avg))
-
-    # TODO: assign idata[pencon] to alldata[pencon_p] and alldata[pencon_s]
-
+    # set alldata values of pencon_p and pencon_s and return augmented alldata
+    alldata['pencon_p'] = idata['pencon'][idata['spouse'] == 0]
+    alldata['pencon_s'] = idata['pencon'][idata['spouse'] == 1]
     return alldata
 # end of impute_pension_contributions() function
 
