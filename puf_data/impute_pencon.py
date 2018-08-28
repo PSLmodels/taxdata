@@ -12,7 +12,7 @@ else:
 
 
 DUMP0 = True
-DUMP1 = True
+DUMP1 = False
 
 
 def targets():
@@ -118,12 +118,64 @@ def wage_group(row):
     raise ValueError('illegal value of wage')
 
 
-# specify maximum elective deferral amount for DC pensions in 2011
+# specify maximum legal elective deferral amount for DC pensions in 2011
 MAX_PENCON_AMT = 16500
 
 
-# specify target_amt scaling factor
-TARGET_AMT_SF = 1.01125
+def impute(idata, target_cnt, target_amt):
+    """
+    Impute idata[pencon] given other idata variables and targets
+    """
+    # loop through the positive-age and positive-wage cells
+    for agrp in range(0, len(UNDER_AGE)):
+        for wgrp in range(0, len(UNDER_WAGE)):
+            # impute actual count of having positive pencon
+            in_cell = (idata['agegrp'] == agrp) & (idata['wagegrp'] == wgrp)
+            cell_idata = idata[in_cell].copy()
+            wgt_num_earners = cell_idata['weight'].sum() * 1e-6
+            if wgt_num_earners <= 0.0:
+                msg = 'agrp={};wgrp={} has wgt_num_earners={:.4f} <= 0'
+                raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
+            wgt_pos_pencon = target_cnt.iloc[wgrp, agrp]
+            prob = wgt_pos_pencon / wgt_num_earners
+            cell_idata['pencon'] = np.where(cell_idata['urn'] < prob, 1, 0)
+            pos_pc = cell_idata['pencon'] > 0
+            if pos_pc.sum() == 0:  # no positive pension contributions in cell
+                if DUMP1:
+                    print('agrp={};wgrp={} has zero pencon'.format(agrp, wgrp))
+                continue  # to next wgrp in cell loop
+            # impute actual amount of each positive pension contribution
+            wage = cell_idata['wage']
+            wgt = cell_idata['weight']
+            wgt_pos_pc_wages = (wage[pos_pc] * wgt[pos_pc]).sum() * 1e-9
+            cell_target_amt = target_amt.iloc[wgrp, agrp]
+            rate0 = cell_target_amt / wgt_pos_pc_wages
+            if DUMP1:
+                print('agrp={};wgrp={} ==> rate0= {:.4f}'.format(
+                    agrp, wgrp, rate0
+                ))
+            num_iterations = 10
+            for itr in range(0, num_iterations):
+                uncapped_amt = np.where(pos_pc,
+                                        np.round(wage * rate0).astype(int),
+                                        0)
+                capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT)
+                over_amt = uncapped_amt - capped_amt
+                over_tot = (over_amt * wgt).sum() * 1e-9
+                rate1 = (cell_target_amt + over_tot) / wgt_pos_pc_wages
+                if np.allclose([rate1], [rate0]):
+                    if DUMP1 and itr > 0:
+                        print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
+                    break  # out of iteration loop
+                else:
+                    if DUMP1 and itr == (num_iterations - 1):
+                        print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
+                    rate0 = rate1
+            cell_idata['pencon'] = capped_amt
+
+            # store cell_idata['pencon'] in idata
+            idata.loc[in_cell, 'pencon'] = cell_idata['pencon']
+            del cell_idata
 
 
 def impute_pension_contributions(alldata):
@@ -147,8 +199,12 @@ def impute_pension_contributions(alldata):
         ))
         print('len(UNDER_AGE)={}'.format(len(UNDER_AGE)))
         print('len(UNDER_WAGE)={}'.format(len(UNDER_WAGE)))
-        print('sum(target_cnt)= {:.4f}'.format(target_cnt.values.sum()))
-        print('sum(target_amt)= {:.4f}'.format(target_amt.values.sum()))
+        cnt = target_cnt.values.sum()
+        print('sum(target_cnt)= {:.4f}'.format(cnt))
+        amt = target_amt.values.sum()
+        print('sum(target_amt)= {:.4f}'.format(amt))
+        avg = amt / cnt
+        print('avg(target_amt)= {:.3f}'.format(avg))
     # construct individual-level idata from filing-unit alldata
     # ... construct _p DataFrame with renamed variables
     ivars = ['RECID', 'age_head', 'e00200p']
@@ -184,65 +240,20 @@ def impute_pension_contributions(alldata):
         print('max_agegrp=', idata['agegrp'].max())
         print('min_wagegrp=', idata['wagegrp'].min())
         print('max_wagegrp=', idata['wagegrp'].max())
-    # TODO: BEGIN GROSS-WAGE LOOP
-    # construct other variables that change over the imputation loops
+    # do two imputations to construct gross wages
+    idata['wage'] = idata['e00200']  # net wage
+    idata['wagegrp'] = idata.apply(wage_group, axis=1)  # net wage group
+    impute(idata, target_cnt, target_amt)
     idata['wage'] = idata['e00200'] + idata['pencon']  # gross wage
-    idata['wagegrp'] = idata.apply(wage_group, axis=1)
-    # loop through the positive-age and positive-wage cells
-    for agrp in range(0, len(UNDER_AGE)):
-        for wgrp in range(0, len(UNDER_WAGE)):
-            # impute actual count of having positive pencon
-            in_cell = (idata['agegrp'] == agrp) & (idata['wagegrp'] == wgrp)
-            cell_idata = idata[in_cell].copy()
-            wgt_num_earners = cell_idata['weight'].sum() * 1e-6
-            if wgt_num_earners <= 0.0:
-                msg = 'agrp={};wgrp={} has wgt_num_earners={:.4f} <= 0'
-                raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
-            wgt_pos_pencon = target_cnt.iloc[wgrp, agrp]
-            prob = wgt_pos_pencon / wgt_num_earners
-            cell_idata['pencon'] = np.where(cell_idata['urn'] < prob, 1, 0)
-            pos_pc = cell_idata['pencon'] > 0
-            if pos_pc.sum() == 0:  # no positive pension contributions in cell
-                if DUMP1:
-                    print('agrp={};wgrp={} has zero pencon'.format(agrp, wgrp))
-                continue  # to next wgrp in cell loop
-            # impute actual amount of each positive pension contribution
-            wage = cell_idata['wage']
-            wgt = cell_idata['weight']
-            wgt_pos_pc_wages = (wage[pos_pc] * wgt[pos_pc]).sum() * 1e-9
-            cell_target_amt = target_amt.iloc[wgrp, agrp] * TARGET_AMT_SF
-            rate0 = cell_target_amt / wgt_pos_pc_wages
-            print('agrp={};wgrp={} ==> rate0= {:.4f}'.format(
-                agrp, wgrp, rate0
-            ))
-            num_iterations = 10
-            for itr in range(0, num_iterations):
-                uncapped_amt = np.where(pos_pc,
-                                        np.round(wage * rate0).astype(int),
-                                        0)
-                capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT)
-                over_amt = uncapped_amt - capped_amt
-                over_tot = (over_amt * wgt).sum() * 1e-9
-                rate1 = (cell_target_amt + over_tot) / wgt_pos_pc_wages
-                if np.allclose([rate1], [rate0]):
-                    if DUMP1 and itr > 0:
-                        print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
-                    break  # out of iteration loop
-                else:
-                    if DUMP1 and itr == (num_iterations - 1):
-                        print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
-                    rate0 = rate1
-            cell_idata['pencon'] = capped_amt
-
-            # store cell_idata['pencon'] in idata
-            idata.loc[in_cell, 'pencon'] = cell_idata['pencon']
-            del cell_idata
-    # TODO: END GROSS-WAGE LOOP
+    idata['wagegrp'] = idata.apply(wage_group, axis=1)  # gross wage group
+    impute(idata, target_cnt, target_amt)
     if DUMP0:
         cnt = (idata['weight'] * (idata['pencon'] > 0)).sum() * 1e-6
-        amt = (idata['weight'] * idata['pencon']).sum() * 1e-9
         print('wgt_pencon_cnt(#M)= {:.3f}'.format(cnt))
+        amt = (idata['weight'] * idata['pencon']).sum() * 1e-9
         print('wgt_pencon_amt($B)= {:.3f}'.format(amt))
+        avg = amt / cnt
+        print('avg_pencon_amt($K)= {:.3f}'.format(avg))
 
     # TODO: assign idata[pencon] to alldata[pencon_p] and alldata[pencon_s]
 
