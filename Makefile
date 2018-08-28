@@ -86,6 +86,7 @@ puf_data/cps-matched-puf.csv: $(PM_PY_FILES) \
 
 puf_data/puf.csv: puf_data/finalprep.py \
                   puf_data/impute_itmexp.py \
+                  puf_data/impute_pencon.py \
                   puf_data/cps-matched-puf.csv
 	cd puf_data ; python finalprep.py
 
