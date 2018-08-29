@@ -1,5 +1,25 @@
 """
-Impute PUF pension contributions using aggregate data from IRS Form W-2.
+Impute DC pension contributions in PUF using aggregate data from IRS Form W-2.
+
+The imputation strategy has two steps.  In the first step, use
+aggregate W-2 data on the number of individuals with positive pension
+contributions for each of 16 positive wage groups in each of 8 age
+groups (that is, for each of 128 age-wage cells) to impute
+stochastically whether or not an individual with earnings makes an
+elective deferral to a defined-contribution (DC) pension plan.  Then
+in the second step, use aggregate W-2 data on the dollar amount of
+elective DC deferrals among those with a positive deferral for each of
+16 positive wage groups in each of 8 age groups (that is, for the same
+128 age-wage cells) to impute the pension contribution (that is, elective
+deferral) amount.
+
+This strategy would be straight-forward to implement if the W-2 sample
+was the same as the PUF sample.  But because the W-2 sample is larger
+(at least for the high-wage groups), there is a need to make a minor
+adjustment among higer-wage individuals (that is, among individuals
+with wages over $200,000).  For details on the logic of the adjustment
+and the results with and without the adjustment, see the comments
+below on the HIWAGE parameters.
 """
 from __future__ import print_function
 import sys
@@ -13,11 +33,12 @@ else:
 
 DUMP0 = False
 DUMP1 = False
+DUMP2 = False
 
 
 def targets():
     """
-    Return a DataFrame containing number of taxpayers/spouses with earnings
+    Return a DataFrame containing number of taxpayers & spouses with earnings
     that make a pension contribution (in millions of people) and a DataFrame
     containing the aggregate amount of the pension contributions (in billions
     of dollars) by the wage and age categories in "SOI Tax Stats - Individual
@@ -26,7 +47,8 @@ def targets():
     of $500K to $2M) are combined into one cell for the bottom age range,
     u26, and for the top age range, 75plus.  In each of these four cases,
     the three-cell total is evenly spread across the three cells in the
-    revised data specified here.
+    revised data specified here.  Also, the top two wage groups (5u10M and
+    10u30M) are combined into a single group (5Mplus).
     """
     cnt = """
         ,  total,   u26, 26u35,  35u45,  45u55, 55u60, 60u65, 65u75,75plus
@@ -88,7 +110,7 @@ u5K     ,1.1581,0.0411,0.0841,0.1733,0.3118,0.1667,0.2209,0.1563,0.0040
 # end of targets() function
 
 
-# specify age and wage brackets
+# specify top of age and wage brackets
 UNDER_AGE = [26, 35, 45, 55, 60, 65, 75, 99]
 UNDER_WAGE = [5e3, 10e3, 15e3, 20e3, 25e3, 30e3, 40e3, 50e3, 75e3,
               100e3, 200e3, 500e3, 1e6, 2e6, 5e6, 30e6]
@@ -96,7 +118,7 @@ UNDER_WAGE = [5e3, 10e3, 15e3, 20e3, 25e3, 30e3, 40e3, 50e3, 75e3,
 
 def age_group(row):
     """
-    Specifies age group of individual.
+    Specify age group of individual.
     """
     if row['age'] == 0:
         return -1
@@ -109,7 +131,7 @@ def age_group(row):
 
 def wage_group(row):
     """
-    Specifies wage group of individual.
+    Specify wage group of individual.
     """
     if row['wage'] == 0:
         return -1
@@ -120,6 +142,24 @@ def wage_group(row):
 # end of wage_group() function
 
 
+# specify adjustment of having a positive pencon for high-wage groups
+HIWAGE_PROB_SF = 1.47  # prob of positive pension contribution multiplied by SF
+MIN_HIWAGE_GROUP = 11  # SF applied to wage groups no less than this MIN
+
+# This adjustment to some cell-specific probabilities of having a
+# positive pension contribution is being done because, in some
+# (high-wage) cells, the W-2 data show more people with positive
+# pension contributions than the PUF shows with positive earnings.
+# Making no imputation probability adjustment (that is, setting
+# HIWAGE_PROB_SF equal to one), implies the imputed head count and
+# dollar amount of positive pension contributions are both roughly one
+# percent below the total in the W-2 data.  Setting the HIWAGE_PROB_SF
+# to the value above makes the head count of those with positive
+# pension contributions equal to the total in the W-2 data and the
+# imputed dollar amount is only about 0.6 of one percent below the
+# total in the W-2 data.
+
+
 # specify maximum legal elective deferral amount for DC pensions in 2011
 MAX_PENCON_AMT = 16500
 
@@ -128,6 +168,9 @@ def impute(idata, target_cnt, target_amt):
     """
     Impute idata[pencon] given other idata variables and targets.
     """
+    if DUMP1 and HIWAGE_PROB_SF != 1.0:
+        print('HIWAGE_PROB_SF= {:.4f}'.format(HIWAGE_PROB_SF))
+        print('MIN_HIWAGE_GROUP= {}'.format(MIN_HIWAGE_GROUP))
     # loop through the positive-age and positive-wage cells
     for agrp in range(0, len(UNDER_AGE)):
         for wgrp in range(0, len(UNDER_WAGE)):
@@ -140,6 +183,12 @@ def impute(idata, target_cnt, target_amt):
                 raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
             wgt_pos_pencon = target_cnt.iloc[wgrp, agrp]
             prob = wgt_pos_pencon / wgt_num_earners
+            if wgrp >= MIN_HIWAGE_GROUP:
+                prob *= HIWAGE_PROB_SF
+            if DUMP1 and prob > 1.0:
+                print('agrp={};wgrp={} ==> prob= {:.3f}'.format(
+                    agrp, wgrp, prob
+                ))
             cell_idata['pencon'] = np.where(cell_idata['urn'] < prob, 1, 0)
             pos_pc = cell_idata['pencon'] > 0
             if pos_pc.sum() == 0:  # no positive pension contributions in cell
@@ -152,7 +201,7 @@ def impute(idata, target_cnt, target_amt):
             wgt_pos_pc_wages = (wage[pos_pc] * wgt[pos_pc]).sum() * 1e-9
             cell_target_amt = target_amt.iloc[wgrp, agrp]
             rate0 = min(1.0, cell_target_amt / wgt_pos_pc_wages)
-            if DUMP1:
+            if DUMP2:
                 print('agrp={};wgrp={} ==> rate0= {:.4f}'.format(
                     agrp, wgrp, rate0
                 ))
@@ -167,11 +216,11 @@ def impute(idata, target_cnt, target_amt):
                 rate1 = min(1.0,
                             (cell_target_amt + over_tot) / wgt_pos_pc_wages)
                 if np.allclose([rate1], [rate0]):
-                    if DUMP1 and itr > 0:
+                    if DUMP2 and itr > 0:
                         print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
                     break  # out of iteration loop
                 else:
-                    if DUMP1 and itr == (num_iterations - 1):
+                    if DUMP2 and itr == (num_iterations - 1):
                         print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
                     rate0 = rate1
             cell_idata['pencon'] = capped_amt
