@@ -104,6 +104,7 @@ def age_group(row):
         if row['age'] < underage:
             return grp
     raise ValueError('illegal value of age')
+# end of age_group() function
 
 
 def wage_group(row):
@@ -116,6 +117,7 @@ def wage_group(row):
         if row['wage'] < underwage:
             return grp
     raise ValueError('illegal value of wage')
+# end of wage_group() function
 
 
 # specify maximum legal elective deferral amount for DC pensions in 2011
@@ -149,7 +151,7 @@ def impute(idata, target_cnt, target_amt):
             wgt = cell_idata['weight']
             wgt_pos_pc_wages = (wage[pos_pc] * wgt[pos_pc]).sum() * 1e-9
             cell_target_amt = target_amt.iloc[wgrp, agrp]
-            rate0 = cell_target_amt / wgt_pos_pc_wages
+            rate0 = min(1.0, cell_target_amt / wgt_pos_pc_wages)
             if DUMP1:
                 print('agrp={};wgrp={} ==> rate0= {:.4f}'.format(
                     agrp, wgrp, rate0
@@ -162,7 +164,8 @@ def impute(idata, target_cnt, target_amt):
                 capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT)
                 over_amt = uncapped_amt - capped_amt
                 over_tot = (over_amt * wgt).sum() * 1e-9
-                rate1 = (cell_target_amt + over_tot) / wgt_pos_pc_wages
+                rate1 = min(1.0,
+                            (cell_target_amt + over_tot) / wgt_pos_pc_wages)
                 if np.allclose([rate1], [rate0]):
                     if DUMP1 and itr > 0:
                         print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
@@ -172,10 +175,10 @@ def impute(idata, target_cnt, target_amt):
                         print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
                     rate0 = rate1
             cell_idata['pencon'] = capped_amt
-
             # store cell_idata['pencon'] in idata
             idata.loc[in_cell, 'pencon'] = cell_idata['pencon']
             del cell_idata
+# end of impute() function
 
 
 def impute_pension_contributions(alldata):
