@@ -189,7 +189,7 @@ def check_cps_benefits(data):
         'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
         'housing': 53253,
         'vet': 169920,    # <--- HIGH ($14,160/month)VA hospital costs or what?
-        'other': 53790
+        'other': 40211
     }
     # .. minimum value per filing unit for positive benefit
     expect_ben_stat['min'] = {
@@ -213,7 +213,7 @@ def check_cps_benefits(data):
         'tanf': 9117,
         'housing': 7048,
         'vet': 29912,
-        'other': 4321
+        'other': 4706
     }
     # compare actual and expected benefit statistics
     error_msg = ''
