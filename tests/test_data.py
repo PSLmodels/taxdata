@@ -93,6 +93,12 @@ def relationships(data, dataname):
     m = less_than_str.format(dataname, 'e01700', 'e01500')
     assert np.all(data['e01500'] >= data['e01700']), m
 
+    m = less_than_str.format(dataname, 'pencon_p', 'e00200p+pencon_p')
+    assert np.all((data['e00200p'] + data['e00200p']) >= data['pencon_p']), m
+
+    m = less_than_str.format(dataname, 'pencon_s', 'e00200s+pencon_s')
+    assert np.all((data['e00200s'] + data['e00200s']) >= data['pencon_s']), m
+
 
 def variable_check(test_path, data, dataname):
     """
@@ -188,7 +194,7 @@ def check_cps_benefits(data):
         'wic': 4972,
         'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
         'housing': 53253,
-        'vet': 169920,    # <--- HIGH ($14,160/month)VA hospital costs or what?
+        'vet': 169920,    # <--- HIGH ($14,160/month) military pension or what?
         'other': 53790
     }
     # .. minimum value per filing unit for positive benefit

@@ -124,10 +124,13 @@ def main():
     data = add_agi_bin(data, 'INCOME')
     print('Adjusting distribution')
     data = adjust(data, adj_targets)
-    print('Adding Benefits Data')
+    print('Adding benefits variables')
     data = benefits(data, other_ben)
     print('Dropping unused variables')
     data = drop_vars(data)
+    print('Adding zero pencon_p and pencon_s variables')
+    data['pencon_p'] = np.zeros(len(data.index), dtype=np.int32)
+    data['pencon_s'] = np.zeros(len(data.index), dtype=np.int32)
 
     data = data.fillna(0.)
     data = data.astype(np.int32)
@@ -135,6 +138,7 @@ def main():
     data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']
     data['s006'] *= 100
+
     print('Exporting...')
     data.to_csv('cps.csv', index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
@@ -344,7 +348,7 @@ def benefits(data, other_ben):
     benefits variable.
     Replaces Medicare and Medicaid values with set amounts
     """
-    # replace medicare and medicaid
+    # Replace Medicare and Medicaid
     medicare_cols = 'MCARE_VAL' + pd.Series((np.arange(15) + 1).astype(str))
     medicaid_cols = 'MCAID_VAL' + pd.Series((np.arange(15) + 1).astype(str))
     count_medicare = data[medicare_cols].astype(bool).sum(axis=1)
@@ -367,13 +371,12 @@ def benefits(data, other_ben):
                         data['snap_ben'] + data['vet_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] * data['s006']).sum())
-    # remove TANF and WIC from other_ben
+    # ... remove TANF and WIC from other_ben total
     tanf = (data['tanf_ben'] * data['s006']).sum()
     wic = (data['wic_ben'] * data['s006']).sum()
     other_ben_total = other_ben['2014_cost'].sum() - tanf - wic
-    # divide by the weight to account for weighting in Tax-Calculator
-    data['other_ben'] = (data['ratio'] * other_ben_total /
-                         data['s006'])
+    # ... divide by the weight to account for weighting in Tax-Calculator
+    data['other_ben'] = (data['ratio'] * other_ben_total / data['s006'])
 
     # Convert benefit data to integers
     data['mcaid_ben'] = data['mcaid_ben'].astype(np.int32)

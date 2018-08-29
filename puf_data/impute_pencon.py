@@ -13,13 +13,13 @@ elective DC deferrals among those with a positive deferral for each of
 128 age-wage cells) to impute the pension contribution (that is, elective
 deferral) amount.
 
-This strategy would be straight-forward to implement if the W-2 sample
+This strategy would be straight forward to implement if the W-2 sample
 was the same as the PUF sample.  But because the W-2 sample is larger
 (at least for the high-wage groups), there is a need to make a minor
 adjustment among higer-wage individuals (that is, among individuals
 with wages over $200,000).  For details on the logic of the adjustment
 and the results with and without the adjustment, see the comments
-below on the HIWAGE parameters.
+below on the HIWAGE parameters, which have been calibrated by hand.
 """
 from __future__ import print_function
 import sys
@@ -196,6 +196,7 @@ def impute(idata, target_cnt, target_amt):
                     print('agrp={};wgrp={} has zero pencon'.format(agrp, wgrp))
                 continue  # to next wgrp in cell loop
             # impute actual amount of each positive pension contribution
+            # taking into account that pension contributions are legally capped
             wage = cell_idata['wage']
             wgt = cell_idata['weight']
             wgt_pos_pc_wages = (wage[pos_pc] * wgt[pos_pc]).sum() * 1e-9
@@ -205,6 +206,7 @@ def impute(idata, target_cnt, target_amt):
                 print('agrp={};wgrp={} ==> rate0= {:.4f}'.format(
                     agrp, wgrp, rate0
                 ))
+            # iteratively raise non-capped deferral rate to hit target_amt
             num_iterations = 10
             for itr in range(0, num_iterations):
                 uncapped_amt = np.where(pos_pc,
