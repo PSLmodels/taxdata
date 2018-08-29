@@ -20,6 +20,20 @@ adjustment among higer-wage individuals (that is, among individuals
 with wages over $200,000).  For details on the logic of the adjustment
 and the results with and without the adjustment, see the comments
 below on the HIWAGE parameters, which have been calibrated by hand.
+
+Another tactical complication is that the amount of each individual's
+pension contribution was legally limited to $16,500 during 2011.  The
+second imputation stage uses an iterative procedure to cap individual
+pension contributions in a way that maintains the age-wage cell's
+aggregate pension contribution.
+
+And finally, individuals cannot defer more than their gross earnings,
+which in the PUF is equal to the sum of net earnings and pension
+contributions, which is (e00200p + pencon_p) for the filing-unit head
+and (e00200s + pencon_s) for the filing-unit spouse, if present).
+Gross earnings and pension contributions out of gross earnings are
+calculated by conducting the whole imputation process twice.  See the
+impute_pension_contributions() function code for details.
 """
 from __future__ import print_function
 import sys

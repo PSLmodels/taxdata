@@ -94,10 +94,10 @@ def relationships(data, dataname):
     assert np.all(data['e01500'] >= data['e01700']), m
 
     m = less_than_str.format(dataname, 'pencon_p', 'e00200p+pencon_p')
-    assert np.all((data['e00200p'] + data['e00200p']) >= data['pencon_p']), m
+    assert np.all((data['e00200p'] + data['pencon_p']) >= data['pencon_p']), m
 
     m = less_than_str.format(dataname, 'pencon_s', 'e00200s+pencon_s')
-    assert np.all((data['e00200s'] + data['e00200s']) >= data['pencon_s']), m
+    assert np.all((data['e00200s'] + data['pencon_s']) >= data['pencon_s']), m
 
 
 def variable_check(test_path, data, dataname):
