@@ -368,7 +368,7 @@ def benefits(data, other_ben):
 
     # Distribute other benefits
     data['dist_ben'] = (data['mcaid_ben'] + data['ssi_ben'] +
-                        data['snap_ben'] + data['vet_ben'])
+                        data['snap_ben'])
     data['ratio'] = (data['dist_ben'] * data['s006'] /
                      (data['dist_ben'] * data['s006']).sum())
     # ... remove TANF and WIC from other_ben total
