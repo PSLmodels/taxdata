@@ -28,12 +28,15 @@ pension contributions in a way that maintains the age-wage cell's
 aggregate pension contribution.
 
 And finally, individuals cannot defer more than their gross earnings,
-which in the PUF is equal to the sum of net earnings and pension
+which in PUF records is equal to the sum of net earnings and pension
 contributions, which is (e00200p + pencon_p) for the filing-unit head
-and (e00200s + pencon_s) for the filing-unit spouse, if present).
+and (e00200s + pencon_s) for the filing-unit spouse, if present.  For
+CPS records in the puf.csv file, gross earnings is equal to e00200p for
+the filing-unit head and e00200s for the filing-unit spouse, if present.
 Gross earnings and pension contributions out of gross earnings are
-calculated by conducting the whole imputation process twice.  See the
-impute_pension_contributions() function code for details.
+calculated for the PUF records by conducting the whole imputation
+process twice.  See the impute_pension_contributions() function code
+for details.
 """
 from __future__ import print_function
 import sys
@@ -274,15 +277,16 @@ def impute_pension_contributions(alldata):
         avg = amt / cnt
         print('avg(target_amt)= {:.3f}'.format(avg))
     # construct individual-level idata from filing-unit alldata
+    # (note: filer=1 for PUF records and filer=0 for CPS records)
     # ... construct _p DataFrame with renamed variables
-    ivars = ['age_head', 'e00200p']
+    ivars = ['age_head', 'e00200p', 'filer']
     idata_p = alldata[ivars].copy()
     idata_p['spouse'] = np.zeros(len(idata_p.index), dtype=np.int8)
     idata_p['weight'] = alldata['s006'] * 0.01
     idata_p.rename({'age_head': 'age', 'e00200p': 'e00200'},
                    axis='columns', inplace=True)
     # ... construct _s DataFrame with renamed variables
-    ivars = ['age_spouse', 'e00200s']
+    ivars = ['age_spouse', 'e00200s', 'filer']
     idata_s = alldata[ivars].copy()
     idata_s['spouse'] = np.ones(len(idata_s.index), dtype=np.int8)
     idata_s['weight'] = alldata['s006'] * 0.01
@@ -308,11 +312,13 @@ def impute_pension_contributions(alldata):
         print('max_agegrp=', idata['agegrp'].max())
         print('min_wagegrp=', idata['wagegrp'].min())
         print('max_wagegrp=', idata['wagegrp'].max())
-    # do two imputations to construct gross wages
-    idata['wage'] = idata['e00200']  # net wage
-    idata['wagegrp'] = idata.apply(wage_group, axis=1)  # net wage group
+    # do two imputations to construct gross wages for PUF records
+    idata['wage'] = idata['e00200']
+    idata['wagegrp'] = idata.apply(wage_group, axis=1)
     impute(idata, target_cnt, target_amt)
-    idata['wage'] = idata['e00200'] + idata['pencon']  # gross wage
+    idata['wage'] = np.where(idata['filer'] == 1,
+                             idata['e00200'] + idata['pencon'],
+                             idata['e00200'])
     idata['wagegrp'] = idata.apply(wage_group, axis=1)  # gross wage group
     impute(idata, target_cnt, target_amt)
     if DUMP0:
