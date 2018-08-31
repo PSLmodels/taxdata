@@ -277,7 +277,7 @@ def impute_pension_contributions(alldata):
         avg = amt / cnt
         print('avg(target_amt)= {:.3f}'.format(avg))
     # construct individual-level idata from filing-unit alldata
-    # (note: filer=1 for PUF records and filer=0 for CPS records)
+    # (note: PUF records have filer=1 and CPS records have filer=0)
     # ... construct _p DataFrame with renamed variables
     ivars = ['age_head', 'e00200p', 'filer']
     idata_p = alldata[ivars].copy()
@@ -308,6 +308,13 @@ def impute_pension_contributions(alldata):
         print('raw_num_earners(#)=', (idata['wage'] > 0).sum())
         wgt_earners = idata['weight'][idata['wage'] > 0].sum()
         print('wgt_num_earners(#M)= {:.3f}'.format(wgt_earners * 1e-6))
+        wearnings = idata['weight'] * idata['wage']
+        wgt_earnings = wearnings.sum()
+        print('wgt_earnings($B)= {:.3f}'.format(wgt_earnings * 1e-9))
+        wgt_puf_earnings = wearnings[idata['filer'] == 1].sum()
+        print('wgt_PUF_earnings($B)= {:.3f}'.format(wgt_puf_earnings * 1e-9))
+        wgt_cps_earnings = wearnings[idata['filer'] == 0].sum()
+        print('wgt_CPS_earnings($B)= {:.3f}'.format(wgt_cps_earnings * 1e-9))
         print('min_agegrp=', idata['agegrp'].min())
         print('max_agegrp=', idata['agegrp'].max())
         print('min_wagegrp=', idata['wagegrp'].min())
@@ -328,14 +335,30 @@ def impute_pension_contributions(alldata):
         print('wgt_pencon_amt($B)= {:.3f}'.format(amt))
         avg = amt / cnt
         print('avg_pencon_amt($K)= {:.3f}'.format(avg))
-    # set alldata values of pencon_p and pencon_s and return augmented alldata
+    # subtract pencon from e00200 for CPS records to make them net earnings
+    idata['e00200'] = np.where(idata['filer'] == 1,
+                               idata['e00200'],
+                               idata['e00200'] - idata['pencon'])
+    if DUMP0:
+        wearnings = idata['weight'] * idata['e00200']
+        wgt_earnings = wearnings.sum()
+        print('wgt_earnings($B)= {:.3f}'.format(wgt_earnings * 1e-9))
+        wgt_puf_earnings = wearnings[idata['filer'] == 1].sum()
+        print('wgt_PUF_earnings($B)= {:.3f}'.format(wgt_puf_earnings * 1e-9))
+        wgt_cps_earnings = wearnings[idata['filer'] == 0].sum()
+        print('wgt_CPS_earnings($B)= {:.3f}'.format(wgt_cps_earnings * 1e-9))
+    # set alldata values of pencon_p and pencon_s and the e00200* variables
     alldata['pencon_p'] = idata['pencon'][idata['spouse'] == 0]
     alldata['pencon_s'] = idata['pencon'][idata['spouse'] == 1]
+    alldata['e00200p'] = idata['e00200'][idata['spouse'] == 0]
+    alldata['e00200s'] = idata['e00200'][idata['spouse'] == 1]
+    alldata['e00200'] = alldata['e00200p'] + alldata['e00200s']
+    # return revised alldata
     return alldata
 # end of impute_pension_contributions() function
 
 
 if __name__ == '__main__':
     RAWDATA = pd.read_csv('puf.csv')
-    AUGDATA = impute_pension_contributions(RAWDATA)
-    AUGDATA.to_csv('puf-pc.csv', index=False)
+    REVDATA = impute_pension_contributions(RAWDATA)
+    REVDATA.to_csv('puf-pc.csv', index=False)
