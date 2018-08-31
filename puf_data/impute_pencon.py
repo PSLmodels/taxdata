@@ -165,7 +165,7 @@ MIN_HIWAGE_GROUP = 11  # SF applied to wage groups no less than this MIN
 
 # This adjustment to some cell-specific probabilities of having a
 # positive pension contribution is being done because, in some
-# (high-wage) cells, the W-2 data show more people with positive
+# high-wage cells, the W-2 data show more people with positive
 # pension contributions than the PUF shows with positive earnings.
 # Making no imputation probability adjustment (that is, setting
 # HIWAGE_PROB_SF equal to one), implies the imputed head count and
@@ -174,7 +174,15 @@ MIN_HIWAGE_GROUP = 11  # SF applied to wage groups no less than this MIN
 # to the value above makes the head count of those with positive
 # pension contributions equal to the total in the W-2 data and the
 # imputed dollar amount is only about 0.6 of one percent below the
-# total in the W-2 data.
+# total in the W-2 data.  The calibration of the HIWAGE_PROB_SF value
+# was conducted so that the calibrated SF value produces an imputed count
+# of individuals having a positive pension contribution equal to the
+# target count of 46.98 million individuals.  SF values below the one
+# specified above produce imputed counts that are less than 46.98 million
+# and SF values above the one specified above produce imputed counts that
+# are more than 46.98 million.  This calibration was done with DUMP0 set
+# to True and by executing "python impute_pencon.py > impute_pencon.res"
+# several times each with a different value of HIWAGE_PROB_SF.
 
 
 # specify maximum legal elective deferral amount for DC pensions in 2011
