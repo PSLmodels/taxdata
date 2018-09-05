@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import pandas
 from impute_itmexp import impute_itemized_expenses
+from impute_pencon import impute_pension_contributions
 
 
 BENPUF = False  # set temporarily to True to generate a benpuf.csv file
@@ -71,6 +72,9 @@ def main():
 
     # - Impute itemized expense amounts for non-itemizers:
     data = impute_itemized_expenses(data.copy())
+
+    # - Impute pension contributions:
+    data = impute_pension_contributions(data.copy())
 
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
