@@ -2,7 +2,7 @@ name: taxdata-dev
 channels:
 - conda-forge
 dependencies:
-- python>=2.7.14
+- python>=3.6.5
 - numpy>=1.12.1
 - pandas>=0.20.3
 - scipy>=0.18.1
