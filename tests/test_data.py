@@ -187,39 +187,39 @@ def check_cps_benefits(data):
     expect_ben_stat = dict()
     # .. maximum value per filing unit for benefit
     expect_ben_stat['max'] = {
-        'mcare': 92976,   # <--- implies a filing unit with 8 beneficiaries
-        'mcaid': 98440,   # <--- implies a filing unit with 14 beneficiaries
-        'ssi': 64378,
-        'snap': 26569,
-        'wic': 4972,
-        'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
-        'housing': 53253,
-        'vet': 169920,    # <--- HIGH ($14,160/month) military pension or what?
-        'other': 40211
+        'mcare': 94396,   # <--- implies a filing unit with 8 beneficiaries
+        'mcaid': 104957,   # <--- implies a filing unit with 14 beneficiaries
+        'ssi': 65570,
+        'snap': 26959,
+        'wic': 6830,
+        'tanf': 161573,   # <--- SEEMS ABSURD ($13,284/month)
+        'housing': 59894,
+        'vet': 172969,    # <--- HIGH ($14,160/month) military pension or what?
+        'other': 39531
     }
     # .. minimum value per filing unit for positive benefit
     expect_ben_stat['min'] = {
-        'mcare': 11622,   # <--- the actuarial value of Medicare insurance
-        'mcaid': 7031,    # <--- the actuarial value of Medicaid insurance
-        'ssi': 1,         # <--- SEEMS LOW
-        'snap': 9,        # <--- SEEMS LOW
-        'wic': 241,
-        'tanf': 1,        # <--- SEEMS LOW
-        'housing': 1265,
-        'vet': 9890,      # <--- is this actuarial value of VA hospital costs?
-        'other': 3
+        'mcare': 11799,   # <--- the actuarial value of Medicare insurance
+        'mcaid': 7496,    # <--- the actuarial value of Medicaid insurance
+        'ssi': 398,         # <--- SEEMS LOW
+        'snap': 107,        # <--- SEEMS LOW
+        'wic': 507,
+        'tanf': 541,        # <--- SEEMS LOW
+        'housing': 4585,
+        'vet': 11414,      # <--- is this actuarial value of VA hospital costs?
+        'other': 40
     }
     # .. mean value per filing unit of positive benefit
     expect_ben_stat['avg'] = {
-        'mcare': 14928,
-        'mcaid': 13192,
-        'ssi': 7913,
-        'snap': 2907,
-        'wic': 748,
-        'tanf': 9117,
-        'housing': 7048,
-        'vet': 29912,
-        'other': 4706
+        'mcare': 15156,
+        'mcaid': 14065,
+        'ssi': 8350,
+        'snap': 3055,
+        'wic': 1142,
+        'tanf': 9790,
+        'housing': 10676,
+        'vet': 31460,
+        'other': 4610
     }
     # compare actual and expected benefit statistics
     error_msg = ''

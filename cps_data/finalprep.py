@@ -348,6 +348,18 @@ def benefits(data, other_ben):
     benefits variable.
     Replaces Medicare and Medicaid values with set amounts
     """
+    def administrative_cost(data, program, cost):
+        """
+        Distribute administrative costs for a given program to all particpants
+        """
+        cols = program + '_VAL' + pd.Series((np.arange(15) + 1).astype(str))
+        count = data[cols].astype(bool).sum(axis=1)
+        weighted_count = (count * data['s006']).sum()
+        admin_cost = cost * 1e9 / weighted_count
+        # Assign the admin cost to each person in the unit receiving benefit
+        unit_admin_cost = count * admin_cost
+        return unit_admin_cost
+
     # Replace Medicare and Medicaid
     medicare_cols = 'MCARE_VAL' + pd.Series((np.arange(15) + 1).astype(str))
     medicaid_cols = 'MCAID_VAL' + pd.Series((np.arange(15) + 1).astype(str))
@@ -363,6 +375,18 @@ def benefits(data, other_ben):
     data[medicaid_cols] = data[medicaid_cols].astype(bool) * mcaid_amt
     data['mcare_ben'] = data[medicare_cols].sum(axis=1)
     data['mcaid_ben'] = data[medicaid_cols].sum(axis=1)
+
+    # Add administrative cost of programs
+    data['mcaid_ben'] += administrative_cost(data, 'MCAID', 24.4)
+    data['mcare_ben'] += administrative_cost(data, 'MCARE', 8.8)
+    data['ssi_ben'] += administrative_cost(data, 'SSI', 3.0)
+    data['snap_ben'] += administrative_cost(data, 'SNAP', 4.2)
+    data['vet_ben'] += administrative_cost(data, 'VB', 7.6)
+    data['tanf_ben'] += administrative_cost(data, 'TANF', 2.3)
+    data['wic_ben'] += administrative_cost(data, 'WIC', 1.9)
+    data['housing_ben'] += administrative_cost(data, 'HOUSING', 1.4)
+    data['e02400'] += administrative_cost(data, 'SS', 6.1)
+    data['e02300'] += administrative_cost(data, 'UI', 4.4)
 
     other_ben['2014_cost'] *= 1e6
 
