@@ -386,7 +386,7 @@ def benefits(data, other_ben):
     data['wic_ben'] += administrative_cost(data, 'WIC', 1.9)
     data['housing_ben'] += administrative_cost(data, 'HOUSING', 1.4)
     data['e02400'] += administrative_cost(data, 'SS', 6.1)
-    data['e02300'] += administrative_cost(data, 'UI', 4.4)
+    data['ui_ben'] += administrative_cost(data, 'UI', 4.4)
 
     other_ben['2014_cost'] *= 1e6
 
