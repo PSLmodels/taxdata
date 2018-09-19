@@ -252,7 +252,7 @@ def check_cps_benefits(data):
         if bname == 'mcare' or bname == 'mcaid':
             ratio = float(maxben) / minpben
             expect_ratio = round(ratio)
-            if not np.allclose([ratio], [expect_ratio], rtol=0, atol=0.001):
+            if not np.allclose([ratio], [expect_ratio], rtol=0, atol=0.002):
                 msg = '\nCPS {}_ben ratio={:.6f} != {:.0f}'
                 error_msg += msg.format(bname, ratio, expect_ratio)
     if error_msg:
