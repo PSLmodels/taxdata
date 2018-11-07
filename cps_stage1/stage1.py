@@ -6,7 +6,7 @@ def main():
     EYR = 2028
 
     # Read in state SOI estimates
-    soi_estimates = pd.read_csv('../cps_stage1/SOI_estimates.csv', index_col=0)
+    soi_estimates = pd.read_csv('SOI_estimates.csv', index_col=0)
     stage_2_targets = pd.read_csv('../puf_stage1/Stage_II_targets.csv',
                                   index_col=0)
     stage_2_targets.drop(['2011', '2012', '2013'], inplace=True, axis=1)
