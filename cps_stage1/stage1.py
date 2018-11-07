@@ -3,14 +3,14 @@ import pandas as pd
 
 def main():
     SYR = '2014'  # Start year of CPS
-    EYR = 2027
+    EYR = 2028
 
     # Read in state SOI estimates
-    soi_estimates = pd.read_csv('SOI_estimates.csv', index_col=0)
-    stage_2_targets = pd.read_csv('../puf_stage1/Stage_II_targets.csv',
+    soi_estimates = pd.read_csv('/Users/laurenmooney/Desktop/OSPC/taxdata/cps_stage1/SOI_estimates.csv', index_col=0)
+    stage_2_targets = pd.read_csv('/Users/laurenmooney/Desktop/OSPC/taxdata/puf_stage1/Stage_II_targets.csv',
                                   index_col=0)
     stage_2_targets.drop(['2011', '2012', '2013'], inplace=True, axis=1)
-    factors = pd.read_csv('../puf_stage1/Stage_I_factors.csv', index_col=0)
+    factors = pd.read_csv('/Users/laurenmooney/Desktop/OSPC/taxdata/puf_stage1/Stage_I_factors.csv', index_col=0)
 
     for year in range(int(SYR) + 1, EYR + 1):
         single = soi_estimates[SYR]['Single'] * factors['ARETS'][year]
@@ -50,3 +50,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

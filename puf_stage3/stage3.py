@@ -22,7 +22,7 @@ def adjustment(agi, var, var_name, target, weights, blowup):
     # Make a copy of the variable and use to create target totals
     var_copy = copy.copy(var)
     goal_total = pd.DataFrame()
-    for year in range(2011, 2028):
+    for year in range(2011, 2029):
         wt_year = 'WT{}'.format(year)
         s006 = weights[wt_year] * 0.01
         var_copy *= blowup[year]
@@ -34,7 +34,7 @@ def adjustment(agi, var, var_name, target, weights, blowup):
     for year in range(2011, 2015):
         distribution[year] = target[str(year)] / target[str(year)].sum()
     # Use 2014 distribution for all future years
-    for year in range(2015, 2028):
+    for year in range(2015, 2029):
         distribution[year] = distribution[2014]
 
     # Advance variable to 2011 level
@@ -42,7 +42,7 @@ def adjustment(agi, var, var_name, target, weights, blowup):
 
     # In each year find the ratios to get the correct distribution
     ratios_df = pd.DataFrame()
-    for year in range(2011, 2028):
+    for year in range(2011, 2029):
 
         goal_amts = goal_total[year][0] * distribution[year]
 

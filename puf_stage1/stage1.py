@@ -23,7 +23,7 @@ pop_projection = pop_projection[(pop_projection.sex == 0) &
                                 (pop_projection.race == 0) &
                                 (pop_projection.origin == 0)]
 pop_projection = pop_projection.drop(['sex', 'race', 'origin'], axis=1)
-pop_projection = pop_projection.drop(pop_projection.index[14:], axis=0)
+pop_projection = pop_projection.drop(pop_projection.index[15:], axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
@@ -94,7 +94,7 @@ Stage_II_targets.columns = ['TOTAL_POP']
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
-index = list(range(2008, 2028))
+index = list(range(2008, 2029))
 Stage_II_targets.index = index
 
 # calculate Stage_I_factors for population targets
@@ -141,6 +141,7 @@ return_growth_rate.Returns['2024'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2025'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns['2027'] = return_growth_rate.Returns['2022']
+return_growth_rate.Returns['2028'] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
@@ -151,7 +152,7 @@ soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
-for i in range(2014, 2027):
+for i in range(2014, 2028):
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
@@ -228,14 +229,14 @@ benefit_programs = pd.read_csv('../cps_data/benefitprograms.csv',
 benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
 # Find growth rate between 2020 and 2021 and extrapolate out to 2027
 gr = benefit_sums['2021_cost'] / float(benefit_sums['2020_cost'])
-for year in range(2022, 2028):
+for year in range(2022, 2029):
     prev_year = year - 1
     prev_value = benefit_sums['{}_cost'.format(prev_year)]
     benefit_sums['{}_cost'.format(year)] = prev_value * gr
 ABENEFITS = (benefit_sums /
              benefit_sums['{}_cost'.format(BEN_SYR)]).transpose()
 benefit_factors = pd.DataFrame()
-for year in range(SYR, 2028):
+for year in range(SYR, 2029):
     if year <= BEN_SYR:
         benefit_factors[year] = [1.0]
     else:
