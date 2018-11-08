@@ -17,8 +17,8 @@ Instructions for that are also included in this file.
 Variables in 10-Year CBO Projections:
     Source: 10-Year Economic Projections (CBO)
     Link: https://www.cbo.gov/about/products/budget-economic-data#4
-    Previous: August 2014
-    Current: August 2016
+    Previous: August 2016
+    Current: August 2018
     Notes: These are pulled directly from the corresponding file
 
     Variable : Name in CBO file
@@ -40,7 +40,7 @@ Variables not in 10-year CBO Projections:
         Source: Detailed Revenue Projections (CBO)
         Link: https://www.cbo.gov/about/products/budget-economic-data#7
         Previous: Unknown
-        Current: January 2016
+        Current: January 2018
         Notes: This projection is not in every iteration of this document,
                but is the only publicly available projection I could find.
                In the revenue projections file, the data is in the 'Capital
@@ -48,26 +48,26 @@ Variables not in 10-year CBO Projections:
                column.
 
     RETS:
-        Source: IRS Publication 6187, Table 1B
-        Link: https://www.irs.gov/pub/irs-pdf/p6187.pdf
+        Source: IRS Publication 6961
+        Link: https://www.irs.gov/pub/irs-soi/p6961.pdf
         Previous: Unknown
-        Current: Publication 6187, Fall 2016
+        Current: Publication 6961, Fall 2018
         Notes: Years 2015 to 2023 are directly from the table. Years 2024 to
                2026 are extrapolated out using the growth rate between 2022
                and 2023.
 
     SOCSEC:
-        Source: OASI Trust Fund Annual Trustees Report -Table VI.C4: Operations
-                of the OASI Trust Fund, Fiscal Years 2011-15.
+        Source: OASI Trust Fund Annual Trustees Report - Table VI.C4.
+        Operations of the OASI Trust Fund, Fiscal Years 2013-2027.
                 Column: Cost: Scheduled Benefits: Intermediate Level
         Link: https://www.ssa.gov/oact/tr/2016/tr2016.pdf
-        Previous: 2014 report
-        Current: 2016 report
+        Previous: 2016 report
+        Current: 2018 report
         Notes: Projections are taken directly from this chart.
 
     CPIM:
         Source: BLS Database
-        Link: http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth
+        Link: https://www.cbo.gov/about/products/baseline-projections-selected-programs#24
         Previous: Unknown
         Current: CPIU Data Series ID CUUR0000SA0
                  CPIM Data Series ID CUUR0000SAM
@@ -80,9 +80,9 @@ Variables not in 10-year CBO Projections:
 
     UCOMP:
         Source: CBO Unemployment Compensation Projections
-        Link: https://www.cbo.gov/about/products/baseline-projections-selected-programs#24
-        Previous: April 2014
-        Current: March 2016
+        Link: https://www.cbo.gov/system/files?file=2018-06/51316-2018-04-unemployment.pdf
+        Previous: March 2016
+        Current: April 2018
         Notes: Put the 'Total Benefits' number from the table in terms of
                billions rather than millions of dollars
 
