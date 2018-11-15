@@ -8,7 +8,7 @@ import pandas as pd
 CPS_START_YEAR = 2014
 PUF_START_YEAR = 2011
 PUF_COUNT = 248591
-LAST_YEAR = 2027
+LAST_YEAR = 2028
 
 
 @pytest.fixture(scope='session')

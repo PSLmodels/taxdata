@@ -3,7 +3,7 @@ import pandas as pd
 
 def main():
     SYR = '2014'  # Start year of CPS
-    EYR = 2027
+    EYR = 2028
 
     # Read in state SOI estimates
     soi_estimates = pd.read_csv('SOI_estimates.csv', index_col=0)
@@ -50,3 +50,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
