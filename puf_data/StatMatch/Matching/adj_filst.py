@@ -10,7 +10,6 @@ import numpy as np
 def adjfilst(cps_recs):
     """
     """
-    # cps_recs = pd.read_csv('CPSRETS2014.csv')
     cps_recs['case1'] = np.where(((cps_recs['filst'] == 0) &
                                  (cps_recs['was'] > 0)), 1, 0)
     cps_recs['case2'] = np.where(((cps_recs['filst'] == 0) &
@@ -39,6 +38,4 @@ def adjfilst(cps_recs):
     filers = cps_recs.copy()[(cps_recs['filst'] == 1)]
     nonfilers = cps_recs.copy()[(cps_recs['filst'] == 0)]
 
-    # filers.to_csv('cpsrets14.csv', index=False)
-    # nonfilers.to_csv('cpsnonf2014.csv', index=False)
     return filers, nonfilers

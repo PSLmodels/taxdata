@@ -9,14 +9,11 @@ import pandas as pd
 
 
 def add_cps(cps_recs, match, puffile):
-    # cps_recs = pd.read_csv('cpsrets14.csv')
     cpsfile = cps_recs.filter(regex=r'jcps\d{1,2}$|icps\d{1}$|' +
                                     'jcps100|cpsseq|' +
                                     r'nu\d{1,2}|nu18_dep|n1820|n21|' +
                                     'elderly_dependent|wasp|wass|xstate')
-    # cpsfile = cps_recs
-    # match = pd.read_csv('match.csv')
-    # puffile = pd.read_sas('puf2009.sas7bdat')
+
     puffile = puffile[(puffile['recid'] != 999999) &
                       (puffile['recid'] != 999998) &
                       (puffile['recid'] != 999997) &
@@ -34,5 +31,5 @@ def add_cps(cps_recs, match, puffile):
     merge_2.rename(columns={'cwt': 'cweight'}, inplace=True)
     merge_2['matched_weight'] = merge_2['cweight']
     merge_2['cweight'] = merge_2['wt']
-    # merge_2.to_csv('cpsrets.csv', index=False)
+
     return merge_2

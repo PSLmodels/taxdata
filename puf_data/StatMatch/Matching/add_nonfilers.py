@@ -9,8 +9,6 @@ import copy
 
 
 def add_nonfiler(cpsrets, nonfiler):
-    # nonfiler = pd.read_csv('cpsnonf2014.csv')
-    # cpsrets = pd.read_csv('cpsrets.csv')
 
     ifdept = nonfiler['ifdept']
     js = nonfiler['js']

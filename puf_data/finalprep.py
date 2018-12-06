@@ -1,3 +1,4 @@
+import os
 import sys
 import numpy as np
 import pandas
@@ -7,6 +8,7 @@ from impute_pencon import impute_pension_contributions
 
 BENPUF = False  # set temporarily to True to generate a benpuf.csv file
 # BENPUF = False will generate a puf.csv file without any benefits variables
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def main():
@@ -14,7 +16,8 @@ def main():
     Contains all the logic of the puf_data/finalprep.py script.
     """
     # (*) Read unprocessed input file into a Pandas Dataframe
-    data = pandas.read_csv('cps-matched-puf.csv')
+    cps_matched_puf_path = os.path.join(CUR_PATH, 'cps-matched-puf.csv')
+    data = pandas.read_csv(cps_matched_puf_path)
 
     # Rename certain CPS variables
     renames = {
@@ -78,9 +81,11 @@ def main():
 
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
-        data.to_csv('benpuf.csv', index=False)
+        write_path = os.path.join(CUR_PATH, 'benpuf.csv')
+        data.to_csv(write_path, index=False)
     else:
-        data.to_csv('puf.csv', index=False)
+        write_path = os.path.join(CUR_PATH, 'puf.csv')
+        data.to_csv(write_path, index=False)
 
     return 0
 # end of main function code

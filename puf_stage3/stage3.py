@@ -1,6 +1,10 @@
+import os
 import copy
 import numpy as np
 import pandas as pd
+
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def adjustment(agi, var, var_name, target, weights, blowup):
@@ -127,10 +131,12 @@ def adjustment(agi, var, var_name, target, weights, blowup):
 
 
 # Read all necessary files
-puf = pd.read_csv('../puf_data/cps-matched-puf.csv')
-targets = pd.read_csv('stage3_targets.csv', index_col=0)
-wght = pd.read_csv('../puf_stage2/puf_weights.csv.gz')
-bf = pd.read_csv('../puf_stage1/growfactors.csv', index_col=0)
+puf = pd.read_csv(os.path.join(CUR_PATH, '../puf_data/cps-matched-puf.csv'))
+targets = pd.read_csv(os.path.join(CUR_PATH, 'stage3_targets.csv'),
+                      index_col=0)
+wght = pd.read_csv(os.path.join(CUR_PATH, '../puf_stage2/puf_weights.csv.gz'))
+bf = pd.read_csv(os.path.join(CUR_PATH, '../puf_stage1/growfactors.csv'),
+                 index_col=0)
 
 # Call adjustment function for each variable being adjusted
 ints = adjustment(puf.e00100, puf.e00300, 'INT', targets, wght, bf.AINTS)
@@ -141,5 +147,6 @@ final_ratios = pd.concat(var_ratios_list, axis=1)
 final_ratios = final_ratios.transpose()
 
 # Create CSV from the final ratios
-final_ratios.to_csv('puf_ratios.csv', float_format='%.4f',
+ratios_path = os.path.join(CUR_PATH, 'puf_ratios.csv')
+final_ratios.to_csv(ratios_path, float_format='%.4f',
                     index_label='agi_bin')
