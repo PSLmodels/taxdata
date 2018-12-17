@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 from solve_lp_for_year import solve_lp_for_year
-import subprocess
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 # Read private CPS-matched-PUF file into a Pandas DataFrame
@@ -63,5 +62,4 @@ z["WT2028"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
 # Write all weights (rounded to nearest integer) to puf_weights.csv file
 z = z.round(0).astype('int64')
 z.to_csv(os.path.join(CUR_PATH, 'puf_weights.csv'),
-         index=False)
-subprocess.check_call(['gzip', '-nf', 'puf_weights.csv'])
+         index=False, compression='gzip')

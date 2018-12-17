@@ -8,7 +8,6 @@ import numpy as np
 
 
 def create_soi(SOI):
-    # SOI = pd.read_sas('puf2009.sas7bdat
 
     SOI.loc[:, 'filer'] = 1
     SOI.loc[:, 'dmfs'] = 1

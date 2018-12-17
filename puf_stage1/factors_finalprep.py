@@ -4,14 +4,16 @@ benefit_growth_rates.csv into growfactors.csv (used by Tax-Calculator).
 """
 import numpy as np
 import pandas as pd
+import os
 
 # pylint: disable=invalid-name
 
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 first_benefit_year = 2014
-inben_filename = 'benefit_growth_rates.csv'
+inben_filename = os.path.join(CUR_PATH, 'benefit_growth_rates.csv')
 first_data_year = 2011
-infac_filename = 'Stage_I_factors.csv'
-output_filename = 'growfactors.csv'
+infac_filename = os.path.join(CUR_PATH, 'Stage_I_factors.csv')
+output_filename = os.path.join(CUR_PATH, 'growfactors.csv')
 
 # --------------------------------------------------------------------------
 # read in raw average benefit amounts by year and

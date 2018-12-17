@@ -4,7 +4,7 @@ import os
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
-EYR = 2028  # last calendar year
+EYR = 2028  # last calendar year we have data for
 
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
