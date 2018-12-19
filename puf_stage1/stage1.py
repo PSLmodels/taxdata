@@ -5,6 +5,7 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
 EYR = 2028  # last calendar year we have data for
+SOI_YR = 2015  # most recently available SOI estimates
 
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
@@ -27,7 +28,10 @@ pop_projection = pop_projection[(pop_projection.sex == 0) &
                                 (pop_projection.race == 0) &
                                 (pop_projection.origin == 0)]
 pop_projection = pop_projection.drop(['sex', 'race', 'origin'], axis=1)
-pop_projection = pop_projection.drop(pop_projection.index[15:], axis=0)
+# We're dropping the rows for years 2014 to EYR from the pop_projection DF
+num_drop = EYR + 1 - 2014
+pop_projection = pop_projection.drop(pop_projection.index[num_drop:],
+                                     axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
@@ -150,12 +154,12 @@ return_growth_rate.Returns.index = index
 soi_estimates = pd.read_csv(os.path.join(CUR_PATH, "SOI_estimates.csv"),
                             index_col=0)
 soi_estimates = soi_estimates.transpose()
-historical_index = list(range(2008, 2015))
+historical_index = list(range(2008, SOI_YR + 1))
 soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
-for i in range(2014, EYR):
+for i in range(SOI_YR, EYR):  # SOI Estimates loop
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
@@ -231,7 +235,7 @@ benefit_programs = pd.read_csv(os.path.join(CUR_PATH,
                                '../cps_data/benefitprograms.csv'),
                                index_col='Program')
 benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
-# Find growth rate between 2020 and 2021 and extrapolate out to 2028
+# Find growth rate between 2020 and 2021 and extrapolate out to EYR
 gr = benefit_sums['2021_cost'] / float(benefit_sums['2020_cost'])
 for year in range(2022, EYR + 1):
     prev_year = year - 1
