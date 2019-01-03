@@ -147,12 +147,12 @@ return_growth_rate.Returns.index = index
 # read SOI estimates for 2008+
 soi_estimates = pd.read_csv("SOI_estimates.csv", index_col=0)
 soi_estimates = soi_estimates.transpose()
-historical_index = list(range(2008, 2015))
+historical_index = list(range(2008, 2017))
 soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
-for i in range(2014, 2028):
+for i in range(2016, 2028):
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
