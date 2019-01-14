@@ -79,6 +79,8 @@ def main():
     # - Impute pension contributions:
     data = impute_pension_contributions(data.copy())
 
+    # Rename 'filer' to 'data_source'
+    data = data.rename(columns={'filer': 'data_source'})
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
         write_path = os.path.join(CUR_PATH, 'benpuf.csv')
