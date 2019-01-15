@@ -5,14 +5,14 @@ from solve_lp_for_year import solve_lp_for_year
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 # Read private CPS-matched-PUF file into a Pandas DataFrame
-puf = pd.read_csv(os.join(CUR_PATH, "../puf_data/cps-matched-puf.csv"))
+puf = pd.read_csv(os.path.join(CUR_PATH, "../puf_data/cps-matched-puf.csv"))
 
 # Read stage1 factors and stage2 targets written by stage1.py script
 factors = pd.read_csv(os.path.join(CUR_PATH,
                                    "../puf_stage1/Stage_I_factors.csv"),
                       index_col=0)
 Stage_I_factors = factors.transpose()
-stage2_path = os.path.joi(CUR_PATH, "../puf_stage1/Stage_II_targets.csv")
+stage2_path = os.path.join(CUR_PATH, "../puf_stage1/Stage_II_targets.csv")
 Stage_II_targets = pd.read_csv(stage2_path, index_col=0)
 
 # Use the matched_weight variable in CPS as the final weight
