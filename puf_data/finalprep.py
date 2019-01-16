@@ -27,7 +27,7 @@ def main():
     }
     data = data.rename(columns=renames)
 
-    # check the PUF year
+    # - Check the PUF year
     max_flpdyr = max(data['flpdyr'])
     if max_flpdyr == 2008:
         data = transform_2008_varnames_to_2009_varnames(data)
@@ -79,8 +79,9 @@ def main():
     # - Impute pension contributions:
     data = impute_pension_contributions(data.copy())
 
-    # Rename 'filer' to 'data_source'
+    # - Rename 'filer' to 'data_source'
     data = data.rename(columns={'filer': 'data_source'})
+
     # - Write processed data to the final CSV-formatted file:
     if BENPUF:
         write_path = os.path.join(CUR_PATH, 'benpuf.csv')
