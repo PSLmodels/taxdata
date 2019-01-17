@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 import time
+import os
 from solve_lp_for_year import solve_lp_for_year
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def main():
@@ -9,13 +12,15 @@ def main():
     """
     start_time = time.time()
     print('Reading Data')
-    cps = pd.read_csv('../cps_data/cps_raw.csv.gz', compression='gzip')
+    cps = pd.read_csv(os.path.join(CUR_PATH, '../cps_data/cps_raw.csv.gz'),
+                      compression='gzip')
     cps = cps.fillna(0.)
     cps['MARS'] = np.where(cps.JS == 3, 4, cps.JS)
     cps['e00100'] = cps['JCPS9'] + cps['JCPS19']
-    stage_1_factors = pd.read_csv('../puf_stage1/Stage_I_factors.csv',
-                                  index_col=0)
-    stage_2_targets = pd.read_csv('../cps_stage1/stage_2_targets.csv',
+    stage1_path = os.path.join(CUR_PATH, '../puf_stage1/Stage_I_factors.csv')
+    stage_1_factors = pd.read_csv(stage1_path, index_col=0)
+    stage2_path = os.path.join(CUR_PATH, '../cps_stage1/stage_2_targets.csv')
+    stage_2_targets = pd.read_csv(stage2_path,
                                   index_col=0)
 
     # DataFrame for holding each year's weights
@@ -52,7 +57,8 @@ def main():
                                           stage_2_targets, 2028, .50)
 
     weights = weights.round(0).astype('int64')
-    weights.to_csv('cps_weights.csv.gz', compression='gzip', index=False)
+    weights.to_csv(os.path.join(CUR_PATH, 'cps_weights.csv.gz'),
+                   compression='gzip', index=False)
     end_time = time.time()
     print('Total time (minutes):', (end_time - start_time) / 60)
 

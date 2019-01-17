@@ -13,16 +13,18 @@ import os
 Script to run each phase of the matching process
 """
 
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def match():
     # If there is a .CSV version of the CPS, simply read that in. Otherwise
     # convert the .DAT file to a .CSV
-    cps_csv_path = 'cpsmar2016.csv'
+    cps_csv_path = os.path.join(CUR_PATH, 'cpsmar2016.csv')
     if os.path.isfile(cps_csv_path):
         print('Reading CPS Data from .CSV')
         mar_cps = pd.read_csv(cps_csv_path)
     else:
-        cps_dat_path = 'asec2016_pubuse_v3.dat'
+        cps_dat_path = os.path.join(CUR_PATH, 'asec2016_pubuse_v3.dat')
         if os.path.isfile(cps_dat_path):
             print('Converting .DAT to .CSV')
             mar_cps = cpsmar.create_cps(cps_dat_path)
@@ -31,7 +33,7 @@ def match():
                  ' CPS in your directory')
             raise FileNotFoundError(m)
     print('Reading PUF Data')
-    puf_path = 'puf2011.csv'
+    puf_path = os.path.join(CUR_PATH, 'puf2011.csv')
     puf = pd.read_csv(puf_path)
     # Change PUF columns to lowercase
     puf.columns = map(str.lower, puf.columns)
@@ -76,5 +78,6 @@ def match():
 
 if __name__ == "__main__":
     cps_matched = match()
-    cps_matched.to_csv('../../cps-matched-puf.csv', index=False,
+    cps_matched_path = os.path.join(CUR_PATH, '../../cps-matched-puf.csv')
+    cps_matched.to_csv(cps_matched_path, index=False,
                        float_format='%.2f')

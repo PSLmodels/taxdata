@@ -9,10 +9,6 @@ from tqdm import tqdm
 
 
 def phasetwo(SOI, CPS):
-    # SOI = pd.read_csv('soirets2009_ph1.csv',
-    #                  usecols=['cellid', 'soiseq', 'wt', 'factor', 'yhat'])
-    # CPS = pd.read_csv('cpsrets14_ph1.csv',
-    #                  usecols=['cellid', 'cpsseq', 'wt', 'factor', 'yhat'])
 
     CPS.loc[:, 'wt_adj'] = CPS['wt'] * CPS['factor']
     factor = 1.
@@ -61,5 +57,5 @@ def phasetwo(SOI, CPS):
 
     match = pd.DataFrame({'soiseq': soi_list, 'cpsseq': cps_list,
                           'cwt': cwt_list})
-    # cmatch.to_csv('match.csv', index=False)
+
     return match

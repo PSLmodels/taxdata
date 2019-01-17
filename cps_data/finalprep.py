@@ -3,14 +3,19 @@ import numpy as np
 import sys
 import copy
 import subprocess
+import os
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def main():
 
     # Import CPS data file
-    data = pd.read_csv('cps_raw.csv.gz', compression='gzip')
-    adj_targets = pd.read_csv('adjustment_targets.csv')
-    other_ben = pd.read_csv('benefitprograms.csv', index_col='Program')
+    data = pd.read_csv(os.path.join(CUR_PATH, 'cps_raw.csv.gz'),
+                       compression='gzip')
+    adj_targets = pd.read_csv(os.path.join(CUR_PATH, 'adjustment_targets.csv'))
+    other_ben = pd.read_csv(os.path.join(CUR_PATH, 'benefitprograms.csv'),
+                            index_col='Program')
 
     # Rename specified variables
     renames = {
@@ -140,7 +145,7 @@ def main():
     data['s006'] *= 100
 
     print('Exporting...')
-    data.to_csv('cps.csv', index=False)
+    data.to_csv(os.path.join(CUR_PATH, 'cps.csv'), index=False)
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
 
 

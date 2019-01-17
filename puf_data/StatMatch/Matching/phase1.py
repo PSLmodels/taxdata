@@ -114,8 +114,6 @@ def predict(file):
 
 
 def phaseone(CPS, SOI):
-    # CPS = pd.read_csv('cpsrets14.csv')
-    # SOI = pd.read_csv('soirets2009.csv')
 
     CPS.rename(columns={'rents': 'sche', 'ucomp': 'ucagix', 'socsec': 'ssinc'},
                inplace=True)
@@ -184,7 +182,4 @@ def phaseone(CPS, SOI):
     CPS_final = pd.merge(CPS, CPS_new[['cpsseq', 'cellid', 'yhat', 'factor']],
                          on=['cpsseq'])
 
-    # SOI_final.to_csv('soirets2009_ph1.csv', index=False)
-    # CPS_final.to_csv('cpsrets14_ph1.csv', index=False)
-    # countx.to_csv('counts.csv', index=False)
     return SOI_final, CPS_final, countx

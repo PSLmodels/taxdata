@@ -1,16 +1,21 @@
 import pandas as pd
+import os
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def main():
     SYR = '2014'  # Start year of CPS
-    EYR = 2028
+    EYR = 2028  # Last year in our extrapolation
 
     # Read in state SOI estimates
-    soi_estimates = pd.read_csv('SOI_estimates.csv', index_col=0)
-    stage_2_targets = pd.read_csv('../puf_stage1/Stage_II_targets.csv',
-                                  index_col=0)
+    soi_estimates = pd.read_csv(os.path.join(CUR_PATH, 'SOI_estimates.csv'),
+                                index_col=0)
+    stage2_path = os.path.join(CUR_PATH, '../puf_stage1/Stage_II_targets.csv')
+    stage_2_targets = pd.read_csv(stage2_path, index_col=0)
     stage_2_targets.drop(['2011', '2012', '2013'], inplace=True, axis=1)
-    factors = pd.read_csv('../puf_stage1/Stage_I_factors.csv', index_col=0)
+    factors_path = os.path.join(CUR_PATH, '../puf_stage1/Stage_I_factors.csv')
+    factors = pd.read_csv(factors_path, index_col=0)
 
     for year in range(int(SYR) + 1, EYR + 1):
         single = soi_estimates[SYR]['Single'] * factors['ARETS'][year]
@@ -45,7 +50,8 @@ def main():
                                  index=soi_estimates.index)
         soi_estimates[year] = current_year
 
-    soi_estimates.to_csv('stage_2_targets.csv', float_format='%.0f')
+    soi_estimates.to_csv(os.path.join(CUR_PATH, 'stage_2_targets.csv'),
+                         float_format='%.0f')
 
 
 if __name__ == '__main__':

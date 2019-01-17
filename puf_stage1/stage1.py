@@ -1,7 +1,11 @@
 import pandas as pd
+import os
 
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
+EYR = 2028  # last calendar year we have data for
+SOI_YR = 2015  # most recently available SOI estimates
 
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
@@ -18,17 +22,21 @@ SENIOR = 65
 #   <http://www.census.gov/popest/data/intercensal/national/nat2010.html>
 
 # projection for 2014+
-pop_projection = pd.read_csv("NP2014_D1.csv", index_col='year')
+pop_projection = pd.read_csv(os.path.join(CUR_PATH, "NP2014_D1.csv"),
+                             index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) &
                                 (pop_projection.race == 0) &
                                 (pop_projection.origin == 0)]
 pop_projection = pop_projection.drop(['sex', 'race', 'origin'], axis=1)
-pop_projection = pop_projection.drop(pop_projection.index[15:], axis=0)
+# We're dropping the rows for years 2014 to EYR from the pop_projection DF
+num_drop = EYR + 1 - 2014
+pop_projection = pop_projection.drop(pop_projection.index[num_drop:],
+                                     axis=0)
 pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 
 
 # data for 2010-2014
-historical1 = pd.read_csv("NC-EST2014-AGESEX-RES.csv")
+historical1 = pd.read_csv(os.path.join(CUR_PATH, "NC-EST2014-AGESEX-RES.csv"))
 historical1 = historical1[historical1.SEX == 0]
 historical1 = historical1.drop(['SEX', 'CENSUS2010POP', 'ESTIMATESBASE2010'],
                                axis=1)
@@ -44,7 +52,7 @@ total_pop1 = historical1[historical1.AGE == TOTES]
 total_pop1 = total_pop1.drop(['AGE'], axis=1)
 
 # data for 2008-2009
-historical2 = pd.read_csv("US-EST00INT-ALLDATA.csv")
+historical2 = pd.read_csv(os.path.join(CUR_PATH, "US-EST00INT-ALLDATA.csv"))
 historical2 = historical2[(historical2.MONTH == 7) &
                           (historical2.YEAR >= 2008) &
                           (historical2.YEAR < 2010)]
@@ -94,7 +102,7 @@ Stage_II_targets.columns = ['TOTAL_POP']
 Stage_II_targets['POP_DEP'] = POP_DEP.values
 Stage_II_targets['POP_SNR'] = POP_SNR.values
 
-index = list(range(2008, 2029))
+index = list(range(2008, EYR + 1))
 Stage_II_targets.index = index
 
 # calculate Stage_I_factors for population targets
@@ -114,7 +122,8 @@ pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0],
                                          axis=0)
 
 # import CBO baseline projection
-cbo_baseline = pd.read_csv("CBO_baseline.csv", index_col=0)
+cbo_baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"),
+                           index_col=0)
 cbobase = cbo_baseline.transpose()
 cbobase.index = index
 Stage_I_factors['AGDPN'] = pd.DataFrame(cbobase.GDP/cbobase.GDP[SYR],
@@ -133,26 +142,24 @@ cbo_growth_rates = cbobase.pct_change() + 1.0
 cbo_growth_rates = cbo_growth_rates.drop(cbo_growth_rates.index[0], axis=0)
 
 # read  IRS number-of-returns projection
-irs_returns = pd.read_csv("IRS_return_projection.csv", index_col=0)
+irs_returns = pd.read_csv(os.path.join(CUR_PATH, "IRS_return_projection.csv"),
+                          index_col=0)
 irs_returns = irs_returns.transpose()
 return_growth_rate = irs_returns.pct_change() + 1.0
-return_growth_rate.Returns['2023'] = return_growth_rate.Returns['2022']
-return_growth_rate.Returns['2024'] = return_growth_rate.Returns['2022']
-return_growth_rate.Returns['2025'] = return_growth_rate.Returns['2022']
-return_growth_rate.Returns['2026'] = return_growth_rate.Returns['2022']
-return_growth_rate.Returns['2027'] = return_growth_rate.Returns['2022']
-return_growth_rate.Returns['2028'] = return_growth_rate.Returns['2022']
+for year in range(2023, EYR + 1):
+    return_growth_rate.Returns[str(year)] = return_growth_rate.Returns['2022']
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
-soi_estimates = pd.read_csv("SOI_estimates.csv", index_col=0)
+soi_estimates = pd.read_csv(os.path.join(CUR_PATH, "SOI_estimates.csv"),
+                            index_col=0)
 soi_estimates = soi_estimates.transpose()
-historical_index = list(range(2008, 2015))
+historical_index = list(range(2008, SOI_YR + 1))
 soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
 return_projection = soi_estimates
-for i in range(2014, 2028):
+for i in range(SOI_YR, EYR):  # SOI Estimates loop
     Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
     Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
     HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
@@ -224,19 +231,20 @@ Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[SYR]
 Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[SYR]
 
 # Add benefit growth rates to Stage 1 factors
-benefit_programs = pd.read_csv('../cps_data/benefitprograms.csv',
+benefit_programs = pd.read_csv(os.path.join(CUR_PATH,
+                               '../cps_data/benefitprograms.csv'),
                                index_col='Program')
 benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
-# Find growth rate between 2020 and 2021 and extrapolate out to 2027
+# Find growth rate between 2020 and 2021 and extrapolate out to EYR
 gr = benefit_sums['2021_cost'] / float(benefit_sums['2020_cost'])
-for year in range(2022, 2029):
+for year in range(2022, EYR + 1):
     prev_year = year - 1
     prev_value = benefit_sums['{}_cost'.format(prev_year)]
     benefit_sums['{}_cost'.format(year)] = prev_value * gr
 ABENEFITS = (benefit_sums /
              benefit_sums['{}_cost'.format(BEN_SYR)]).transpose()
 benefit_factors = pd.DataFrame()
-for year in range(SYR, 2029):
+for year in range(SYR, EYR + 1):
     if year <= BEN_SYR:
         benefit_factors[year] = [1.0]
     else:
@@ -284,11 +292,11 @@ Stage_II_targets = Stage_II_targets.drop([2008, 2009, 2010])
 Stage_I_factors['ABENEFITS'] = benefit_factors.transpose()[0]
 
 # write Stage_I_factors for final preparation and then use by Tax-Calculator
-Stage_I_factors.to_csv('Stage_I_factors.csv',
+Stage_I_factors.to_csv(os.path.join(CUR_PATH, 'Stage_I_factors.csv'),
                        float_format='%.4f',
                        index_label='YEAR')
 
 # write Stage_II_targets for use in stage2 weights calculation
 Stage_II_targets = Stage_II_targets.transpose()
-Stage_II_targets.to_csv('Stage_II_targets.csv',
+Stage_II_targets.to_csv(os.path.join(CUR_PATH, 'Stage_II_targets.csv'),
                         float_format='%.0f')
