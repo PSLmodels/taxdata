@@ -1,4 +1,4 @@
-# TaxData Documentation
+# TaxData Dataset Documentation
 
 TaxData is an open source library used to prepare micro-data for [Tax-Calculator](https://github.com/PSLmodels/Tax-Calculator),
 a microsimulation tax model. This document details the process we create the
