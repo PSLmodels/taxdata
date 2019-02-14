@@ -1,8 +1,10 @@
 # StatMatch
+
 This repo holds scripts for performing a statistical match
-using the March 2014 CPS and 2009 IRS SOI Public Use File (PUF) datasets
+using the March 2016 CPS and 2011 IRS SOI Public Use File (PUF) datasets
 
 ## Usage
+
 The entire statistical match can be run by using `python runmatch.py` in the
 command line. Three optional arguments can be included as well:
 
