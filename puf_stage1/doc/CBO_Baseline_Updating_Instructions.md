@@ -131,3 +131,8 @@ In `puf_stage2/stage2.py` and `cps_stage2/stage2.py`, you need to create a new
 column in the `z` and `weights` data frames, respectively, for the new year.
 This will call the `solve_lp_for_year` function in the exact same way as the
 previous years.
+
+### Stage 3 Updates
+
+In `puf_stage3/stage3.py`, update the `end_year` variable at the top of the
+file to reflect the new end year.

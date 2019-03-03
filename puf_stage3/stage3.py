@@ -5,6 +5,8 @@ import pandas as pd
 
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+start_year = 2011
+end_year = 2029
 
 
 def adjustment(agi, var, var_name, target, weights, blowup):
@@ -26,7 +28,7 @@ def adjustment(agi, var, var_name, target, weights, blowup):
     # Make a copy of the variable and use to create target totals
     var_copy = copy.copy(var)
     goal_total = pd.DataFrame()
-    for year in range(2011, 2029):
+    for year in range(start_year, end_year + 1):
         wt_year = 'WT{}'.format(year)
         s006 = weights[wt_year] * 0.01
         var_copy *= blowup[year]
@@ -35,18 +37,18 @@ def adjustment(agi, var, var_name, target, weights, blowup):
 
     # Create DataFrame with the goal distribution for each year
     distribution = pd.DataFrame()
-    for year in range(2011, 2015):
+    for year in range(start_year, 2015):
         distribution[year] = target[str(year)] / target[str(year)].sum()
     # Use 2014 distribution for all future years
-    for year in range(2015, 2029):
+    for year in range(2015, end_year + 1):
         distribution[year] = distribution[2014]
 
     # Advance variable to 2011 level
-    var *= blowup[2011]
+    var *= blowup[start_year]
 
     # In each year find the ratios to get the correct distribution
     ratios_df = pd.DataFrame()
-    for year in range(2011, 2029):
+    for year in range(start_year, end_year + 1):
 
         goal_amts = goal_total[year][0] * distribution[year]
 

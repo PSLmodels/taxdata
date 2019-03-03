@@ -110,8 +110,7 @@ puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_data/cps-matched-puf.csv \
                                puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
-	cd puf_stage2 ; python stage2.py && \
-        gunzip puf_weights.csv.gz && gzip -n puf_weights.csv
+	cd puf_stage2 ; python stage2.py
 
 puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
                            puf_stage3/stage3_targets.csv \
