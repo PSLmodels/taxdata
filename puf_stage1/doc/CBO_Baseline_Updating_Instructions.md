@@ -33,9 +33,9 @@ the values from the calendar year CBO projections into the CBO baseline spreadsh
 To avoid any potential formatting conflicts, be sure to select `Paste Values`
 in Excel.
 
-Previous Document: August 2016
+Previous Document: August 2018
 
-Current Document: August 2018
+Current Document: January 2019
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -56,9 +56,9 @@ Current Document: August 2018
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: January 2016
+Previous: April 2018
 
-Current: April 2018
+Current: January 2019
 
 Notes: In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -108,9 +108,9 @@ Instructions:
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [June 2017](https://www.cbo.gov/sites/default/files/recurringdata/51316-2017-06-unemployment.pdf)
+Previous: [April 2018](https://www.cbo.gov/system/files?file=2018-06/51316-2018-04-unemployment.pdf)
 
-Current: [April 2018](https://www.cbo.gov/system/files?file=2018-06/51316-2018-04-unemployment.pdf)
+Current: [January 2019]([https://www.cbo.gov/system/files?file=2018-06/51316-2018-04-unemployment.pdf](https://www.cbo.gov/system/files?file=2019-01/51316-2019-01-unemployment.pdf))
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars
@@ -131,3 +131,8 @@ In `puf_stage2/stage2.py` and `cps_stage2/stage2.py`, you need to create a new
 column in the `z` and `weights` data frames, respectively, for the new year.
 This will call the `solve_lp_for_year` function in the exact same way as the
 previous years.
+
+### Stage 3 Updates
+
+In `puf_stage3/stage3.py`, update the `end_year` variable at the top of the
+file to reflect the new end year.

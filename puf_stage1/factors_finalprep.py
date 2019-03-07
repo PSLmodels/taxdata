@@ -100,4 +100,4 @@ TC_UNUSED_VARS = ALL_VARS - TC_USED_VARS
 gfdf = gfdf.drop(TC_UNUSED_VARS, axis=1)
 
 # write out grow factors used in blowup logic in Tax-Calculator repository
-gfdf.to_csv(output_filename, index='YEAR')
+gfdf.to_csv(output_filename, index_label='YEAR')

@@ -58,6 +58,8 @@ z["WT2027"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                                 year=2027, tol=0.42)
 z["WT2028"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                                 year=2028, tol=0.42)
+z["WT2029"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
+                                year=2029, tol=0.42)
 
 # Write all weights (rounded to nearest integer) to puf_weights.csv file
 z = z.round(0).astype('int64')
