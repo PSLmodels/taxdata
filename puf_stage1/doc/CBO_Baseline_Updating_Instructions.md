@@ -12,6 +12,23 @@ The year of the file/report the current numbers come from as well as the year
 of the file/report used before the most recent update are listed for each
 variable. These will needed to be updated with each update of `CBO_baseline.csv`.
 
+Almost all of the updates to `CBO_baseline.csv` can be done by updating and
+running `puf_stage1.py/updatecbo.py`. Instructions for how to update the file
+can be found in the following sections:
+
+1. [Variables in 10-Year CBO Projections](#Variables-in-10-Year-CBO-Projections)
+2. [CGNS](#CGNS)
+3. [CPIM (CPI Medical Care)](#CPIM-(CPI-Medical-Care))
+
+The code in `puf_stage1.py/updatecbo.py` assumes that the format of the
+spreadsheets provided by the CBO and the API provided by the BLS remain
+unchanged. If the program throws an error or the results do not look correct,
+it is likely that one of those assumptions is no longer true.
+
+The only variables in `CBO_baseline.csv` that cannot be updated automatically
+are `RETS`, `SOCSEC`, and `UCOMP`. Instructions for updating those manually
+can be found below.
+
 If the updates include projections for years that were not there previously,
 `puf_stage1/stage1.py`, `cps_stage1/stage1.py`, `puf_stage2/stage2.py`, and
 `cps_stage2/stage2.py` will also need to be updated. Instructions for doing so
@@ -28,10 +45,10 @@ appears in the new file/report used.
 
 As previously mentioned, most of the variables we used can be found in the
 [CBO 10-Year Economics Projections](https://www.cbo.gov/about/products/budget-economic-data#4).
-These are the easiest to update because all you need to do is copy and paste
-the values from the calendar year CBO projections into the CBO baseline spreadsheet.
-To avoid any potential formatting conflicts, be sure to select `Paste Values`
-in Excel.
+To update these variables, replace the URL assigned to the `econ_url` variable
+in `puf_stage1/updatecbo.py` with the link to the latest CBO economic projections
+and run the file. Or you could download the file and copy/paste the specific
+variables.
 
 Previous Document: August 2018
 
@@ -62,6 +79,11 @@ Current: January 2019
 
 Notes: In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
+
+To update this variables, replace the URL assigned to the `cg_url` variable in
+`puf_stage1/updatecbo.py` with the link to the most recent CBO revenue
+projections and run the file. Or download the spreadsheet and manually update
+the projections.
 
 ### RETS
 
@@ -100,9 +122,12 @@ Instructions:
 2. Under "Select view of the data," select "Original Data Value"
 3. Click "Retrieve Data"
 4. Download the table at the bottom of the page
-5. Take the 12 mont average for each year in the data
+5. Take the 12 month average for each year in the data
 6. Find the average difference between CPI-U from the CBO 10-Year projections
 7. Add this average difference to the CBO CPI-U projections
+
+OR: Simply run `puf_stage1/updatecbo.py`, which will use the BLS provided API
+to pull the latest data.
 
 ### UCOMP
 
