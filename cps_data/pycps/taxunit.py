@@ -20,9 +20,11 @@ class TaxUnit:
         for cps_var, tc_var in INCOME_TUPLES:
             setattr(self, tc_var, data[cps_var])
             setattr(self, f"{tc_var}p", data[cps_var])
+            setattr(self, f"{tc_var}s", 0.)
             self.tot_inc += data[cps_var]
 
         self.age_head = data["a_age"]
+        self.age_spouse = 0
         self.blind_head = data["pediseye"]
         self.fips = data["gestfips"]
         self.h_seq = data["hhid"]
@@ -105,4 +107,34 @@ class TaxUnit:
             # for now assume that if they're single and have any dependents
             # they can file as head of household
             self.mars = 4
+        # determine if the unit is a filer here.
+        self._must_file()
+        # setattr(self, "filer", 1)
         return self.__dict__
+
+    # private methods
+    def _must_file(self):
+        """
+        determine if this unit must file
+        """
+        if self.mars == 1:
+            income_min = 10000
+            if self.age_head >= 65:
+                income_min = 11500
+        elif self.mars == 2:
+            income_min = 20000
+            if self.age_head >= 65:
+                if self.age_spouse >= 65:
+                    income_min = 22400
+                else:
+                    income_min = 21200
+            elif self.age_spouse >= 65:
+                income_min = 21200
+        elif self.mars == 4:
+            income_min = 12850
+            if self.age_head >= 65:
+                income_min = 14350
+        if self.tot_inc >= income_min:
+            setattr(self, "filer", 1)
+        else:
+            setattr(self, "filer", 0)

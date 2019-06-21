@@ -42,7 +42,7 @@ def eic_eligible(person: dict) -> int:
     if person["a_ftpt"] == 1:
         eic_max_age = 24
     # person is between 1 and the max age
-    age = 1 <= person["a_age"] <= eic_max_age
+    age = 0 <= person["a_age"] <= eic_max_age
     # assume they pass the residency test
     # assume they pass joint filer test for now
 
@@ -98,6 +98,8 @@ def is_dependent(person, unit):
         if person["a_ftpt"] == 1:
             age_req = 24
         if person["a_age"] > age_req:
+            return False
+        if person["a_age"] > unit.age_head:
             return False
         # assume that they do live with you
         # financial support
@@ -168,10 +170,9 @@ def create_units(df, year, verbose=False):
                         tu.add_dependent(_person)
                         dependents.append(_person)
             units[person["a_lineno"]] = tu
-    # export all of the units
-#     for unit in units.values():
-#         TAX_UNITS.append(unit.output())
+
     # check and see if any dependents must file
+    # https://turbotax.intuit.com/tax-tips/family/should-i-include-a-dependents-income-on-my-tax-return/L60Hf4Rsg
     for person in dependents:
         filer = False
         if person["earned_inc"] >= 12000:
@@ -192,7 +193,7 @@ def create_units(df, year, verbose=False):
     return [unit.output() for unit in units.values()]
 
 
-def main(cps: pd.DataFrame, year: int) -> pd.DataFrame:
+def pycps(cps: pd.DataFrame, year: int) -> pd.DataFrame:
     """
     Core code for iterating through the households
     Parameters
@@ -252,15 +253,15 @@ def main(cps: pd.DataFrame, year: int) -> pd.DataFrame:
 if __name__ == "__main__":
     print("Reading 2013 CPS")
     cps13 = pd.read_csv("data/cpsmar2013.csv")
-    units13 = main(cps13, 2013)
+    units13 = pycps(cps13, 2013)
     del cps13
     print("Reading 2014 CPS")
     cps14 = pd.read_csv("data/cpsmar2014.csv")
-    units14 = main(cps14, 2014)
+    units14 = pycps(cps14, 2014)
     del cps14
     print("Reading 2015 CPS")
     cps15 = pd.read_csv("data/cpsmar2015.csv")
-    units15 = main(cps15, 2015)
+    units15 = pycps(cps15, 2015)
     del cps15
     df = pd.concat([units13, units14, units15])
     df["s006"] = df["s006"] / 3
