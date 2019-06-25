@@ -43,6 +43,36 @@ def sum_income(data):
     """
 
 
+def add_agi_bin(data, col_name):
+    """
+    Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
+    """
+    agi = pd.Series([0] * len(data[col_name]))
+    agi[data[col_name] < 0] = 0
+    agi[(data[col_name] >= 0) & (data[col_name] < 5000)] = 1
+    agi[(data[col_name] >= 5000) & (data[col_name] < 10000)] = 2
+    agi[(data[col_name] >= 10000) & (data[col_name] < 15000)] = 3
+    agi[(data[col_name] >= 15000) & (data[col_name] < 20000)] = 4
+    agi[(data[col_name] >= 20000) & (data[col_name] < 25000)] = 5
+    agi[(data[col_name] >= 25000) & (data[col_name] < 30000)] = 6
+    agi[(data[col_name] >= 30000) & (data[col_name] < 40000)] = 7
+    agi[(data[col_name] >= 40000) & (data[col_name] < 50000)] = 8
+    agi[(data[col_name] >= 50000) & (data[col_name] < 75000)] = 9
+    agi[(data[col_name] >= 75000) & (data.INCOME < 100000)] = 10
+    agi[(data[col_name] >= 100000) & (data[col_name] < 200000)] = 11
+    agi[(data[col_name] >= 200000) & (data[col_name] < 500000)] = 12
+    agi[(data[col_name] >= 500000) & (data[col_name] < 1e6)] = 13
+    agi[(data[col_name] >= 1e6) & (data[col_name] < 1.5e6)] = 14
+    agi[(data[col_name] >= 1.5e6) & (data[col_name] < 2e6)] = 15
+    agi[(data[col_name] >= 2e6) & (data[col_name] < 5e6)] = 16
+    agi[(data[col_name] >= 5e6) & (data[col_name] < 1e7)] = 17
+    agi[(data[col_name] >= 1e7)] = 18
+
+    data['agi_bin'] = agi
+
+    return data
+
+
 def final_prep(data):
     """
     Function for cleaning up the CPS file
@@ -55,14 +85,22 @@ def final_prep(data):
         data["blind_spouse"] == 1, 1, 0
     )
 
-    data["MARS"] = data["mars"]
+    # rename variables
+    renames = {
+        "mars": "MARS",
+        "dep_stat": "DSI"
+    }
+    data = data.rename(columns=renames)
 
     # add record ID
     data["RECID"] = data.index + 1
+
+    # add AGI bins
+    # data = add_agi_bin(data, "agi")
     data = drop_vars(data)
     # clean data
     data = data.fillna(0.)
-    # data = data.astype(np.int32)
+    data = data.astype(np.int32)
     data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']

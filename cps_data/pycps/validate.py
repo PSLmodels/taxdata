@@ -1,3 +1,4 @@
+import numpy as np
 from pathlib import Path
 
 
@@ -7,6 +8,13 @@ INCOME_TUPLES = [
     ("semp_val", "e00900"), ("frse_val", "e02100"),
     ("div_val", "e00600"), ("uc_val", "e02300"),
     ("rtm_val", "e01500")
+]
+BENEFIT_TUPLES = [
+    ("MedicaidX", "mcaid_ben"), ("housing_impute", "housing_ben"),
+    ("MedicareX", "mcare_ben"), ("snap_impute", "snap_ben"),
+    ("ssi_impute", "ssi_ben"), ("tanf_impute", "tanf_ben"),
+    ("UI_impute", "e02300"), ("vb_impute", "vet_ben"),
+    ("wic_impute", "wic_ben"), ("ss_impute", "e02400")
 ]
 output_str = "var, year, h_seq, pycps, cps\n"
 
@@ -30,7 +38,7 @@ def compare(data, cps, year):
     if n21_cps != n21_data:
         record_error("n21", data.name, n21_data, n21_cps, year)
         num_errors += 1
-    n1820_data = data["n1820"].sum()
+    n1820_data = int(data["n1820"].sum())
     n1820_cps = ((sub_cps["a_age"] >= 18) & (sub_cps["a_age"] <= 20)).sum()
     if n1820_cps != n1820_data:
         record_error("n1820", data.name, n1820_data, n1820_cps, year)
@@ -39,6 +47,18 @@ def compare(data, cps, year):
     nu18_cps = (sub_cps["a_age"] < 18).sum()
     if nu18_cps != nu18_data:
         record_error("nu18", data.name, nu18_data, nu18_cps, year)
+        num_errors += 1
+    elderly_deps_data = data["elderly_dependents"].sum()
+    elderly_deps_cps = (sub_cps["a_age"] >= 65).sum()
+    # number elderly dependents should never be higher than the number of
+    # elderly people in the household
+    if elderly_deps_data > elderly_deps_cps:
+        import pdb
+        pdb.set_trace()
+        record_error(
+            "elderly_dependents", data.name, elderly_deps_data,
+            elderly_deps_cps, year
+        )
         num_errors += 1
 
     # compare income variables
@@ -59,12 +79,13 @@ def compare(data, cps, year):
         if error:
             record_error(cps, data.name, tc_sum, cps_sum, year)
 
+    for cps, tc in BENEFIT_TUPLES:
+        cps_sum = sub_cps[cps].sum()
+        tc_sum = data[tc].sum()
+        if not np.allclose(cps_sum, tc_sum, rtol=0.5):
+            record_error(cps, data.name, tc_sum, cps_sum, year)
+
     if num_errors > 0:
         return 1
     else:
         return 0
-
-
-def test():
-    global output_str
-    output_str += "one\n"

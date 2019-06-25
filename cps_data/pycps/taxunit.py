@@ -4,6 +4,13 @@ INCOME_TUPLES = [
     ("div_val", "e00600"), ("uc_val", "e02300"),
     ("rtm_val", "e01500"), ("alimony", "e00800")
 ]
+BENEFIT_TUPLES = [
+    ("MedicaidX", "mcaid_ben"), ("housing_impute", "housing_ben"),
+    ("MedicareX", "mcare_ben"), ("snap_impute", "snap_ben"),
+    ("ssi_impute", "ssi_ben"), ("tanf_impute", "tanf_ben"),
+    ("UI_impute", "e02300"), ("vb_impute", "vet_ben"),
+    ("wic_impute", "wic_ben"), ("ss_impute", "e02400")
+]
 
 
 class TaxUnit:
@@ -22,6 +29,10 @@ class TaxUnit:
             setattr(self, f"{tc_var}p", data[cps_var])
             setattr(self, f"{tc_var}s", 0.)
             self.tot_inc += data[cps_var]
+        # add benefit data
+        for cps_var, tc_var in BENEFIT_TUPLES:
+            setattr(self, tc_var, data[cps_var])
+        self.agi = data["agi"]
 
         self.age_head = data["a_age"]
         self.age_spouse = 0
@@ -46,7 +57,8 @@ class TaxUnit:
         self.n21 = 0
         self.nu06 = 0
         self.nu13 = 0
-        self.elderly_dependent = 0
+        self.n24 = 0
+        self.elderly_dependents = 0
         self.check_age(data["a_age"])
 
         # list to hold line numbers of dependents and spouses
@@ -60,6 +72,11 @@ class TaxUnit:
             self.tot_inc += spouse[cps_var]
             setattr(self, tc_var, getattr(self, tc_var) + spouse[cps_var])
             setattr(self, f"{tc_var}s", spouse[cps_var])
+        for cps_var, tc_var in BENEFIT_TUPLES:
+            setattr(
+                self, tc_var, getattr(self, tc_var) + spouse[cps_var]
+            )
+        self.agi += spouse["agi"]
         self.XTOT += 1
         setattr(self, "blind_spouse", spouse["pediseye"])
         self.deps_spouses.append(spouse["a_lineno"])
@@ -72,12 +89,40 @@ class TaxUnit:
         """
         Add dependent to the unit
         """
+        for cps_var, tc_var in BENEFIT_TUPLES:
+            dep_val = dependent[cps_var]
+            setattr(
+                self, tc_var, getattr(self, tc_var) + dep_val
+            )
         self.check_age(dependent["a_age"], True)
         self.XTOT += 1
         self.EIC += 1
         self.deps_spouses.append(dependent["a_lineno"])
         dependent["d_flag"] = True
         dependent["claimer"] = self.a_lineno
+
+    def remove_dependent(self, dependent: dict):
+        """
+        Remove dependent from the tax unit
+        """
+        for cps_var, tc_var in BENEFIT_TUPLES:
+            dep_val = dependent[cps_var]
+            setattr(
+                self, tc_var, getattr(self, tc_var) - dep_val
+            )
+        if dependent["a_age"] < 6:
+            self.nu06 -= 1
+        if dependent["a_age"] < 13:
+            self.nu13 -= 1
+        if dependent["a_age"] <= 17:
+            self.nu18 -= 1
+            self.n24 -= 1
+        elif 18 <= dependent["a_age"] <= 20:
+            self.n1820 -= 1
+        elif dependent["a_age"] >= 21:
+            self.n21 -= 1
+            if dependent["a_age"] >= 65:
+                self.elderly_dependents -= 1
 
     def check_age(self, age: int, dependent: bool = False):
         """
@@ -91,12 +136,14 @@ class TaxUnit:
             self.n21 += 1
 
         if dependent:
+            if age < 17:
+                self.n24 += 1
             if age < 6:
                 self.nu06 += 1
             if age < 13:
                 self.nu13 += 1
             if age >= 65:
-                self.elderly_dependent += 1
+                self.elderly_dependents += 1
 
     def output(self) -> dict:
         """

@@ -5,11 +5,12 @@ import subprocess
 import pandas as pd
 import validate
 from pathlib import Path
+from tqdm import tqdm
 from pycps import pycps
 from splitincome import split_income
 from targeting import target
 from finalprep import final_prep
-from tqdm import tqdm
+from benefits import mergebenefits, distributebenefits
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -43,13 +44,22 @@ def create(export_raw: bool = False, skip=False, validate=False):
     cps_dfs = {}  # dictionary to hold each CPS DataFrame
     for year in CPS_FILES:
         meta = CPS_META_DATA[year]
-        csv_path = Path(DATA_PATH, f"cpsmar{year}.csv")
+        # path to CPS file with benefits
+        csv_path = Path(DATA_PATH, f"cpsmar{year}_ben.csv")
         # check and see if CSV version of this year's CPS has been created
         if not csv_path.exists():
-            print(f"Creating CSV version of CPS for {year}")
-            # use creation functin for that year to create the DataFrame
-            df = meta["create_func"](Path(DATA_PATH, meta["dat_file"]), year)
-            cps_dfs[year] = df
+            # look for CPS file without benefits
+            csv_path = Path(DATA_PATH, f"cpsmar{year}.csv")
+            if not csv_path.exists():
+                print(f"Creating CSV version of CPS for {year}")
+                # use creation function for that year to create the DataFrame
+                df = meta["create_func"](Path(DATA_PATH, meta["dat_file"]),
+                                         year)
+            else:
+                df = pd.read_csv(csv_path)
+            # merge on benefits
+            print(f"Merging Benefits for {year}")
+            cps_dfs[year] = mergebenefits(df, year, DATA_PATH, export=True)
         else:
             print(f"Reading CSV for {year}")
             cps_dfs[year] = pd.read_csv(csv_path)
@@ -83,6 +93,11 @@ def create(export_raw: bool = False, skip=False, validate=False):
     print("Targeting State Level Data")
     state_data_link = "https://www.irs.gov/pub/irs-soi/14in54cmcsv.csv"
     data = target(data, state_data_link)
+    # add other benefit data
+    print("Adding Benefits")
+    other_ben = pd.read_csv(Path(DATA_PATH, "otherbenefitprograms.csv"),
+                            index_col="Program")
+    data = distributebenefits(data, other_ben)
     # final prep
     print("Cleaning file")
     final_cps = final_prep(data)
