@@ -87,4 +87,3 @@ Contributors
 - Anderson Frailey
 - John O'Hare
 - Amy Xu
-- Martin Holmer
