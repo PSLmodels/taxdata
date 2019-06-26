@@ -41,28 +41,29 @@ def create(export_raw: bool = False, skip=False, validate=False):
     # add progress_apply to pandas if they want to validate
     if validate:
         tqdm.pandas()
-    cps_dfs = {}  # dictionary to hold each CPS DataFrame
-    for year in CPS_FILES:
-        meta = CPS_META_DATA[year]
-        # path to CPS file with benefits
-        csv_path = Path(DATA_PATH, f"cpsmar{year}_ben.csv")
-        # check and see if CSV version of this year's CPS has been created
-        if not csv_path.exists():
-            # look for CPS file without benefits
-            csv_path = Path(DATA_PATH, f"cpsmar{year}.csv")
+    if not skip:
+        cps_dfs = {}  # dictionary to hold each CPS DataFrame
+        for year in CPS_FILES:
+            meta = CPS_META_DATA[year]
+            # path to CPS file with benefits
+            csv_path = Path(DATA_PATH, f"cpsmar{year}_ben.csv")
+            # check and see if CSV version of this year's CPS has been created
             if not csv_path.exists():
-                print(f"Creating CSV version of CPS for {year}")
-                # use creation function for that year to create the DataFrame
-                df = meta["create_func"](Path(DATA_PATH, meta["dat_file"]),
-                                         year)
+                # look for CPS file without benefits
+                csv_path = Path(DATA_PATH, f"cpsmar{year}.csv")
+                if not csv_path.exists():
+                    print(f"Creating CSV version of CPS for {year}")
+                    # use creation function for that year to create the DF
+                    df = meta["create_func"](Path(DATA_PATH, meta["dat_file"]),
+                                             year)
+                else:
+                    df = pd.read_csv(csv_path)
+                # merge on benefits
+                print(f"Merging Benefits for {year}")
+                cps_dfs[year] = mergebenefits(df, year, DATA_PATH, export=True)
             else:
-                df = pd.read_csv(csv_path)
-            # merge on benefits
-            print(f"Merging Benefits for {year}")
-            cps_dfs[year] = mergebenefits(df, year, DATA_PATH, export=True)
-        else:
-            print(f"Reading CSV for {year}")
-            cps_dfs[year] = pd.read_csv(csv_path)
+                print(f"Reading CSV for {year}")
+                cps_dfs[year] = pd.read_csv(csv_path)
 
     # convert CPS files to tax units
     if skip:
@@ -127,4 +128,4 @@ def validation(raw_cps, units, year):
 
 
 if __name__ == "__main__":
-    create(export_raw=True, validate=True)
+    create(export_raw=True, validate=True, skip=True)

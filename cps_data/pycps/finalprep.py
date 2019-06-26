@@ -96,6 +96,7 @@ def final_prep(data):
     data["RECID"] = data.index + 1
 
     # add AGI bins
+    # TODO: figure out why this was causing an error
     # data = add_agi_bin(data, "agi")
     data = drop_vars(data)
     # clean data

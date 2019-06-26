@@ -42,9 +42,10 @@ def target(cps, state_data_link):
         factor_dict[var] = []
         print(var)
         for state, fips in fips_dict.items():
+            sub_cps = cps[cps["fips"] == fips]
             target = state_data[var][state] * 1000  # scale up IRS data
-            cps_uw_total = cps[cps_vars][cps["fips"] == fips].sum(axis=1)
-            cps_sum = (cps_uw_total * cps["s006"]).sum()
+            cps_uw_total = sub_cps[cps_vars].sum(axis=1)
+            cps_sum = (cps_uw_total * sub_cps["s006"]).sum()
             # compute factor
             factor = target / cps_sum
             factor_dict[var].append(factor)
