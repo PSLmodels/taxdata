@@ -89,6 +89,9 @@ class TaxUnit:
         """
         Add dependent to the unit
         """
+        for cps_var, tc_var in INCOME_TUPLES:
+            # self.tot_inc += dependent[cps_var]
+            setattr(self, tc_var, getattr(self, tc_var) + dependent[cps_var])
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             setattr(
@@ -105,6 +108,11 @@ class TaxUnit:
         """
         Remove dependent from the tax unit
         """
+        for cps_var, tc_var in INCOME_TUPLES:
+            dep_val = dependent[cps_var]
+            setattr(
+                self, tc_var, getattr(self, tc_var) - dep_val
+            )
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             setattr(

@@ -75,7 +75,8 @@ def compare(data, cps, year):
         # values is greater than .1 because for some reason
         # interest income would raise an error even though the totals
         # appeared to be the same
-        error = cps_sum < tc_sum and abs(cps_sum - tc_sum) > .1
+        # error = cps_sum < tc_sum and abs(cps_sum - tc_sum) > .1
+        error = np.allclose(cps_sum, tc_sum, rtol=0.5)
         if error:
             record_error(cps, data.name, tc_sum, cps_sum, year)
 

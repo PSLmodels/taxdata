@@ -41,7 +41,11 @@ def create(export_raw: bool = False, skip=False, validate=False):
     # add progress_apply to pandas if they want to validate
     if validate:
         tqdm.pandas()
-    if not skip:
+    # skip lets you skip over all of the unit creation steps and just use the
+    # already saved raw file
+    if skip:
+        units = pd.read_csv("raw_cps.csv", index_col=None)
+    else:
         cps_dfs = {}  # dictionary to hold each CPS DataFrame
         for year in CPS_FILES:
             meta = CPS_META_DATA[year]
@@ -64,11 +68,7 @@ def create(export_raw: bool = False, skip=False, validate=False):
             else:
                 print(f"Reading CSV for {year}")
                 cps_dfs[year] = pd.read_csv(csv_path)
-
-    # convert CPS files to tax units
-    if skip:
-        units = pd.read_csv("raw_cps.csv", index_col=None)
-    else:
+        # create the tax units
         units = []
         for year in CPS_FILES:
             print(f"Creating tax units for {year}")
@@ -128,4 +128,4 @@ def validation(raw_cps, units, year):
 
 
 if __name__ == "__main__":
-    create(export_raw=True, validate=True, skip=True)
+    create(export_raw=True, validate=True, skip=False)
