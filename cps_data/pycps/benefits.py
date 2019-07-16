@@ -1,119 +1,118 @@
 import pandas as pd
 import numpy as np
+from functools import reduce
 from pathlib import Path
 
 
-def mergebenefits(cps, year, data_path, export=True):
+def merge_benefits(cps, year, data_path, export=True):
     """
-    Merge the benefit variables onto the CPS files.
+    Merge the benefit variables onto the CPS files. TaxData use the
+    following variables imputed by C-TAM:
+    Medicaid: MedicaidX
+    Medicare: MedicareX
+    Veterans Benefits: vb_impute
+    SNAP: SNAP_Imputation
+    SSI: ssi_impute
+    Social Security: ss_val (renamed to ss_impute)
+    Housing assistance: housing_impute
+    TANF: tanf_impute
+    Unemployment Insurance: UI_impute
+    WIC: (women, children, infants): wic_impute (renamed wic_women,
+        wic_children, and wic_infants)
     """
+    def read_ben(path_prefix, usecols):
+        path = Path(data_path, path_prefix + str(year) + ".csv")
+        return pd.read_csv(path, usecols=usecols)
+
     start_len = len(cps)
     # read in benefit imputations
-    mcaid_path = Path(data_path, f"medicaid{year}.csv")
-    mcaid = pd.read_csv(mcaid_path, usecols=["MedicaidX", "peridnum"])
-
-    mcare_path = Path(data_path, f"medicare{year}.csv")
-    mcare = pd.read_csv(mcare_path, usecols=["MedicareX", "peridnum"])
-
-    vb_path = Path(data_path, f"VB_Imputation{year}.csv")
-    vb = pd.read_csv(vb_path, usecols=["vb_impute", "peridnum"])
-
-    snap_path = Path(data_path, f"SNAP_Imputation_{year}.csv")
-    snap = pd.read_csv(snap_path, usecols=["h_seq", "snap_impute"])
-
-    ssi_path = Path(data_path, f"SSI_Imputation{year}.csv")
-    ssi = pd.read_csv(ssi_path, usecols=["ssi_impute", "peridnum"])
-
-    ss_path = Path(data_path, f"SS_augmentation_{year}.csv")
-    ss = pd.read_csv(ss_path, usecols=["ss_val", "peridnum"])
-    ss = ss.rename(columns={"ss_val": "ss_impute"})
-
-    housing_path = Path(data_path, f"Housing_Imputation_logreg_{year}.csv")
-    housing = pd.read_csv(housing_path,
-                          usecols=["fh_seq", "ffpos", "housing_impute"])
-
-    tanf_path = Path(data_path, f"TANF_Imputation_{year}.csv")
-    tanf = pd.read_csv(tanf_path, usecols=["peridnum", "tanf_impute"])
+    mcaid = read_ben("medicaid", ["MedicaidX", "peridnum"])
+    mcare = read_ben("medicare", ["MedicareX", "peridnum"])
+    vb = read_ben("VB_Imputation", ["vb_impute", "peridnum"])
+    snap = read_ben("SNAP_Imputation", ["h_seq", "snap_impute"])
+    ssi = read_ben("SSI_Imputation", ["ssi_impute", "peridnum"])
+    ss = read_ben(
+        "SS_augmentation", ["ss_val", "peridnum"]
+    ).rename(columns={"ss_val": "ss_impute"})
+    housing = read_ben("Housing_Imputation_logreg_",
+                       ["fh_seq", "ffpos", "housing_impute"])
+    tanf = read_ben("TANF_Imputation_", ["peridnum", "tanf_impute"])
     # drop duplicated people in tanf
     tanf = tanf.drop_duplicates("peridnum")
+    ui = read_ben("UI_imputation_logreg_", ["peridnum", "UI_impute"])
 
-    ui_path = Path(data_path, f"UI_imputation_logreg_{year}.csv")
-    ui = pd.read_csv(ui_path, usecols=["peridnum", "UI_impute"])
+    WIC_STR = "WIC_imputation_{}_logreg_"
+    wic_children = read_ben(
+        WIC_STR.format("children"), ["peridnum", "WIC_impute"]
+    ).rename(columns={"WIC_impute": "wic_children"})
+    wic_infants = read_ben(
+        WIC_STR.format("infants"), ["peridnum", "WIC_impute"]
+    ).rename(columns={"WIC_impute": "wic_infants"})
+    wic_women = read_ben(
+        WIC_STR.format("women"), ["peridnum", "WIC_impute"]
+    ).rename(columns={"WIC_impute": "wic_women"})
 
-    wic_str = "WIC_imputation_{}_logreg_{}.csv"
-    wic_path = Path(data_path, wic_str.format("children", year))
-    wic_children = pd.read_csv(wic_path,
-                               usecols=["peridnum", "WIC_impute"])
-    wic_children = wic_children.rename(columns={"WIC_impute": "wic_children"})
-    wic_path = Path(data_path, wic_str.format("infants", year))
-    wic_infants = pd.read_csv(wic_path,
-                              usecols=["peridnum", "WIC_impute"])
-    wic_infants = wic_infants.rename(columns={"WIC_impute": "wic_infants"})
-    wic_path = Path(data_path, wic_str.format("women", year))
-    wic_women = pd.read_csv(wic_path,
-                            usecols=["peridnum", "WIC_impute"])
-    wic_women = wic_women.rename(columns={"WIC_impute": "wic_women"})
-    wic = wic_children.merge(wic_infants, on="peridnum")
-    wic = wic.merge(wic_women, on="peridnum")
+    # combine all WIC imputation into one variable
+    wic = reduce(lambda left, right: pd.merge(left, right, on="peridnum"),
+                 [wic_children, wic_infants, wic_women])
     wic["wic_impute"] = wic[
-        ["wic_children", "wic_infants", "wic_children"]
+        ["wic_women", "wic_infants", "wic_children"]
     ].sum(axis=1)
 
     # merge housing and snap
     cps_merged = cps.merge(housing, on=["fh_seq", "ffpos"], how="left")
     cps_merged = cps_merged.merge(snap, on="h_seq", how="left")
     # merge other variables
-    peridnum_dfs = [vb, ssi, ss, tanf, ui, wic, mcaid, mcare]
-    for i, df in enumerate(peridnum_dfs):
-        cps_merged = cps_merged.merge(df, on="peridnum", how="left")
-        print(i, len(cps_merged))
-    cps_merged = cps_merged.fillna(0.)
+    peridnum_dfs = [cps_merged, vb, ssi, ss, tanf, ui, wic, mcaid, mcare]
+    cps_merged = reduce(lambda left, right: pd.merge(left, right,
+                                                     on="peridnum",
+                                                     how="left"),
+                        peridnum_dfs).fillna(0.)
 
     if export:
         print("Saving {} Data".format(year))
         cps_merged.to_csv(Path(data_path, f"cpsmar{year}_ben.csv"),
                           index=False)
 
-    # del mcaid, mcare, vb, ssi, ss, tanf, ui, wic, housing, snap
-    # assert start_len == len(cps_merged)
-    if start_len != len(cps_merged):
-        import pdb
-        pdb.set_trace()
+    del mcaid, mcare, vb, ssi, ss, tanf, ui, wic, housing, snap
+    # assert that no additional rows have been introduced by bad merges
+    assert start_len == len(cps_merged)
+
     return cps_merged
 
 
-def distributebenefits(data, other_ben):
+def distribute_benefits(data, other_ben):
     """
+    There are a number of benefit programs that are not imputed by C-TAM, but
+    whose costs are still important to have in our dataset. A list of these
+    programs and their costs can be found in tables 3.2 adn 11.2 here
+    https://obamawhitehouse.archives.gov/omb/budget/Historicals
+
+    We base the distribution of these variables on the distribution of
+    Medicare, SSI, and SNAP.
     Distribute benefits from non-models benefit programs and create total
     benefits variable.
-    Replaces Medicare and Medicaid values with set amounts
     """
     other_ben["2014_cost"] *= 1e6
 
     # Distribute other benefits
-    data["dist_ben"] = (data["mcaid_ben"] + data["ssi_ben"] +
-                        data["snap_ben"])
+    data["dist_ben"] = data[["mcaid_ben", "ssi_ben", "snap_ben"]].sum(axis=1)
     data["ratio"] = (data["dist_ben"] * data["s006"] /
                      (data["dist_ben"] * data["s006"]).sum())
     # ... remove TANF and WIC from other_ben total
-    tanf = (data["tanf_ben"] * data["s006"]).sum()
-    wic = (data["wic_ben"] * data["s006"]).sum()
-    other_ben_total = other_ben["2014_cost"].sum() - tanf - wic
+    tanf_total = (data["tanf_ben"] * data["s006"]).sum()
+    wic_total = (data["wic_ben"] * data["s006"]).sum()
+    other_ben_total = other_ben["2014_cost"].sum() - tanf_total - wic_total
     # ... divide by the weight to account for weighting in Tax-Calculator
     data["other_ben"] = (data["ratio"] * other_ben_total / data["s006"])
 
-    # Convert benefit data to integers
-    data["mcaid_ben"] = data["mcaid_ben"].astype(np.int32)
-    data["mcare_ben"] = data["mcare_ben"].astype(np.int32)
-    data["ssi_ben"] = data["ssi_ben"].astype(np.int32)
-    data["snap_ben"] = data["snap_ben"].astype(np.int32)
-    data["vet_ben"] = data["vet_ben"].astype(np.int32)
-    data["tanf_ben"] = data["tanf_ben"].astype(np.int32)
-    data["wic_ben"] = data["wic_ben"].astype(np.int32)
     data["housing_ben"] *= 12
-    data["housing_ben"] = data["housing_ben"].astype(np.int32)
-    data["e02400"] = data["e02400"].astype(np.int32)
-    data["e02300"] = data["e02300"].astype(np.int32)
-    data["other_ben"] = data["other_ben"].astype(np.int32)
+    # Convert benefit data to integers
+    ben_vars = [
+        "mcaid_ben", "mcare_ben", "ssi_ben", "snap_ben", "vet_ben", "tanf_ben",
+        "wic_ben", "housing_ben", "e02400", "e02300", "other_ben"
+    ]
+    for var in ben_vars:
+        data[var] = data[var].astype(np.int32)
 
     return data

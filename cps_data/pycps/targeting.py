@@ -14,7 +14,7 @@ def target(cps, state_data_link):
     state_data = state_data[state_data["AGI_STUB"] == 0].copy()
 
     # map fips codes and to state abbreviations
-    fips_dict = {'AK': 2, 'AL': 1, 'AR': 5, 'AZ': 4, 'CA': 6, 'CO': 8, 'CT': 9,
+    FIPS_DICT = {'AK': 2, 'AL': 1, 'AR': 5, 'AZ': 4, 'CA': 6, 'CO': 8, 'CT': 9,
                  'DC': 11, 'DE': 10, 'FL': 12, 'GA': 13, 'HI': 15, 'IA': 19,
                  'ID': 16, 'IL': 17, 'IN': 18, 'KS': 20, 'KY': 21, 'LA': 22,
                  'MA': 25, 'MD': 24, 'ME': 23, 'MI': 26, 'MN': 27, 'MO': 29,
@@ -25,7 +25,7 @@ def target(cps, state_data_link):
                  'WV': 54, 'WY': 56}
     # map income variables in the CPS and IRS data
     # TODO: Add imputed variables
-    var_map = {
+    VAR_MAP = {
         "A00200": ["e00200p", "e00200s"],
         "A00300": ["e00300"],
         "A00600": ["e00600"],
@@ -38,10 +38,9 @@ def target(cps, state_data_link):
     factor_dict = {}
 
     # loop through each state and variable
-    for var, cps_vars in var_map.items():
+    for var, cps_vars in VAR_MAP.items():
         factor_dict[var] = []
-        print(var)
-        for state, fips in fips_dict.items():
+        for state, fips in FIPS_DICT.items():
             sub_cps = cps[cps["fips"] == fips]
             target = state_data[var][state] * 1000  # scale up IRS data
             cps_uw_total = sub_cps[cps_vars].sum(axis=1)
@@ -49,16 +48,15 @@ def target(cps, state_data_link):
             # compute factor
             factor = target / cps_sum
             factor_dict[var].append(factor)
-            print(f"{state} {target:,.2f} {cps_sum:,.2f} {factor:.2f}")
 
     # create a DataFrame with the factors
     factor_df = pd.DataFrame(factor_dict)
-    factor_df.index = fips_dict.values()
+    factor_df.index = FIPS_DICT.values()
     # export factors
     factor_df.to_csv("state_factors.csv")
 
     # apply factors
-    for var, cps_vars in var_map.items():
+    for var, cps_vars in VAR_MAP.items():
         factor_array = factor_df[var][cps["fips"]].values
         for v in cps_vars:
             cps[v] += factor_array

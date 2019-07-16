@@ -9,7 +9,7 @@ def drop_vars(data):
     """
     Returns Pandas DataFrame of data without unuseable variables
     """
-    useable_vars = [
+    USEABLE_VARS = {
         'DSI', 'EIC', 'FLPDYR', 'MARS', 'MIDR', 'RECID', 'XTOT', 'age_head',
         'age_spouse', 'agi_bin', 'blind_head', 'blind_spouse', 'cmbtp',
         'e00200', 'e00200p', 'e00200s', 'e00300', 'e00400', 'e00600', 'e00650',
@@ -26,12 +26,13 @@ def drop_vars(data):
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
         'h_seq', 'ffpos', 'fips', 'a_lineno', 'tanf_ben', 'wic_ben',
         'housing_ben', "linenos"
-    ]
+    }
 
     drop_vars = []
     for item in data.columns:
-        if item not in useable_vars:
+        if item not in USEABLE_VARS:
             drop_vars.append(item)
+    drop_vars = list(set(data.columns) - USEABLE_VARS)
     data = data.drop(drop_vars, axis=1)
 
     return data
@@ -47,28 +48,11 @@ def add_agi_bin(data, col_name):
     """
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
     """
-    agi = pd.Series([0] * len(data[col_name]))
-    agi[data[col_name] < 0] = 0
-    agi[(data[col_name] >= 0) & (data[col_name] < 5000)] = 1
-    agi[(data[col_name] >= 5000) & (data[col_name] < 10000)] = 2
-    agi[(data[col_name] >= 10000) & (data[col_name] < 15000)] = 3
-    agi[(data[col_name] >= 15000) & (data[col_name] < 20000)] = 4
-    agi[(data[col_name] >= 20000) & (data[col_name] < 25000)] = 5
-    agi[(data[col_name] >= 25000) & (data[col_name] < 30000)] = 6
-    agi[(data[col_name] >= 30000) & (data[col_name] < 40000)] = 7
-    agi[(data[col_name] >= 40000) & (data[col_name] < 50000)] = 8
-    agi[(data[col_name] >= 50000) & (data[col_name] < 75000)] = 9
-    agi[(data[col_name] >= 75000) & (data.INCOME < 100000)] = 10
-    agi[(data[col_name] >= 100000) & (data[col_name] < 200000)] = 11
-    agi[(data[col_name] >= 200000) & (data[col_name] < 500000)] = 12
-    agi[(data[col_name] >= 500000) & (data[col_name] < 1e6)] = 13
-    agi[(data[col_name] >= 1e6) & (data[col_name] < 1.5e6)] = 14
-    agi[(data[col_name] >= 1.5e6) & (data[col_name] < 2e6)] = 15
-    agi[(data[col_name] >= 2e6) & (data[col_name] < 5e6)] = 16
-    agi[(data[col_name] >= 5e6) & (data[col_name] < 1e7)] = 17
-    agi[(data[col_name] >= 1e7)] = 18
-
-    data['agi_bin'] = agi
+    THRESHOLDS_K = [-np.inf, 0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 200,
+                    500, 1000, 1500, 2000, 5000, 10000, np.inf]
+    thresholds = [x * 1000 for x in THRESHOLDS_K]
+    data['agi_bin'] = pd.cut(data[col_name], thresholds,
+                             labels=np.arange(0, 19), right=False)
 
     return data
 
@@ -86,11 +70,11 @@ def final_prep(data):
     )
 
     # rename variables
-    renames = {
+    RENAMES = {
         "mars": "MARS",
         "dep_stat": "DSI"
     }
-    data = data.rename(columns=renames)
+    data = data.rename(columns=RENAMES)
 
     # add record ID
     data["RECID"] = data.index + 1

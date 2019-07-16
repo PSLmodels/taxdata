@@ -33,16 +33,13 @@ def eic_eligible(person: dict) -> int:
     https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit/qualifying-child-rules
     """
     # relationship test
-    relationship = ((person["a_exprrp"] == 5) |
-                    (person["a_exprrp"] == 7) |
-                    (person["a_exprrp"] == 9) |
-                    (person["a_exprrp"] == 11))
+    relationship = person.a_axprrp.isin([5, 7, 9, 11])
     # age test
     eic_max_age = 19
     if person["a_ftpt"] == 1:
         eic_max_age = 24
     # person is between 1 and the max age
-    age = 0 <= person["a_age"] <= eic_max_age
+    age = (0 <= person["a_age"] <= eic_max_age)
     # assume they pass the residency test
     # assume they pass joint filer test for now
 
@@ -237,15 +234,15 @@ def pycps(cps: pd.DataFrame, year: int) -> pd.DataFrame:
     cps["d_flag"] = False  # dependent flag
     cps["hhid"] = cps["h_seq"]
     # calculate earned and unearned income
-    earned_inc_vars = [
+    EARNED_INC_VARS = [
         "wsal_val", "semp_val", "frse_val"
     ]
-    unearned_inc_vars = [
+    UNEARNED_INC_VARS = [
         "int_val", "div_val", "rtm_val",
         "alimony", "uc_val"
     ]
-    cps["earned_inc"] = cps[earned_inc_vars].sum(axis=1)
-    cps["unearned_inc"] = cps[unearned_inc_vars].sum(axis=1)
+    cps["earned_inc"] = cps[EARNED_INC_VARS].sum(axis=1)
+    cps["unearned_inc"] = cps[UNEARNED_INC_VARS].sum(axis=1)
     # add apply create_unit with a progress bar
     tqdm.pandas(desc=str(year))
     units = cps.groupby("h_seq").progress_apply(create_units, year=year - 1)

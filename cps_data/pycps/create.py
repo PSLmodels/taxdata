@@ -10,7 +10,7 @@ from pycps import pycps
 from splitincome import split_income
 from targeting import target
 from finalprep import final_prep
-from benefits import mergebenefits, distributebenefits
+from benefits import merge_benefits, distribute_benefits
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -64,7 +64,8 @@ def create(export_raw: bool = False, skip=False, validate=False):
                     df = pd.read_csv(csv_path)
                 # merge on benefits
                 print(f"Merging Benefits for {year}")
-                cps_dfs[year] = mergebenefits(df, year, DATA_PATH, export=True)
+                cps_dfs[year] = merge_benefits(df, year, DATA_PATH,
+                                               export=True)
             else:
                 print(f"Reading CSV for {year}")
                 cps_dfs[year] = pd.read_csv(csv_path)
@@ -74,7 +75,7 @@ def create(export_raw: bool = False, skip=False, validate=False):
             print(f"Creating tax units for {year}")
             _units = pycps(cps_dfs[year], year)
             if validate:
-                validation(cps_dfs[year], _units, year)
+                validate_cps_units(cps_dfs[year], _units, year)
             units.append(_units)
 
         # create single DataFrame
@@ -92,13 +93,13 @@ def create(export_raw: bool = False, skip=False, validate=False):
     data = split_income(units)
     # target state totals
     print("Targeting State Level Data")
-    state_data_link = "https://www.irs.gov/pub/irs-soi/14in54cmcsv.csv"
-    data = target(data, state_data_link)
+    STATE_DATA_LINK = "https://www.irs.gov/pub/irs-soi/14in54cmcsv.csv"
+    data = target(data, STATE_DATA_LINK)
     # add other benefit data
     print("Adding Benefits")
     other_ben = pd.read_csv(Path(DATA_PATH, "otherbenefitprograms.csv"),
                             index_col="Program")
-    data = distributebenefits(data, other_ben)
+    data = distribute_benefits(data, other_ben)
     # final prep
     print("Cleaning file")
     final_cps = final_prep(data)
@@ -107,7 +108,7 @@ def create(export_raw: bool = False, skip=False, validate=False):
     subprocess.check_call(["gzip", "-nf", "cps.csv"])
 
 
-def validation(raw_cps, units, year):
+def validate_cps_units(raw_cps, units, year):
     """
     Function to handle all of the validation logic
     """
