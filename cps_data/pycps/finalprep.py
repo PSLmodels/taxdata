@@ -28,10 +28,6 @@ def drop_vars(data):
         'housing_ben', "linenos"
     }
 
-    drop_vars = []
-    for item in data.columns:
-        if item not in USEABLE_VARS:
-            drop_vars.append(item)
     drop_vars = list(set(data.columns) - USEABLE_VARS)
     data = data.drop(drop_vars, axis=1)
 

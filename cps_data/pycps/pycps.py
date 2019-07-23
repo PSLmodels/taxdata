@@ -246,12 +246,12 @@ def pycps(cps: pd.DataFrame, year: int) -> pd.DataFrame:
     # add apply create_unit with a progress bar
     tqdm.pandas(desc=str(year))
     units = cps.groupby("h_seq").progress_apply(create_units, year=year - 1)
-    TAX_UNITS = []
+    tax_units = []
     for u in units:
-        TAX_UNITS += u
+        tax_units += u
 
     # create a DataFrame of tax units with the new
-    tax_units_df = pd.DataFrame(TAX_UNITS)
+    tax_units_df = pd.DataFrame(tax_units)
 
     return tax_units_df
 

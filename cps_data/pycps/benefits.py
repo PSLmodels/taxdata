@@ -38,7 +38,7 @@ def merge_benefits(cps, year, data_path, export=True):
                        ["fh_seq", "ffpos", "housing_impute"])
     tanf = read_ben("TANF_Imputation_", ["peridnum", "tanf_impute"])
     # drop duplicated people in tanf
-    tanf = tanf.drop_duplicates("peridnum")
+    tanf.drop_duplicates("peridnum", inplace=True)
     ui = read_ben("UI_imputation_logreg_", ["peridnum", "UI_impute"])
 
     WIC_STR = "WIC_imputation_{}_logreg_"
@@ -108,11 +108,11 @@ def distribute_benefits(data, other_ben):
 
     data["housing_ben"] *= 12
     # Convert benefit data to integers
-    ben_vars = [
+    BEN_VARS = [
         "mcaid_ben", "mcare_ben", "ssi_ben", "snap_ben", "vet_ben", "tanf_ben",
         "wic_ben", "housing_ben", "e02400", "e02300", "other_ben"
     ]
-    for var in ben_vars:
+    for var in BEN_VARS:
         data[var] = data[var].astype(np.int32)
 
     return data
