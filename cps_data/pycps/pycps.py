@@ -3,6 +3,7 @@ import numpy as np
 from operator import itemgetter
 from tqdm import tqdm
 from taxunit import TaxUnit
+from helpers import FILINGPARAMS, CPS_YR_IDX
 
 
 INCOME_VARS = [
@@ -35,9 +36,9 @@ def eic_eligible(person: dict) -> int:
     # relationship test
     relationship = person.a_axprrp.isin([5, 7, 9, 11])
     # age test
-    eic_max_age = 19
+    eic_max_age = FILINGPARAMS.eic_child_age[CPS_YR_IDX]
     if person["a_ftpt"] == 1:
-        eic_max_age = 24
+        eic_max_age = FILINGPARAMS.eic_child_age_student[CPS_YR_IDX]
     # person is between 1 and the max age
     age = (0 <= person["a_age"] <= eic_max_age)
     # assume they pass the residency test
@@ -49,7 +50,8 @@ def eic_eligible(person: dict) -> int:
     return eligible
 
 
-def find_claimer(claimerno: int, head_lineno: int, a_lineno: int, data: list) -> bool:
+def find_claimer(claimerno: int, head_lineno: int, a_lineno: int,
+                 data: list) -> bool:
     """
     Determine if an individual is the dependent of the head of
     the tax unit
@@ -90,10 +92,10 @@ def is_dependent(person, unit):
         return False
     # qualifying child
     if person["a_parent"] == unit.a_lineno:
-        age_req = 19
+        age_req = FILINGPARAMS.dependent_child_age[CPS_YR_IDX]
         # age requirement increases for full time students
         if person["a_ftpt"] == 1:
-            age_req = 24
+            age_req = FILINGPARAMS.dependent_child_age_student[CPS_YR_IDX]
         if person["a_age"] > age_req:
             return False
         if person["a_age"] > unit.age_head:
@@ -114,7 +116,7 @@ def is_dependent(person, unit):
     else:
         # assume they live with you
         # income test
-        if person["ptotval"] > 4150:
+        if person["ptotval"] > 4150:  # TODO: Add this to filing rules JSON
             return False
         # only person claiming them
         if person["d_flag"]:
@@ -135,7 +137,7 @@ def remove_dependent(tu, dependent):
         tu.n1820 -= 1
     elif dependent["a_age"] >= 21:
         tu.n21 -= 1
-        if dependent["a_age"] >= 65:
+        if dependent["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
             tu.elderly_dependents -= 1
 
 
@@ -179,10 +181,24 @@ def create_units(df, year, verbose=False):
     # https://turbotax.intuit.com/tax-tips/family/should-i-include-a-dependents-income-on-my-tax-return/L60Hf4Rsg
     for person in dependents:
         filer = False
-        if person["earned_inc"] >= 12000:
+        midx = 0
+        aidx = 0
+        if person["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            aidx = 1
+        if person["a_spouse"] != 0:
+            midx = 2
+            spouse = find_person(data, person["a_spouse"])
+            if spouse["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                aidx += 1
+        # earned income filing threshold
+        earn_thd = FILINGPARAMS.dep_earned_income_thd[CPS_YR_IDX][aidx][midx]
+        unearn_thd = FILINGPARAMS.dep_unearned_income_thd[CPS_YR_IDX][aidx][midx]
+        gross_thd = FILINGPARAMS.dep_gross_income_thd[CPS_YR_IDX][aidx][midx]
+        if person["earned_inc"] >= earn_thd:
             filer = True
-        elif person["unearned_inc"] >= 1050:
+        elif person["unearned_inc"] >= unearn_thd:
             filer = True
+        # TODO: set gross income threshold
         elif person["ptotval"] >= max(1050, person["earned_inc"] + 350):
             filer = True
         # if a dependent says they filed, we'll believe them
@@ -207,7 +223,8 @@ def pycps(cps: pd.DataFrame, year: int) -> pd.DataFrame:
     cps: Pandas DataFrame that contains the CPS
     """
     print("Calculating pensions and annuities")
-    if year == 2015:
+    if year == 2015:  # TODO: check and see if oi_off == 29 holds after 2015
+        # in 2015, alimony income is categorized as other income
         alimony = np.where(cps["oi_off"] == 20,
                            cps["oi_val"], 0.)
     else:

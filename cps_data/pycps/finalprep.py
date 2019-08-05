@@ -68,7 +68,10 @@ def final_prep(data):
     # rename variables
     RENAMES = {
         "mars": "MARS",
-        "dep_stat": "DSI"
+        "dep_stat": "DSI",
+        "divs": "e00600",
+        "CGAGIX": "e0100",
+        "DPAD": "e03240"
     }
     data = data.rename(columns=RENAMES)
 

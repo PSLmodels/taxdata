@@ -1,7 +1,10 @@
+from helpers import FILINGPARAMS, CPS_YR_IDX
+
+
 INCOME_TUPLES = [
     ("wsal_val", "e00200"), ("int_val", "interest"),
     ("semp_val", "e00900"), ("frse_val", "e02100"),
-    ("div_val", "e00600"), ("uc_val", "e02300"),
+    ("div_val", "divs"), ("rnt_val", "rents"),
     ("rtm_val", "e01500"), ("alimony", "e00800")
 ]
 BENEFIT_TUPLES = [
@@ -129,7 +132,7 @@ class TaxUnit:
             self.n1820 -= 1
         elif dependent["a_age"] >= 21:
             self.n21 -= 1
-            if dependent["a_age"] >= 65:
+            if dependent["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 self.elderly_dependents -= 1
 
     def check_age(self, age: int, dependent: bool = False):
@@ -150,13 +153,15 @@ class TaxUnit:
                 self.nu06 += 1
             if age < 13:
                 self.nu13 += 1
-            if age >= 65:
+            if age >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 self.elderly_dependents += 1
 
     def output(self) -> dict:
         """
         Return tax attributes as a dictionary
         """
+        # add unemployment compensation and social security to total income
+        self.tot_inc += self.e02300 + self.e02400
         # set marital status variable
         if self.mars == 1 & len(self.deps_spouses) > 0:
             # for now assume that if they're single and have any dependents
@@ -172,23 +177,28 @@ class TaxUnit:
         """
         determine if this unit must file
         """
+        aidx = 0  # age index for filing parameters
+        midx = 0  # marital index for filing parameters
         if self.mars == 1:
-            income_min = 10000
-            if self.age_head >= 65:
-                income_min = 11500
+            if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                aidx = 1
         elif self.mars == 2:
-            income_min = 20000
-            if self.age_head >= 65:
-                if self.age_spouse >= 65:
-                    income_min = 22400
-                else:
-                    income_min = 21200
-            elif self.age_spouse >= 65:
-                income_min = 21200
+            midx = 1
+            if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                aidx = 1
+                if self.age_spouse >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                    aidx = 2
+            elif self.age_spouse >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                aidx = 1
         elif self.mars == 4:
-            income_min = 12850
-            if self.age_head >= 65:
-                income_min = 14350
+            midx = 3
+            if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                aidx = 1
+        else:
+            msg = (f"Filing status not in [1, 2, 4]. HHID: {self.h_seq} "
+                   f"a_lineno: {self.a_lineno}")
+            raise ValueError(msg)
+        income_min = FILINGPARAMS.gross_income_thd[CPS_YR_IDX][midx][aidx]
         if self.tot_inc >= income_min:
             setattr(self, "filer", 1)
         else:

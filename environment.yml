@@ -13,3 +13,7 @@ dependencies:
 - tqdm
 - requests
 - lxml
+- paramtools
+- pip:
+  -rpy2
+  tzlocal

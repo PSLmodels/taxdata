@@ -28,10 +28,16 @@ def target(cps, state_data_link):
     VAR_MAP = {
         "A00200": ["e00200p", "e00200s"],
         "A00300": ["e00300"],
-        "A00600": ["e00600"],
+        "A00600": ["divs"],
         "A00650": ["e00650"],
         "A00900": ["e00900p", "e00900s"],
-        "A02300": ["e02300"]
+        "A02300": ["e02300"],
+        "A01000": ["CGAGIX"],
+        "A03240": ["DPAD"],
+        "A03150": ["TIRAD"],
+        "A03270": ["SEHEALTH"],
+        "A03210": ["SLINT"],
+        "A07180": ["CDC"]
     }
 
     # dictionary to hold factors

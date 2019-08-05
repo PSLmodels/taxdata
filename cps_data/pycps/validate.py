@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+from helpers import FILINGPARAMS, CPS_YR_IDX
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -49,7 +50,9 @@ def compare(data, cps, year):
         record_error("nu18", data.name, nu18_data, nu18_cps, year)
         num_errors += 1
     elderly_deps_data = data["elderly_dependents"].sum()
-    elderly_deps_cps = (sub_cps["a_age"] >= 65).sum()
+    elderly_deps_cps = (
+        sub_cps["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]
+    ).sum()
     # number elderly dependents should never be higher than the number of
     # elderly people in the household
     if elderly_deps_data > elderly_deps_cps:
@@ -64,9 +67,6 @@ def compare(data, cps, year):
     # compare income variables
     for cps, tc in INCOME_TUPLES:
         cps_sum = sub_cps[cps].sum()
-        # if tc == "interest":
-        #     tc_sum = (data["e00300"] + data["e00400"]).sum()
-        # else:
         tc_sum = data[tc].sum()
         # it's acceptable for the sum in the CPS to be larger
         # than that in the tax unit file because it's possible

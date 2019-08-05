@@ -11,6 +11,7 @@ from splitincome import split_income
 from targeting import target
 from finalprep import final_prep
 from benefits import merge_benefits, distribute_benefits
+from impute import imputation
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -91,6 +92,13 @@ def create(export_raw: bool = False, skip=False, validate=False):
     # split up income
     print("Splitting up income")
     data = split_income(units)
+
+    # imputations
+    print("Imputing Variables")
+    logit_betas = pd.read_csv(Path(DATA_PATH, "logit_betas.csv"), index_col=0)
+    ols_betas = pd.read_csv(Path(DATA_PATH, "ols_betas.csv"), index_col=0)
+    tobit_betas = pd.read_csv(Path(DATA_PATH, "tobit_betas.csv"), index_col=0)
+    data = imputation(data, logit_betas, ols_betas, tobit_betas)
     # target state totals
     print("Targeting State Level Data")
     STATE_DATA_LINK = "https://www.irs.gov/pub/irs-soi/14in54cmcsv.csv"
@@ -129,4 +137,4 @@ def validate_cps_units(raw_cps, units, year):
 
 
 if __name__ == "__main__":
-    create(export_raw=True, validate=True, skip=False)
+    create(export_raw=True, validate=False, skip=True)
