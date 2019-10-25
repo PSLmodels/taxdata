@@ -14,6 +14,6 @@ dependencies:
 - requests
 - lxml
 - paramtools
-- pip:
-  -rpy2
-  tzlocal
+pip:
+- rpy2
+- tzlocal
