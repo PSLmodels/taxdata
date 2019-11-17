@@ -191,7 +191,7 @@ class TaxUnit:
             elif self.age_spouse >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 aidx = 1
         elif self.mars == 4:
-            midx = 3
+            midx = 2
             if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 aidx = 1
         else:

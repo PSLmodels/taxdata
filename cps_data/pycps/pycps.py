@@ -181,8 +181,8 @@ def create_units(df, year, verbose=False):
     # https://turbotax.intuit.com/tax-tips/family/should-i-include-a-dependents-income-on-my-tax-return/L60Hf4Rsg
     for person in dependents:
         filer = False
-        midx = 0
-        aidx = 0
+        midx = 0  # marital staus indicator
+        aidx = 0  # age indicator
         if person["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
             aidx = 1
         if person["a_spouse"] != 0:
@@ -199,7 +199,7 @@ def create_units(df, year, verbose=False):
         elif person["unearned_inc"] >= unearn_thd:
             filer = True
         # TODO: set gross income threshold
-        elif person["ptotval"] >= max(1050, person["earned_inc"] + 350):
+        elif person["ptotval"] >= max(gross_thd, person["earned_inc"] + 350):
             filer = True
         # if a dependent says they filed, we'll believe them
         if person["filestat"] != 6:

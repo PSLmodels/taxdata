@@ -754,7 +754,7 @@ def create_cps(dat_file, year, export=True):
     # list to hold the records
     cps_list = []
     print("Creating Records")
-    for record in tqdm(cps):
+    for record in tqdm(cps, desc=str(year)):
         rec_type = record[0]
         # household records
         if rec_type == "1":

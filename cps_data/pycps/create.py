@@ -4,6 +4,7 @@ import cpsmar2015
 import subprocess
 import pandas as pd
 import validate
+import dask.dataframe as dd
 from pathlib import Path
 from tqdm import tqdm
 from pycps import pycps
@@ -137,4 +138,4 @@ def validate_cps_units(raw_cps, units, year):
 
 
 if __name__ == "__main__":
-    create(export_raw=True, validate=False, skip=True)
+    create(export_raw=True, validate=False, skip=False)

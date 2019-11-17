@@ -29,10 +29,10 @@ def merge_benefits(cps, year, data_path, export=True):
     mcaid = read_ben("medicaid", ["MedicaidX", "peridnum"])
     mcare = read_ben("medicare", ["MedicareX", "peridnum"])
     vb = read_ben("VB_Imputation", ["vb_impute", "peridnum"])
-    snap = read_ben("SNAP_Imputation", ["h_seq", "snap_impute"])
+    snap = read_ben("SNAP_Imputation_", ["h_seq", "snap_impute"])
     ssi = read_ben("SSI_Imputation", ["ssi_impute", "peridnum"])
     ss = read_ben(
-        "SS_augmentation", ["ss_val", "peridnum"]
+        "SS_augmentation_", ["ss_val", "peridnum"]
     ).rename(columns={"ss_val": "ss_impute"})
     housing = read_ben("Housing_Imputation_logreg_",
                        ["fh_seq", "ffpos", "housing_impute"])

@@ -38,7 +38,7 @@
         "description": "A child who is not a full time student can be no older than this to be an EIC qualifying child",
         "type": "int",
         "value": [
-            {"year": 2011, "value": 19}        
+            {"year": 2011, "value": 19}
         ],
         "validators": {"range": {"min": 0, "max": 100}}
     },
@@ -60,7 +60,7 @@
         ],
         "validators": {"range": {"min":0, "max":100}}
     },
-    "depdent_child_age_student": {
+    "dependent_child_age_student": {
         "title": "Maximum dependent child, full time student, age",
         "description": "A child who is a full time student may only be claimed as a dependent if they are below this age",
         "type": "int",
@@ -322,7 +322,7 @@
             {"year": 2018, "dep_type": "married", "aged": 0, "value": 12000},
             {"year": 2018, "dep_type": "married", "aged": 1, "value": 13300},
             {"year": 2018, "dep_type": "married", "aged": 2, "value": 13300}
-            
+
         ],
         "validators": {"range": {"min": 0, "max": 9e99}}
     },
