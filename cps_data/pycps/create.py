@@ -4,7 +4,6 @@ import cpsmar2015
 import subprocess
 import pandas as pd
 import validate
-import dask.dataframe as dd
 from pathlib import Path
 from tqdm import tqdm
 from pycps import pycps

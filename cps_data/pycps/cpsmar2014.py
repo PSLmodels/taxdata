@@ -1,11 +1,13 @@
 import pandas as pd
+import pickle
 from collections import OrderedDict
 from tqdm import tqdm
 from pathlib import Path
+from helpers import read_benefits
 
 
 CUR_PATH = Path(__file__).resolve().parent
-OUTPUT_PATH = Path(CUR_PATH, "data")
+DATA_PATH = Path(CUR_PATH, "data")
 
 
 def h_rec(rec):
@@ -238,7 +240,7 @@ def f_rec(rec):
     return record
 
 
-def p_rec(rec):
+def p_rec(rec, benefits, h_seq, fh_seq, ffpos):
     """
     Process person record in CPS
     """
@@ -743,12 +745,33 @@ def p_rec(rec):
     record["tpmed_val"] = int(rec[1071:1072])
     record["tchsp_val"] = int(rec[1072:1073])
 
+    if benefits:
+        # add benefit variables from the CPS
+        global MCAID, MCARE, VB, SNAP, SSI, SS, HOUSING, TANF, UI, WIC
+        perid_ben = [
+            (MCAID, "MedicaidX"), (MCARE, "MedicareX"), (VB, "vet_ben"),
+            (SSI, "ssi_ben"), (SS, "ss_impute"), (TANF, "tanf_ben"),
+            (UI, "UI_impute"), (WIC, "wic_ben")
+        ]
+        for data, var_name in perid_ben:
+            record[var_name] = data[record["peridnum"]][var_name]
+        record["housing_impute"] = HOUSING[f"{fh_seq}{ffpos}"][var_name]
+        record["snap_impute"] = SNAP[h_seq][var_name]
     return record
 
 
-def create_cps(dat_file, year, export=True):
+def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
     """
-    Convert a .DAT copy of the CPS to a CSV
+    Read the .DAT CPS file and convert it to a list of dictionaries that
+    to later be converted to tax units. Optionally export that list as a
+    pickle file or export the full CPS as a CSV
+    Parameters
+    ----------
+    dat_file: Path to the .DAT version of the CPS downloaded from NBER
+    year: year of the CPS being converted
+    benefits: Set to true to include C-TAM imputed benefits in the CPS
+    exportpkl: Set to true to export a pickled list of households in the CPS
+    exportcsv: Set to true to export a CSV version of the CPS
     """
 
     # read in file
@@ -756,29 +779,49 @@ def create_cps(dat_file, year, export=True):
     with Path(dat_file).open("r") as f:
         cps = [line.strip() for line in f.readlines()]
 
-    # list to hold the records
-    cps_list = []
+    # Read in benefits
+    if benefits:
+        global MCAID, MCARE, VB, SNAP, SSI, SS, HOUSING, TANF, UI, WIC
+        ben = read_benefits(year)
+        MCAID, MCARE, VB, SNAP, SSI, SS, HOUSING, TANF, UI, WIC = ben
+
+    record_list = []  # list to hold individual records
+    cps_list = []  # list to hold list of households
+    household = []  # list to hold members of household
     print("Creating Records")
     for record in tqdm(cps, desc=str(year)):
         rec_type = record[0]
         # household records
         if rec_type == "1":
-            household = h_rec(record)
+            if household:
+                cps_list.append(household)
+                household = []
+            house = h_rec(record)
         # family record
         elif rec_type == "2":
             family = f_rec(record)
         # person record
         elif rec_type == "3":
-            person = p_rec(record)
+            person = p_rec(
+                record, benefits, house["h_seq"], family["fh_seq"],
+                family["ffpos"]
+            )
             full_rec = {**household, **family, **person}
-            cps_list.append(full_rec)
+            household.append(full_rec)
+            if exportcsv:
+                record_list.append(full_rec)
 
-    print("Converting to DataFrame")
-    cpsmar = pd.DataFrame(cps_list).fillna(0)
-    if export:
-        print("Exporting")
-        export_path = Path(OUTPUT_PATH, f"cpsmar{year}.csv")
+    if exportcsv:
+        print("Converting to DataFrame")
+        cpsmar = pd.DataFrame(cps_list).fillna(0)
+        print("Exporting CSV")
+        export_path = Path(DATA_PATH, f"cpsmar{year}.csv")
         cpsmar.to_csv(export_path, index=False)
+
+    if exportpkl:
+        print("Pickling File")
+        with Path(DATA_PATH, f"cpsmar{year}.pkl").open("wb") as f:
+            pickle.dump(cps_list, f)
 
     return cpsmar
 

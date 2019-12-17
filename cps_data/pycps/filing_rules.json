@@ -133,7 +133,7 @@
         ],
         "validators": {"range": {"min": 0, "max": 9e99}}
     },
-    "gross_income_thd": {
+    "gross_inc_thd": {
         "title": "Gross Income Filing Requirement",
         "description": "A unit must file if their gross income exceeds this level",
         "type": "int",
@@ -212,7 +212,7 @@
         ],
         "validators": {"range": {"min": 0, "max": 9e99}}
     },
-    "dep_unearned_income_thd": {
+    "dep_unearned_inc_thd": {
         "title": "Dependent Unearned Income Threshold",
         "description": "A dependent must file if their unearned income is above this level",
         "type": "int",
@@ -269,7 +269,7 @@
         "validators": {"range": {"min": 0, "max": 9e99}}
     },
 
-    "dep_earned_income_thd": {
+    "dep_earned_inc_thd": {
         "title": "Dependent Earned Income Threshold",
         "description": "A dependent must file if their earned income is above this level",
         "type": "int",
@@ -326,7 +326,7 @@
         ],
         "validators": {"range": {"min": 0, "max": 9e99}}
     },
-    "dep_gross_income_thd": {
+    "dep_gross_inc_thd": {
         "title": "Dependent Gross Income Threshold",
         "description": "A dependent must file if their gross income is above this level",
         "type": "int",
@@ -382,7 +382,7 @@
         ],
         "validators": {"range": {"min": 0, "max": 9e99}}
     },
-    "dep_additional_gross_income": {
+    "dep_additional_gross_inc": {
         "title": "Additional Gross Income Filing Threshold",
         "description": "This amount is added to earned income before comparing to gross income for dependent filers",
         "type": "int",

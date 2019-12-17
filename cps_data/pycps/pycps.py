@@ -141,8 +141,7 @@ def remove_dependent(tu, dependent):
             tu.elderly_dependents -= 1
 
 
-def create_units(df, year, verbose=False):
-    data = df.to_dict("records")
+def create_units(data, year, verbose=False):
     # sort on familly position and family relationship so that
     # we can avoid making children their own units just because
     # they're listed ahead of their parents
@@ -191,9 +190,9 @@ def create_units(df, year, verbose=False):
             if spouse["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 aidx += 1
         # earned income filing threshold
-        earn_thd = FILINGPARAMS.dep_earned_income_thd[CPS_YR_IDX][aidx][midx]
-        unearn_thd = FILINGPARAMS.dep_unearned_income_thd[CPS_YR_IDX][aidx][midx]
-        gross_thd = FILINGPARAMS.dep_gross_income_thd[CPS_YR_IDX][aidx][midx]
+        earn_thd = FILINGPARAMS.dep_earned_inc_thd[CPS_YR_IDX][aidx][midx]
+        unearn_thd = FILINGPARAMS.dep_unearned_inc_thd[CPS_YR_IDX][aidx][midx]
+        gross_thd = FILINGPARAMS.dep_gross_inc_thd[CPS_YR_IDX][aidx][midx]
         if person["earned_inc"] >= earn_thd:
             filer = True
         elif person["unearned_inc"] >= unearn_thd:
