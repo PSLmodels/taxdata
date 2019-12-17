@@ -240,7 +240,7 @@ def f_rec(rec):
     return record
 
 
-def p_rec(rec, benefits, h_seq, fh_seq, ffpos):
+def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     """
     Process person record in CPS
     """
@@ -754,9 +754,19 @@ def p_rec(rec, benefits, h_seq, fh_seq, ffpos):
             (UI, "UI_impute"), (WIC, "wic_ben")
         ]
         for data, var_name in perid_ben:
-            record[var_name] = data[record["peridnum"]][var_name]
-        record["housing_impute"] = HOUSING[f"{fh_seq}{ffpos}"][var_name]
-        record["snap_impute"] = SNAP[h_seq][var_name]
+            # C-TAM data only includes those who receive benefits so catch
+            # error for those that do not receive them
+            try:
+                record[var_name] = data[record["peridnum"]][var_name]
+            except KeyError:
+                record[var_name] = 0.
+        record["housing_impute"] = HOUSING[f"{fhseq}{ffpos}"]["housing_impute"]
+        # C-TAM SNAP imputations only contain records for households receiving
+        # benefits. Catch the error for those that don't.
+        try:
+            record["snap_impute"] = SNAP[h_seq]["snap_impute"]
+        except KeyError:
+            record["snap_impute"] = 0.
     return record
 
 
@@ -806,7 +816,7 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
                 record, benefits, house["h_seq"], family["fh_seq"],
                 family["ffpos"]
             )
-            full_rec = {**household, **family, **person}
+            full_rec = {**house, **family, **person}
             household.append(full_rec)
             if exportcsv:
                 record_list.append(full_rec)

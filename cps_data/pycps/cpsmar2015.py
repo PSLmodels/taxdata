@@ -755,7 +755,6 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
                 record[var_name] = data[record["peridnum"]][var_name]
             except KeyError:
                 record[var_name] = 0.
-        # import pdb; pdb.set_trace()
         record["housing_impute"] = HOUSING[f"{fhseq}{ffpos}"]["housing_impute"]
         # C-TAM SNAP imputations only contain records for households receiving
         # benefits. Catch the error for those that don't.
