@@ -740,26 +740,56 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["i_m5g2"] = int(rec[1086:1088])
     record["i_m5g3"] = int(rec[1088:1089])
 
+    record["alimony"] = 0.
+    if record["oi_off"] == 20:
+        record["alimony"] = record["oi_val"]
+    # Calculate pensions and annuities
+    pensions_annuities = (
+        ((record["oi_off"] == 2) * record["oi_val"]) +
+        ((record["ret_sc1"] == 1) * record["ret_val1"]) +
+        ((record["ret_sc2"] == 1) * record["ret_val2"]) +
+        ((record["ret_sc1"] == 7) * record["ret_val1"]) +
+        ((record["ret_sc2"] == 7) * record["ret_val2"]) +
+        ((record["oi_off"] == 13) * record["oi_val"])
+    )
+    record["pensions_annuities"] = pensions_annuities
+    # flags used in tax unit creation
+    record["p_flag"] = False
+    record["s_flag"] = False
+    record["d_flag"] = False
+    record["hhid"] = h_seq
+
+    # calculate earned and unearned income
+    EARNED_INC_VARS = [
+        "wsal_val", "semp_val", "frse_val"
+    ]
+    UNEARNED_INC_VARS = [
+        "int_val", "div_val", "rtm_val",
+        "alimony", "uc_val"
+    ]
+    record["earned_inc"] = sum([record[var] for var in EARNED_INC_VARS])
+    record["unearned_inc"] = sum([record[var] for var in UNEARNED_INC_VARS])
+
     if benefits:
         # add benefit variables from the CPS
         global MCAID, MCARE, VB, SNAP, SSI, SS, HOUSING, TANF, UI, WIC
         perid_ben = [
-            (MCAID, "MedicaidX"), (MCARE, "MedicareX"), (VB, "vet_ben"),
-            (SSI, "ssi_ben"), (SS, "ss_impute"), (TANF, "tanf_ben"),
-            (UI, "UI_impute"), (WIC, "wic_ben")
+            (MCAID, "MedicaidX"), (MCARE, "MedicareX"), (VB, "vb_impute"),
+            (SSI, "ssi_impute"), (SS, "ss_impute"), (TANF, "tanf_impute"),
+            (UI, "UI_impute"), (WIC, "wic_impute")
         ]
         for data, var_name in perid_ben:
             # C-TAM data only includes those who receive benefits so catch
             # error for those that do not receive them
             try:
-                record[var_name] = data[record["peridnum"]][var_name]
+                record[var_name] = data[str(record["peridnum"])][var_name]
             except KeyError:
                 record[var_name] = 0.
         record["housing_impute"] = HOUSING[f"{fhseq}{ffpos}"]["housing_impute"]
         # C-TAM SNAP imputations only contain records for households receiving
         # benefits. Catch the error for those that don't.
         try:
-            record["snap_impute"] = SNAP[h_seq]["snap_impute"]
+            record["snap_impute"] = SNAP[str(h_seq)]["snap_impute"]
         except KeyError:
             record["snap_impute"] = 0.
     return record
@@ -828,7 +858,7 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
         with Path(DATA_PATH, f"cpsmar{year}.pkl").open("wb") as f:
             pickle.dump(cps_list, f)
 
-    return cpsmar
+    return cps_list
 
 
 if __name__ == "__main__":

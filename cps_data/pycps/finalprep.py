@@ -48,7 +48,8 @@ def add_agi_bin(data, col_name):
                     500, 1000, 1500, 2000, 5000, 10000, np.inf]
     thresholds = [x * 1000 for x in THRESHOLDS_K]
     data['agi_bin'] = pd.cut(data[col_name], thresholds,
-                             labels=np.arange(0, 19), right=False)
+                             labels=np.arange(0, len(THRESHOLDS_K) - 1),
+                             right=False)
 
     return data
 

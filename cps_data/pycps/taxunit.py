@@ -198,7 +198,7 @@ class TaxUnit:
             msg = (f"Filing status not in [1, 2, 4]. HHID: {self.h_seq} "
                    f"a_lineno: {self.a_lineno}")
             raise ValueError(msg)
-        income_min = FILINGPARAMS.gross_income_thd[CPS_YR_IDX][midx][aidx]
+        income_min = FILINGPARAMS.gross_inc_thd[CPS_YR_IDX][midx][aidx]
         if self.tot_inc >= income_min:
             setattr(self, "filer", 1)
         else:

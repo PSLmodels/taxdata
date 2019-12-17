@@ -107,12 +107,5 @@ def distribute_benefits(data, other_ben):
     data["other_ben"] = (data["ratio"] * other_ben_total / data["s006"])
 
     data["housing_ben"] *= 12
-    # Convert benefit data to integers
-    BEN_VARS = [
-        "mcaid_ben", "mcare_ben", "ssi_ben", "snap_ben", "vet_ben", "tanf_ben",
-        "wic_ben", "housing_ben", "e02400", "e02300", "other_ben"
-    ]
-    for var in BEN_VARS:
-        data[var] = data[var].astype(np.int32)
 
     return data

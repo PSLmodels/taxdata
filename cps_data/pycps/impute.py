@@ -107,8 +107,10 @@ def imputation(data, logit_betas, ols_betas, tobit_betas):
     # cap family size at 5 to match with the PUF
     data["fam_size"] = np.minimum(data["XTOT"], 5)
     data["agede"] = (
-        (data["age_head"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]) +
-        (data["age_spouse"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX])
+        (data["age_head"] >=
+         FILINGPARAMS.elderly_age[CPS_YR_IDX]).astype(int) +
+        (data["age_spouse"] >=
+         FILINGPARAMS.elderly_age[CPS_YR_IDX]).astype(int)
     )
     data["constant"] = np.ones(len(data))
 
