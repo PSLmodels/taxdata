@@ -224,72 +224,10 @@ def pycps(cps: pd.DataFrame, year: int) -> pd.DataFrame:
     ----------
     cps: Pandas DataFrame that contains the CPS
     """
-    # print("Calculating pensions and annuities")
-    # if year == 2015:  # TODO: check and see if oi_off == 29 holds after 2015
-    #     # in 2015, alimony income is categorized as other income
-    #     alimony = np.where(cps["oi_off"] == 20,
-    #                        cps["oi_val"], 0.)
-    # else:
-    #     alimony = cps["alm_val"]
-    # oi_pensions = np.where(cps["oi_off"] == 2, cps["oi_val"], 0.)
-    # ret_pensions1 = np.where(cps["ret_sc1"] == 1,
-    #                          cps["ret_val1"], 0.)
-    # ret_pensions2 = np.where(cps["ret_sc2"] == 1,
-    #                          cps["ret_val2"], 0.)
-    # annuities1 = np.where(cps["ret_sc1"] == 7,
-    #                       cps["ret_val1"], 0.)
-    # annuities2 = np.where(cps["ret_sc2"] == 7,
-    #                       cps["ret_val2"], 0.)
-    # oi_annuities = np.where(cps["oi_off"] == 13,
-    #                         cps["oi_val"], 0.)
-    # pensions_annuities = (oi_pensions + ret_pensions1 + ret_pensions2 +
-    #                       annuities1 + annuities2 + oi_annuities)
-    # cps["alimony"] = alimony
-    # cps["pensions_annuities"] = pensions_annuities
-    #
-    # # flags used when creating a unit
-    # cps["p_flag"] = False  # primary flag
-    # cps["s_flag"] = False  # spouse flag
-    # cps["d_flag"] = False  # dependent flag
-    # cps["hhid"] = cps["h_seq"]
-    # # calculate earned and unearned income
-    # EARNED_INC_VARS = [
-    #     "wsal_val", "semp_val", "frse_val"
-    # ]
-    # UNEARNED_INC_VARS = [
-    #     "int_val", "div_val", "rtm_val",
-    #     "alimony", "uc_val"
-    # ]
-    # cps["earned_inc"] = cps[EARNED_INC_VARS].sum(axis=1)
-    # cps["unearned_inc"] = cps[UNEARNED_INC_VARS].sum(axis=1)
-    # add apply create_unit with a progress bar
-    # tqdm.pandas(desc=str(year))
-    # units = cps.groupby("h_seq").progress_apply(create_units, year=year - 1)
     tax_units = []
     for hh in tqdm(cps):
         tax_units += create_units(hh, year - 1)
-    # for u in units:
-    #     tax_units += u
-
     # create a DataFrame of tax units with the new
     tax_units_df = pd.DataFrame(tax_units)
 
     return tax_units_df
-
-
-# if __name__ == "__main__":
-#     print("Reading 2013 CPS")
-#     cps13 = pd.read_csv("data/cpsmar2013.csv")
-#     units13 = pycps(cps13, 2013)
-#     del cps13
-#     print("Reading 2014 CPS")
-#     cps14 = pd.read_csv("data/cpsmar2014.csv")
-#     units14 = pycps(cps14, 2014)
-#     del cps14
-#     print("Reading 2015 CPS")
-#     cps15 = pd.read_csv("data/cpsmar2015.csv")
-#     units15 = pycps(cps15, 2015)
-#     del cps15
-#     df = pd.concat([units13, units14, units15])
-#     df["s006"] = df["s006"] / 3
-#     df.to_csv("raw_cps.csv", index=False)

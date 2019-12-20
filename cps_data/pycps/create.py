@@ -3,15 +3,16 @@ import cpsmar2014
 import cpsmar2015
 import subprocess
 import pandas as pd
-import validate
+import pickle
+import validation
 from pathlib import Path
 from tqdm import tqdm
 from pycps import pycps
 from splitincome import split_income
 from targeting import target
 from finalprep import final_prep
-from benefits import merge_benefits, distribute_benefits
 from impute import imputation
+from benefits import distribute_benefits
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -35,60 +36,52 @@ CPS_META_DATA = {
 CPS_FILES = [2013, 2014, 2015]
 
 
-def create(export_raw: bool = False, skip=False, validate=False):
+def create(exportcsv: bool = False, exportpkl: bool = False,
+           exportraw: bool = True, validate: bool = False,
+           benefits: bool = True):
     """
     Logic for creating tax units from the CPS
     """
-    # add progress_apply to pandas if they want to validate
+    # add progress_apply to pandas if user wants to validate
     if validate:
         tqdm.pandas()
-    # skip lets you skip over all of the unit creation steps and just use the
-    # already saved raw file
-    if skip:
-        units = pd.read_csv("raw_cps.csv", index_col=None)
-    else:
-        cps_dfs = {}  # dictionary to hold each CPS DataFrame
-        for year in CPS_FILES:
-            meta = CPS_META_DATA[year]
-            # path to CPS file with benefits
-            csv_path = Path(DATA_PATH, f"cpsmar{year}_ben.csv")
-            # check and see if CSV version of this year's CPS has been created
-            if not csv_path.exists():
-                # look for CPS file without benefits
-                csv_path = Path(DATA_PATH, f"cpsmar{year}.csv")
-                if not csv_path.exists():
-                    print(f"Creating CSV version of CPS for {year}")
-                    # use creation function for that year to create the DF
-                    df = meta["create_func"](Path(DATA_PATH, meta["dat_file"]),
-                                             year)
-                else:
-                    df = pd.read_csv(csv_path)
-                # merge on benefits
-                print(f"Merging Benefits for {year}")
-                cps_dfs[year] = merge_benefits(df, year, DATA_PATH,
-                                               export=True)
-            else:
-                print(f"Reading CSV for {year}")
-                cps_dfs[year] = pd.read_csv(csv_path)
-        # create the tax units
-        units = []
-        for year in CPS_FILES:
-            print(f"Creating tax units for {year}")
-            _units = pycps(cps_dfs[year], year)
-            if validate:
-                validate_cps_units(cps_dfs[year], _units, year)
-            units.append(_units)
+    # look for pickled versions of the converted CPS files
+    cps_dfs = {}
+    for year in CPS_FILES:
+        meta = CPS_META_DATA[year]
+        # potential path to pickled CPS file
+        pkl_path = Path(DATA_PATH, f"cpsmar{year}.pkl")
+        # check and see if pickled version of this year's CPS has been created
+        if pkl_path.exists():
+            print("Reading Pickled File")
+            cps_dfs[year] = pickle.load(pkl_path.open("rb"))
+        else:
+            # convert the DAT file
+            cps_dfs[year] = meta["create_func"](
+                Path(DATA_PATH, meta["dat_file"]), year=year,
+                benefits=benefits, exportpkl=exportpkl, exportcsv=exportcsv
+            )
 
-        # create single DataFrame
-        print("Combining tax units")
-        units = pd.concat(units)
-        # divide weight by number of CPS files
-        num_cps = len(CPS_FILES)
-        units["s006"] = units["s006"] / num_cps
-        # export raw CPS file
-        if export_raw:
-            print("Exporting raw file")
-            units.to_csv(Path(CUR_PATH, "raw_cps.csv"), index=False)
+    # create tax units
+    _units = []
+    for year in CPS_FILES:
+        print(f"Creating Tax Units for {year}")
+        _yr_unit = pycps(cps_dfs[year], year)
+        if validate:
+            validate_cps_units(cps_dfs[year], _units, year)
+        _units.append(_yr_unit)
+
+    # create a single DataFrame
+    print("Combining tax units")
+    units = pd.concat(_units, sort=False)
+    # divinde weight by number of CPS files
+    num_cps = len(CPS_FILES)
+    units["s006"] = units["s006"] / num_cps
+
+    # export raw CPS file
+    if exportraw:
+        print("Exporting raw file")
+        units.to_csv(Path(DATA_PATH, "raw_cps.csv"), index=False)
     # split up income
     print("Splitting up income")
     data = split_income(units)
@@ -108,6 +101,9 @@ def create(export_raw: bool = False, skip=False, validate=False):
     other_ben = pd.read_csv(Path(DATA_PATH, "otherbenefitprograms.csv"),
                             index_col="Program")
     data = distribute_benefits(data, other_ben)
+    print("Exporting Raw File")
+    data.to_csv(Path(CUR_PATH, "cps_raw.csv"), index=False)
+    subprocess.check_call(["gzip", "-nf", "cps_raw.csv"])
     # final prep
     print("Cleaning file")
     final_cps = final_prep(data)
@@ -122,11 +118,11 @@ def validate_cps_units(raw_cps, units, year):
     """
     print(f"Validating for {year}")
     gdf = units.groupby("h_seq")
-    errors = gdf.progress_apply(validate.compare, cps=raw_cps, year=year)
+    errors = gdf.progress_apply(validation.compare, cps=raw_cps, year=year)
     num_errors = errors.sum()
     if num_errors > 0:
         save_path = Path(CUR_PATH, f"errors{year}.csv")
-        save_path.write_text(validate.output_str)
+        save_path.write_text(validation.output_str)
         print(f"Number of errors for {year}: {num_errors}")
         print(f"A CSV file with these errors can be found in {save_path}")
         raise RuntimeError(
@@ -137,4 +133,7 @@ def validate_cps_units(raw_cps, units, year):
 
 
 if __name__ == "__main__":
-    create(export_raw=True, validate=False, skip=False)
+    create(
+        exportcsv=False, exportpkl=False, exportraw=False, validate=False,
+        benefits=True
+    )
