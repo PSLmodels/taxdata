@@ -1,68 +1,101 @@
 import numpy as np
-import pulp
+import pandas as pd
+import cvxopt
 
 
-def solve_lp_for_year(data, factors, targets, year, tol):
+def solve_lp_for_year(data, factors, targets, year, tol, weights=None):
     """
     Parameters
     ----------
     data: CPS data
     factors: growth factors
     targets: aggregate targets
-    year: year LP model is being solved for
+    year: year LP is being solved for
     tol: tolerance
     """
     def target(target_val, pop, factor, value):
         return (target_val * pop / factor * 1000 - value)
 
-    print('Preparing Coefficient Matrix for {}'.format(year))
-    # data_len = len(data.WT)
-    # dictionary used just to play with the targets we add
-    lhs_vars = {}
-
-    # don't divide by 100 because WT hasn't been multiplied by 100
-    s006 = np.where(data.SS > 0,
-                    data.WT * factors['APOPSNR'][year],
-                    data.WT * factors['ARETS'][year])
-
-    single_returns = np.where((data.JS == 1) & (data.FILST == 1),
-                              s006, 0)
-    joint_returns = np.where((data.JS == 2) & (data.FILST == 1),
-                             s006, 0)
-    hh_returns = np.where((data.JS == 3) & (data.FILST == 1),
-                          s006, 0)
-    returns_w_ss = np.where((data.SS > 0) & (data.FILST == 1),
-                            s006, 0)
-    dep_exemptions = np.where(data.JS == 2, data.XXTOT - 2,
-                              data.XXTOT - 1) * s006
-    interest = data.INTST * s006
-    dividend = data.DBE * s006
-    biz = data.JCPS25 + data.JCPS35
-    biz_income = np.where(biz > 0, biz, 0) * s006
-    biz_loss = np.where(biz < 0, -biz, 0) * s006
-    cap_gain = np.where(data.CGAGIX > 0, data.CGAGIX, 0) * s006
-    pension = data.PENSIONS * s006
-    sch_e_income = np.where(data.RENTS > 0, data.RENTS, 0) * s006
-    sch_e_loss = np.where(data.RENTS < 0, data.RENTS, 0) * s006
-    ss_income = np.where(data.FILST == 1, data.SS, 0) * s006
-    ucomp = data.UCOMP * s006
+    print(f"Preparing Coefficient Matrix for {year}")
+    if not isinstance(weights, pd.Series):
+        weights = data["s006"]
+    # only use the blow up factors if we're not solving for 2014 weights
+    s006 = np.where(
+        data["e02400"] > 0,
+        weights * factors["APOPSNR"][year],
+        weights * factors["ARETS"][year]
+    )
+    single_returns = np.where(
+        (data["mars"] == 1) & (data["filer"] == 1), s006, 0
+    )
+    joint_returns = np.where(
+        (data["mars"] == 2) & (data["filer"] == 1), s006, 0
+    )
+    hh_returns = np.where(
+        (data["mars"] == 4) & (data["filer"] == 1), s006, 0
+    )
+    returns_w_ss = np.where(
+        (data["e02400"] > 0) & (data["filer"] == 1), s006, 0
+    )
+    dep_exemptions = np.where(
+        data["mars"] == 2, data["XTOT"] - 2, data["XTOT"] - 1
+    ) * s006
+    interest = data["interest"] * s006
+    dividend = data["divs"] * s006
+    biz_income = np.where(
+        data["e00900"] > 0, data["e00900"], 0
+    ) * s006
+    biz_loss = np.where(
+        data["e00900"] < 0, -data["e00900"], 0
+    ) * s006
+    cap_gain = np.where(
+        data["CGAGIX"] > 0, data["CGAGIX"], 0
+    ) * s006
+    pension = data["e01500"] * s006
+    sch_e_income = np.where(
+        data["rents"] > 0, data["rents"], 0
+    ) * s006
+    sch_e_loss = np.where(
+        data["rents"] < 0, -data["rents"], 0
+    ) * s006
+    ss_income = np.where(
+        data["filer"] == 1, data["e02400"], 0
+    ) * s006
+    ucomp = data["e02300"] * s006
 
     # wage distribution
-    wage1 = np.where((data.e00100 <= 10000), data.WAS, 0) * s006
-    wage2 = np.where((data.e00100 > 10000) & (data.e00100 <= 20000),
-                     data.WAS, 0) * s006
-    wage3 = np.where((data.e00100 > 20000) & (data.e00100 <= 30000),
-                     data.WAS, 0) * s006
-    wage4 = np.where((data.e00100 > 30000) & (data.e00100 <= 40000),
-                     data.WAS, 0) * s006
-    wage5 = np.where((data.e00100 > 40000) & (data.e00100 <= 50000),
-                     data.WAS, 0) * s006
-    wage6 = np.where((data.e00100 > 50000) & (data.e00100 <= 75000),
-                     data.WAS, 0) * s006
-    wage7 = np.where((data.e00100 > 75000) & (data.e00100 <= 100000),
-                     data.WAS, 0) * s006
-    wage8 = np.where((data.e00100 > 100000), data.WAS, 0) * s006
-
+    wage1 = np.where(
+        data["agi"] <= 10000, data["e00200"], 0
+    ) * s006
+    wage2 = np.where(
+        (data["agi"] > 10000) & (data["agi"] <= 20000),
+        data["e00200"], 0
+    ) * s006
+    wage3 = np.where(
+        (data["agi"] > 20000) & (data["agi"] <= 30000),
+        data["e00200"], 0
+    ) * s006
+    wage4 = np.where(
+        (data["agi"] > 30000) & (data["agi"] <= 40000),
+        data["e00200"], 0
+    ) * s006
+    wage5 = np.where(
+        (data["agi"] > 40000) & (data["agi"] <= 50000),
+        data["e00200"], 0
+    ) * s006
+    wage6 = np.where(
+        (data["agi"] > 50000) & (data["agi"] <= 75000),
+        data["e00200"], 0
+    ) * s006
+    wage7 = np.where(
+        (data["agi"] > 75000) & (data["agi"] <= 100000),
+        data["e00200"], 0
+    ) * s006
+    wage8 = np.where(
+        data["agi"] > 100000,
+        data["e00200"], 0
+    ) * s006
+    lhs_vars = {}
     lhs_vars['single_returns'] = single_returns
     lhs_vars['joint_returns'] = joint_returns
     lhs_vars['hh_returns'] = hh_returns
@@ -87,7 +120,7 @@ def solve_lp_for_year(data, factors, targets, year, tol):
     lhs_vars['wage7'] = wage7
     lhs_vars['wage8'] = wage8
 
-    print('Preparing Targets for {}'.format(year))
+    print(f"Preparing Targets for {year}")
     apopn = factors['APOPN'][year]
     aints = factors['AINTS'][year]
     adivs = factors['ADIVS'][year]
@@ -151,14 +184,9 @@ def solve_lp_for_year(data, factors, targets, year, tol):
                                wage8.sum())
 
     model_vars = ['single_returns', 'joint_returns', 'returns_w_ss',
-                  'dep_exemptions', 'interest', 'dividend', 'biz_income',
-                  'pension', 'ss_income', 'ucomp', 'wage1', 'wage2', 'wage3',
+                  'dep_exemptions', 'interest', 'biz_income',
+                  'pension', 'ss_income', 'wage1', 'wage2', 'wage3',
                   'wage4', 'wage5', 'wage6', 'wage7', 'wage8']
-    if year == '2014':
-        model_vars = ['single_returns', 'joint_returns', 'returns_w_ss',
-                      'dep_exemptions', 'interest', 'biz_income',
-                      'pension', 'ss_income', 'wage1', 'wage2', 'wage3',
-                      'wage4', 'wage5', 'wage6', 'wage7', 'wage8']
 
     vstack_vars = []
     b = []  # list to hold the targets
@@ -178,25 +206,31 @@ def solve_lp_for_year(data, factors, targets, year, tol):
 
     # set up LP model
     print('Constructing LP Model')
-    LP = pulp.LpProblem('CPS Stage 2', pulp.LpMinimize)
-    r = pulp.LpVariable.dicts('r', data.index, lowBound=0)
-    s = pulp.LpVariable.dicts('s', data.index, lowBound=0)
-    # add objective function
-    LP += pulp.lpSum([r[i] + s[i] for i in data.index])
-    # add constrains
-    for i in data.index:
-        LP += r[i] + s[i] <= tol
-    for i in range(len(b)):
-        LP += pulp.lpSum([(a1[i][j] * r[j] + a2[i][j] * s[j])
-                          for j in data.index]) == b[i]
-    print('Solving Model...')
-    pulp.LpSolverDefault.msg = 1
-    LP.solve()
-    print(pulp.LpStatus[LP.status])
+    N = len(data.index)
+    c = cvxopt.matrix(np.ones(2 * N).tolist())
 
-    # apply r and s to the weights
-    r_val = np.array([r[i].varValue for i in r])
-    s_val = np.array([s[i].varValue for i in s])
-    z = (1. + r_val - s_val) * s006 * 100
+    # tolerance and non-negativity constraints
+    G_values = np.append(np.ones(2 * N), -np.ones(2 * N)).tolist()
+    G_row = np.concatenate((list(range(N)), list(range(N)),
+                            [i + N for i in list(range(2 * N))])).tolist()
+    G_row = [int(i) for i in G_row]
+    G_col = np.concatenate((list(range(2 * N)), list(range(2 * N)))).tolist()
+    G_col = [int(i) for i in G_col]
 
-    return z
+    G = cvxopt.spmatrix(G_values, G_row, G_col)
+    h = cvxopt.matrix(np.append(tol * np.ones(N), np.zeros(2 * N)).tolist())
+
+    # targets
+    A = cvxopt.matrix(np.hstack([a1, a2]))
+    b = cvxopt.matrix(b)
+
+    print("Solving model")
+    sol_cvxopt = cvxopt.solvers.lp(c=c, G=G, h=h, A=A, b=b, solver=None)
+
+    # extract results and construct weights
+    rs_val_cvxopt = np.array(sol_cvxopt["x"]).reshape((2 * N,))
+    r_val_cvxopt = rs_val_cvxopt[:N]
+    s_val_cvxopt = rs_val_cvxopt[N:]
+    z = r_val_cvxopt - s_val_cvxopt
+
+    return (1 + z) * s006 * 100
