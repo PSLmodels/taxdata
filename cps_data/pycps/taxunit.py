@@ -30,7 +30,7 @@ class TaxUnit:
         for cps_var, tc_var in INCOME_TUPLES:
             setattr(self, tc_var, data[cps_var])
             setattr(self, f"{tc_var}p", data[cps_var])
-            setattr(self, f"{tc_var}s", 0.)
+            setattr(self, f"{tc_var}s", 0)
             self.tot_inc += data[cps_var]
         # add benefit data
         for cps_var, tc_var in BENEFIT_TUPLES:
@@ -169,7 +169,6 @@ class TaxUnit:
             self.mars = 4
         # determine if the unit is a filer here.
         self._must_file()
-        # setattr(self, "filer", 1)
         return self.__dict__
 
     # private methods

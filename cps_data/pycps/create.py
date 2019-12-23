@@ -38,7 +38,7 @@ CPS_FILES = [2013, 2014, 2015]
 
 def create(exportcsv: bool = False, exportpkl: bool = False,
            exportraw: bool = True, validate: bool = False,
-           benefits: bool = True):
+           benefits: bool = True, verbose: bool = False):
     """
     Logic for creating tax units from the CPS
     """
@@ -66,7 +66,7 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     _units = []
     for year in CPS_FILES:
         print(f"Creating Tax Units for {year}")
-        _yr_unit = pycps(cps_dfs[year], year)
+        _yr_unit = pycps(cps_dfs[year], year, verbose)
         if validate:
             validate_cps_units(cps_dfs[year], _units, year)
         _units.append(_yr_unit)
@@ -135,5 +135,5 @@ def validate_cps_units(raw_cps, units, year):
 if __name__ == "__main__":
     create(
         exportcsv=False, exportpkl=False, exportraw=False, validate=False,
-        benefits=True
+        benefits=True, verbose=True
     )

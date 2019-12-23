@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from operator import itemgetter
 from tqdm import tqdm
 from taxunit import TaxUnit
@@ -217,7 +216,7 @@ def create_units(data, year, verbose=False):
     return [unit.output() for unit in units.values()]
 
 
-def pycps(cps: pd.DataFrame, year: int) -> pd.DataFrame:
+def pycps(cps: pd.DataFrame, year: int, verbose: bool) -> pd.DataFrame:
     """
     Core code for iterating through the households
     Parameters

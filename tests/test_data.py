@@ -99,6 +99,17 @@ def relationships(data, dataname):
     m = less_than_str.format(dataname, 'pencon_s', 'e00200s+pencon_s')
     assert np.all((data['e00200s'] + data['pencon_s']) >= data['pencon_s']), m
 
+    # check that all non-married filers have zero spouse income
+    nonmarried = data[data["MARS"] != 2]
+    zeros = np.zeros_like(len(nonmarried))
+    msg = "{} not always zero for non-married filing unit"
+    spouse_vars = [
+        "e00200s", "e00900s", "e02100s"
+    ]
+    for var in spouse_vars:
+        if not np.allclose(nonmarried[var], zeros):
+            raise ValueError(msg.format(var))
+
 
 def variable_check(test_path, data, dataname):
     """
@@ -182,7 +193,6 @@ def check_cps_benefits(data):
     """
     bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
               'tanf', 'housing', 'vet', 'other']
-    expect_minben = 0
     # specify expected benefit statistics in CPS data
     expect_ben_stat = dict()
     # .. maximum value per filing unit for benefit

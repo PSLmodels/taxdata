@@ -5,7 +5,7 @@ from functools import reduce
 from paramtools.parameters import Parameters
 
 
-CUR_PATH = Path().resolve()
+CUR_PATH = Path(__file__).resolve().parent
 DATA_PATH = Path(CUR_PATH, "data")
 PUF_YEAR = 2011
 CPS_YEAR = 2013

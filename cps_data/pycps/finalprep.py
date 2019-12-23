@@ -34,12 +34,6 @@ def drop_vars(data):
     return data
 
 
-def sum_income(data):
-    """
-    Sum up and rename income variables
-    """
-
-
 def add_agi_bin(data, col_name):
     """
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
@@ -50,6 +44,30 @@ def add_agi_bin(data, col_name):
     data['agi_bin'] = pd.cut(data[col_name], thresholds,
                              labels=np.arange(0, len(THRESHOLDS_K) - 1),
                              right=False)
+
+    return data
+
+
+def deduction_limits(data):
+    """
+    Apply limits on itemized deductions
+    """
+    # Split charitable contributions into cash and non-cash using ratio in PUF
+    cash = 0.82013
+    non_cash = 1. - cash
+    data['e19800'] = data['CHARITABLE'] * cash
+    data['e20100'] = data['CHARITABLE'] * non_cash
+
+    # Apply student loan interest deduction limit
+    data['e03210'] = np.where(data["SLINT"] > 2500, 2500, data["SLINT"])
+
+    # Apply IRA contribution limit
+    deductable_ira = np.where(
+        data["age_head"] >= 50,
+        np.where(data["ADJIRA"] > 6500, 6500, data["ADJIRA"]),
+        np.where(data["ADJIRA"] > 5500, 5500, data["ADJIRA"])
+    )
+    data['e03150'] = deductable_ira
 
     return data
 
@@ -66,22 +84,32 @@ def final_prep(data):
         data["blind_spouse"] == 1, 1, 0
     )
 
+    # cap EIC
+    data["EIC"] = np.minimum(data["EIC"], 3)
+
+    # apply deduction deduction
+    data = deduction_limits(data)
+
     # rename variables
     RENAMES = {
         "mars": "MARS",
         "dep_stat": "DSI",
         "divs": "e00600",
-        "CGAGIX": "e0100",
-        "DPAD": "e03240"
+        "CGAGIX": "e01100",
+        "DPAD": "e03240",
+        "TIRAD": "e01400",
+        "SLINT": "e18400",
+        "SEHEALTH": "e03270",
+        "KEOGH": "e03300",
+        "MEDEX": "e17500"
     }
     data = data.rename(columns=RENAMES)
 
     # add record ID
-    data["RECID"] = data.index + 1
+    data["RECID"] = range(1, len(data.index) + 1)
 
     # add AGI bins
-    # TODO: figure out why this was causing an error
-    # data = add_agi_bin(data, "agi")
+    data = add_agi_bin(data, "agi")
     data = drop_vars(data)
     # clean data
     data = data.fillna(0.)
@@ -89,12 +117,13 @@ def final_prep(data):
     data['e00200'] = data['e00200p'] + data['e00200s']
     data['e00900'] = data['e00900p'] + data['e00900s']
     data['e02100'] = data['e02100p'] + data['e02100s']
+    data['e00650'] = np.minimum(data['e00600'], data['e00650'])
     data['s006'] *= 100
 
     return data
 
 
 if __name__ == "__main__":
-    data = pd.read_csv("raw_cps.csv")
-    cps = final_prep(data)
-    cps.to_csv("pycps.csv", index=False)
+    data = pd.read_csv("cps_raw.csv.gz")
+    data = final_prep(data)
+    data.to_csv("cps.csv.gz", index=None, compression="gzip")

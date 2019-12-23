@@ -65,6 +65,6 @@ def target(cps, state_data_link):
     for var, cps_vars in VAR_MAP.items():
         factor_array = factor_df[var][cps["fips"]].values
         for v in cps_vars:
-            cps[v] += factor_array
+            cps[v] *= factor_array
 
     return cps
