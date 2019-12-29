@@ -243,6 +243,20 @@ def imputation(data, logit_betas, ols_betas, tobit_betas):
         z1 < _prob, dpad_base + 0.25 * z2, 0.
     )
 
+    # interest paid calculations
+    married = (data["mars"] == 2).astype(int)
+    ratio = (-0.0115935 * data["age_head"] +
+             0.0138109 * data["fam_size"] +
+             - 0.0336637 * married +
+             0.0163805 * data["lntot_inc"] +
+             0.8048336)
+    ratio = np.maximum(0, np.minimum(1, ratio))
+    factor = 1.73855
+    home_value = data["prop_value"] * data["home_owner"] * factor
+    mortgage_debt = ratio * home_value
+    mortgage_interest = mortgage_debt * 0.0575
+    data["e19200"] = mortgage_interest
+
     # final adjustments
     data["DPAD"] *= 0.3
     data["ADJIRA"] = np.minimum(data["ADJIRA"], 6000.) * 1.3

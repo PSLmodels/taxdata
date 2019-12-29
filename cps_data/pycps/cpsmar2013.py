@@ -792,7 +792,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
         # C-TAM SNAP imputations only contain records for households receiving
         # benefits. Catch the error for those that don't.
         try:
-            record["snap_impute"] = SNAP[str(h_seq)]["snap_impute"]
+            record["snap_impute"] = SNAP[h_seq]["snap_impute"]
         except KeyError:
             record["snap_impute"] = 0.
     return record
@@ -851,7 +851,7 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
 
     if exportcsv:
         print("Converting to DataFrame")
-        cpsmar = pd.DataFrame(cps_list).fillna(0)
+        cpsmar = pd.DataFrame(record_list).fillna(0)
         print("Exporting CSV")
         export_path = Path(DATA_PATH, f"cpsmar{year}.csv")
         cpsmar.to_csv(export_path, index=False)

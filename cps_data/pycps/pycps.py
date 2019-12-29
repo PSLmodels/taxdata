@@ -124,22 +124,6 @@ def is_dependent(person, unit):
     return True
 
 
-def remove_dependent(tu, dependent):
-    if dependent["a_age"] < 6:
-        tu.nu06 -= 1
-    if dependent["a_age"] < 13:
-        tu.nu13 -= 1
-    if dependent["a_age"] <= 17:
-        tu.nu18 -= 1
-        tu.n24 -= 1
-    elif 18 <= dependent["a_age"] <= 20:
-        tu.n1820 -= 1
-    elif dependent["a_age"] >= 21:
-        tu.n21 -= 1
-        if dependent["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
-            tu.elderly_dependents -= 1
-
-
 def create_units(data, year, verbose=False):
     """
     Logic for iterating through households and creating tax units
@@ -209,10 +193,15 @@ def create_units(data, year, verbose=False):
             if verbose:
                 print("dep filer", person["a_lineno"])
             tu = TaxUnit(person, year, dep_status=True)
-            # remove_dependent(units[person["claimer"]], person)
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
+            if verbose:
+                print(units[person['claimer']].n24)
             units[person["a_lineno"]] = tu
+    if verbose:
+        for unit in units.values():
+            print(unit.n24)
+        print("!!!!!!!!!!!")
     return [unit.output() for unit in units.values()]
 
 

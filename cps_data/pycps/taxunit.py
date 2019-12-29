@@ -50,7 +50,7 @@ class TaxUnit:
         self.EIC = 0
         self.dep_stat = 0
         if dep_status:
-            self.XTOT = 0
+            # self.XTOT = 0
             self.dep_stat = 1
         self.mars = 1  # start with being single
 
@@ -62,7 +62,21 @@ class TaxUnit:
         self.nu13 = 0
         self.n24 = 0
         self.elderly_dependents = 0
+        self.f2441 = 0
         self.check_age(data["a_age"])
+
+        # home related data
+        self.home_owner = 0
+        if not dep_status and data["h_tenure"] == 1:
+            self.home_owner = 1
+        # property taxes
+        self.prop_tax = data["prop_tax"]
+        # property value
+        self.prop_value = data["hprop_val"]
+        # presence of a mortgage
+        self.mortgage_yn = 0
+        if data["hpres_mort"] == 1:
+            self.mortgage_yn = 1
 
         # list to hold line numbers of dependents and spouses
         self.deps_spouses = []
@@ -125,23 +139,25 @@ class TaxUnit:
             self.nu06 -= 1
         if dependent["a_age"] < 13:
             self.nu13 -= 1
-        if dependent["a_age"] <= 17:
-            self.nu18 -= 1
+        if dependent["a_age"] < 17:
             self.n24 -= 1
-        elif 18 <= dependent["a_age"] <= 20:
+        if dependent["a_age"] < 18:
+            self.nu18 -= 1
+        elif 18 <= dependent["a_age"] < 21:
             self.n1820 -= 1
         elif dependent["a_age"] >= 21:
             self.n21 -= 1
             if dependent["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 self.elderly_dependents -= 1
+        self.XTOT -= 1
 
     def check_age(self, age: int, dependent: bool = False):
         """
         Modify the age variables in the tax unit
         """
-        if age <= 17:
+        if age < 18:
             self.nu18 += 1
-        elif 18 <= age <= 20:
+        elif 18 <= age < 21:
             self.n1820 += 1
         elif age >= 21:
             self.n21 += 1
@@ -153,6 +169,7 @@ class TaxUnit:
                 self.nu06 += 1
             if age < 13:
                 self.nu13 += 1
+                self.f2441 += 1
             if age >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 self.elderly_dependents += 1
 

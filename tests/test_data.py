@@ -270,22 +270,40 @@ def check_cps_benefits(data):
 
 
 @pytest.mark.requires_pufcsv
-def test_pufcsv_data(puf, metadata, test_path):
-    """
-    Test PUF data.
-    """
-    unique_recid(puf, 'PUF')
-    min_max(puf, metadata, 'puf')
-    relationships(puf, 'PUF')
-    variable_check(test_path, puf, 'puf')
+def test_puf_unique_recid(puf, metadata, test_path):
+    unique_recid(puf, "PUF")
 
 
-def test_cpscsv_data(cps, metadata, test_path):
-    """
-    Test CPS data.
-    """
-    unique_recid(cps, 'CPS')
-    min_max(cps, metadata, 'cps')
-    relationships(cps, 'CPS')
-    variable_check(test_path, cps, 'cps')
+@pytest.mark.requires_pufcsv
+def test_puf_min_max(puf, metadata):
+    min_max(puf, metadata, "puf")
+
+
+@pytest.mark.requires_pufcsv
+def test_puf_relationships(puf):
+    relationships(puf, "PUF")
+
+
+@pytest.mark.requires_pufcsv
+def test_puf_variables(puf, test_path):
+    variable_check(test_path, puf, "puf")
+
+
+def test_cps_unique_recid(cps):
+    unique_recid(cps, "CPS")
+
+
+def test_cps_min_max(cps, metadata):
+    min_max(cps, metadata, "cps")
+
+
+def test_cps_relationships(cps):
+    relationships(cps, "CPS")
+
+
+def test_cps_variables(cps, test_path):
+    variable_check(test_path, cps, "cps")
+
+
+def test_cps_benefits(cps):
     check_cps_benefits(cps)

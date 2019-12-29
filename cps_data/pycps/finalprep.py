@@ -21,7 +21,7 @@ def drop_vars(data):
         'e18400', 'e18500', 'e19200', 'e19800', 'e20100', 'e20400', 'g20500',
         'e24515', 'e24518', 'e26270', 'e27200', 'e32800', 'e58990', 'e62900',
         'e87530', 'elderly_dependents', 'f2441', 'f6251', 'n24',
-        'nu05', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
+        'nu06', 'nu13', 'nu18', 'n1820', 'n21', 'p08000', 'p22250', 'p23250',
         'p25470', 'p87521', 's006', 'e03210', 'ssi_ben', 'snap_ben',
         'vet_ben', 'mcare_ben', 'mcaid_ben', 'oasdi_ben', 'other_ben',
         'h_seq', 'ffpos', 'fips', 'a_lineno', 'tanf_ben', 'wic_ben',
@@ -101,7 +101,10 @@ def final_prep(data):
         "SLINT": "e18400",
         "SEHEALTH": "e03270",
         "KEOGH": "e03300",
-        "MEDEX": "e17500"
+        "MEDEX": "e17500",
+        "CDC": "e32800",
+        "MISCITEM": "e20400",
+        "prop_tax": "e18500"
     }
     data = data.rename(columns=RENAMES)
 
@@ -111,6 +114,9 @@ def final_prep(data):
     # add AGI bins
     data = add_agi_bin(data, "agi")
     data = drop_vars(data)
+    print('Adding zero pencon_p and pencon_s variables')
+    data["pencon_p"] = np.zeros(len(data.index), dtype=np.int32)
+    data["pencon_s"] = np.zeros(len(data.index), dtype=np.int32)
     # clean data
     data = data.fillna(0.)
     data = data.astype(np.int32)

@@ -102,7 +102,7 @@ def read_benefits(year):
         ["wic_women", "wic_infants", "wic_children"]
     ].sum(axis=1)
     # Set index to pernumid
-    WIC.set_index("peridnum")
+    WIC = WIC.set_index("peridnum")
     WIC = WIC.to_dict("index")
 
     return MCAID, MCARE, VB, SNAP, SSI, SS, HOUSING, TANF, UI, WIC
