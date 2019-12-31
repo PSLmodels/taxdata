@@ -66,10 +66,10 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     _units = []
     for year in CPS_FILES:
         print(f"Creating Tax Units for {year}")
-        _yr_unit = pycps(cps_dfs[year], year, verbose)
+        _yr_units = pycps(cps_dfs[year], year, verbose)
         if validate:
-            validate_cps_units(cps_dfs[year], _units, year)
-        _units.append(_yr_unit)
+            validate_cps_units(cps_dfs[year], _yr_units, year)
+        _units.append(_yr_units)
 
     # create a single DataFrame
     print("Combining tax units")
@@ -118,8 +118,13 @@ def validate_cps_units(raw_cps, units, year):
     """
     print(f"Validating for {year}")
     gdf = units.groupby("h_seq")
-    errors = gdf.progress_apply(validation.compare, cps=raw_cps, year=year)
-    num_errors = errors.sum()
+    # errors = gdf.progress_apply(validation.compare, cps=raw_cps, year=year)
+    num_errors = 0
+    # Loop through each household
+    for hh in tqdm(raw_cps):
+        h_seq = hh[0]["h_seq"]
+        hh_units = gdf.get_group(h_seq)
+        num_errors += validation.compare(hh_units, hh, h_seq, year)
     if num_errors > 0:
         save_path = Path(CUR_PATH, f"errors{year}.csv")
         save_path.write_text(validation.output_str)
