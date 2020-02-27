@@ -62,7 +62,7 @@ def update_econproj(econ_url, cg_url, baseline):
     print("Updating CBO Economic Proections")
     # read in economic projections
     econ_proj = pd.read_excel(econ_url, sheet_name="2. Calendar Year",
-                              skiprows=5, index_col=[0, 1, 2, 3])
+                              skiprows=6, index_col=[0, 1, 2, 3])
     # extract values for needed rows in the excel file
     # some variables have a missing value in the multi-index. Use iloc
     # to extract needed variables from them.
@@ -89,7 +89,7 @@ def update_econproj(econ_url, cg_url, baseline):
     cg_proj = pd.read_excel(cg_url, sheet_name="6. Capital Gains Realizations",
                             skiprows=7, header=[0, 1])
     var = "Capital Gains Realizationsa"
-    cgns = cg_proj[var][billions].loc[econ_proj.columns]
+    cgns = cg_proj[var]['Billions of Dollars'].loc[list(range(2017, 2031))]
 
     # create one DataFrame from all of the data
 
@@ -114,8 +114,8 @@ def update_econproj(econ_url, cg_url, baseline):
 
 
 def update_cbo():
-    econ_url = "https://www.cbo.gov/system/files/2019-01/51135-2019-01-economicprojections.xlsx"
-    cg_url = "https://www.cbo.gov/system/files/2019-02/51138-2019-01-revenueprojections.xlsx"
+    econ_url = "https://www.cbo.gov/system/files/2020-01/51135-2020-01-economicprojections_0.xlsx"
+    cg_url = "https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx"
     baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"),
                            index_col=0)
     baseline = update_econproj(econ_url, cg_url, baseline)

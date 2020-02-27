@@ -57,6 +57,8 @@ def main():
                                           stage_2_targets, 2028, .50)
     weights['WT2029'] = solve_lp_for_year(cps, stage_1_factors,
                                           stage_2_targets, 2029, .50)
+    weights['WT2030'] = solve_lp_for_year(cps, stage_1_factors,
+                                          stage_2_targets, 2030, .50)
 
     weights = weights.round(0).astype('int64')
     weights.to_csv(os.path.join(CUR_PATH, 'cps_weights.csv.gz'),
