@@ -13,3 +13,5 @@ dependencies:
 - tqdm
 - requests
 - lxml
+- xlrd
+- pulp
