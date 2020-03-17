@@ -26,25 +26,34 @@ def find_person(data: list, lineno: int) -> dict:
     raise ValueError(msg)
 
 
-def eic_eligible(person: dict) -> int:
+def eic_eligible(person: dict, age_head: int, age_spouse: int,
+                 mars: int) -> int:
     """
     Function to determine if a dependent is an EIC eligible child
     df: DataFrame of just dependents
     https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit/qualifying-child-rules
     """
     # relationship test
-    relationship = person.a_axprrp.isin([5, 7, 9, 11])
+    relationship = person['a_exprrp'] in [5, 7, 9, 11]
     # age test
     eic_max_age = FILINGPARAMS.eic_child_age[CPS_YR_IDX]
     if person["a_ftpt"] == 1:
         eic_max_age = FILINGPARAMS.eic_child_age_student[CPS_YR_IDX]
     # person is between 1 and the max age
     age = (0 <= person["a_age"] <= eic_max_age)
+    # person is younger than filer or their spouse
+    if mars == 1:
+        age *= person["a_age"] < age_head
+    elif mars == 2:
+        age *= person["a_age"] < age_head or person["a_age"] < age_spouse
     # assume they pass the residency test
     # assume they pass joint filer test for now
 
     # EIC eligible if they pass both tests
-    eligible = int(relationship & age)
+    eligible = int(relationship and age)
+
+    # make sure eligible is 1 or 0
+    assert eligible == 1 or eligible == 0
 
     return eligible
 
@@ -101,7 +110,7 @@ def is_dependent(person, unit):
             return False
         # assume that they do live with you
         # financial support
-        total_support = unit.tot_inc + person["ptotval"]
+        total_support = unit.tot_inc + person["tot_inc"]
         try:
             pct_support = person["ptotval"] / total_support
         except ZeroDivisionError:
@@ -132,6 +141,9 @@ def create_units(data, year, verbose=False):
     # we can avoid making children their own units just because
     # they're listed ahead of their parents
     data = sorted(data, key=itemgetter("ffpos", "a_famrel"))
+    hh_inc = 0  # sum up total income in the household. Used for HH status
+    for person in data:
+        hh_inc += person["tot_inc"]
     units = {}
     dependents = []
     for person in data:
@@ -143,7 +155,7 @@ def create_units(data, year, verbose=False):
             if verbose:
                 print("making unit", person["a_lineno"])
             person["p_flag"] = True
-            tu = TaxUnit(person, year)
+            tu = TaxUnit(person, year, hh_inc)
             # loop through the rest of the household for
             # spouses and dependents
             if person["a_spouse"] != 0:
@@ -158,7 +170,10 @@ def create_units(data, year, verbose=False):
                     if is_dep:
                         if verbose:
                             print("adding dependent", _person["a_lineno"])
-                        tu.add_dependent(_person)
+                        _eic = eic_eligible(
+                            _person, tu.age_head, tu.age_spouse, tu.mars
+                        )
+                        tu.add_dependent(_person, _eic)
                         dependents.append(_person)
             units[person["a_lineno"]] = tu
 

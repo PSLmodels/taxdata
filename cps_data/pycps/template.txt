@@ -68,7 +68,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
 
     # calculate earned and unearned income
     EARNED_INC_VARS = [
-        "wsal_val", "semp_val", "frse_val"
+        "wsal_val", "semp_val", "frse_val", "rnt_val"
     ]
     UNEARNED_INC_VARS = [
         "int_val", "div_val", "rtm_val",
@@ -76,6 +76,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     ]
     record["earned_inc"] = sum([record[var] for var in EARNED_INC_VARS])
     record["unearned_inc"] = sum([record[var] for var in UNEARNED_INC_VARS])
+    record["tot_inc"] = record["earned_inc"] + record["unearned_inc"]
 
     if benefits:
         # add benefit variables from the CPS
@@ -99,6 +100,15 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
             record["snap_impute"] = SNAP[h_seq]["snap_impute"]
         except KeyError:
             record["snap_impute"] = 0.
+        # replace values of unemployment and social security from original CPS
+        record["unearned_inc"] -= record["rtm_val"]
+        record["unearned_inc"] -= record["uc_val"]
+        record["unearned_inc"] += record["UI_impute"]
+        record["unearned_inc"] += record["ss_impute"]
+        record["tot_inc"] -= record["rtm_val"]
+        record["tot_inc"] -= record["uc_val"]
+        record["tot_inc"] += record["UI_impute"]
+        record["tot_inc"] += record["ss_impute"]
     return record
 
 

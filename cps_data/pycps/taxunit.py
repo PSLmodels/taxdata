@@ -5,7 +5,8 @@ INCOME_TUPLES = [
     ("wsal_val", "e00200"), ("int_val", "interest"),
     ("semp_val", "e00900"), ("frse_val", "e02100"),
     ("div_val", "divs"), ("rnt_val", "rents"),
-    ("rtm_val", "e01500"), ("alimony", "e00800")
+    ("rtm_val", "e01500"), ("alimony", "e00800"), ("ss_impute", "e02400"),
+    ("UI_impute", "e02300")
 ]
 BENEFIT_TUPLES = [
     ("MedicaidX", "mcaid_ben"), ("housing_impute", "housing_ben"),
@@ -17,7 +18,8 @@ BENEFIT_TUPLES = [
 
 
 class TaxUnit:
-    def __init__(self, data: dict, year: int, dep_status: bool = False):
+    def __init__(self, data: dict, year: int, hh_inc: float = 0.0,
+                 dep_status: bool = False):
         """
         Parameters
         ----------
@@ -46,13 +48,17 @@ class TaxUnit:
         self.ffpos = data["ffpos"]
         self.s006 = data["marsupwt"]
         self.FLPDYR = year
-        self.XTOT = 1
         self.EIC = 0
         self.dep_stat = 0
         if dep_status:
             # self.XTOT = 0
             self.dep_stat = 1
         self.mars = 1  # start with being single
+        # update marital status based on CPS indication
+        if data["a_maritl"] in [1, 2, 3]:
+            self.mars = 2
+        self.XTOT = self.mars
+        self.hh_inc = hh_inc
 
         # age data
         self.nu18 = 0
@@ -71,6 +77,8 @@ class TaxUnit:
             self.home_owner = 1
         # property taxes
         self.prop_tax = data["prop_tax"]
+        # state and local taxes
+        self.statetax = data["statetax_ac"]
         # property value
         self.prop_value = data["hprop_val"]
         # presence of a mortgage
@@ -94,15 +102,14 @@ class TaxUnit:
                 self, tc_var, getattr(self, tc_var) + spouse[cps_var]
             )
         self.agi += spouse["agi"]
-        self.XTOT += 1
         setattr(self, "blind_spouse", spouse["pediseye"])
         self.deps_spouses.append(spouse["a_lineno"])
         setattr(self, "age_spouse", spouse["a_age"])
         spouse["s_flag"] = True
         self.check_age(spouse["a_age"])
-        self.mars = 2
+        self.statetax += spouse["statetax_ac"]
 
-    def add_dependent(self, dependent: dict):
+    def add_dependent(self, dependent: dict, eic: int):
         """
         Add dependent to the unit
         """
@@ -116,7 +123,7 @@ class TaxUnit:
             )
         self.check_age(dependent["a_age"], True)
         self.XTOT += 1
-        self.EIC += 1
+        self.EIC += eic
         self.deps_spouses.append(dependent["a_lineno"])
         dependent["d_flag"] = True
         dependent["claimer"] = self.a_lineno
@@ -178,14 +185,21 @@ class TaxUnit:
         Return tax attributes as a dictionary
         """
         # add unemployment compensation and social security to total income
-        self.tot_inc += self.e02300 + self.e02400
+        # self.tot_inc += self.e02300 + self.e02400
         # set marital status variable
-        if self.mars == 1 & len(self.deps_spouses) > 0:
-            # for now assume that if they're single and have any dependents
-            # they can file as head of household
-            self.mars = 4
+        if self.hh_inc > 0:
+            inc_pct = self.tot_inc / self.hh_inc
+            if inc_pct > 0.99:
+                if self.mars == 1 & len(self.deps_spouses) > 0:
+                    self.mars = 4
         # determine if the unit is a filer here.
         self._must_file()
+        # enforce that all spouse income variables are zero for non-married
+        if self.mars != 2:
+            for _, tc_var in INCOME_TUPLES:
+                value = getattr(self, f"{tc_var}s")
+                msg = f"{tc_var}s is not zero for household {self.h_seq}"
+                assert value == 0, msg
         return self.__dict__
 
     # private methods

@@ -2,6 +2,7 @@
 State level targeting of certain income variables
 """
 import pandas as pd
+import numpy as np
 
 
 def target(cps, state_data_link):
@@ -49,7 +50,8 @@ def target(cps, state_data_link):
         for state, fips in FIPS_DICT.items():
             sub_cps = cps[cps["fips"] == fips]
             target = state_data[var][state] * 1000  # scale up IRS data
-            cps_uw_total = sub_cps[cps_vars].sum(axis=1)
+            # only count filers
+            cps_uw_total = sub_cps[cps_vars].sum(axis=1) * sub_cps["filer"]
             cps_sum = (cps_uw_total * sub_cps["s006"]).sum()
             # compute factor
             factor = target / cps_sum
@@ -66,5 +68,15 @@ def target(cps, state_data_link):
         factor_array = factor_df[var][cps["fips"]].values
         for v in cps_vars:
             cps[v] *= factor_array
+
+    # recalculate total income
+    cps["e00200"] = cps["e00200p"] + cps["e00200s"]
+    cps["e00900"] = cps["e00900p"] + cps["e00900p"]
+    cps["e02100"] = cps["e02100p"] + cps["e02100"]
+    cps["e00650"] = np.minimum(cps["divs"], cps["e00650"])
+    cps["tot_inc"] = cps[[
+        "e00200", "e00300", "e00900", "divs", "e00800",
+        "e01500", "rents", "e02100", "e02400", "CGAGIX"
+    ]].sum(axis=1)
 
     return cps
