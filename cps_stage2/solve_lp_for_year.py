@@ -48,59 +48,39 @@ def solve_lp_for_year(data, factors, targets, year, tol):
     ucomp = data.UCOMP * s006
 
     # wage distribution
-    wage1 = np.where((data.e00100 <= 10000), data.WAS, 0) * s006
-    wage2 = np.where((data.e00100 > 10000) & (data.e00100 <= 20000),
-                     data.WAS, 0) * s006
-    wage3 = np.where((data.e00100 > 20000) & (data.e00100 <= 30000),
-                     data.WAS, 0) * s006
-    wage4 = np.where((data.e00100 > 30000) & (data.e00100 <= 40000),
-                     data.WAS, 0) * s006
-    wage5 = np.where((data.e00100 > 40000) & (data.e00100 <= 50000),
-                     data.WAS, 0) * s006
-    wage6 = np.where((data.e00100 > 50000) & (data.e00100 <= 75000),
-                     data.WAS, 0) * s006
-    wage7 = np.where((data.e00100 > 75000) & (data.e00100 <= 100000),
-                     data.WAS, 0) * s006
-    wage8 = np.where((data.e00100 > 100000), data.WAS, 0) * s006
+    def wage_bin(left, right):
+        # Don't use pandas.Series.between since that's only inclusive on
+        # both sides or neither side.
+        return np.where((data.e00100 > left) & (data.e00100 <= right),
+                        data.WAS, 0) * s006
+    
+    wage1 = wage_bin(-np.inf, 10000)
+    wage2 = wage_bin(10000, 20000)
+    wage3 = wage_bin(20000, 30000)
+    wage4 = wage_bin(30000, 40000)
+    wage5 = wage_bin(40000, 50000)
+    wage6 = wage_bin(50000, 75000)
+    wage7 = wage_bin(75000, 100000)
+    wage8 = wage_bin(100000, np.inf)
 
-    lhs_vars['single_returns'] = single_returns
-    lhs_vars['joint_returns'] = joint_returns
-    lhs_vars['hh_returns'] = hh_returns
-    lhs_vars['returns_w_ss'] = returns_w_ss
-    lhs_vars['dep_exemptions'] = dep_exemptions
-    lhs_vars['interest'] = interest
-    lhs_vars['dividend'] = dividend
-    lhs_vars['biz_income'] = biz_income
-    lhs_vars['biz_loss'] = biz_loss
-    lhs_vars['cap_gain'] = cap_gain
-    lhs_vars['pension'] = pension
-    lhs_vars['sch_e_income'] = sch_e_income
-    lhs_vars['sch_e_loss'] = sch_e_loss
-    lhs_vars['ss_income'] = ss_income
-    lhs_vars['ucomp'] = ucomp
-    lhs_vars['wage1'] = wage1
-    lhs_vars['wage2'] = wage2
-    lhs_vars['wage3'] = wage3
-    lhs_vars['wage4'] = wage4
-    lhs_vars['wage5'] = wage5
-    lhs_vars['wage6'] = wage6
-    lhs_vars['wage7'] = wage7
-    lhs_vars['wage8'] = wage8
+    LHS_VAR_NAMES = [
+        'single_returns', 'joint_returns', 'hh_returns', 'returns_w_ss',
+        'dep_exemptions', 'interest', 'dividend', 'biz_income', 'biz_loss',
+        'cap_gain', 'pension', 'sch_e_income', 'sch_e_loss', 'ss_income',
+        'ucomp', 'wage1', 'wage2', 'wage3', 'wage4', 'wage5', 'wage6', 'wage7',
+        'wage8']
+    
+    for i in LHS_VAR_NAMES:
+        lhs_vars[i] = globals()[i]
 
-    print('Preparing Targets for {}'.format(year))
-    apopn = factors['APOPN'][year]
-    aints = factors['AINTS'][year]
-    adivs = factors['ADIVS'][year]
-    aschci = factors['ASCHCI'][year]
-    aschcl = factors['ASCHCL'][year]
-    acgns = factors['ACGNS'][year]
-    atxpy = factors['ATXPY'][year]
-    aschei = factors['ASCHEI'][year]
-    aschel = factors['ASCHEL'][year]
-    asocsec = factors['ASOCSEC'][year]
-    apopsnr = factors['APOPSNR'][year]
-    aucomp = factors['AUCOMP'][year]
-    awage = factors['AWAGE'][year]
+    print('Preparing Targets for {}...'.format(year))
+    FACTOR_VAR_NAMES = [
+        'apopn', 'aints', 'adivs', 'aschci', 'aschcl', 'acgns', 'atxpy',
+        'aschei', 'aschel', 'asocsec', 'apopsnr', 'aucomp', 'awage'
+    ]
+    
+    for i in FACTOR_VAR_NAMES:
+        exec(i + " = factors['" + i.upper() + "'][year]")
 
     year = str(year)
     rhs_vars = {}
@@ -113,52 +93,33 @@ def solve_lp_for_year(data, factors, targets, year, tol):
     target_name = 'Dep_return'
     rhs_vars['dep_exemptions'] = (targets[year][target_name] -
                                   dep_exemptions.sum())
-    rhs_vars['interest'] = target(targets[year]['INTS'], apopn, aints,
-                                  interest.sum())
-    rhs_vars['dividend'] = target(targets[year]['DIVS'], apopn, adivs,
-                                  dividend.sum())
-    rhs_vars['biz_income'] = target(targets[year]['SCHCI'], apopn, aschci,
-                                    biz_income.sum())
-    rhs_vars['biz_loss'] = target(targets[year]['SCHCL'], apopn, aschcl,
-                                  biz_loss.sum())
-    rhs_vars['cap_gain'] = target(targets[year]['CGNS'], apopn, acgns,
-                                  cap_gain.sum())
-    rhs_vars['pension'] = target(targets[year]['Pension'], apopn, atxpy,
-                                 pension.sum())
-    rhs_vars['sch_e_income'] = target(targets[year]['SCHEI'], apopn, aschei,
-                                      sch_e_income.sum())
-    rhs_vars['sch_e_loss'] = target(targets[year]['SCHEL'], apopn, aschel,
-                                    sch_e_loss.sum())
-    rhs_vars['ss_income'] = target(targets[year]['SS'], apopsnr, asocsec,
-                                   ss_income.sum())
-    rhs_vars['ucomp'] = target(targets[year]['UCOMP'], apopn, aucomp,
-                               ucomp.sum())
-    rhs_vars['wage1'] = target(targets[year]['wage1'], apopn, awage,
-                               wage1.sum())
-    rhs_vars['wage2'] = target(targets[year]['wage2'], apopn, awage,
-                               wage2.sum())
-    rhs_vars['wage3'] = target(targets[year]['wage3'], apopn, awage,
-                               wage3.sum())
-    rhs_vars['wage4'] = target(targets[year]['wage4'], apopn, awage,
-                               wage4.sum())
-    rhs_vars['wage5'] = target(targets[year]['wage5'], apopn, awage,
-                               wage5.sum())
-    rhs_vars['wage6'] = target(targets[year]['wage6'], apopn, awage,
-                               wage6.sum())
-    rhs_vars['wage7'] = target(targets[year]['wage7'], apopn, awage,
-                               wage7.sum())
-    rhs_vars['wage8'] = target(targets[year]['wage8'], apopn, awage,
-                               wage8.sum())
+    
+    def add_target(val, col, factor, pop=apopn):
+        rhs_vars[val] = target(targets[year][col], apopn, factor, 
+                               globals()[val].sum())
+    
+    add_target('interest', 'INTS', aints)
+    add_target('dividend', 'DIVS', adivs)
+    add_target('biz_income', 'SCHCI', aschci)
+    add_target('biz_loss', 'SCHCL', aschcl)
+    add_target('cap_gain', 'CGNS', acgns)
+    add_target('pension', 'Pension', atxpy)
+    add_target('sch_e_income', 'SCHEI', aschei)
+    add_target('sch_e_loss', 'SCHEL', aschel)
+    # Social Security income uses a different population variable.
+    add_target('ss_income', 'SS', asocsec, apopsnr)
+    add_target('ucomp', 'UCOMP', aucomp)
+    for i in [1, 2, 3, 4, 5, 6, 7, 8]:
+        add_target('wage' + str(i), 'wage' + str(i), awage)
 
     model_vars = ['single_returns', 'joint_returns', 'returns_w_ss',
                   'dep_exemptions', 'interest', 'dividend', 'biz_income',
                   'pension', 'ss_income', 'ucomp', 'wage1', 'wage2', 'wage3',
                   'wage4', 'wage5', 'wage6', 'wage7', 'wage8']
+    # 2014 data lacks dividend and ucomp.
     if year == '2014':
-        model_vars = ['single_returns', 'joint_returns', 'returns_w_ss',
-                      'dep_exemptions', 'interest', 'biz_income',
-                      'pension', 'ss_income', 'wage1', 'wage2', 'wage3',
-                      'wage4', 'wage5', 'wage6', 'wage7', 'wage8']
+        model_vars.remove('dividend')
+        model_vars.remove('ucomp')
 
     vstack_vars = []
     b = []  # list to hold the targets
@@ -177,22 +138,22 @@ def solve_lp_for_year(data, factors, targets, year, tol):
     a2 = np.array(-one_half_lhs)
 
     # set up LP model
-    print('Constructing LP Model')
-    LP = pulp.LpProblem('CPS Stage 2', pulp.LpMinimize)
+    print('Constructing LP Model...')
+    lp = pulp.LpProblem('CPS Stage 2', pulp.LpMinimize)
     r = pulp.LpVariable.dicts('r', data.index, lowBound=0)
     s = pulp.LpVariable.dicts('s', data.index, lowBound=0)
     # add objective function
-    LP += pulp.lpSum([r[i] + s[i] for i in data.index])
-    # add constrains
+    lp += pulp.lpSum([r[i] + s[i] for i in data.index])
+    # add constraints
     for i in data.index:
-        LP += r[i] + s[i] <= tol
+        lp += r[i] + s[i] <= tol
     for i in range(len(b)):
-        LP += pulp.lpSum([(a1[i][j] * r[j] + a2[i][j] * s[j])
+        lp += pulp.lpSum([(a1[i][j] * r[j] + a2[i][j] * s[j])
                           for j in data.index]) == b[i]
     print('Solving Model...')
     pulp.LpSolverDefault.msg = 1
-    LP.solve()
-    print(pulp.LpStatus[LP.status])
+    lp.solve()
+    print(pulp.LpStatus[lp.status])
 
     # apply r and s to the weights
     r_val = np.array([r[i].varValue for i in r])
