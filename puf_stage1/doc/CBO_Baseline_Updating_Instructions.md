@@ -52,7 +52,7 @@ variables.
 
 Previous Document: January 2019
 
-Current Document: January 2020 [with GDP and CPIU amended by May 2020 Interim Projections](https://www.cbo.gov/publication/56351#data) )
+Current Document: January 2020 [amended by May 2020 Interim Projections](https://www.cbo.gov/publication/56351#data))
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
