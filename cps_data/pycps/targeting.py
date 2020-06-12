@@ -33,9 +33,9 @@ def target(cps, state_data_link):
         "A00650": ["e00650"],
         "A00900": ["e00900p", "e00900s"],
         "A02300": ["e02300"],
-        "A01000": ["CGAGIX"],
+        # "A01000": ["CGAGIX"],
         "A03240": ["DPAD"],
-        "A03150": ["TIRAD"],
+        "A01400": ["TIRAD"],
         "A03270": ["SEHEALTH"],
         "A03210": ["SLINT"],
         "A07180": ["CDC"]
@@ -71,12 +71,15 @@ def target(cps, state_data_link):
 
     # recalculate total income
     cps["e00200"] = cps["e00200p"] + cps["e00200s"]
-    cps["e00900"] = cps["e00900p"] + cps["e00900p"]
-    cps["e02100"] = cps["e02100p"] + cps["e02100"]
+    cps["e00900"] = cps["e00900p"] + cps["e00900s"]
+    cps["e02100"] = cps["e02100p"] + cps["e02100s"]
     cps["e00650"] = np.minimum(cps["divs"], cps["e00650"])
     cps["tot_inc"] = cps[[
-        "e00200", "e00300", "e00900", "divs", "e00800",
-        "e01500", "rents", "e02100", "e02400", "CGAGIX"
+        "e00200", "e00300", "e00400", "e00900", "divs", "e00800",
+        "e01500", "rents", "e02100", "e02400", "CGAGIX", "e02300"
     ]].sum(axis=1)
+    assert np.allclose(cps["e00900"], cps[["e00900p", "e00900s"]].sum(axis=1))
+    assert np.allclose(cps["e02100"], cps[["e02100p", "e02100s"]].sum(axis=1))
+    assert np.allclose(cps["e00200"], cps[["e00200p", "e00200s"]].sum(axis=1))
 
     return cps

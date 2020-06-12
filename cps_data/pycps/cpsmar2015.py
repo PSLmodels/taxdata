@@ -765,7 +765,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     ]
     UNEARNED_INC_VARS = [
         "int_val", "div_val", "rtm_val",
-        "alimony", "uc_val"
+        "alimony", "uc_val", "ss_val"
     ]
     record["earned_inc"] = sum([record[var] for var in EARNED_INC_VARS])
     record["unearned_inc"] = sum([record[var] for var in UNEARNED_INC_VARS])
@@ -794,11 +794,11 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
         except KeyError:
             record["snap_impute"] = 0.
         # replace values of unemployment and social security from original CPS
-        record["unearned_inc"] -= record["rtm_val"]
+        record["unearned_inc"] -= record["ss_val"]
         record["unearned_inc"] -= record["uc_val"]
         record["unearned_inc"] += record["UI_impute"]
         record["unearned_inc"] += record["ss_impute"]
-        record["tot_inc"] -= record["rtm_val"]
+        record["tot_inc"] -= record["ss_val"]
         record["tot_inc"] -= record["uc_val"]
         record["tot_inc"] += record["UI_impute"]
         record["tot_inc"] += record["ss_impute"]
@@ -855,6 +855,9 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
             household.append(full_rec)
             if exportcsv:
                 record_list.append(full_rec)
+
+    # add the last household to the cps list
+    cps_list.append(household)
 
     if exportcsv:
         print("Converting to DataFrame")

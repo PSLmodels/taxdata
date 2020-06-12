@@ -70,7 +70,7 @@ def relationships(data, dataname):
     nsums = data[['nu18', 'n1820', 'n21']].sum(axis=1)
     if dataname == 'CPS':
         m = eq_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
-        assert np.all(data['XTOT'] == nsums), m
+        assert np.all(data['XTOT'] >= nsums), m
     else:
         # see Note (1) in docstring
         m = less_than_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')

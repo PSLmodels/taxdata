@@ -47,7 +47,7 @@ def add_agi_bin(data, col_name):
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
     """
     THRESHOLDS_K = [-np.inf, 0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 200,
-                    500, 1000, 1500, 2000, 5000, 10000, np.inf]
+                    500, 1000, 1500, 2000, np.inf]
     thresholds = [x * 1000 for x in THRESHOLDS_K]
     data["agi_bin"] = pd.cut(data[col_name], thresholds,
                              labels=np.arange(0, len(THRESHOLDS_K) - 1),
@@ -132,19 +132,21 @@ def adjust_helper(agi, var, target, weight, agi_bin):
                       var * weight, 0).sum()
     bin_15 = np.where((agi >= 1.5e6) & (agi < 2e6),
                       var * weight, 0).sum()
-    bin_16 = np.where((agi >= 2e6) & (agi < 5e6),
+    bin_16 = np.where((agi >= 2e6),
                       var * weight, 0).sum()
-    bin_17 = np.where((agi >= 5e6) & (agi < 1e7),
-                      var * weight, 0).sum()
-    bin_18 = np.where((agi >= 1e7),
-                      var * weight, 0).sum()
+    # bin_16 = np.where((agi >= 2e6) & (agi < 5e6),
+    #                   var * weight, 0).sum()
+    # bin_17 = np.where((agi >= 5e6) & (agi < 1e7),
+    #                   var * weight, 0).sum()
+    # bin_18 = np.where((agi >= 1e7),
+    #                   var * weight, 0).sum()
     # Create series holding each of the current totals
     actual_amts = pd.Series([bin_0, bin_1, bin_2, bin_3, bin_4, bin_5,
                              bin_6, bin_7, bin_8, bin_9, bin_10, bin_11,
-                             bin_12, bin_13, bin_14, bin_15, bin_16,
-                             bin_17, bin_18],
+                             bin_12, bin_13, bin_14, bin_15, bin_16
+                             ],
                             index=goal_amts.index)
-    ratios_index = [num for num in range(0, 19)]
+    ratios_index = [num for num in range(0, len(actual_amts))]
     # Determine the ratios
     ratios = pd.Series(goal_amts / actual_amts)
     ratios.index = ratios_index
@@ -160,6 +162,7 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     # assert that we don't lose any of the variable
     tot = (var*weight).sum()
     m = f'{tot}:::{goal_total}'
+
     assert np.allclose(np.array(goal_total), np.array(tot)), m
 
     return var
@@ -176,13 +179,16 @@ def adjust(data, targets):
     odiv_inc = copy.deepcopy(data["e00600"])
     qdiv_inc = copy.deepcopy(data["e00650"])
     biz_inc = copy.deepcopy(data["e00900"])
+    print("e00300")
     data["e00300"] = adjust_helper(inc, int_inc,
                                    targets["INT"], data["s006"],
                                    data["agi_bin"])
     div_ratio = data["e00600"] / (data["e00600"] + data["e00650"])
+    print("e00600")
     data["e00600"] = adjust_helper(inc, odiv_inc,
                                    targets["ODIV"], data["s006"],
                                    data["agi_bin"])
+    print("e00650")
     data["e00650"] = adjust_helper(inc, qdiv_inc,
                                    targets["QDIV"], data["s006"],
                                    data["agi_bin"])
@@ -196,6 +202,7 @@ def adjust(data, targets):
     sub = biz_ratio_s[data["MARS"] != 2]
     zeros = np.zeros_like(sub)
     assert np.allclose(sub, zeros)
+    print("e00900")
     data["e00900"] = adjust_helper(inc, biz_inc,
                                    targets["BIZ"], data["s006"],
                                    data["agi_bin"])
@@ -237,20 +244,18 @@ def final_prep(data):
         "MEDEX": "e17500",
         "CDC": "e32800",
         "MISCITEM": "e20400",
-        "prop_tax": "e18500",
-        "statetax": "e18400"
+        "realest": "e18500",
+        "statetax": "e18400",
+        "cash_char": "e19800",
+        "non_cash_char": "e20100"
     }
     data = data.rename(columns=RENAMES)
-    # these relationships can be thrown off during state targeting
-    data["e00650"] = np.minimum(data["e00600"], data["e00650"])
-    data["e00200"] = data["e00200p"] + data["e00200s"]
-    data["e00900"] = data["e00900p"] + data["e00900s"]
-    data["e02100"] = data["e02100p"] + data["e02100s"]
     # assert that no non-married filers have non-zero values for spouse income
     sub_data = data[data["MARS"] != 2]
     zeros = np.zeros_like(sub_data["MARS"])
     assert np.allclose(sub_data["e00200s"], zeros)
     assert np.allclose(sub_data["e00900s"], zeros)
+    assert np.allclose(sub_data["e02100s"], zeros)
 
     # add record ID
     data["RECID"] = range(1, len(data.index) + 1)

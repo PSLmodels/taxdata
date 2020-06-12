@@ -23,24 +23,6 @@ def impute(df, logit_betas, ols_betas, x_vars, l_adj, o_adj, prob_mult):
     -------
     Array of imputed values
     """
-
-    def impute_val(df, betas, x_vars, adj):
-        """
-        Determines the value of the deduction if the record is flagged as
-        'impute.' Otherwise it will return zero
-        """
-        # return zero if the record shouldn't receive an imputation
-        if not df["impute"]:
-            val = 0.
-        # Otherwise, determine the value given the beta coefficients
-        else:
-            xb = 0.
-            for param in x_vars:
-                xb += df[param] * betas[param]
-            z2 = np.random.randn()
-            val = np.exp(xb + adj * z2)
-        return val
-
     # calculate probability using coefficients from the logit model
     xb = np.zeros(len(df))
     for param in x_vars:
@@ -50,8 +32,13 @@ def impute(df, logit_betas, ols_betas, x_vars, l_adj, o_adj, prob_mult):
 
     # flag which records should recieve and imputation
     z1 = np.random.uniform(0, 1, len(prob))
-    df["impute"] = np.where(z1 <= prob, True, False)
-    val = df.apply(impute_val, axis=1, args=(ols_betas, x_vars, o_adj))
+    df["impute"] = np.where(z1 <= prob, 1, 0)
+    impute = np.where(z1 <= prob, 1, 0)
+    z2 = np.random.randn(len(prob))
+    xb = np.zeros(len(df))
+    for param in x_vars:
+        xb += df[param] * ols_betas[param]
+    val = np.exp(xb + o_adj * z2) * impute
     return val
 
 
@@ -71,26 +58,19 @@ def tobit(cps, betas, x_vars, sigma, prob_mult):
     -------
     val: an array of values for the imputed variable
     """
-
-    def impute_val(df, xb, sigma):
-        """
-        Computational portion of the imputation
-        """
-        lamb = norm.pdf(xb / sigma) / norm.cdf(xb / sigma)
-        charitable = xb + sigma * lamb
-        return charitable
-
     xb = np.zeros(len(cps))
     for param in x_vars:
         xb += cps[param] * betas[param]
 
     prob = norm.cdf(xb / sigma) * prob_mult
     z1 = np.random.uniform(0, 1, len(prob))
-    val = np.where(z1 <= prob, impute_val(cps, xb, sigma), 0.)
+    impute = np.where(z1 <= prob, 1, 0)
+    lamb = norm.pdf(xb / sigma) / norm.cdf(xb / sigma)
+    val = (xb + sigma * lamb) * impute
     return val
 
 
-def imputation(data, logit_betas, ols_betas, tobit_betas):
+def imputation(data, logit_betas, ols_betas):
     """
     This function uses beta values calculated using the IRS Public Use File
     to impute the value of certain itemized deductions for filing records
@@ -105,7 +85,7 @@ def imputation(data, logit_betas, ols_betas, tobit_betas):
         data["mars"] == 2, 1, 0
     )
     # cap family size at 5 to match with the PUF
-    data["fam_size"] = np.minimum(data["XTOT"], 5)
+    # data["fam_size"] = np.minimum(data["XTOT"], 5)
     data["agede"] = (
         (data["age_head"] >=
          FILINGPARAMS.elderly_age[CPS_YR_IDX]).astype(int) +
@@ -193,13 +173,14 @@ def imputation(data, logit_betas, ols_betas, tobit_betas):
 
     # tobit models
     TOBIT_XVARS = [
-        "lntot_inc", "joint_filer", "fam_size", "agede"
+        "lntot_inc", "joint_filer", "fam_size", "agede", "constant"
     ]
+
     data["CHARITABLE"] = tobit(
-        data, tobit_betas["charitable"], TOBIT_XVARS, 48765.45, 1.
+        data, ols_betas["char_ols"], TOBIT_XVARS, 48765.45, 1.
     )
     data["MISCITEM"] = tobit(
-        data, tobit_betas["misc"], TOBIT_XVARS, 14393.99, 0.3
+        data, ols_betas["misc_ols"], TOBIT_XVARS, 14393.99, 0.3
     )
 
     # add imputed capital gains and IRA distributions to total income
@@ -245,17 +226,28 @@ def imputation(data, logit_betas, ols_betas, tobit_betas):
 
     # interest paid calculations
     married = (data["mars"] == 2).astype(int)
-    ratio = (-0.0115935 * data["age_head"] +
-             0.0138109 * data["fam_size"] +
-             - 0.0336637 * married +
-             0.0163805 * data["lntot_inc"] +
-             0.8048336)
+    ln_value = (
+        0.006494 * data['age_head'] +
+        0.0170197 * data['fam_size'] +
+        0.1150217 * married +
+        0.4372681 * data['lntot_inc'] +
+        6.753875
+    )
+    home_value = np.exp(ln_value)
+    ratio = (
+        -0.0115935 * data["age_head"] +
+        0.0138109 * data["fam_size"] +
+        - 0.0336637 * married +
+        0.0163805 * data["lntot_inc"] +
+        0.8048336
+    )
     ratio = np.maximum(0, np.minimum(1, ratio))
     factor = 1.73855
-    home_value = data["prop_value"] * data["home_owner"] * factor
-    mortgage_debt = ratio * home_value
+    _home_value = home_value * data["home_owner"] * factor
+    mortgage_debt = ratio * _home_value
     mortgage_interest = mortgage_debt * 0.0575
     data["e19200"] = mortgage_interest
+    data['realest'] = _home_value * 0.0075
 
     # final adjustments
     data["DPAD"] *= 0.3
@@ -265,5 +257,6 @@ def imputation(data, logit_betas, ols_betas, tobit_betas):
     data['CDC'] = np.minimum(data['CDC'], 5000.) * .3333
     data['SEHEALTH'] = np.minimum(data['SEHEALTH'], 50000.) * 1.1
     data['CHARITABLE'] *= 0.175
+    data['tot_inc'] += data['CGAGIX']
 
     return data

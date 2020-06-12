@@ -46,19 +46,25 @@ class TaxUnit:
         self.h_seq = data["hhid"]
         self.a_lineno = data["a_lineno"]
         self.ffpos = data["ffpos"]
-        self.s006 = data["marsupwt"]
+        self.s006 = data["fsup_wgt"]
         self.FLPDYR = year
         self.EIC = 0
         self.dep_stat = 0
         if dep_status:
-            # self.XTOT = 0
+            self.XTOT = 0
             self.dep_stat = 1
         self.mars = 1  # start with being single
         # update marital status based on CPS indication
-        if data["a_maritl"] in [1, 2, 3]:
+        # note that to match the IRS PUF we include widowed people in this
+        if data["a_maritl"] in [1, 2, 3, 4]:
             self.mars = 2
         self.XTOT = self.mars
+        if data['filestat'] == 4:
+            self.mars = 4
         self.hh_inc = hh_inc
+        self.filer = 0
+        if data['filestat'] != 6:
+            self.filer = 1
 
         # age data
         self.nu18 = 0
@@ -78,7 +84,7 @@ class TaxUnit:
         # property taxes
         self.prop_tax = data["prop_tax"]
         # state and local taxes
-        self.statetax = data["statetax_ac"]
+        self.statetax = max(0., data["statetax_ac"])
         # property value
         self.prop_value = data["hprop_val"]
         # presence of a mortgage
@@ -88,6 +94,7 @@ class TaxUnit:
 
         # list to hold line numbers of dependents and spouses
         self.deps_spouses = []
+        self.depne = 0  # number of dependents
 
     def add_spouse(self, spouse: dict):
         """
@@ -108,14 +115,16 @@ class TaxUnit:
         spouse["s_flag"] = True
         self.check_age(spouse["a_age"])
         self.statetax += spouse["statetax_ac"]
+        # self.XTOT += 1
+        # self.mars = 2
 
     def add_dependent(self, dependent: dict, eic: int):
         """
         Add dependent to the unit
         """
-        for cps_var, tc_var in INCOME_TUPLES:
-            # self.tot_inc += dependent[cps_var]
-            setattr(self, tc_var, getattr(self, tc_var) + dependent[cps_var])
+        # for cps_var, tc_var in INCOME_TUPLES:
+        #     # self.tot_inc += dependent[cps_var]
+        #     setattr(self, tc_var, getattr(self, tc_var) + dependent[cps_var])
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             setattr(
@@ -127,16 +136,17 @@ class TaxUnit:
         self.deps_spouses.append(dependent["a_lineno"])
         dependent["d_flag"] = True
         dependent["claimer"] = self.a_lineno
+        self.depne += 1
 
     def remove_dependent(self, dependent: dict):
         """
         Remove dependent from the tax unit
         """
-        for cps_var, tc_var in INCOME_TUPLES:
-            dep_val = dependent[cps_var]
-            setattr(
-                self, tc_var, getattr(self, tc_var) - dep_val
-            )
+        # for cps_var, tc_var in INCOME_TUPLES:
+        #     dep_val = dependent[cps_var]
+        #     setattr(
+        #         self, tc_var, getattr(self, tc_var) - dep_val
+        #     )
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             setattr(
@@ -156,6 +166,7 @@ class TaxUnit:
             self.n21 -= 1
             if dependent["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
                 self.elderly_dependents -= 1
+        self.depne -= 1
         self.XTOT -= 1
 
     def check_age(self, age: int, dependent: bool = False):
@@ -187,19 +198,29 @@ class TaxUnit:
         # add unemployment compensation and social security to total income
         # self.tot_inc += self.e02300 + self.e02400
         # set marital status variable
-        if self.hh_inc > 0:
-            inc_pct = self.tot_inc / self.hh_inc
-            if inc_pct > 0.99:
-                if self.mars == 1 & len(self.deps_spouses) > 0:
-                    self.mars = 4
+        # if self.hh_inc > 0:
+        #     inc_pct = self.tot_inc / self.hh_inc
+        #     if inc_pct > 0.5:
+        #         if self.mars == 1 & len(self.deps_spouses) > 0:
+        #             self.mars = 4
         # determine if the unit is a filer here.
-        self._must_file()
+        # self._must_file()
         # enforce that all spouse income variables are zero for non-married
         if self.mars != 2:
             for _, tc_var in INCOME_TUPLES:
                 value = getattr(self, f"{tc_var}s")
                 msg = f"{tc_var}s is not zero for household {self.h_seq}"
                 assert value == 0, msg
+        # add family size variable
+        fam_size = 1 + self.depne
+        if self.mars == 2:
+            fam_size += 1
+        setattr(self, 'fam_size', fam_size)
+        m = f'{self.XTOT} != {sum([self.nu18, self.n1820, self.n21])}'
+        try:
+            assert self.XTOT >= sum([self.nu18, self.n1820, self.n21]), m
+        except AssertionError:
+            import pdb; pdb.set_trace()
         return self.__dict__
 
     # private methods

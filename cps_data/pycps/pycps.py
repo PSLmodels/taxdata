@@ -93,38 +93,78 @@ def find_claimer(claimerno: int, head_lineno: int, a_lineno: int,
     return False
 
 
-def is_dependent(person, unit):
+def is_dependent(person, unit, verbose=False):
     # if they're a spouse, tax unit, or claimed, return false
     flagged = person["p_flag"] or person["s_flag"] or person["d_flag"]
+    # only dependents can't have dependents
+    if unit.dep_stat == 1:
+        return False
     if flagged:
+        return False
+    # if they're already flagged as a dependent, give them to the person
+    # if they're married, don't let them be claimed as a dependent
+    if person["a_maritl"] in [1, 2, 3]:
+        return False
+    if person["dep_stat"] == unit.a_lineno:
+        return True
+    # if they were not claimed, don't let them be
+    if person["dep_stat"] == 0:
         return False
     # qualifying child
     if person["a_parent"] == unit.a_lineno:
+        if verbose:
+            print("Determining if person is a dependent child")
+        # only person claiming them
+        if person["d_flag"]:
+            if verbose:
+                print("Already claimed as a dependent")
+            return False
         age_req = FILINGPARAMS.dependent_child_age[CPS_YR_IDX]
         # age requirement increases for full time students
         if person["a_ftpt"] == 1:
             age_req = FILINGPARAMS.dependent_child_age_student[CPS_YR_IDX]
         if person["a_age"] > age_req:
+            if verbose:
+                print("Failed Age Test")
             return False
         if person["a_age"] > unit.age_head:
+            if verbose:
+                print("Failed Age Test")
             return False
         # assume that they do live with you
         # financial support
         total_support = unit.tot_inc + person["tot_inc"]
         try:
-            pct_support = person["ptotval"] / total_support
+            pct_support = person["tot_inc"] / total_support
         except ZeroDivisionError:
             pct_support = 0.0
         if pct_support > 0.5:
-            return False
-        # only person claiming them
-        if person["d_flag"]:
+            if verbose:
+                print("Failed Income Support Test")
             return False
     # qualifying relative
     else:
+        if verbose:
+            print("Determining if person is a qualifying relative")
         # assume they live with you
         # income test
         if person["ptotval"] > 4150:  # TODO: Add this to filing rules JSON
+            if verbose:
+                print("Failed Income Test")
+            return False
+        total_support = person["tot_inc"] + unit.tot_inc
+        try:
+            pct_support = person["tot_inc"] / total_support
+        except ZeroDivisionError:
+            pct_support = 0.0
+        if pct_support > 0.5:
+            if verbose:
+                print("Failed Income Test")
+            return False
+        # qualifying relationship
+        if person["a_exprrp"] not in [5, 7, 8, 9, 11]:
+            if verbose:
+                print("Failed Relationship Test")
             return False
         # only person claiming them
         if person["d_flag"]:
@@ -164,6 +204,8 @@ def create_units(data, year, verbose=False):
                     print("adding spouse", spouse["a_lineno"])
                 tu.add_spouse(spouse)
             for _person in data:
+                if verbose:
+                    print("Searching for dependents")
                 # only allow dependents in the same family
                 if person["ffpos"] == _person["ffpos"]:
                     is_dep = is_dependent(_person, tu)
@@ -201,9 +243,9 @@ def create_units(data, year, verbose=False):
         # TODO: set gross income threshold
         elif person["ptotval"] >= max(gross_thd, person["earned_inc"] + 350):
             filer = True
-        # if a dependent says they filed, we'll believe them
-        if person["filestat"] != 6:
-            filer = True
+        # if a dependent says they didn't file, we'll believe them
+        if person["filestat"] == 6:
+            filer = False
         if filer:
             if verbose:
                 print("dep filer", person["a_lineno"])
@@ -213,19 +255,74 @@ def create_units(data, year, verbose=False):
             if verbose:
                 print(units[person['claimer']].n24)
             units[person["a_lineno"]] = tu
-    if verbose:
-        for unit in units.values():
-            print(unit.n24)
-        print("!!!!!!!!!!!")
+
     return [unit.output() for unit in units.values()]
 
 
-def pycps(cps: pd.DataFrame, year: int, verbose: bool) -> pd.DataFrame:
+def _create_units(data, year, verbose=False):
+    """
+    Logic for iterating through households and creating tax units
+    """
+    # sort on familly position and family relationship so that
+    # we can avoid making children their own units just because
+    # they're listed ahead of their parents
+    data = sorted(data, key=itemgetter("ffpos", "a_famrel"))
+    hh_inc = 0  # sum up total income in the household. Used for HH status
+    for person in data:
+        hh_inc += person["tot_inc"]
+    units = {}
+    dependents = []
+    for person in data:
+        # if they're not a dependent or already claimed as a spouse, unit!
+        if person['dep_stat'] == 0 and not person['s_flag']:
+            # make them a tax unit
+            if verbose:
+                print("making unit", person["a_lineno"])
+            person["p_flag"] = True
+            tu = TaxUnit(person, year, hh_inc)
+            # loop through the rest of the household for
+            # spouses and dependents
+            if person["a_spouse"] != 0:
+                spouse = find_person(data, person["a_spouse"])
+                if verbose:
+                    print("adding spouse", spouse["a_lineno"])
+                tu.add_spouse(spouse)
+            for _person in data:
+                if verbose:
+                    print("Searching for dependents")
+                # only allow dependents in the same family
+                if person["a_lineno"] == _person["dep_stat"]:
+                    if verbose:
+                        print("adding dependent", _person["a_lineno"])
+                    _eic = eic_eligible(
+                        _person, tu.age_head, tu.age_spouse, tu.mars
+                    )
+                    tu.add_dependent(_person, _eic)
+                    dependents.append(_person)
+            units[person["a_lineno"]] = tu
+
+    # check and see if any dependents must file
+    # https://turbotax.intuit.com/tax-tips/family/should-i-include-a-dependents-income-on-my-tax-return/L60Hf4Rsg
+    for person in dependents:
+        if person['filestat'] != 6:
+            if verbose:
+                print("dep filer", person["a_lineno"])
+            tu = TaxUnit(person, year, dep_status=True)
+            # remove dependent from person claiming them
+            units[person["claimer"]].remove_dependent(person)
+            if verbose:
+                print(units[person['claimer']].n24)
+            units[person["a_lineno"]] = tu
+
+    return [unit.output() for unit in units.values()]
+
+
+def pycps(cps: list, year: int, verbose: bool) -> pd.DataFrame:
     """
     Core code for iterating through the households
     Parameters
     ----------
-    cps: Pandas DataFrame that contains the CPS
+    cps: List where each element is a household in the CPS
     """
     tax_units = []
     for hh in tqdm(cps):

@@ -90,8 +90,7 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     print("Imputing Variables")
     logit_betas = pd.read_csv(Path(DATA_PATH, "logit_betas.csv"), index_col=0)
     ols_betas = pd.read_csv(Path(DATA_PATH, "ols_betas.csv"), index_col=0)
-    tobit_betas = pd.read_csv(Path(DATA_PATH, "tobit_betas.csv"), index_col=0)
-    data = imputation(data, logit_betas, ols_betas, tobit_betas)
+    data = imputation(data, logit_betas, ols_betas)
     # target state totals
     print("Targeting State Level Data")
     STATE_DATA_LINK = "https://www.irs.gov/pub/irs-soi/14in54cmcsv.csv"
@@ -139,6 +138,6 @@ def validate_cps_units(raw_cps, units, year):
 
 if __name__ == "__main__":
     create(
-        exportcsv=False, exportpkl=False, exportraw=False, validate=False,
+        exportcsv=False, exportpkl=True, exportraw=False, validate=False,
         benefits=True, verbose=True
     )
