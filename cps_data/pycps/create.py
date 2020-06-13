@@ -41,6 +41,19 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
            benefits: bool = True, verbose: bool = False):
     """
     Logic for creating tax units from the CPS
+    Parameters
+    ----------
+    exportcsv: if True, the raw CPS file will be exported as a CSV
+    exportpkl: if True, the list version of the CPS used to create the tax
+               units will be saved as a pickle file
+    exportraw: if True, the CPS file that has not been modified will be
+               saved as a CSV
+    validate: if True, validation tests will be run on the tax units to ensure
+              all household income, benefits, and people are accounted for
+    benefits: if True, benefits imputed by C-TAM will be included in the tax
+              units
+    verbose: if True, additional progress information will be printed as the
+             scripts run
     """
     # add progress_apply to pandas if user wants to validate
     if validate:
