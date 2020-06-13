@@ -18,5 +18,4 @@ dependencies:
 - paramtools
 - cvxopt
 pip:
-- rpy2
 - tzlocal

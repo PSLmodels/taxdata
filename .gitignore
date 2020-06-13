@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints
+.vscode
 
 # Unit test report
 .pytest_cache/
