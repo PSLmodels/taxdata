@@ -1,7 +1,7 @@
 """
 Create a composite extract from the SOI 2009 Public Use File
-Input file: puf2009.sas7bdat
-Output file: SOIRETS2009.csv
+Input file: puf20011.csv
+Output file: None
 """
 # import pandas as pd
 import numpy as np

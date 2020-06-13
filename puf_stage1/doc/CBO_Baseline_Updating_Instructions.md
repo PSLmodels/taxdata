@@ -50,9 +50,9 @@ in `puf_stage1/updatecbo.py` with the link to the latest CBO economic projection
 and run the file. Or you could download the file and copy/paste the specific
 variables.
 
-Previous Document: August 2018
+Previous Document: January 2019
 
-Current Document: January 2019
+Current Document: January 2020
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -73,9 +73,9 @@ Current Document: January 2019
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: April 2018
+Previous: January 2019
 
-Current: January 2019
+Current: January 2020
 
 Notes: In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -89,9 +89,9 @@ the projections.
 
 Source: [IRS Publication 6187 Table 1B](https://www.irs.gov/statistics/projections-of-federal-tax-return-filings)
 
-Previous: [Fall 2016 Update](https://www.irs.gov/pub/irs-pdf/p6187.pdf)
+Previous: [Fall 2018 Update](https://www.irs.gov/pub/irs-soi/Pub6187.pdf)
 
-Current: [Fall 2018 Update](https://www.irs.gov/pub/irs-soi/Pub6187.pdf)
+Current: [Fall 2019 Update](https://www.irs.gov/pub/irs-pdf/p6187.pdf)
 
 Notes: The projections in the publication typically end a few years before the
 10-year projections do. We use the growth rate from the final year in the
@@ -104,9 +104,9 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2016 Report](https://www.ssa.gov/oact/TR/2016/VI_C_SRfyproj.html#306103)
+Previous: [2018 Report](https://www.ssa.gov/oact/tr/2018/VI_C_SRfyproj.html#306103)
 
-Current: [2018 Report](https://www.ssa.gov/oact/tr/2018/VI_C_SRfyproj.html#306103)
+Current: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
 
 Notes: Projections are taken directly from this table.
 
@@ -133,9 +133,9 @@ to pull the latest data.
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [April 2018](https://www.cbo.gov/system/files?file=2018-06/51316-2018-04-unemployment.pdf)
+Previous: [January 2019](https://www.cbo.gov/system/files/2019-01/51316-2019-01-unemployment.pdf)
 
-Current: [January 2019]([https://www.cbo.gov/system/files?file=2018-06/51316-2018-04-unemployment.pdf](https://www.cbo.gov/system/files?file=2019-01/51316-2019-01-unemployment.pdf))
+Current: [January 2020](https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.pdf)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars

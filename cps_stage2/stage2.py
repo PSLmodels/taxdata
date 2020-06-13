@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from pysolve_lp_for_year import solve_lp_for_year
+from solve_lp_for_year import solve_lp_for_year
 
 CUR_PATH = Path(__file__).resolve().parent
 STAGE_1_PATH = Path(CUR_PATH, "..", "puf_stage1", "Stage_I_factors.csv")
@@ -72,6 +72,8 @@ def main():
     print("Solving for 2029")
     weights['WT2029'] = solve_lp_for_year(cps, stage_1_factors,
                                           stage_2_targets, 2029, .70)
+    weights['WT2030'] = solve_lp_for_year(cps, stage_1_factors,
+                                          stage_2_targets, 2030, .70)
 
     weights = weights.round(0).astype("int64")
     weights.to_csv(
