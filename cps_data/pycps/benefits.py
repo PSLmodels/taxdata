@@ -94,6 +94,16 @@ def distribute_benefits(data, other_ben):
     """
     other_ben["2014_cost"] *= 1e6
 
+    # adjust medicare and medicaid totals
+    weighted_mcare_count = (data["mcare_count"] * data["s006"]).sum()
+    weighted_mcaid_count = (data["mcaid_count"] * data["s006"]).sum()
+    weighted_mcare = (data["mcare_ben"] * data["s006"]).sum()
+    weighted_mcaid = (data["mcaid_ben"] * data["s006"]).sum()
+    mcare_amt = weighted_mcare / weighted_mcare_count
+    mcaid_amt = weighted_mcaid / weighted_mcaid_count
+    data["mcaid_ben"] = data["mcaid_count"] * mcaid_amt
+    data["mcare_ben"] = data["mcare_count"] * mcare_amt
+
     # Distribute other benefits
     data["dist_ben"] = data[["mcaid_ben", "ssi_ben", "snap_ben"]].sum(axis=1)
     data["ratio"] = (data["dist_ben"] * data["s006"] /

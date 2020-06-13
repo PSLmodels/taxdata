@@ -50,7 +50,7 @@ def test_weights(kind, cps_weights, puf_weights,
                                         weights[col].max(), max_weight))
     # test sum of weights (in millions) for each year
     min_weight_sum = 149
-    max_weight_sum = 228
+    max_weight_sum = 230
     for col in sorted_weights_columns:
         weight_sum = weights[col].sum() * 1e-2 * 1e-6  # in millions
         if DUMP_WEIGHTS:

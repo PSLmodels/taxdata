@@ -9,8 +9,8 @@ INCOME_TUPLES = [
     ("UI_impute", "e02300")
 ]
 BENEFIT_TUPLES = [
-    ("MedicaidX", "mcaid_ben"), ("housing_impute", "housing_ben"),
-    ("MedicareX", "mcare_ben"), ("snap_impute", "snap_ben"),
+    ("MedicaidX", "mcaid_ben"),
+    ("MedicareX", "mcare_ben"),
     ("ssi_impute", "ssi_ben"), ("tanf_impute", "tanf_ben"),
     ("UI_impute", "e02300"), ("vb_impute", "vet_ben"),
     ("wic_impute", "wic_ben"), ("ss_impute", "e02400")
@@ -27,6 +27,9 @@ class TaxUnit:
         dep_status: indicator for whether or not this is a
                     dependent filer
         """
+        # counters for medicaid and medicare
+        self.mcare_count = 0
+        self.mcaid_count = 0
         # add attributes of the tax unit
         self.tot_inc = 0
         for cps_var, tc_var in INCOME_TUPLES:
@@ -36,7 +39,13 @@ class TaxUnit:
             self.tot_inc += data[cps_var]
         # add benefit data
         for cps_var, tc_var in BENEFIT_TUPLES:
+            if tc_var == "mcaid_ben" and data[cps_var] != 0:
+                self.mcaid_count += 1
+            elif tc_var == "mcare_ben" and data[cps_var] != 0:
+                self.mcare_count += 1
             setattr(self, tc_var, data[cps_var])
+        self.snap_ben = data["snap_impute"]
+        self.housing_ben = data["housing_impute"]
         self.agi = data["agi"]
 
         self.age_head = data["a_age"]
@@ -105,6 +114,10 @@ class TaxUnit:
             setattr(self, tc_var, getattr(self, tc_var) + spouse[cps_var])
             setattr(self, f"{tc_var}s", spouse[cps_var])
         for cps_var, tc_var in BENEFIT_TUPLES:
+            if tc_var == "mcaid_ben" and spouse[cps_var] != 0:
+                self.mcaid_count += 1
+            elif tc_var == "mcare_ben" and spouse[cps_var] != 0:
+                self.mcare_count += 1
             setattr(
                 self, tc_var, getattr(self, tc_var) + spouse[cps_var]
             )
@@ -127,6 +140,10 @@ class TaxUnit:
         #     setattr(self, tc_var, getattr(self, tc_var) + dependent[cps_var])
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
+            if tc_var == "mcaid_ben" and dep_val != 0:
+                self.mcaid_count += 1
+            elif tc_var == "mcare_ben" and dep_val != 0:
+                self.mcare_count += 1
             setattr(
                 self, tc_var, getattr(self, tc_var) + dep_val
             )
@@ -149,6 +166,10 @@ class TaxUnit:
         #     )
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
+            if tc_var == "mcaid_ben" and dep_val != 0:
+                self.mcaid_count -= 1
+            elif tc_var == "mcare_ben" and dep_val != 0:
+                self.mcare_count -= 1
             setattr(
                 self, tc_var, getattr(self, tc_var) - dep_val
             )
@@ -217,10 +238,7 @@ class TaxUnit:
             fam_size += 1
         setattr(self, 'fam_size', fam_size)
         m = f'{self.XTOT} != {sum([self.nu18, self.n1820, self.n21])}'
-        try:
-            assert self.XTOT >= sum([self.nu18, self.n1820, self.n21]), m
-        except AssertionError:
-            import pdb; pdb.set_trace()
+        assert self.XTOT >= sum([self.nu18, self.n1820, self.n21]), m
         return self.__dict__
 
     # private methods

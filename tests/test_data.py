@@ -197,39 +197,39 @@ def check_cps_benefits(data):
     expect_ben_stat = dict()
     # .. maximum value per filing unit for benefit
     expect_ben_stat['max'] = {
-        'mcare': 92976,   # <--- implies a filing unit with 8 beneficiaries
-        'mcaid': 98440,   # <--- implies a filing unit with 14 beneficiaries
-        'ssi': 64378,
+        'mcare': 93871,   # <--- implies a filing unit with 8 beneficiaries
+        'mcaid': 100861,   # <--- implies a filing unit with 14 beneficiaries
+        'ssi': 47126,
         'snap': 26569,
-        'wic': 4972,
-        'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
-        'housing': 53253,
-        'vet': 169920,    # <--- HIGH ($14,160/month) military pension or what?
-        'other': 40211
+        'wic': 4485,
+        'tanf': 272013,   # <--- SEEMS ABSURD ($13,284/month)
+        'housing': 27196,
+        'vet': 146807,    # <--- HIGH ($14,160/month) military pension or what?
+        'other': 47494
     }
     # .. minimum value per filing unit for positive benefit
     expect_ben_stat['min'] = {
-        'mcare': 11622,   # <--- the actuarial value of Medicare insurance
-        'mcaid': 7031,    # <--- the actuarial value of Medicaid insurance
+        'mcare': 11733,   # <--- the actuarial value of Medicare insurance
+        'mcaid': 7204,    # <--- the actuarial value of Medicaid insurance
         'ssi': 1,         # <--- SEEMS LOW
         'snap': 9,        # <--- SEEMS LOW
         'wic': 241,
         'tanf': 1,        # <--- SEEMS LOW
         'housing': 1265,
         'vet': 9890,      # <--- is this actuarial value of VA hospital costs?
-        'other': 3
+        'other': 4
     }
     # .. mean value per filing unit of positive benefit
     expect_ben_stat['avg'] = {
-        'mcare': 14928,
-        'mcaid': 13192,
-        'ssi': 7913,
-        'snap': 2907,
+        'mcare': 15052,
+        'mcaid': 13064,
+        'ssi': 7824,
+        'snap': 2967,
         'wic': 748,
-        'tanf': 9117,
-        'housing': 7048,
-        'vet': 29912,
-        'other': 4706
+        'tanf': 12664,
+        'housing': 6678,
+        'vet': 29709,
+        'other': 4877
     }
     # compare actual and expected benefit statistics
     error_msg = ''
@@ -255,7 +255,7 @@ def check_cps_benefits(data):
             msg = '\nCPS {}_ben maxben={} != {}'
             error_msg += msg.format(bname, maxben, exp_maxben)
         expect_avgben = expect_ben_stat['avg'][bname]
-        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.5):
+        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=1.0):
             msg = '\nCPS {}_ben avgben={:.2f} != {:.2f}'
             error_msg += msg.format(bname, avgben, expect_avgben)
         # check that mc??? benefits are actuarial values of health insurance
