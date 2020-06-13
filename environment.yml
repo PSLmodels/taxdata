@@ -17,5 +17,3 @@ dependencies:
 - pulp
 - paramtools
 - cvxopt
-pip:
-- tzlocal
