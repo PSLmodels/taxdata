@@ -35,6 +35,12 @@ def metadata(test_path):
 
 
 @pytest.fixture(scope='session')
+def cps_benefit_metadata(test_path):
+    with Path(test_path, "cps_benefits_metadata.json").open("r") as mdf:
+        return json.load(mdf)
+
+
+@pytest.fixture(scope='session')
 def cps(test_path, cps_path):
     return pd.read_csv(cps_path)
 

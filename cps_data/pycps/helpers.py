@@ -21,10 +21,10 @@ class FilingParams(Parameters):
     array_first = True
 
 
-FILINGPARAMS = FilingParams()
+filingparams = FilingParams()
 # this index is used to access the filing parameter values for the correct year
-PUF_YR_IDX = PUF_YEAR - FILINGPARAMS.label_grid["year"][0]
-CPS_YR_IDX = CPS_YEAR - FILINGPARAMS.label_grid["year"][0]
+puf_yr_idx = PUF_YEAR - filingparams.label_grid["year"][0]
+cps_yr_idx = CPS_YEAR - filingparams.label_grid["year"][0]
 
 
 def log(data, var):

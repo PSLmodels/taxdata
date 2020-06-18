@@ -5,6 +5,8 @@ from solve_lp_for_year import solve_lp_for_year
 CUR_PATH = Path(__file__).resolve().parent
 STAGE_1_PATH = Path(CUR_PATH, "..", "puf_stage1", "Stage_I_factors.csv")
 STAGE_2_PATH = Path(CUR_PATH, "..", "cps_stage1", "stage_2_targets.csv")
+START_YEAR = 2014
+END_YEAR = 2030
 
 
 def main():
@@ -24,56 +26,11 @@ def main():
     )
     # DataFrame for holding each year's weights
     weights = pd.DataFrame()
-    print("Solving for 2014")
-    weights['WT2014'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2014, .70)
-    print("Solving for 2015")
-    weights['WT2015'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2015, .70)
-    print("Solving for 2016")
-    weights['WT2016'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2016, .70)
-    print("Solving for 2017")
-    weights['WT2017'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2017, .70)
-    print("Solving for 2018")
-    weights['WT2018'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2018, .70)
-    print("Solving for 2019")
-    weights['WT2019'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2019, .70)
-    print("Solving for 2020")
-    weights['WT2020'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2020, .70)
-    print("Solving for 2021")
-    weights['WT2021'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2021, .70)
-    print("Solving for 2022")
-    weights['WT2022'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2022, .70)
-    print("Solving for 2023")
-    weights['WT2023'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2023, .70)
-    print("Solving for 2024")
-    weights['WT2024'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2024, .70)
-    print("Solving for 2025")
-    weights['WT2025'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2025, .70)
-    print("Solving for 2026")
-    weights['WT2026'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2026, .70)
-    print("Solving for 2027")
-    weights['WT2027'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2027, .70)
-    print("Solving for 2028")
-    weights['WT2028'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2028, .70)
-    print("Solving for 2029")
-    weights['WT2029'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2029, .70)
-    weights['WT2030'] = solve_lp_for_year(cps, stage_1_factors,
-                                          stage_2_targets, 2030, .70)
+    for year in range(START_YEAR, END_YEAR + 1):
+        print(f"Solving for {year}")
+        weights[f"WT{year}"] = solve_lp_for_year(
+            cps, stage_1_factors, stage_2_targets, year, .70
+        )
 
     weights = weights.round(0).astype("int64")
     weights.to_csv(

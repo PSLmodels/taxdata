@@ -1,4 +1,4 @@
-from helpers import FILINGPARAMS, CPS_YR_IDX
+from helpers import filingparams, cps_yr_idx
 
 
 INCOME_TUPLES = [
@@ -185,7 +185,7 @@ class TaxUnit:
             self.n1820 -= 1
         elif dependent["a_age"] >= 21:
             self.n21 -= 1
-            if dependent["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            if dependent["a_age"] >= filingparams.elderly_age[cps_yr_idx]:
                 self.elderly_dependents -= 1
         self.depne -= 1
         self.XTOT -= 1
@@ -209,7 +209,7 @@ class TaxUnit:
             if age < 13:
                 self.nu13 += 1
                 self.f2441 += 1
-            if age >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            if age >= filingparams.elderly_age[cps_yr_idx]:
                 self.elderly_dependents += 1
 
     def output(self) -> dict:
@@ -249,25 +249,25 @@ class TaxUnit:
         aidx = 0  # age index for filing parameters
         midx = 0  # marital index for filing parameters
         if self.mars == 1:
-            if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            if self.age_head >= filingparams.elderly_age[cps_yr_idx]:
                 aidx = 1
         elif self.mars == 2:
             midx = 1
-            if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            if self.age_head >= filingparams.elderly_age[cps_yr_idx]:
                 aidx = 1
-                if self.age_spouse >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+                if self.age_spouse >= filingparams.elderly_age[cps_yr_idx]:
                     aidx = 2
-            elif self.age_spouse >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            elif self.age_spouse >= filingparams.elderly_age[cps_yr_idx]:
                 aidx = 1
         elif self.mars == 4:
             midx = 2
-            if self.age_head >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            if self.age_head >= filingparams.elderly_age[cps_yr_idx]:
                 aidx = 1
         else:
             msg = (f"Filing status not in [1, 2, 4]. HHID: {self.h_seq} "
                    f"a_lineno: {self.a_lineno}")
             raise ValueError(msg)
-        income_min = FILINGPARAMS.gross_inc_thd[CPS_YR_IDX][midx][aidx]
+        income_min = filingparams.gross_inc_thd[cps_yr_idx][midx][aidx]
         if self.tot_inc >= income_min:
             setattr(self, "filer", 1)
         else:

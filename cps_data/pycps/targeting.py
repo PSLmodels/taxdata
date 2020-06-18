@@ -33,7 +33,6 @@ def target(cps, state_data_link):
         "A00650": ["e00650"],
         "A00900": ["e00900p", "e00900s"],
         "A02300": ["e02300"],
-        # "A01000": ["CGAGIX"],
         "A03240": ["DPAD"],
         "A01400": ["TIRAD"],
         "A03270": ["SEHEALTH"],

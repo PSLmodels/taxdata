@@ -187,54 +187,20 @@ def variable_check(test_path, data, dataname):
         raise ValueError(msg)
 
 
-def check_cps_benefits(data):
+def check_cps_benefits(data, expect_ben_stat):
     """
     Test benefit variables in CPS data.
+
+    expect_ben_stat is a dictionary containing the expected minimum, maximum,
+    and average value for each of the benefits in the CPS. That information
+    can be found in cps_benefits_metadata.json
     """
-    bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
+    BNAMES = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
               'tanf', 'housing', 'vet', 'other']
-    # specify expected benefit statistics in CPS data
-    expect_ben_stat = dict()
-    # .. maximum value per filing unit for benefit
-    expect_ben_stat['max'] = {
-        'mcare': 93871,   # <--- implies a filing unit with 8 beneficiaries
-        'mcaid': 100861,   # <--- implies a filing unit with 14 beneficiaries
-        'ssi': 47126,
-        'snap': 26569,
-        'wic': 4485,
-        'tanf': 272013,   # <--- SEEMS ABSURD ($13,284/month)
-        'housing': 27196,
-        'vet': 146807,    # <--- HIGH ($14,160/month) military pension or what?
-        'other': 47494
-    }
-    # .. minimum value per filing unit for positive benefit
-    expect_ben_stat['min'] = {
-        'mcare': 11733,   # <--- the actuarial value of Medicare insurance
-        'mcaid': 7204,    # <--- the actuarial value of Medicaid insurance
-        'ssi': 1,         # <--- SEEMS LOW
-        'snap': 9,        # <--- SEEMS LOW
-        'wic': 241,
-        'tanf': 1,        # <--- SEEMS LOW
-        'housing': 1265,
-        'vet': 9890,      # <--- is this actuarial value of VA hospital costs?
-        'other': 4
-    }
-    # .. mean value per filing unit of positive benefit
-    expect_ben_stat['avg'] = {
-        'mcare': 15052,
-        'mcaid': 13064,
-        'ssi': 7824,
-        'snap': 2967,
-        'wic': 748,
-        'tanf': 12664,
-        'housing': 6678,
-        'vet': 29709,
-        'other': 4877
-    }
-    # compare actual and expected benefit statistics
+    # # compare actual and expected benefit statistics
     error_msg = ''
     wgt = data['s006'] * 0.01
-    for bname in bnames:
+    for bname in BNAMES:
         col = '{}_ben'.format(bname)
         assert col in data.columns
         ben = data[col]
@@ -246,15 +212,15 @@ def check_cps_benefits(data):
         if not np.allclose([minben], [0], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben minben={} != 0'
             error_msg += msg.format(bname, minben)
-        exp_minpben = expect_ben_stat['min'][bname]
+        exp_minpben = expect_ben_stat[bname]['min']
         if not np.allclose([minpben], [exp_minpben], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben minpben={} != {}'
             error_msg += msg.format(bname, minpben, exp_minpben)
-        exp_maxben = expect_ben_stat['max'][bname]
+        exp_maxben = expect_ben_stat[bname]['max']
         if not np.allclose([maxben], [exp_maxben], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben maxben={} != {}'
             error_msg += msg.format(bname, maxben, exp_maxben)
-        expect_avgben = expect_ben_stat['avg'][bname]
+        expect_avgben = expect_ben_stat[bname]['avg']
         if not np.allclose([avgben], [expect_avgben], rtol=0, atol=1.0):
             msg = '\nCPS {}_ben avgben={:.2f} != {:.2f}'
             error_msg += msg.format(bname, avgben, expect_avgben)
@@ -305,5 +271,5 @@ def test_cps_variables(cps, test_path):
     variable_check(test_path, cps, "cps")
 
 
-def test_cps_benefits(cps):
-    check_cps_benefits(cps)
+def test_cps_benefits(cps, cps_benefit_metadata):
+    check_cps_benefits(cps, cps_benefit_metadata)

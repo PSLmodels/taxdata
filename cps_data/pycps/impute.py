@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
-from helpers import log, LOG_VARS, X_VARS, FILINGPARAMS, CPS_YR_IDX
+from helpers import log, LOG_VARS, X_VARS, filingparams, cps_yr_idx
 
 
 def impute(df, logit_betas, ols_betas, x_vars, l_adj, o_adj, prob_mult):
@@ -85,12 +85,12 @@ def imputation(data, logit_betas, ols_betas):
         data["mars"] == 2, 1, 0
     )
     # cap family size at 5 to match with the PUF
-    # data["fam_size"] = np.minimum(data["XTOT"], 5)
+    data["fam_size"] = np.minimum(data["XTOT"], 5)
     data["agede"] = (
         (data["age_head"] >=
-         FILINGPARAMS.elderly_age[CPS_YR_IDX]).astype(int) +
+         filingparams.elderly_age[cps_yr_idx]).astype(int) +
         (data["age_spouse"] >=
-         FILINGPARAMS.elderly_age[CPS_YR_IDX]).astype(int)
+         filingparams.elderly_age[cps_yr_idx]).astype(int)
     )
     data["constant"] = np.ones(len(data))
 
@@ -191,27 +191,27 @@ def imputation(data, logit_betas, ols_betas):
     dpad_indicator = np.where(
         (data["e00900"] > 0) | (data["rents"] > 0), 1, 0
     )
-    dpad_bins = [
+    DPAD_BINS = [
         -np.inf, 1, 25000, 50000, 75000, 100000, 200000, 500000, 1000000,
         np.inf
     ]
-    dpad_bin = pd.cut(data["tot_inc"], dpad_bins, labels=np.arange(1, 10),
+    dpad_bin = pd.cut(data["tot_inc"], DPAD_BINS, labels=np.arange(1, 10),
                       right=False)
-    dpad_probs = [
+    DPAD_probs = [
         0.01524, 0.00477, 0.1517, 0.02488, 0.03368, 0.05089, 0.11659, 0.26060,
         0.54408
     ]
     dpad_prob_dict = {
-        x: prob for x, prob in zip(range(1, 10), dpad_probs)
+        x: prob for x, prob in zip(range(1, 10), DPAD_probs)
     }
     dpad_prob = pd.Series(
         [dpad_prob_dict[x] for x in dpad_bin]
     ) * dpad_indicator
-    dpad_bases = [
+    DPAD_bases = [
         20686, 1784, 2384, 2779, 3312, 4827, 10585, 24358, 116275
     ]
     dpad_base_dict = {
-        x: base for x, base in zip(range(1, 10), dpad_bases)
+        x: base for x, base in zip(range(1, 10), DPAD_bases)
     }
     dpad_base = pd.Series(
         [dpad_base_dict[x] for x in dpad_bin]

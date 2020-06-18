@@ -1,9 +1,7 @@
-import functools
 import collections
-import operator
 import numpy as np
 from pathlib import Path
-from helpers import FILINGPARAMS, CPS_YR_IDX
+from helpers import filingparams, cps_yr_idx
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -44,7 +42,7 @@ def compare(data, cps, h_seq, year):
             age_totals["n1820"] += 1
         elif person["a_age"] < 18:
             age_totals["nu18"] += 1
-        if person["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+        if person["a_age"] >= filingparams.elderly_age[cps_yr_idx]:
             age_totals["elderly_dependents"] += 1
     n21_data = data["n21"].sum()
     n21_cps = age_totals["n21"]
@@ -72,25 +70,9 @@ def compare(data, cps, h_seq, year):
         )
         num_errors += 1
 
-    # compare income variables
-    # add up income totals in the raw cps
-    # cps_totals = dict(
-    #     functools.reduce(
-    #         operator.add,
-    #         map(collections.Counter, cps)
-    #     )
-    # )
     for _cps, _tc in INCOME_TUPLES:
         cps_sum = sum([p[_cps] for p in cps])
         tc_sum = data[_tc].sum()
-        # it's acceptable for the sum in the CPS to be larger
-        # than that in the tax unit file because it's possible
-        # dependents have income, but aren't filing so it's not counted
-        # we're only raising an error if the difference between the two
-        # values is greater than .1 because for some reason
-        # interest income would raise an error even though the totals
-        # appeared to be the same
-        # error = cps_sum < tc_sum and abs(cps_sum - tc_sum) > .1
         allclose = np.allclose([cps_sum], [tc_sum], rtol=0.5)
         if not allclose:
             record_error(cps, h_seq, tc_sum, cps_sum, year)

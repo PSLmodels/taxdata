@@ -2,7 +2,7 @@ import pandas as pd
 from operator import itemgetter
 from tqdm import tqdm
 from taxunit import TaxUnit
-from helpers import FILINGPARAMS, CPS_YR_IDX
+from helpers import filingparams, cps_yr_idx
 
 
 INCOME_VARS = [
@@ -36,9 +36,9 @@ def eic_eligible(person: dict, age_head: int, age_spouse: int,
     # relationship test
     relationship = person['a_exprrp'] in [5, 7, 9, 11]
     # age test
-    eic_max_age = FILINGPARAMS.eic_child_age[CPS_YR_IDX]
+    eic_max_age = filingparams.eic_child_age[cps_yr_idx]
     if person["a_ftpt"] == 1:
-        eic_max_age = FILINGPARAMS.eic_child_age_student[CPS_YR_IDX]
+        eic_max_age = filingparams.eic_child_age_student[cps_yr_idx]
     # person is between 1 and the max age
     age = (0 <= person["a_age"] <= eic_max_age)
     # person is younger than filer or their spouse
@@ -119,10 +119,10 @@ def is_dependent(person, unit, verbose=False):
             if verbose:
                 print("Already claimed as a dependent")
             return False
-        age_req = FILINGPARAMS.dependent_child_age[CPS_YR_IDX]
+        age_req = filingparams.dependent_child_age[cps_yr_idx]
         # age requirement increases for full time students
         if person["a_ftpt"] == 1:
-            age_req = FILINGPARAMS.dependent_child_age_student[CPS_YR_IDX]
+            age_req = filingparams.dependent_child_age_student[cps_yr_idx]
         if person["a_age"] > age_req:
             if verbose:
                 print("Failed Age Test")
@@ -225,17 +225,17 @@ def create_units(data, year, verbose=False):
         filer = False
         midx = 0  # marital staus indicator
         aidx = 0  # age indicator
-        if person["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+        if person["a_age"] >= filingparams.elderly_age[cps_yr_idx]:
             aidx = 1
         if person["a_spouse"] != 0:
             midx = 2
             spouse = find_person(data, person["a_spouse"])
-            if spouse["a_age"] >= FILINGPARAMS.elderly_age[CPS_YR_IDX]:
+            if spouse["a_age"] >= filingparams.elderly_age[cps_yr_idx]:
                 aidx += 1
         # earned income filing threshold
-        earn_thd = FILINGPARAMS.dep_earned_inc_thd[CPS_YR_IDX][aidx][midx]
-        unearn_thd = FILINGPARAMS.dep_unearned_inc_thd[CPS_YR_IDX][aidx][midx]
-        gross_thd = FILINGPARAMS.dep_gross_inc_thd[CPS_YR_IDX][aidx][midx]
+        earn_thd = filingparams.dep_earned_inc_thd[cps_yr_idx][aidx][midx]
+        unearn_thd = filingparams.dep_unearned_inc_thd[cps_yr_idx][aidx][midx]
+        gross_thd = filingparams.dep_gross_inc_thd[cps_yr_idx][aidx][midx]
         if person["earned_inc"] >= earn_thd:
             filer = True
         elif person["unearned_inc"] >= unearn_thd:
