@@ -51,6 +51,8 @@ running the `make help` command.  If you want more background on the
 make utility and makefiles, search for Internet links with the
 keywords `makefile` and `automate`.
 
+Please see the [Makefile Documentation](MAKEFILE_doc.md) for more information
+
 Note that the stage2 linear program that generates the weights file is
 very long-running, taking five or more hours depending on your
 computer's CPU speed.  We are considering options for speeding up this
