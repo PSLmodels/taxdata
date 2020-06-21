@@ -262,6 +262,10 @@ def create_units(data, year, verbose=False):
 def _create_units(data, year, verbose=False):
     """
     Logic for iterating through households and creating tax units
+    This is a more complex function for creating the tax units. It actively
+    searches through the household trying to form the tax unit, rather than
+    rely on just what the CPS reports. It's unused, but I'm leaving the code
+    here just in case it's needed at a later date.
     """
     # sort on familly position and family relationship so that
     # we can avoid making children their own units just because

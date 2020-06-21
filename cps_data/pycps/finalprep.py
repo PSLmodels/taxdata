@@ -134,17 +134,10 @@ def adjust_helper(agi, var, target, weight, agi_bin):
                       var * weight, 0).sum()
     bin_16 = np.where((agi >= 2e6),
                       var * weight, 0).sum()
-    # bin_16 = np.where((agi >= 2e6) & (agi < 5e6),
-    #                   var * weight, 0).sum()
-    # bin_17 = np.where((agi >= 5e6) & (agi < 1e7),
-    #                   var * weight, 0).sum()
-    # bin_18 = np.where((agi >= 1e7),
-    #                   var * weight, 0).sum()
     # Create series holding each of the current totals
     actual_amts = pd.Series([bin_0, bin_1, bin_2, bin_3, bin_4, bin_5,
                              bin_6, bin_7, bin_8, bin_9, bin_10, bin_11,
-                             bin_12, bin_13, bin_14, bin_15, bin_16
-                             ],
+                             bin_12, bin_13, bin_14, bin_15, bin_16],
                             index=goal_amts.index)
     ratios_index = [num for num in range(0, len(actual_amts))]
     # Determine the ratios

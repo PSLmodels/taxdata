@@ -128,16 +128,11 @@ class TaxUnit:
         spouse["s_flag"] = True
         self.check_age(spouse["a_age"])
         self.statetax += spouse["statetax_ac"]
-        # self.XTOT += 1
-        # self.mars = 2
 
     def add_dependent(self, dependent: dict, eic: int):
         """
         Add dependent to the unit
         """
-        # for cps_var, tc_var in INCOME_TUPLES:
-        #     # self.tot_inc += dependent[cps_var]
-        #     setattr(self, tc_var, getattr(self, tc_var) + dependent[cps_var])
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             if tc_var == "mcaid_ben" and dep_val != 0:
@@ -159,11 +154,6 @@ class TaxUnit:
         """
         Remove dependent from the tax unit
         """
-        # for cps_var, tc_var in INCOME_TUPLES:
-        #     dep_val = dependent[cps_var]
-        #     setattr(
-        #         self, tc_var, getattr(self, tc_var) - dep_val
-        #     )
         for cps_var, tc_var in BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             if tc_var == "mcaid_ben" and dep_val != 0:
@@ -216,16 +206,6 @@ class TaxUnit:
         """
         Return tax attributes as a dictionary
         """
-        # add unemployment compensation and social security to total income
-        # self.tot_inc += self.e02300 + self.e02400
-        # set marital status variable
-        # if self.hh_inc > 0:
-        #     inc_pct = self.tot_inc / self.hh_inc
-        #     if inc_pct > 0.5:
-        #         if self.mars == 1 & len(self.deps_spouses) > 0:
-        #             self.mars = 4
-        # determine if the unit is a filer here.
-        # self._must_file()
         # enforce that all spouse income variables are zero for non-married
         if self.mars != 2:
             for _, tc_var in INCOME_TUPLES:
