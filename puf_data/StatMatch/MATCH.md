@@ -29,5 +29,6 @@ The output of [`runmatch.py`](Matching/runmatch.py) is used in [`stage2.py`](../
 - [Peter Metz](Peter-Metz)
 - [Anderson Frailey](@andersonfrailey)
 - [Martin Holmer](@martinholmer)
+- [Max Ghenis](@MaxGhenis)
 
 
