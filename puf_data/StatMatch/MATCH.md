@@ -19,7 +19,7 @@ The statistical match performed to create this document is a "constrained" match
 
 `cps-matched-puf.csv` is created by running [`runmatch.py`](Matching/runmatch.py). See the [README](README.md) for more information on the scripts used by [`runmatch.py`](Matching/runmatch.py).
 
-The output of [`runmatch.py`](Matching/runmatch.py) is used in [`stage2.py`](puf_stage2/stage2.py) and [`stage3.py`](puf_stage3/stage3.py). More information on the Stage 2 and Stage 3 files can be found in [this document](puf_stage3/doc/puf_stage3.md), and the statistical matching process is outlined in detail in [this document](doc/MatchingDocumentationRevised.pdf).
+The output of [`runmatch.py`](Matching/runmatch.py) is used in [`stage2.py`](/puf_stage2/stage2.py) and [`stage3.py`](/puf_stage3/stage3.py). More information on the Stage 2 and Stage 3 files can be found in [this document](/puf_stage3/doc/puf_stage3.md), and the statistical matching process is outlined in detail in [this document](doc/MatchingDocumentationRevised.pdf).
 
 
 
