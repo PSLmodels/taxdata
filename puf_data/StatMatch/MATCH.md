@@ -5,7 +5,7 @@ The `cps-matched-puf.csv` file is the result of a statistical match performed be
 
 ## Process
 
-Data from the 2016 CPS data is first collected and organized. Tax filing units are then constructed from this CPS data, missing data is imputed from similar data through [Predictive Mean Matching](https://stefvanbuuren.name/fimd/sec-pmm.html)and the statistical match is performed using nearest neighbor distance as the criterion for matching filing units. [`runmatch.py`](Matching/runmatch.py) is responsible for running the match and compiling a final production file.
+Data from the 2016 CPS data is first collected and organized. Tax filing units are then constructed from this CPS data, missing data is imputed from similar data through [Predictive Mean Matching](https://stefvanbuuren.name/fimd/sec-pmm.html) and the statistical match is performed using nearest neighbor distance as the criterion for matching filing units. [`runmatch.py`](Matching/runmatch.py) is responsible for running the match and compiling a final production file.
 
 
 
@@ -19,16 +19,16 @@ The statistical match performed to create this document is a "constrained" match
 
 `cps-matched-puf.csv` is created by running [`runmatch.py`](Matching/runmatch.py). See the [README](README.md) for more information on the scripts used by [`runmatch.py`](Matching/runmatch.py).
 
-The output of [`runmatch.py`](Matching/runmatch.py) is used in [`stage2.py`](../puf_stage2/stage2.py) and [`stage3.py`](../puf_stage3/stage3.py). More information on the Stage 2 and Stage 3 files can be found in [this document](../puf_stage3/doc/puf_stage3.md), and the statistical matching process is outlined in detail in [this document](docs/MatchingDocumentationRevised.pdf).
+The output of [`runmatch.py`](Matching/runmatch.py) is used in [`stage2.py`](../puf_stage2/stage2.py) and [`stage3.py`](../puf_stage3/stage3.py). More information on the Stage 2 and Stage 3 files can be found in [this document](../puf_stage3/doc/puf_stage3.md), and the statistical matching process is outlined in detail in [this document](doc/MatchingDocumentationRevised.pdf).
 
 
 
 ## Contributors
 
-- [Matt Jensen](@MattHJensen)
-- [Peter Metz](Peter-Metz)
-- [Anderson Frailey](@andersonfrailey)
-- [Martin Holmer](@martinholmer)
-- [Max Ghenis](@MaxGhenis)
+- Matt Jensen
+- Peter Metz
+- Anderson Frailey
+- Martin Holmer
+- Max Ghenis
 
 
