@@ -1,6 +1,6 @@
 # CPS Match File documentation
 
-The `cps-matched-puf.csv` file is the result of a statistical match performed between the 2016 Current Population Annual Social and Economic Supplement and the 2011 IRS-SOI Public Use File. See the [Datasets documentation](datasets.md#input-files) for more information.
+The `cps-matched-puf.csv` file is the result of a statistical match performed between the 2016 Current Population Annual Social and Economic Supplement and the 2011 IRS-SOI Public Use File. See the [Datasets documentation](taxdata/datasets.md#input-files) for more information.
 
 
 ## Process
