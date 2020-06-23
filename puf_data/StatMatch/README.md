@@ -1,12 +1,13 @@
 # StatMatch
 
-This repo holds scripts for performing a statistical match
-using the March 2016 CPS and 2011 IRS SOI Public Use File (PUF) datasets
+This repo holds scripts for performing a statistical match using the March 2016 CPS (See the [README](../README.md) for more information) and 2011 IRS SOI Public Use File (PUF) datasets (`puf2011.csv`).
 
 ## Usage
 
 The entire statistical match can be run by using `python runmatch.py` in the
-command line. Three optional arguments can be included as well:
+command line. The output of this process should be `cps-matched-puf.csv` (not in the repo because `runmatch.py` requires restricted files).
+
+Three optional arguments can be included as well:
 
 * `-c`, `--cps` takes the path to an already created .CSV version of the CPS.
 Including this will allow the program to simply read in the CSV, rather than
