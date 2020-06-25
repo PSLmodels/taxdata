@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+.ipynb_checkpoints
+.vscode
 
 # Unit test report
 .pytest_cache/
@@ -13,3 +15,9 @@ puf_data/puf.csv
 puf_data/cps-matched-puf.csv
 puf_data/StatMatch/Matching/puf2011.csv
 puf_data/StatMatch/Matching/cpsmar2016.csv
+
+# Intermediate CPS files and SAS scripts
+cps_data/pycps/cps_raw.csv.gz
+cpsmar*.sas
+cpsmar*.csv
+*.dat
