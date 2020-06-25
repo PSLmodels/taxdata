@@ -37,31 +37,31 @@ def test_weights(kind, cps_weights, puf_weights,
     last_weights_column = sorted_weights_columns[-1]
     assert last_weights_column == 'WT{}'.format(growfactors.index.max())
     # test weight values for each year
-    min_weight = 0  # weight must be non-negative,
-    max_weight = 2000000  # but can be quite large
+    MIN_WEIGHT = 0  # weight must be non-negative,
+    MAX_WEIGHT = 2000000  # but can be quite large
     for col in weights:
-        if weights[col].min() < min_weight:
+        if weights[col].min() < MIN_WEIGHT:
             msg = '{} weights[{}].min()={} < {}'
             raise ValueError(msg.format(kind, col,
-                                        weights[col].min(), min_weight))
-        if weights[col].max() > max_weight:
+                                        weights[col].min(), MIN_WEIGHT))
+        if weights[col].max() > MAX_WEIGHT:
             msg = '{} weights[{}].max()={} > {}'
             raise ValueError(msg.format(kind, col,
-                                        weights[col].max(), max_weight))
+                                        weights[col].max(), MAX_WEIGHT))
     # test sum of weights (in millions) for each year
-    min_weight_sum = 149
-    max_weight_sum = 200
+    MIN_WEIGHT_SUM = 149
+    MAX_WEIGHT_SUM = 233
     for col in sorted_weights_columns:
         weight_sum = weights[col].sum() * 1e-2 * 1e-6  # in millions
         if DUMP_WEIGHTS:
             msg = '{} {} {:.3f}'
             print(msg.format(kind, col, weight_sum))
-        if weight_sum < min_weight_sum:
+        if weight_sum < MIN_WEIGHT_SUM:
             msg = '{} weights[{}].sum()={:.1f} < {:.1f}'
-            raise ValueError(msg.format(kind, col, weight_sum, min_weight_sum))
-        if weight_sum > max_weight_sum:
+            raise ValueError(msg.format(kind, col, weight_sum, MIN_WEIGHT_SUM))
+        if weight_sum > MAX_WEIGHT_SUM:
             msg = '{} weights[{}].max()={:.1f} > {:.1f}'
-            raise ValueError(msg.format(kind, col, weight_sum, max_weight_sum))
+            raise ValueError(msg.format(kind, col, weight_sum, MAX_WEIGHT_SUM))
     if DUMP_WEIGHTS:
         raise ValueError('STOPPING because DUMP_WEIGHTS = True')
     # test that there are no weights records with a zero weight in every year
