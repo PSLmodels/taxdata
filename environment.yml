@@ -13,3 +13,7 @@ dependencies:
 - tqdm
 - requests
 - lxml
+- xlrd
+- pulp
+- paramtools
+- cvxopt

@@ -919,7 +919,7 @@
     "availability": "taxdata_cps",
     "range": {
       "min": 1,
-      "max": 11
+      "max": 12
     }
   },
   "data_source": {
@@ -1015,19 +1015,7 @@
     "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 10
-    }
-  },
-  "nu05": {
-    "type": "int",
-    "desc": "Number of dependents under 5 years old",
-    "form": {
-      "2013-2016": "imputed from CPS data"
-    },
-    "availability": "taxdata_puf, taxdata_cps",
-    "range": {
-      "min": 0,
-      "max": 4
+      "max": 12
     }
   },
   "nu06": {
@@ -1036,10 +1024,10 @@
     "form": {
       "2013-2016": "imputed from CPS data"
     },
-    "availability": "taxdata_puf",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
-      "max": 10
+      "max": 7
     }
   },
   "nu13": {

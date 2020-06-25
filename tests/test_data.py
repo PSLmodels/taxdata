@@ -70,7 +70,7 @@ def relationships(data, dataname):
     nsums = data[['nu18', 'n1820', 'n21']].sum(axis=1)
     if dataname == 'CPS':
         m = eq_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
-        assert np.all(data['XTOT'] == nsums), m
+        assert np.all(data['XTOT'] >= nsums), m
     else:
         # see Note (1) in docstring
         m = less_than_str.format(dataname, 'XTOT', 'sum of nu18, n1820, n21')
@@ -98,6 +98,17 @@ def relationships(data, dataname):
 
     m = less_than_str.format(dataname, 'pencon_s', 'e00200s+pencon_s')
     assert np.all((data['e00200s'] + data['pencon_s']) >= data['pencon_s']), m
+
+    # check that all non-married filers have zero spouse income
+    nonmarried = data[data["MARS"] != 2]
+    zeros = np.zeros_like(len(nonmarried))
+    msg = "{} not always zero for non-married filing unit"
+    spouse_vars = [
+        "e00200s", "e00900s", "e02100s"
+    ]
+    for var in spouse_vars:
+        if not np.allclose(nonmarried[var], zeros):
+            raise ValueError(msg.format(var))
 
 
 def variable_check(test_path, data, dataname):
@@ -176,55 +187,20 @@ def variable_check(test_path, data, dataname):
         raise ValueError(msg)
 
 
-def check_cps_benefits(data):
+def check_cps_benefits(data, expect_ben_stat):
     """
     Test benefit variables in CPS data.
+
+    expect_ben_stat is a dictionary containing the expected minimum, maximum,
+    and average value for each of the benefits in the CPS. That information
+    can be found in cps_benefits_metadata.json
     """
-    bnames = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
+    BNAMES = ['mcare', 'mcaid', 'ssi', 'snap', 'wic',
               'tanf', 'housing', 'vet', 'other']
-    expect_minben = 0
-    # specify expected benefit statistics in CPS data
-    expect_ben_stat = dict()
-    # .. maximum value per filing unit for benefit
-    expect_ben_stat['max'] = {
-        'mcare': 92976,   # <--- implies a filing unit with 8 beneficiaries
-        'mcaid': 98440,   # <--- implies a filing unit with 14 beneficiaries
-        'ssi': 64378,
-        'snap': 26569,
-        'wic': 4972,
-        'tanf': 159407,   # <--- SEEMS ABSURD ($13,284/month)
-        'housing': 53253,
-        'vet': 169920,    # <--- HIGH ($14,160/month) military pension or what?
-        'other': 40211
-    }
-    # .. minimum value per filing unit for positive benefit
-    expect_ben_stat['min'] = {
-        'mcare': 11622,   # <--- the actuarial value of Medicare insurance
-        'mcaid': 7031,    # <--- the actuarial value of Medicaid insurance
-        'ssi': 1,         # <--- SEEMS LOW
-        'snap': 9,        # <--- SEEMS LOW
-        'wic': 241,
-        'tanf': 1,        # <--- SEEMS LOW
-        'housing': 1265,
-        'vet': 9890,      # <--- is this actuarial value of VA hospital costs?
-        'other': 3
-    }
-    # .. mean value per filing unit of positive benefit
-    expect_ben_stat['avg'] = {
-        'mcare': 14928,
-        'mcaid': 13192,
-        'ssi': 7913,
-        'snap': 2907,
-        'wic': 748,
-        'tanf': 9117,
-        'housing': 7048,
-        'vet': 29912,
-        'other': 4706
-    }
-    # compare actual and expected benefit statistics
+    # # compare actual and expected benefit statistics
     error_msg = ''
     wgt = data['s006'] * 0.01
-    for bname in bnames:
+    for bname in BNAMES:
         col = '{}_ben'.format(bname)
         assert col in data.columns
         ben = data[col]
@@ -236,16 +212,16 @@ def check_cps_benefits(data):
         if not np.allclose([minben], [0], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben minben={} != 0'
             error_msg += msg.format(bname, minben)
-        exp_minpben = expect_ben_stat['min'][bname]
+        exp_minpben = expect_ben_stat[bname]['min']
         if not np.allclose([minpben], [exp_minpben], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben minpben={} != {}'
             error_msg += msg.format(bname, minpben, exp_minpben)
-        exp_maxben = expect_ben_stat['max'][bname]
+        exp_maxben = expect_ben_stat[bname]['max']
         if not np.allclose([maxben], [exp_maxben], rtol=0, atol=0.1):
             msg = '\nCPS {}_ben maxben={} != {}'
             error_msg += msg.format(bname, maxben, exp_maxben)
-        expect_avgben = expect_ben_stat['avg'][bname]
-        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=0.5):
+        expect_avgben = expect_ben_stat[bname]['avg']
+        if not np.allclose([avgben], [expect_avgben], rtol=0, atol=1.0):
             msg = '\nCPS {}_ben avgben={:.2f} != {:.2f}'
             error_msg += msg.format(bname, avgben, expect_avgben)
         # check that mc??? benefits are actuarial values of health insurance
@@ -260,22 +236,40 @@ def check_cps_benefits(data):
 
 
 @pytest.mark.requires_pufcsv
-def test_pufcsv_data(puf, metadata, test_path):
-    """
-    Test PUF data.
-    """
-    unique_recid(puf, 'PUF')
-    min_max(puf, metadata, 'puf')
-    relationships(puf, 'PUF')
-    variable_check(test_path, puf, 'puf')
+def test_puf_unique_recid(puf, metadata, test_path):
+    unique_recid(puf, "PUF")
 
 
-def test_cpscsv_data(cps, metadata, test_path):
-    """
-    Test CPS data.
-    """
-    unique_recid(cps, 'CPS')
-    min_max(cps, metadata, 'cps')
-    relationships(cps, 'CPS')
-    variable_check(test_path, cps, 'cps')
-    check_cps_benefits(cps)
+@pytest.mark.requires_pufcsv
+def test_puf_min_max(puf, metadata):
+    min_max(puf, metadata, "puf")
+
+
+@pytest.mark.requires_pufcsv
+def test_puf_relationships(puf):
+    relationships(puf, "PUF")
+
+
+@pytest.mark.requires_pufcsv
+def test_puf_variables(puf, test_path):
+    variable_check(test_path, puf, "puf")
+
+
+def test_cps_unique_recid(cps):
+    unique_recid(cps, "CPS")
+
+
+def test_cps_min_max(cps, metadata):
+    min_max(cps, metadata, "cps")
+
+
+def test_cps_relationships(cps):
+    relationships(cps, "CPS")
+
+
+def test_cps_variables(cps, test_path):
+    variable_check(test_path, cps, "cps")
+
+
+def test_cps_benefits(cps, cps_benefit_metadata):
+    check_cps_benefits(cps, cps_benefit_metadata)

@@ -4,7 +4,7 @@ import os
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
-EYR = 2029  # last calendar year we have data for
+EYR = 2030  # last calendar year we have data for
 SOI_YR = 2014  # most recently available SOI estimates
 
 # define constants for the number refers total population,
