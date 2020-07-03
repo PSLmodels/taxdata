@@ -43,7 +43,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     {{ item }}{% endfor %}
 
     {# This might need to be updated to year >= 2015 #}
-    {% if year == 2015 %}
+    {% if year >= 2015 %}
     record["alimony"] = 0.
     if record["oi_off"] == 20:
         record["alimony"] = record["oi_val"]
@@ -109,6 +109,17 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
         record["tot_inc"] -= record["uc_val"]
         record["tot_inc"] += record["UI_impute"]
         record["tot_inc"] += record["ss_impute"]
+    else:
+        # calculate benefits in CPS where possible
+        record["tanf_val"] = 0.
+        if record["paw_yn"] == 1:
+            record["tanf_val"] = record["paw_val"]
+        {# fhoussub not included after 2016 #}
+        {% if year >= 2016 %}
+        record["housing_val"] = 0.
+        {% else %}
+        record["housing_val"] = record["fhoussub"]
+        {% endif %}
     return record
 
 
@@ -182,5 +193,7 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
 
 
 if __name__ == "__main__":
-    create_cps(Path(CUR_PATH, "data", "{{ file_name }}"), {{ year }})
+    create_cps(
+        Path(CUR_PATH, "data", "{{ file_name }}"), {{ year }}, {{ benefits }}
+    )
 

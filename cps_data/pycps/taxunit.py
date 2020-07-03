@@ -1,4 +1,5 @@
-from helpers import filingparams, cps_yr_idx
+from helpers import (filingparams, cps_yr_idx, C_TAM_BENEFIT_TUPLES,
+                     CPS_BENEFIT_TUPLES)
 
 
 INCOME_TUPLES = [
@@ -8,18 +9,11 @@ INCOME_TUPLES = [
     ("rtm_val", "e01500"), ("alimony", "e00800"), ("ss_impute", "e02400"),
     ("UI_impute", "e02300")
 ]
-BENEFIT_TUPLES = [
-    ("MedicaidX", "mcaid_ben"),
-    ("MedicareX", "mcare_ben"),
-    ("ssi_impute", "ssi_ben"), ("tanf_impute", "tanf_ben"),
-    ("UI_impute", "e02300"), ("vb_impute", "vet_ben"),
-    ("wic_impute", "wic_ben"), ("ss_impute", "e02400")
-]
 
 
 class TaxUnit:
     def __init__(self, data: dict, year: int, hh_inc: float = 0.0,
-                 dep_status: bool = False):
+                 dep_status: bool = False, ctam_benefits: bool = True):
         """
         Parameters
         ----------
@@ -27,25 +21,42 @@ class TaxUnit:
         dep_status: indicator for whether or not this is a
                     dependent filer
         """
+        # set benefit tuples based on if we have C-TAM imputations or not
+        if ctam_benefits:
+            self.BENEFIT_TUPLES = C_TAM_BENEFIT_TUPLES
+        else:
+            self.BENEFIT_TUPLES = CPS_BENEFIT_TUPLES
+        self.ctam_benefits = ctam_benefits
         # counters for medicaid and medicare
         self.mcare_count = 0
         self.mcaid_count = 0
         # add attributes of the tax unit
         self.tot_inc = 0
         for cps_var, tc_var in INCOME_TUPLES:
-            setattr(self, tc_var, data[cps_var])
-            setattr(self, f"{tc_var}p", data[cps_var])
+            if cps_var == "ss_impute" and not ctam_benefits:
+                val = data["ss_val"]
+            elif cps_var == "UI_impute" and not ctam_benefits:
+                val = data["uc_val"]
+            else:
+                val = data[cps_var]
+            setattr(self, tc_var, val)
+            setattr(self, f"{tc_var}p", val)
             setattr(self, f"{tc_var}s", 0)
-            self.tot_inc += data[cps_var]
+            self.tot_inc += val
         # add benefit data
-        for cps_var, tc_var in BENEFIT_TUPLES:
+        for cps_var, tc_var in self.BENEFIT_TUPLES:
             if tc_var == "mcaid_ben" and data[cps_var] != 0:
                 self.mcaid_count += 1
             elif tc_var == "mcare_ben" and data[cps_var] != 0:
                 self.mcare_count += 1
             setattr(self, tc_var, data[cps_var])
-        self.snap_ben = data["snap_impute"]
-        self.housing_ben = data["housing_impute"]
+        # SNAP and housing benefits need to only be added for head of unit
+        try:
+            self.snap_ben = data["snap_impute"]
+            self.housing_ben = data["housing_impute"]
+        except KeyError:
+            self.snap_ben = data["hfdval"]
+            self.housing_ben = data["housing_val"]
         self.agi = data["agi"]
 
         self.age_head = data["a_age"]
@@ -110,10 +121,16 @@ class TaxUnit:
         Add a spouse to the unit
         """
         for cps_var, tc_var in INCOME_TUPLES:
-            self.tot_inc += spouse[cps_var]
-            setattr(self, tc_var, getattr(self, tc_var) + spouse[cps_var])
-            setattr(self, f"{tc_var}s", spouse[cps_var])
-        for cps_var, tc_var in BENEFIT_TUPLES:
+            if cps_var == "ss_impute" and not self.ctam_benefits:
+                val = spouse["ss_val"]
+            elif cps_var == "UI_impute" and not self.ctam_benefits:
+                val = spouse["uc_val"]
+            else:
+                val = spouse[cps_var]
+            self.tot_inc += val
+            setattr(self, tc_var, getattr(self, tc_var) + val)
+            setattr(self, f"{tc_var}s", val)
+        for cps_var, tc_var in self.BENEFIT_TUPLES:
             if tc_var == "mcaid_ben" and spouse[cps_var] != 0:
                 self.mcaid_count += 1
             elif tc_var == "mcare_ben" and spouse[cps_var] != 0:
@@ -133,7 +150,7 @@ class TaxUnit:
         """
         Add dependent to the unit
         """
-        for cps_var, tc_var in BENEFIT_TUPLES:
+        for cps_var, tc_var in self.BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             if tc_var == "mcaid_ben" and dep_val != 0:
                 self.mcaid_count += 1
@@ -154,7 +171,7 @@ class TaxUnit:
         """
         Remove dependent from the tax unit
         """
-        for cps_var, tc_var in BENEFIT_TUPLES:
+        for cps_var, tc_var in self.BENEFIT_TUPLES:
             dep_val = dependent[cps_var]
             if tc_var == "mcaid_ben" and dep_val != 0:
                 self.mcaid_count -= 1

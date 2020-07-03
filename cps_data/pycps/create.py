@@ -1,6 +1,3 @@
-import cpsmar2013
-import cpsmar2014
-import cpsmar2015
 import subprocess
 import pandas as pd
 import pickle
@@ -13,32 +10,19 @@ from targeting import target
 from finalprep import final_prep
 from impute import imputation
 from benefits import distribute_benefits
+from cps_meta import CPS_META_DATA
 
 
 CUR_PATH = Path(__file__).resolve().parent
 DATA_PATH = Path(CUR_PATH, "data")
-# metadata on each CPS file
-CPS_META_DATA = {
-    2013: {
-        "dat_file": "asec2013_pubuse.dat",
-        "create_func": cpsmar2013.create_cps
-    },
-    2014: {
-        "dat_file": "asec2014_pubuse_tax_fix_5x8_2017.dat",
-        "create_func": cpsmar2014.create_cps
-    },
-    2015: {
-        "dat_file": "asec2015_pubuse.dat",
-        "create_func": cpsmar2015.create_cps
-    }
-}
 # list of which CPS file to actually use
 CPS_FILES = [2013, 2014, 2015]
 
 
 def create(exportcsv: bool = False, exportpkl: bool = False,
            exportraw: bool = True, validate: bool = False,
-           benefits: bool = True, verbose: bool = False):
+           benefits: bool = True, verbose: bool = False,
+           cps_files=CPS_FILES):
     """
     Logic for creating tax units from the CPS
     Parameters
@@ -54,14 +38,19 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
               units
     verbose: if True, additional progress information will be printed as the
              scripts run
+    cps_files: list containing which years of the CPS you want to use
     """
     # add progress_apply to pandas if user wants to validate
     if validate:
         tqdm.pandas()
     # look for pickled versions of the converted CPS files
     cps_dfs = {}
-    for year in CPS_FILES:
-        meta = CPS_META_DATA[year]
+    for year in cps_files:
+        try:
+            meta = CPS_META_DATA[year]
+        except KeyError:
+            msg = f"Using the {year} CPS is not yet supported."
+            raise KeyError(msg)
         # potential path to pickled CPS file
         pkl_path = Path(DATA_PATH, f"cpsmar{year}.pkl")
         # check and see if pickled version of this year's CPS has been created
@@ -77,7 +66,7 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
 
     # create tax units
     _units = []
-    for year in CPS_FILES:
+    for year in cps_files:
         print(f"Creating Tax Units for {year}")
         _yr_units = pycps(cps_dfs[year], year, verbose)
         if validate:
@@ -88,7 +77,7 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     print("Combining tax units")
     units = pd.concat(_units, sort=False)
     # divinde weight by number of CPS files
-    num_cps = len(CPS_FILES)
+    num_cps = len(cps_files)
     units["s006"] = units["s006"] / num_cps
 
     # export raw CPS file

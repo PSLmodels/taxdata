@@ -150,13 +150,17 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     ratios = np.where(ratios == np.inf, 1., ratios)
     adj_array = ratios[agi_bin]
     var *= adj_array
-    # import pdb; pdb.set_trace()
 
     # assert that we don't lose any of the variable
-    tot = (var*weight).sum()
-    m = f'{tot}:::{goal_total}'
+    tot = (var * weight).sum()
+    m = f'{tot:,.2f} != {goal_total:,.2f}'
 
-    assert np.allclose(np.array(goal_total), np.array(tot)), m
+    try:
+        assert np.allclose(np.array(goal_total), np.array(tot)), m
+    except AssertionError:
+        print(m)
+        print("Reversing Adjustment")
+        var /= adj_array
 
     return var
 
