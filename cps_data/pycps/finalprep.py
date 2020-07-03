@@ -149,10 +149,10 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     var_array = np.nan_to_num(var_array)
     ratios = np.where(ratios == np.inf, 1., ratios)
     adj_array = ratios[agi_bin]
-    var *= adj_array
+    _var = var * adj_array
 
     # assert that we don't lose any of the variable
-    tot = (var * weight).sum()
+    tot = (_var * weight).sum()
     m = f'{tot:,.2f} != {goal_total:,.2f}'
 
     try:
@@ -160,9 +160,12 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     except AssertionError:
         print(m)
         print("Reversing Adjustment")
-        var /= adj_array
+        _var = var
+    tot = (_var * weight).sum()
+    m = f'{tot:,.2f} != {goal_total:,.2f}'
+    assert np.allclose(np.array(goal_total), np.array(tot)), m
 
-    return var
+    return _var
 
 
 def adjust(data, targets):
