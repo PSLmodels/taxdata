@@ -52,7 +52,7 @@ variables.
 
 Previous Document: January 2020
 
-Current Document: July 2020app
+Current Document: July 2020
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
