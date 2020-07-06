@@ -50,9 +50,9 @@ in `puf_stage1/updatecbo.py` with the link to the latest CBO economic projection
 and run the file. Or you could download the file and copy/paste the specific
 variables.
 
-Previous Document: January 2019
+Previous Document: January 2020
 
-Current Document: January 2020 [amended by May 2020 Interim Projections](https://www.cbo.gov/publication/56351#data))
+Current Document: July 2020app
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -133,9 +133,9 @@ to pull the latest data.
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [January 2019](https://www.cbo.gov/system/files/2019-01/51316-2019-01-unemployment.pdf)
+Previous: [January 2020](https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.pdf)
 
-Current: [January 2020](https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.pdf)
+Current: [March 2020](https://www.cbo.gov/system/files/2020-03/51316-2020-03-unemployment.pdf)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars
