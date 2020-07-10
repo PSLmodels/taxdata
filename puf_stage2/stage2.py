@@ -28,7 +28,7 @@ z["WT2012"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                                 year=2012, tol=0.40)
 z['WT2013'] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                                 year=2013, tol=0.38)
-z['WT2014'] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
+z["WT2014"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                                 year=2014, tol=0.35)
 z["WT2015"] = solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets,
                                 year=2015, tol=0.33)

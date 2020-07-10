@@ -1,5 +1,7 @@
 import numpy as np
-import pulp
+import pandas as pd
+# import pulp
+import cvxopt
 
 
 def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
@@ -69,7 +71,7 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
     A1 = np.array(One_half_LHS)
     A2 = np.array(-One_half_LHS)
 
-    print("Preparing targets for year {} .....".format(year))
+    print("Preparing targets for year {} .....".format(year)) 
 
     APOPN = Stage_I_factors[year]["APOPN"]
 
@@ -175,26 +177,55 @@ def solve_lp_for_year(puf, Stage_I_factors, Stage_II_targets, year, tol):
         b.append(m)
 
     print('Constructing LP Model')
-    LP = pulp.LpProblem('PUF Stage 2', pulp.LpMinimize)
-    r = pulp.LpVariable.dicts('r', puf.index, lowBound=0)
-    s = pulp.LpVariable.dicts('s', puf.index, lowBound=0)
-    # add objective functoin
-    LP += pulp.lpSum([r[i] + s[i] for i in puf.index])
-    # add constraints
-    for i in puf.index:
-        LP += r[i] + s[i] <= tol
-    for i in range(len(b)):
-        LP += pulp.lpSum([(A1[i][j] * r[j] + A2[i][j] * s[j])
-                          for j in puf.index]) == b[i]
 
-    print('Solving Model...')
-    pulp.LpSolverDefault.msg = 1  # ensure there is a command line output
-    LP.solve()
-    print(pulp.LpStatus[LP.status])
+    N = len(puf.index)
+    c = cvxopt.matrix(np.ones(2 * N).tolist())
+
+    # tolerance and non-negativity constraints
+    G_values = np.append(np.ones(2 * N), -np.ones(2 * N)).tolist()
+    G_row = np.concatenate((list(range(N)), list(range(N)),
+                            [i + N for i in list(range(2 * N))])).tolist()
+    G_row = [int(i) for i in G_row]
+    G_col = np.concatenate((list(range(2 * N)), list(range(2 * N)))).tolist()
+    G_col = [int(i) for i in G_col]
+
+    G = cvxopt.spmatrix(G_values, G_row, G_col)
+    h = cvxopt.matrix(np.append(tol * np.ones(N), np.zeros(2 * N)).tolist())
+
+    # targets
+    A = cvxopt.matrix(np.hstack([A1, A2]))
+    b = cvxopt.matrix(b)
+
+    print("Solving model")
+    sol_cvxopt = cvxopt.solvers.lp(A=A, b=b, G=G, h=h, c=c, solver=None)
+
+
+    # LP = pulp.LpProblem('PUF Stage 2', pulp.LpMinimize)
+    # r = pulp.LpVariable.dicts('r', puf.index, lowBound=0)
+    # s = pulp.LpVariable.dicts('s', puf.index, lowBound=0)
+    # # add objective functoin
+    # LP += pulp.lpSum([r[i] + s[i] for i in puf.index])
+    # # add constraints
+    # for i in puf.index:
+    #     LP += r[i] + s[i] <= tol
+    # for i in range(len(b)):
+    #     LP += pulp.lpSum([(A1[i][j] * r[j] + A2[i][j] * s[j])
+    #                       for j in puf.index]) == b[i]
+
+    # print('Solving Model...')
+    # pulp.LpSolverDefault.msg = 1  # ensure there is a command line output
+    # LP.solve()
+    # print(pulp.LpStatus[LP.status])
+
+    # # apply r and s values to the weights
+    # r_val = np.array([r[i].varValue for i in r])
+    # s_val = np.array([s[i].varValue for i in s])
+    # z = (1. + r_val - s_val) * s006 * 100
 
     # apply r and s values to the weights
-    r_val = np.array([r[i].varValue for i in r])
-    s_val = np.array([s[i].varValue for i in s])
-    z = (1. + r_val - s_val) * s006 * 100
+    rs_val_cvxopt = np.array(sol_cvxopt["x"]).reshape((2 * N,))
+    r_val_cvxopt = rs_val_cvxopt[:N]
+    s_val_cvxopt = rs_val_cvxopt[N:]
+    z = r_val_cvxopt - s_val_cvxopt
 
-    return z
+    return (1 + z) * s006 * 100
