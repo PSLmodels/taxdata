@@ -25,7 +25,6 @@ CPS_BENEFIT_TUPLES = [
     ("uc_val", "e02300"), ("vet_val", "vet_ben"),
     ("ss_val", "e02400")
 ]
-C_TAM_YEARS = [2013, 2014, 2015]  # years we have C-TAM imputations for
 
 
 class FilingParams(Parameters):

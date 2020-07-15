@@ -10,7 +10,7 @@ from targeting import target
 from finalprep import final_prep
 from impute import imputation
 from benefits import distribute_benefits
-from cps_meta import CPS_META_DATA
+from cps_meta import CPS_META_DATA, C_TAM_YEARS
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -22,7 +22,7 @@ CPS_FILES = [2013, 2014, 2015]
 def create(exportcsv: bool = False, exportpkl: bool = False,
            exportraw: bool = True, validate: bool = False,
            benefits: bool = True, verbose: bool = False,
-           cps_files=CPS_FILES):
+           cps_files: list = CPS_FILES):
     """
     Logic for creating tax units from the CPS
     Parameters
@@ -35,7 +35,8 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     validate: if True, validation tests will be run on the tax units to ensure
               all household income, benefits, and people are accounted for
     benefits: if True, benefits imputed by C-TAM will be included in the tax
-              units
+              units. Will automatically be false for years where we do not
+              have C-TAM imputations
     verbose: if True, additional progress information will be printed as the
              scripts run
     cps_files: list containing which years of the CPS you want to use
@@ -46,6 +47,15 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     # look for pickled versions of the converted CPS files
     cps_dfs = {}
     for year in cps_files:
+        _benefits = benefits
+        if year not in C_TAM_YEARS:
+            _benefits = False
+            if benefits:
+                msg = (
+                    f"C-TAM imputed benefits are not available for {year}. "
+                    "Creating file with benefits reported in the CPS."
+                )
+                print(msg)
         try:
             meta = CPS_META_DATA[year]
         except KeyError:
@@ -61,7 +71,7 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
             # convert the DAT file
             cps_dfs[year] = meta["create_func"](
                 Path(DATA_PATH, meta["dat_file"]), year=year,
-                benefits=benefits, exportpkl=exportpkl, exportcsv=exportcsv
+                benefits=_benefits, exportpkl=exportpkl, exportcsv=exportcsv
             )
 
     # create tax units

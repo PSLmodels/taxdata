@@ -2,7 +2,8 @@ import pandas as pd
 from operator import itemgetter
 from tqdm import tqdm
 from taxunit import TaxUnit
-from helpers import filingparams, cps_yr_idx, C_TAM_YEARS
+from helpers import filingparams, cps_yr_idx
+from cps_meta import C_TAM_YEARS
 
 
 INCOME_VARS = [

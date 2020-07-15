@@ -8,6 +8,9 @@ import cpsmar2016
 import cpsmar2017
 import cpsmar2018
 
+
+C_TAM_YEARS = [2013, 2014, 2015]  # years we have C-TAM imputations for
+
 CPS_META_DATA = {
     2013: {
         "dat_file": "asec2013_pubuse.dat",
