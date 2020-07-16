@@ -66,18 +66,8 @@ running the `make help` command.  If you want more background on the
 make utility and makefiles, search for Internet links with the
 keywords `makefile` and `automate`.
 
-Note that the stage2 linear program that generates the weights file for the PUF
-is very long-running, taking five or more hours depending on your
-computer's CPU speed.  We are considering options for speeding up this
-stage2 work, but for the time being you can execute `make puf-files`
-and `make cps-files` in separate terminal windows to have the two
-stage2 linear programs run in parallel.  (If you try this parallel
-execution approach, be sure to wait for the `make puf-files` job to
-begin stage2 work before executing the `make cps-files` command in
-the other terminal window.  This is necessary because the CPS stage1
-work depends on output from PUF stage1.)  If you are generating the
-taxdata made files in an overnight run, then simply execute the `make
-all` command.
+The stage 2 linear program that generate weights for the PUF and CPS files take about 20 minutes each to run, but if you'd like to slightly speed up the process, you can you can execute `make puf-files` and `make cps-files` in separate terminal windows to have both stage 2 linear programs run in parallel. In order for this parallel execution to run smoothly, please wait for `make puf-files` to begin stage 2 work before executing the `make cps-files` command in
+the other terminal window. This is necessary because the CPS stage1 work depends on output from PUF stage1. If you are generating the taxdata made files in an overnight run, then simply execute the `make all` command.
 
 You can copy the made files to your local Tax-Calculator directory
 tree using the [`csvcopy.sh`](csvcopy.sh) bash script.  Use the `dryrun`
