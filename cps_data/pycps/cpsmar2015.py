@@ -802,6 +802,12 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
         record["tot_inc"] -= record["uc_val"]
         record["tot_inc"] += record["UI_impute"]
         record["tot_inc"] += record["ss_impute"]
+    else:
+        # calculate benefits in CPS where possible
+        record["tanf_val"] = 0.
+        if record["paw_yn"] == 1:
+            record["tanf_val"] = record["paw_val"]
+        record["housing_val"] = record["fhoussub"]
     return record
 
 
@@ -875,4 +881,6 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
 
 
 if __name__ == "__main__":
-    create_cps(Path(CUR_PATH, "data", "asec2015_pubuse.dat"), 2015)
+    create_cps(
+        Path(CUR_PATH, "data", "asec2015_pubuse.dat"), 2015, True
+    )
