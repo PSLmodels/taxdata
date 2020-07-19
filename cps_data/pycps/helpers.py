@@ -13,6 +13,18 @@ CPS_YEAR = 2013
 LOG_VARS = ["tot_inc", "interest", "divs", "E01500"]
 # X variables used in most of the imputation regressions
 X_VARS = ["lntot_inc", "joint_filer", "fam_size", "agede", "constant"]
+C_TAM_BENEFIT_TUPLES = [
+    ("MedicaidX", "mcaid_ben"),
+    ("MedicareX", "mcare_ben"),
+    ("ssi_impute", "ssi_ben"), ("tanf_impute", "tanf_ben"),
+    ("UI_impute", "e02300"), ("vb_impute", "vet_ben"),
+    ("wic_impute", "wic_ben"), ("ss_impute", "e02400")
+]
+CPS_BENEFIT_TUPLES = [
+    ("ssi_val", "ssi_ben"), ("tanf_val", "tanf_ben"),
+    ("uc_val", "e02300"), ("vet_val", "vet_ben"),
+    ("ss_val", "e02400")
+]
 
 
 class FilingParams(Parameters):
