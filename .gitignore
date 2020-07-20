@@ -23,6 +23,4 @@ cpsmar*.csv
 *.dat
 
 # pickle files
-cps_data/pycps/data/cpsmar2013.pkl
-cps_data/pycps/data/cpsmar2014.pkl
-cps_data/pycps/data/cpsmar2015.pkl
+cpsmar*.pkl
