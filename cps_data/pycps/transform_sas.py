@@ -4,6 +4,7 @@ to Python
 """
 from pathlib import Path
 from jinja2 import Template
+from helpers import C_TAM_YEARS
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -100,13 +101,18 @@ def main(sas_file, year, dat_file, template_path="template.txt"):
     person = create_section(sas)
 
     sas.close()
+    # check for C-TAM benefits. If not supported, benefits defaults to false
+    benefits = year in C_TAM_YEARS
 
     pathout = Path(CUR_PATH, f"cpsmar{year}.py")  # .write_text(file_str)
     write_page(pathout, template_path, household=household, family=family,
-               person=person, year=year, file_name=dat_file)
+               person=person, year=year, file_name=dat_file, benefits=benefits)
 
 
 if __name__ == "__main__":
     main("cpsmar2013.sas", 2013, "asec2013_pubuse.dat")
     main("cpsmar2014t.sas", 2014, "asec2014_pubuse_tax_fix_5x8_2017.dat")
     main("cpsmar2015.sas", 2015, "asec2015_pubuse.dat")
+    main("cpsmar2016.sas", 2016, "asec2016_pubuse_v3.dat")
+    main("cpsmar2017.sas", 2017, "asec2017_pubuse.dat")
+    main("cpsmar2018.sas", 2018, "asec2018_pubuse.dat")

@@ -4,8 +4,8 @@ import os
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
-def main():
-    SYR = '2014'  # Start year of CPS
+def main(syr=2014):
+    SYR = str(syr)  # Start year of CPS
     EYR = 2030  # Last year in our extrapolation
 
     # Read in state SOI estimates

@@ -35,7 +35,6 @@ def h_rec(rec):
     record["h_telavl"] = int(rec[36:37])
     record["h_telint"] = int(rec[37:38])
     record["gereg"] = int(rec[38:39])
-    record["gestcen"] = int(rec[39:41])
     record["gestfips"] = int(rec[41:43])
     record["gtcbsa"] = int(rec[43:48])
     record["gtco"] = int(rec[48:51])
@@ -91,8 +90,6 @@ def h_rec(rec):
     record["hedval"] = int(rec[208:215])
     record["hcsp_yn"] = int(rec[215:216])
     record["hcspval"] = int(rec[216:223])
-    record["halm_yn"] = int(rec[223:224])
-    record["halmval"] = int(rec[224:231])
     record["hfin_yn"] = int(rec[231:232])
     record["hfinval"] = int(rec[232:239])
     record["hoi_yn"] = int(rec[239:240])
@@ -211,8 +208,6 @@ def f_rec(rec):
     record["fedval"] = int(rec[165:172])
     record["finc_csp"] = int(rec[172:173])
     record["fcspval"] = int(rec[173:180])
-    record["finc_alm"] = int(rec[180:181])
-    record["falmval"] = int(rec[181:188])
     record["finc_fin"] = int(rec[188:189])
     record["ffinval"] = int(rec[189:196])
     record["finc_oi"] = int(rec[196:197])
@@ -224,13 +219,9 @@ def f_rec(rec):
     record["fspanish"] = int(rec[230:231])
     record["fsup_wgt"] = float(rec[232:238] + "." + rec[238:240])
     record["ffposold"] = int(rec[240:242])
-    record["f_mv_fs"] = int(rec[242:246])
-    record["f_mv_sl"] = int(rec[246:250])
-    record["ffngcare"] = int(rec[250:255])
-    record["ffngcaid"] = int(rec[255:260])
+    record["f_mv_fs"] = int(rec[242:247])
+    record["f_mv_sl"] = int(rec[247:251])
     record["fhoussub"] = int(rec[260:263])
-    record["ffoodreq"] = int(rec[263:267])
-    record["fhousreq"] = int(rec[267:271])
     record["fhip_val"] = int(rec[271:278])
     record["fmoop"] = int(rec[278:285])
     record["fotc_val"] = int(rec[285:291])
@@ -458,7 +449,6 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["int_yn"] = int(rec[524:525])
     record["int_val"] = int(rec[525:530])
     record["div_yn"] = int(rec[530:531])
-    record["div_non"] = int(rec[531:532])
     record["div_val"] = int(rec[532:538])
     record["rnt_yn"] = int(rec[538:539])
     record["rnt_val"] = int(rec[539:544])
@@ -469,8 +459,6 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["ed_val"] = int(rec[548:553])
     record["csp_yn"] = int(rec[553:554])
     record["csp_val"] = int(rec[554:559])
-    record["alm_yn"] = int(rec[559:560])
-    record["alm_val"] = int(rec[560:565])
     record["fin_yn"] = int(rec[565:566])
     record["fin_val"] = int(rec[566:571])
     record["oi_off"] = int(rec[571:573])
@@ -484,9 +472,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["pov_univ"] = int(rec[606:607])
     record["wicyn"] = int(rec[607:608])
     record["mcare"] = int(rec[628:629])
-    record["p_mvcare"] = int(rec[629:634])
     record["mcaid"] = int(rec[634:635])
-    record["p_mvcaid"] = int(rec[635:640])
     record["champ"] = int(rec[640:641])
     record["hi_yn"] = int(rec[641:642])
     record["hiown"] = int(rec[642:643])
@@ -548,9 +534,9 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["fica"] = int(rec[743:748])
     record["fed_ret"] = int(rec[748:754])
     record["agi"] = int(rec[754:761])
-    record["tax_inc"] = int(rec[764:771])
-    record["fedtax_bc"] = int(rec[771:777])
-    record["fedtax_ac"] = int(rec[777:783])
+    record["tax_inc"] = int(rec[762:769])
+    record["fedtax_bc"] = int(rec[769:776])
+    record["fedtax_ac"] = int(rec[776:783])
     record["statetax_bc"] = int(rec[783:789])
     record["statetax_ac"] = int(rec[789:795])
     record["prswkxpns"] = int(rec[795:799])
@@ -687,8 +673,6 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["i_oedval"] = int(rec[993:994])
     record["i_cspyn"] = int(rec[994:995])
     record["i_cspval"] = int(rec[995:996])
-    record["i_almyn"] = int(rec[996:997])
-    record["i_almval"] = int(rec[997:998])
     record["i_finyn"] = int(rec[998:999])
     record["i_finval"] = int(rec[999:1000])
     record["i_oival"] = int(rec[1000:1001])
@@ -737,7 +721,6 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["trnt_val"] = int(rec[1063:1064])
     record["ted_val"] = int(rec[1064:1065])
     record["tcsp_val"] = int(rec[1065:1066])
-    record["talm_val"] = int(rec[1066:1067])
     record["tfin_val"] = int(rec[1067:1068])
     record["toi_val"] = int(rec[1068:1069])
     record["tphip_val"] = int(rec[1069:1070])
@@ -745,7 +728,9 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
     record["tpmed_val"] = int(rec[1071:1072])
     record["tchsp_val"] = int(rec[1072:1073])
 
-    record["alimony"] = record["alm_val"]
+    record["alimony"] = 0.
+    if record["oi_off"] == 20:
+        record["alimony"] = record["oi_val"]
     # Calculate pensions and annuities
     pensions_annuities = (
         ((record["oi_off"] == 2) * record["oi_val"]) +
@@ -810,7 +795,7 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
         record["tanf_val"] = 0.
         if record["paw_yn"] == 1:
             record["tanf_val"] = record["paw_val"]
-        record["housing_val"] = record["fhoussub"]
+        record["housing_val"] = 0.
     return record
 
 
@@ -885,5 +870,5 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
 
 if __name__ == "__main__":
     create_cps(
-        Path(CUR_PATH, "data", "asec2014_pubuse_tax_fix_5x8_2017.dat"), 2014, True
+        Path(CUR_PATH, "data", "asec2016_pubuse_v3.dat"), 2016, False
     )
