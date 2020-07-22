@@ -1,8 +1,6 @@
 import os
 import requests
 import pandas as pd
-import numpy as np
-import xlrd
 
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
