@@ -3,6 +3,7 @@ from operator import itemgetter
 from tqdm import tqdm
 from taxunit import TaxUnit
 from helpers import filingparams, cps_yr_idx
+from cps_meta import C_TAM_YEARS
 
 
 INCOME_VARS = [
@@ -173,7 +174,7 @@ def is_dependent(person, unit, verbose=False):
     return True
 
 
-def create_units(data, year, verbose=False):
+def create_units(data, year, verbose=False, ctam_benefits=True):
     """
     Logic for iterating through households and creating tax units
     """
@@ -195,7 +196,7 @@ def create_units(data, year, verbose=False):
             if verbose:
                 print("making unit", person["a_lineno"])
             person["p_flag"] = True
-            tu = TaxUnit(person, year, hh_inc)
+            tu = TaxUnit(person, year, hh_inc, ctam_benefits=ctam_benefits)
             # loop through the rest of the household for
             # spouses and dependents
             if person["a_spouse"] != 0:
@@ -249,7 +250,9 @@ def create_units(data, year, verbose=False):
         if filer:
             if verbose:
                 print("dep filer", person["a_lineno"])
-            tu = TaxUnit(person, year, dep_status=True)
+            tu = TaxUnit(
+                person, year, dep_status=True, ctam_benefits=ctam_benefits
+            )
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
             if verbose:
@@ -259,7 +262,7 @@ def create_units(data, year, verbose=False):
     return [unit.output() for unit in units.values()]
 
 
-def _create_units(data, year, verbose=False):
+def _create_units(data, year, verbose=False, ctam_benefits=False):
     """
     Logic for iterating through households and creating tax units
     This is a more complex function for creating the tax units. It actively
@@ -283,7 +286,9 @@ def _create_units(data, year, verbose=False):
             if verbose:
                 print("making unit", person["a_lineno"])
             person["p_flag"] = True
-            tu = TaxUnit(person, year, hh_inc)
+            tu = TaxUnit(
+                person, year, hh_inc, ctam_benefits=ctam_benefits
+            )
             # loop through the rest of the household for
             # spouses and dependents
             if person["a_spouse"] != 0:
@@ -311,7 +316,9 @@ def _create_units(data, year, verbose=False):
         if person['filestat'] != 6:
             if verbose:
                 print("dep filer", person["a_lineno"])
-            tu = TaxUnit(person, year, dep_status=True)
+            tu = TaxUnit(
+                person, year, dep_status=True, ctam_benefits=ctam_benefits
+            )
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
             if verbose:
@@ -329,8 +336,11 @@ def pycps(cps: list, year: int, verbose: bool) -> pd.DataFrame:
     cps: List where each element is a household in the CPS
     """
     tax_units = []
+    ctam_benefits = True
+    if year not in C_TAM_YEARS:
+        ctam_benefits = False
     for hh in tqdm(cps):
-        tax_units += create_units(hh, year - 1)
+        tax_units += create_units(hh, year - 1, ctam_benefits=ctam_benefits)
     # create a DataFrame of tax units with the new
     tax_units_df = pd.DataFrame(tax_units)
 
