@@ -11,21 +11,21 @@ def update_cpim(baseline):
     Update the CPI-M values in the CBO baseline using the BLS API
     """
     print("Updating CPI-M Values")
-    url = 'https://api.bls.gov/publicAPI/v1/timeseries/data/CUSR0000SAM'
+    url = "https://api.bls.gov/publicAPI/v1/timeseries/data/CUSR0000SAM"
     # fetch BLS data from about url
     r = requests.get(url)
     # raise and error if the request fails
     assert r.status_code == 200
     result_json = r.json()
     # raise error if request was not successful
-    assert result_json['status'] == 'REQUEST_SUCCEEDED'
+    assert result_json["status"] == "REQUEST_SUCCEEDED"
     # extract the data from the results
-    data = result_json['Results']['series'][0]['data']
+    data = result_json["Results"]["series"][0]["data"]
     df = pd.DataFrame(data)
     # convert the values to floats so that the groupby mean only returns
     # the mean for the value
-    df['value'] = df['value'].astype(float)
-    cpi_mean = df.groupby('year').mean().transpose().round(1)
+    df["value"] = df["value"].astype(float)
+    cpi_mean = df.groupby("year").mean().transpose().round(1)
     cpi_mean.index = ["CPIM"]
 
     # open the current baseline to replace the values for the years pulled
@@ -40,12 +40,12 @@ def update_cpim(baseline):
     sub_baseline = baseline[baseline.columns[: split_col]]
 
     # find the difference
-    mean_diff = (sub_baseline.loc['CPIM'] - sub_baseline.loc['CPIU']).mean()
+    mean_diff = (sub_baseline.loc["CPIM"] - sub_baseline.loc["CPIU"]).mean()
 
     # update the future values to reflect the difference between
     new_vals = {}
     for col in baseline.columns[split_col:]:
-        cpiu = baseline[col].loc['CPIU']
+        cpiu = baseline[col].loc["CPIU"]
         new_val = cpiu + mean_diff
         new_vals[col] = [new_val]
     future_df = pd.DataFrame(new_vals, index=["CPIM"]).round(1)
@@ -89,7 +89,7 @@ def update_econproj(econ_url, cg_url, baseline):
     cg_proj = pd.read_excel(cg_url, sheet_name="6. Capital Gains Realizations",
                             skiprows=7, header=[0, 1])
     var = "Capital Gains Realizationsa"
-    cgns = cg_proj[var]['Billions of Dollars'].loc[list(range(2017, 2031))]
+    cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2031))]
 
     # create one DataFrame from all of the data
 
@@ -113,13 +113,49 @@ def update_econproj(econ_url, cg_url, baseline):
     return baseline
 
 
+def update_socsec(url, baseline):
+    """
+    Function that will read the table with OASI Social Security Projections
+    """
+    match_txt = "Operations of the OASI Trust Fund, Fiscal Years"
+    html = pd.read_html(url, match=match_txt)[0]
+    # merge the columns with years and data into one
+    sub_data = pd.concat(
+        html["Fiscal year", "Fiscal year.1"],
+        html["Cost", "Sched-uled benefits"],
+        axis=1
+    )
+    sub_data.columns = ["year", "cost"]
+    # further slim down data so that we have the intermediate costs only
+    start = sub_data.index[sub_data["year"] == "Intermediate:"][0]
+    end = sub_data.index[sub_data["year"] == "Low-cost:"][0]
+    cost_data = sub_data.iloc[start + 1: end].dropna()
+    cost_data["cost"] = cost_data["cost"].astype(float)
+    # rate we'll use to extrapolate costs to final year we'll need
+    pct_change = cost_data["cost"].pct_change() + 1
+    cost_data.set_index("year", inplace=True)
+    cost_data.index = ["SOCSEC"]
+    # create values for years not included in the report
+    factor = pct_change.iloc[-1]
+    df_max = int(max(cost_data.columns))
+    baseline_max = int(max(baseline.columns))
+    for year in range(df_max + 1, baseline_max + 1):
+        cost_data[str(year)] = cost_data[str(year - 1)] * factor
+    # finally update CBO projections
+    baseline.update(cost_data)
+
+    return baseline
+
+
 def update_cbo():
-    econ_url = "https://www.cbo.gov/system/files/2020-01/51135-2020-01-economicprojections_0.xlsx"
-    cg_url = "https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx"
+    ECON_URL = "https://www.cbo.gov/system/files/2020-01/51135-2020-01-economicprojections_0.xlsx"
+    CG_URL = "https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx"
+    SOCSEC_URL = "https://www.ssa.gov/oact/TR/2019/VI_C_SRfyproj.html#306103"
     baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"),
                            index_col=0)
-    baseline = update_econproj(econ_url, cg_url, baseline)
+    baseline = update_econproj(ECON_URL, CG_URL, baseline)
     baseline = update_cpim(baseline)
+    baseline = update_socsec(SOCSEC_URL, baseline)
 
     return baseline
 
@@ -128,6 +164,6 @@ if __name__ == "__main__":
     baseline = update_cbo()
     baseline.to_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"))
     msg = ("NOTE: This program does not update every variable in the baseline."
-           " Remember to update RETS, SOCSEC, and UCOMP by following the "
+           " Remember to update RETS and UCOMP by following the "
            "instructions found in CBO_Baseline_Updating_Instructions.md")
     print(msg)
