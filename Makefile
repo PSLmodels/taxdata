@@ -150,7 +150,7 @@ cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_stage2/solve_lp_for_year.py \
-                               cps_data/pycps/cps_raw.csv.gz \
+                               cps_data/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
                                cps_stage1/stage_2_targets.csv
 	cd cps_stage2 ; python stage2.py && \
