@@ -1,7 +1,7 @@
 # StatMatch
 
 This repo holds scripts for performing a statistical match
-using the March 2016 CPS and 2011 IRS SOI Public Use File (PUF) datasets
+using the March 2016 CPS and 2011 IRS SOI Public Use File (PUF) datasets.
 
 ## Usage
 
