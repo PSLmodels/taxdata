@@ -22,7 +22,6 @@ SENIOR = 65
 #   <http://www.census.gov/popest/data/intercensal/national/nat2010.html>
 
 # projection for 2014+
-
 pop_projection = pd.read_csv(os.path.join(CUR_PATH, "NP2014_D1.csv"),
                              index_col='year')
 pop_projection = pop_projection[(pop_projection.sex == 0) &
@@ -152,109 +151,90 @@ for year in range(2023, EYR + 1):
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
-soi_estimates = pd.read_csv(os.path.join(CUR_PATH, "SOI_estimates_new.csv"),
+soi_estimates = pd.read_csv(os.path.join(CUR_PATH, "SOI_estimates.csv"),
                             index_col=0)
 soi_estimates = soi_estimates.transpose()
 historical_index = list(range(2008, SOI_YR + 1))
 soi_estimates.index = historical_index
 
 # use yearly growth rates from Census, CBO, and IRS as blowup factors
-num_bins = 12
-
-Single = {}
-Joint = {}
-HH = {}
-SS_return = {}
-Dep_return = {}
-INTS = {}
-DIVS = {}
-SCHCI = {}
-SCHCL = {}
-CGNS = {}
-Pension = {}
-SCHEI = {}
-SCHEL = {}
-SS = {}
-UCOMP = {}
-IPD = {}
-Wage = {}
-
 return_projection = soi_estimates
 for i in range(SOI_YR, EYR):  # SOI Estimates loop
-    for j in range(1,num_bins+1):
-        Single[str("Single" + str(j))] = return_projection[str("Single" + str(j))][i]*return_growth_rate.Returns[i+1]
-        Joint[str("Joint" + str(j))] = return_projection[str("Joint" + str(j))][i]*return_growth_rate.Returns[i+1]
-        HH[str("HH" + str(j))] = return_projection[str("HH" + str(j))][i]*return_growth_rate.Returns[i+1]
-        SS_return[str("SS_return" + str(j))] = return_projection[str("SS_return" + str(j))][i]*pop_growth_rates.POPSNR[i+1]
-        # Dep_return[str("Dep_return" + str(j))] = return_projection[str("Dep_return" + str(j))][i]*pop_growth_rates.POPDEP[i+1]
-        INTS[str("INTS" + str(j))] = return_projection[str("INTS" + str(j))][i]*cbo_growth_rates.INTS[i+1]
-        DIVS[str("DIVS" + str(j))] = return_projection[str("DIVS" + str(j))][i]*cbo_growth_rates.DIVS[i+1]
-        SCHCI[str("SCHCI" + str(j))] = return_projection[str("SCHCI" + str(j))][i]*cbo_growth_rates.SCHC[i+1]
-        SCHCL[str("SCHCL" + str(j))] = return_projection[str("SCHCL" + str(j))][i]*cbo_growth_rates.SCHC[i+1]
-        CGNS[str("CGNS" + str(j))] = return_projection[str("CGNS" + str(j))][i]*cbo_growth_rates.CGNS[i+1]
-        Pension[str("Pension" + str(j))] = return_projection[str("Pension" + str(j))][i]*cbo_growth_rates.TPY[i+1]
-        SCHEI[str("SCHEI" + str(j))] = return_projection[str("SCHEI" + str(j))][i]*cbo_growth_rates.BOOK[i+1]
-        SCHEL[str("SCHEL" + str(j))] = return_projection[str("SCHEL" + str(j))][i]*cbo_growth_rates.BOOK[i+1]
-        SS[str("SS" + str(j))] = return_projection[str("SS" + str(j))][i]*cbo_growth_rates.SOCSEC[i+1]
-        UCOMP[str("UCOMP" + str(j))] = return_projection[str("UCOMP" + str(j))][i]*cbo_growth_rates.UCOMP[i+1]
-        # IPD[str("IPD" + str(j))] = return_projection[str("IPD" + str(j))][i]*cbo_growth_rates.TPY[i+1]
-        Wage[str("Wage" + str(j))] = return_projection[str("Wage" + str(j))][i]*cbo_growth_rates.Wages[i+1]
+    Single = return_projection.Single[i]*return_growth_rate.Returns[i+1]
+    Joint = return_projection.Joint[i]*return_growth_rate.Returns[i+1]
+    HH = return_projection.HH[i]*return_growth_rate.Returns[i+1]
+    SS_return = return_projection.SS_return[i]*pop_growth_rates.POPSNR[i+1]
+    Dep_return = return_projection.Dep_return[i]*pop_growth_rates.POPDEP[i+1]
+    INTS = return_projection.INTS[i]*cbo_growth_rates.INTS[i+1]
+    DIVS = return_projection.DIVS[i]*cbo_growth_rates.DIVS[i+1]
+    SCHCI = return_projection.SCHCI[i]*cbo_growth_rates.SCHC[i+1]
+    SCHCL = return_projection.SCHCL[i]*cbo_growth_rates.SCHC[i+1]
+    CGNS = return_projection.CGNS[i]*cbo_growth_rates.CGNS[i+1]
+    Pension = return_projection.Pension[i]*cbo_growth_rates.TPY[i+1]
+    SCHEI = return_projection.SCHEI[i]*cbo_growth_rates.BOOK[i+1]
+    SCHEL = return_projection.SCHEL[i]*cbo_growth_rates.BOOK[i+1]
+    SS = return_projection.SS[i]*cbo_growth_rates.SOCSEC[i+1]
+    UCOMP = return_projection.UCOMP[i]*cbo_growth_rates.UCOMP[i+1]
+    IPD = return_projection.IPD[i]*cbo_growth_rates.TPY[i+1]
+    Wage_1 = return_projection.WAGE_1[i]*cbo_growth_rates.Wages[i+1]
+    Wage_2 = return_projection.WAGE_2[i]*cbo_growth_rates.Wages[i+1]
+    Wage_3 = return_projection.WAGE_3[i]*cbo_growth_rates.Wages[i+1]
+    Wage_4 = return_projection.WAGE_4[i]*cbo_growth_rates.Wages[i+1]
+    Wage_5 = return_projection.WAGE_5[i]*cbo_growth_rates.Wages[i+1]
+    Wage_6 = return_projection.WAGE_6[i]*cbo_growth_rates.Wages[i+1]
+    Wage_7 = return_projection.WAGE_7[i]*cbo_growth_rates.Wages[i+1]
+    Wage_8 = return_projection.WAGE_8[i]*cbo_growth_rates.Wages[i+1]
+    Wage_9 = return_projection.WAGE_9[i]*cbo_growth_rates.Wages[i+1]
+    Wage_10 = return_projection.WAGE_10[i]*cbo_growth_rates.Wages[i+1]
+    Wage_11 = return_projection.WAGE_11[i]*cbo_growth_rates.Wages[i+1]
+    Wage_12 = return_projection.WAGE_12[i]*cbo_growth_rates.Wages[i+1]
 
+    current_year = pd.DataFrame([Single, Joint, HH,
+                                 SS_return, Dep_return,
+                                 INTS, DIVS, SCHCI, SCHCL,
+                                 CGNS, Pension, SCHEI, SCHEL, SS, UCOMP, IPD,
+                                 Wage_1, Wage_2, Wage_3, Wage_4, Wage_5,
+                                 Wage_6, Wage_7, Wage_8, Wage_9, Wage_10,
+                                 Wage_11, Wage_12])
+    current_year = current_year.transpose()
 
-    var_dict = {**Single, **Joint, **HH, **SS_return, **Dep_return, **INTS, **DIVS, **SCHCI, **SCHCL,
-                **CGNS, **Pension, **SCHEI, **SCHEL, **SS, **UCOMP, **IPD, **Wage}
-
-
-    current_year = pd.DataFrame([var_dict])
-
+    current_year.columns = return_projection.columns
     current_year.index = [i+1]
     return_projection = return_projection.append(current_year)
 
 # combine historical data with the newly blownup data
 Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
 
-# Create dataframe of aggregate values
-cols = ['Single', 'Joint', 'HH', 'SS_return', 'Dep_return', 'INTS', 'DIVS', 'SCHCI', 'SCHCL', 'CGNS', 'Pension',
-        'SCHEI', 'SCHEL', 'SS', 'UCOMP', 'IPD', 'Wage']
-col_dict = {}
-
-for col in cols:
-    s = return_projection[['Single' + str(i) for i in range(1,num_bins+1)]].sum(axis=1)
-    col_dict[col] = s
-
-Aggregates = pd.DataFrame(data=col_dict)
-
 # create all the rest of the Stage_I_factors
-data = Aggregates[Aggregates.columns[3:6]].sum(axis=1)
-total_return = pd.DataFrame(data, columns=['ARETS']) # Returns: Single, Joint, HH
+data = Stage_II_targets[Stage_II_targets.columns[3:6]].sum(axis=1)
+total_return = pd.DataFrame(data, columns=['ARETS'])
 
-data = Aggregates[Aggregates.columns[19:31]].sum(axis=1)
-total_wage = pd.DataFrame(data, columns=['AWAGE']) # Wages
+data = Stage_II_targets[Stage_II_targets.columns[19:31]].sum(axis=1)
+total_wage = pd.DataFrame(data, columns=['AWAGE'])
 
 Stage_I_factors['ARETS'] = total_return/total_return.ARETS[SYR]
 
 Stage_I_factors['AWAGE'] = total_wage/total_wage.AWAGE[SYR]
 
-Stage_I_factors['ASCHCI'] = Aggregates.SCHCI/Aggregates.SCHCI[SYR]
-Stage_I_factors['ASCHCL'] = Aggregates.SCHCL/Aggregates.SCHCL[SYR]
+Stage_I_factors['ASCHCI'] = Stage_II_targets.SCHCI/Stage_II_targets.SCHCI[SYR]
+Stage_I_factors['ASCHCL'] = Stage_II_targets.SCHCL/Stage_II_targets.SCHCL[SYR]
 
-Stage_I_factors['ASCHEI'] = Aggregates.SCHEI/Aggregates.SCHEI[SYR]
-Stage_I_factors['ASCHEL'] = Aggregates.SCHEL/Aggregates.SCHEL[SYR]
+Stage_I_factors['ASCHEI'] = Stage_II_targets.SCHEI/Stage_II_targets.SCHEI[SYR]
+Stage_I_factors['ASCHEL'] = Stage_II_targets.SCHEL/Stage_II_targets.SCHEL[SYR]
 
-Stage_I_factors['AINTS'] = Aggregates.INTS/Aggregates.INTS[SYR]
-Stage_I_factors['ADIVS'] = Aggregates.DIVS/Aggregates.DIVS[SYR]
-Stage_I_factors['ACGNS'] = Aggregates.CGNS/Aggregates.CGNS[SYR]
+Stage_I_factors['AINTS'] = Stage_II_targets.INTS/Stage_II_targets.INTS[SYR]
+Stage_I_factors['ADIVS'] = Stage_II_targets.DIVS/Stage_II_targets.DIVS[SYR]
+Stage_I_factors['ACGNS'] = Stage_II_targets.CGNS/Stage_II_targets.CGNS[SYR]
 
-Stage_I_factors['ASOCSEC'] = Aggregates.SS/Aggregates.SS[SYR]
-Stage_I_factors['AUCOMP'] = Aggregates.UCOMP/Aggregates.UCOMP[SYR]
-Stage_I_factors['AIPD'] = Aggregates.IPD/Aggregates.IPD[SYR]
+Stage_I_factors['ASOCSEC'] = Stage_II_targets.SS/Stage_II_targets.SS[SYR]
+Stage_I_factors['AUCOMP'] = Stage_II_targets.UCOMP/Stage_II_targets.UCOMP[SYR]
+Stage_I_factors['AIPD'] = Stage_II_targets.IPD/Stage_II_targets.IPD[SYR]
 
 # Add benefit growth rates to Stage 1 factors
 benefit_programs = pd.read_csv(os.path.join(CUR_PATH,
                                '../cps_data/benefitprograms.csv'),
                                index_col='Program')
-benefit_sums = benefit_programs[benefit_programs.columns[2:]].sum()
-
+benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
 # Find growth rate between 2020 and 2021 and extrapolate out to EYR
 gr = benefit_sums['2021_cost'] / float(benefit_sums['2020_cost'])
 for year in range(2022, EYR + 1):
@@ -270,11 +250,10 @@ for year in range(SYR, EYR + 1):
     else:
         benefit_factors[year] = ABENEFITS['{}_cost'.format(year)]
 
-# Stage_II_targets = Stage_II_targets.drop(['IPD' + str(i) for i in range(1,num_bins+1)], axis=1)
+Stage_II_targets = Stage_II_targets.drop('IPD', axis=1)
 # rename Stage_II_targets index
-rename = {'TOTAL_POP': 'US Population'}
-
-descriptions = {
+rename = {
+    'TOTAL_POP': 'US Population',
     'Single': 'Single Returns',
     'Joint': 'Joint Returns',
     'HH': 'Head of Household Returns',
@@ -290,33 +269,22 @@ descriptions = {
     'SCHEL': 'Supplemental Loss (Schedule E)',
     'SS': 'Gross Social Security Income',
     'UCOMP': 'Unemployment Compensation',
-    'Wage': 'Wages and Salaries'
-    }
-
-bins = {1: 'Zero or Less',
-        2: '$1 Less Than $10,000',
-        3: '$10,000 Less Than $20,000',
-        4: '$20,000 Less Than $30,000',
-        5: '$30,000 Less Than $40,000',
-        6: '$40,000 Less Than $50,000',
-        7: '$50,000 Less Than $75,000',
-        8: '$75,000 Less Than $100,000',
-        9: '$100,000 Less Than $200,000',
-        10: '$200,000 Less Than $500,000',
-        11: '$500,000 Less Than $1 Million',
-        12: '$1 Million and Over'
-        }
-
-cols.remove('IPD')
-for c in cols:
-    for r in range(1,num_bins+1):
-        rename[c + str(r)] = descriptions[c] + ": " + bins[r]
-
+    'WAGE_1': 'Wages and Salaries: Zero or Less',
+    'WAGE_2': 'Wages and Salaries: $1 Less Than $10,000',
+    'WAGE_3': 'Wages and Salaries: $10,000 Less Than $20,000',
+    'WAGE_4': 'Wages and Salaries: $20,000 Less Than $30,000',
+    'WAGE_5': 'Wages and Salaries: $30,000 Less Than $40,000',
+    'WAGE_6': 'Wages and Salaries: $40,000 Less Than $50,000',
+    'WAGE_7': 'Wages and Salaries: $50,000 Less Than $75,000',
+    'WAGE_8': 'Wages and Salaries: $75,000 Less Than $100,000',
+    'WAGE_9': 'Wages and Salaries: $100,000 Less Than $200,000',
+    'WAGE_10': 'Wages and Salaries: $200,000 Less Than $500,000',
+    'WAGE_11': 'Wages and Salaries: $500,000 Less Than $1 Million',
+    'WAGE_12': 'Wages and Salaries: $1 Million and Over'
+}
 Stage_II_targets.rename(columns=rename, inplace=True)
 
-
-
-# Delete 2008-2010 rows from Stage_I_factors and Stage_II_factors
+# Delate 2008 row from Stage_I_factors
 Stage_I_factors = Stage_I_factors.drop([2008, 2009, 2010])
 Stage_II_targets = Stage_II_targets.drop([2008, 2009, 2010])
 
