@@ -16,6 +16,7 @@ This directory contains the following scripts:
   Output files:
     - Stage_I_factors.csv
     - Stage_II_targets.csv
+    - Stage_I_factors_transpose.csv
 
 * Python script **factor_finalprep.py**, which reads/writes:
 

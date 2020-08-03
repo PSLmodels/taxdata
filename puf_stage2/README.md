@@ -3,8 +3,7 @@ About puf_stage2
 
 This directory contains the following script:
 
-* Python script **stage2.py**, which calls a function in the
-`solve_lp_for_year.py` file, reads/writes:
+* Julia script **stage2.jl** reads/writes:
 
   Input files:
     - ../puf_data/cps-matched-puf.csv (not in repo because is restricted)
