@@ -17,3 +17,7 @@ dependencies:
 - pulp
 - paramtools
 - cvxopt
+- pypandoc
+- selenium
+- python-chromedriver-binary
+- tabulate

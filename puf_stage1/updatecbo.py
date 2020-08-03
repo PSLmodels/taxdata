@@ -88,6 +88,7 @@ def update_econproj(econ_url, cg_url, baseline):
     # Extract capital gains data
     cg_proj = pd.read_excel(cg_url, sheet_name="6. Capital Gains Realizations",
                             skiprows=7, header=[0, 1])
+    cg_proj.index = cg_proj[cg_proj.columns[0]]
     var = "Capital Gains Realizationsa"
     cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2031))]
 
@@ -117,12 +118,15 @@ def update_socsec(url, baseline):
     """
     Function that will read the table with OASI Social Security Projections
     """
+    print("Updating Social Security Projections")
     match_txt = "Operations of the OASI Trust Fund, Fiscal Years"
     html = pd.read_html(url, match=match_txt)[0]
     # merge the columns with years and data into one
     sub_data = pd.concat(
-        html["Fiscal year", "Fiscal year.1"],
-        html["Cost", "Sched-uled benefits"],
+        [
+            html["Fiscal year", "Fiscal year.1"],
+            html["Cost", "Sched-uled benefits"]
+        ],
         axis=1
     )
     sub_data.columns = ["year", "cost"]
@@ -134,16 +138,58 @@ def update_socsec(url, baseline):
     # rate we'll use to extrapolate costs to final year we'll need
     pct_change = cost_data["cost"].pct_change() + 1
     cost_data.set_index("year", inplace=True)
+    cost_data = cost_data.transpose()
     cost_data.index = ["SOCSEC"]
     # create values for years not included in the report
     factor = pct_change.iloc[-1]
-    df_max = int(max(cost_data.columns))
-    baseline_max = int(max(baseline.columns))
-    for year in range(df_max + 1, baseline_max + 1):
+    last_year = int(max(cost_data.columns))
+    cbo_last_year = int(max(baseline.columns))
+    for year in range(last_year + 1, cbo_last_year + 1):
         cost_data[str(year)] = cost_data[str(year - 1)] * factor
+    cost_data = cost_data.round(1)
     # finally update CBO projections
     baseline.update(cost_data)
 
+    return baseline
+
+
+def update_rets(url, baseline):
+    """
+    Update projected tax returns
+    """
+    print("updating Return Projections")
+    data = pd.read_excel(
+        url, sheet_name="1B-BOD", index_col=0, header=2
+    )
+    projections = data.loc["Forms 1040, Total*"]
+    projections /= 1000000  # convert units
+    pct_change = projections.pct_change() + 1
+    # extrapolate out to final year of other CBO projections
+    factor = pct_change.iloc[-1]
+    last_year = int(max(projections.index))
+    cbo_last_year = int(max(baseline.columns))
+    df_projections = pd.DataFrame(projections).transpose()
+    df_projections.columns = df_projections.columns.astype(str)
+    for year in range(last_year + 1, cbo_last_year + 1):
+        df_projections[str(year)] = df_projections[str(year - 1)] * factor
+    df_projections.index = ["RETS"]
+    df_projections = df_projections.round(1)
+    baseline.update(df_projections)
+    return baseline
+
+
+def update_ucomp(url, baseline):
+    """
+    Update unemployment compensation projections
+    """
+    print("Updating Unemployment Projections")
+    data = pd.read_excel(url, skiprows=3, index_col=0, thousands=",")
+    benefits = data.loc['     Total benefits'].astype(int) / 1000
+    benefits = benefits.round(1)
+    df = pd.DataFrame(benefits).transpose()
+    df.index = ["UCOMP"]
+    df.columns = df.columns.astype(str)
+    baseline.update(df)
     return baseline
 
 
@@ -151,11 +197,15 @@ def update_cbo():
     ECON_URL = "https://www.cbo.gov/system/files/2020-01/51135-2020-01-economicprojections_0.xlsx"
     CG_URL = "https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx"
     SOCSEC_URL = "https://www.ssa.gov/oact/TR/2019/VI_C_SRfyproj.html#306103"
+    RETS_URL = "https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls"
+    UCOMP_URL = "https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.xlsx"
     baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"),
                            index_col=0)
     baseline = update_econproj(ECON_URL, CG_URL, baseline)
     baseline = update_cpim(baseline)
     baseline = update_socsec(SOCSEC_URL, baseline)
+    baseline = update_rets(RETS_URL, baseline)
+    baseline = update_ucomp(UCOMP_URL, baseline)
 
     return baseline
 
@@ -163,7 +213,6 @@ def update_cbo():
 if __name__ == "__main__":
     baseline = update_cbo()
     baseline.to_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"))
-    msg = ("NOTE: This program does not update every variable in the baseline."
-           " Remember to update RETS and UCOMP by following the "
-           "instructions found in CBO_Baseline_Updating_Instructions.md")
+    msg = ("NOTE: Remember to update the dates and links in"
+           " CBO_Baseline_Updating_Instructions.md accordingly. ")
     print(msg)
