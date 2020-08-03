@@ -3,7 +3,7 @@ About puf_stage2
 
 This directory contains the following script:
 
-* Python script **stage2.py**, which calls a function in the
+* Python script **stage2.jl**, which calls a function in the
 `solve_lp_for_year.py` file, reads/writes:
 
   Input files:
