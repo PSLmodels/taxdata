@@ -2,9 +2,9 @@
 Scripts to convert the SAS scripts used to process the .DAT format CPS file
 to Python
 """
+import pickle
 from pathlib import Path
-from jinja2 import Template
-from helpers import C_TAM_YEARS
+from cps_meta import CPS_META_DATA
 
 
 CUR_PATH = Path(__file__).resolve().parent
@@ -27,13 +27,11 @@ def find_section(sas):
                 input_line = True
 
 
-def create_section(sas):
+def parse_sas(sas):
     """
-    Create a full section
+    Parse the SAS file to find start and end points for all variables
     """
-    line_format = 'record["{}"] = int(rec[{}:{}])\n'
-    float_line = 'record["{}"] = float(rec[{}:{}] + "." + rec[{}:{}])\n'
-    lines = []
+    lines = {}
     # loop until you hit a blank line
     while True:
         # a value error will be thrown when you try and split the
@@ -51,68 +49,43 @@ def create_section(sas):
             # some length inputs have a $ attached
             length = int(split_len[0][1:])
         end = start + length
-        # float variables will have the number of decimals after the .
-        float_var = split_len[1] != ""
-        if not float_var:
-            # file_str += line_format.format(var, start, end)
-            lines.append(line_format.format(var, start, end))
-        else:
-            dem_len = int(split_len[1])
-            end2 = end
-            end -= dem_len
-            lines.append(float_line.format(var, start, end, end, end2))
+        # the SAS scripts we're transforming indicating a float variable by
+        # adding an integer after the . in the length variable. e.g. 8.2
+        # means that the variable is 8 characters long, and has 2 decimals
+        decimals = 0
+        if split_len[1]:
+            decimals = int(split_len[1])
+        lines[var] = (start, end, decimals)
 
-    # return file_str
     return lines
 
 
-def main(sas_file, year, dat_file, template_path="template.txt"):
+def main():
 
-    def write_page(pathout, template_path, **kwargs):
-        """
-        Render the HTML template with the markdown text
-        Parameters
-        ----------
-        pathout: path where the HTML file will be saved
-        template_path: path for the HTML template
-        Returns
-        -------
-        None
-        """
-        # read and render HTML template
-        template_str = Path(template_path).open("r").read()
-        template = Template(template_str, trim_blocks=True, lstrip_blocks=True)
-        rendered = template.render(**kwargs)
-        Path(pathout).write_text(rendered)
+    master_dict = {}
+    for year in CPS_META_DATA.keys():
+        # read in file text
+        sas = Path(CUR_PATH, CPS_META_DATA[year]["sas_file"]).open("r")
+        find_section(sas)
+        # first section you'll hit is households
+        household = parse_sas(sas)
+        find_section(sas)
+        # next is families
+        family = parse_sas(sas)
+        find_section(sas)
+        # last is persons
+        person = parse_sas(sas)
+        sas.close()
 
-    # read in file text
-    sas = Path(CUR_PATH, sas_file).open("r")
-    find_section(sas)
-    # first section you'll hit is households
-    household = create_section(sas)
+        master_dict[year] = {
+            "household": household,
+            "family": family,
+            "person": person
+        }
 
-    find_section(sas)
-    # next is families
-    family = create_section(sas)
-
-    find_section(sas)
-
-    # last is persons
-    person = create_section(sas)
-
-    sas.close()
-    # check for C-TAM benefits. If not supported, benefits defaults to false
-    benefits = year in C_TAM_YEARS
-
-    pathout = Path(CUR_PATH, f"cpsmar{year}.py")  # .write_text(file_str)
-    write_page(pathout, template_path, household=household, family=family,
-               person=person, year=year, file_name=dat_file, benefits=benefits)
+    with Path(CUR_PATH, "master_cps_dict.pkl").open("wb") as f:
+        pickle.dump(master_dict, f)
 
 
 if __name__ == "__main__":
-    main("cpsmar2013.sas", 2013, "asec2013_pubuse.dat")
-    main("cpsmar2014t.sas", 2014, "asec2014_pubuse_tax_fix_5x8_2017.dat")
-    main("cpsmar2015.sas", 2015, "asec2015_pubuse.dat")
-    main("cpsmar2016.sas", 2016, "asec2016_pubuse_v3.dat")
-    main("cpsmar2017.sas", 2017, "asec2017_pubuse.dat")
-    main("cpsmar2018.sas", 2018, "asec2018_pubuse.dat")
+    main()
