@@ -7,9 +7,9 @@ All tables and graphs in this report are automatically generated.
 
 {{ desc }}
 
-# Pull Requests
+# Pull Requests and Issues
 
-The pull requests listed below were merged before this report was generated:
+This report corresponds with the issues and pull requests listed below.
 
 {% for item in prs %}
 {{ item }}

@@ -21,3 +21,5 @@ dependencies:
 - selenium
 - python-chromedriver-binary
 - tabulate
+- pip:
+  - requests-html
