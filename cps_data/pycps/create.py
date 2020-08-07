@@ -11,10 +11,13 @@ from finalprep import final_prep
 from impute import imputation
 from benefits import distribute_benefits
 from cps_meta import CPS_META_DATA, C_TAM_YEARS
+from cpsmar import create_cps
 
 
 CUR_PATH = Path(__file__).resolve().parent
 DATA_PATH = Path(CUR_PATH, "data")
+with Path(CUR_PATH, "master_cps_dict.pkl").open("rb") as f:
+    PARSE_DICT = pickle.load(f)
 # list of which CPS file to actually use
 CPS_FILES = [2013, 2014, 2015]
 
@@ -69,8 +72,9 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
             cps_dfs[year] = pickle.load(pkl_path.open("rb"))
         else:
             # convert the DAT file
-            cps_dfs[year] = meta["create_func"](
+            cps_dfs[year] = create_cps(
                 Path(DATA_PATH, meta["dat_file"]), year=year,
+                parsing_dict=PARSE_DICT[year],
                 benefits=_benefits, exportpkl=exportpkl, exportcsv=exportcsv
             )
 
