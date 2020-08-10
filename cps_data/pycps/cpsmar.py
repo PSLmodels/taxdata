@@ -10,46 +10,16 @@ CUR_PATH = Path(__file__).resolve().parent
 DATA_PATH = Path(CUR_PATH, "data")
 
 
-def h_rec(rec):
-
-    record = OrderedDict()
-
-{% for item in household %}
-    {{ item }}{% endfor %}
-
-    return record
-
-
-def f_rec(rec):
+def person_details(record, benefits, h_seq, fhseq, ffpos, year):
     """
-    Process family record in CPS
+    Add additonal details for person records
     """
-
-    record = OrderedDict()
-
-{% for item in family %}
-    {{ item }}{% endfor %}
-
-    return record
-
-
-def p_rec(rec, benefits, h_seq, fhseq, ffpos):
-    """
-    Process person record in CPS
-    """
-    record = OrderedDict()
-
-{% for item in person %}
-    {{ item }}{% endfor %}
-
-    {# This might need to be updated to year >= 2015 #}
-    {% if year == 2015 %}
-    record["alimony"] = 0.
-    if record["oi_off"] == 20:
-        record["alimony"] = record["oi_val"]
-    {% else %}
-    record["alimony"] = record["alm_val"]
-    {% endif %}
+    if year >= 2015:
+        record["alimony"] = 0.
+        if record["oi_off"] == 20:
+            record["alimony"] = record["oi_val"]
+    else:
+        record["alimony"] = record["alm_val"]
     # Calculate pensions and annuities
     pensions_annuities = (
         ((record["oi_off"] == 2) * record["oi_val"]) +
@@ -109,10 +79,36 @@ def p_rec(rec, benefits, h_seq, fhseq, ffpos):
         record["tot_inc"] -= record["uc_val"]
         record["tot_inc"] += record["UI_impute"]
         record["tot_inc"] += record["ss_impute"]
+    else:
+        # calculate benefits in CPS where possible
+        record["tanf_val"] = 0.
+        if record["paw_yn"] == 1:
+            record["tanf_val"] = record["paw_val"]
+        if year >= 2016:
+            record["housing_val"] = 0.
+        else:
+            record["housing_val"] = record["fhoussub"]
     return record
 
 
-def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
+def parse(rec, parse_dict):
+    """
+    Function for parsing lines of the CPS
+    """
+    record = OrderedDict()
+
+    for var in parse_dict.keys():
+        start, end, decimals = parse_dict[var]
+        value = int(rec[start: end])
+        if decimals != 0:
+            value /= int("1" + ("0" * decimals))
+        record[var] = value
+
+    return record
+
+
+def create_cps(dat_file, year, parsing_dict, benefits=True, exportpkl=True,
+               exportcsv=True):
     """
     Read the .DAT CPS file and convert it to a list of dictionaries that
     to later be converted to tax units. Optionally export that list as a
@@ -121,11 +117,11 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
     ----------
     dat_file: Path to the .DAT version of the CPS downloaded from NBER
     year: year of the CPS being converted
+    parsing_dict: dictionary with information
     benefits: Set to true to include C-TAM imputed benefits in the CPS
     exportpkl: Set to true to export a pickled list of households in the CPS
     exportcsv: Set to true to export a CSV version of the CPS
     """
-
     # read in file
     print("Reading DAT file")
     with Path(dat_file).open("r") as f:
@@ -148,15 +144,16 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
             if household:
                 cps_list.append(household)
                 household = []
-            house = h_rec(record)
+            house = parse(record, parsing_dict["household"])
         # family record
         elif rec_type == "2":
-            family = f_rec(record)
+            family = parse(record, parsing_dict["family"])
         # person record
         elif rec_type == "3":
-            person = p_rec(
-                record, benefits, house["h_seq"], family["fh_seq"],
-                family["ffpos"]
+            person = parse(record, parsing_dict["person"])
+            person = person_details(
+                person, benefits, house["h_seq"], family["fh_seq"],
+                family["ffpos"], year
             )
             full_rec = {**house, **family, **person}
             household.append(full_rec)
@@ -179,8 +176,3 @@ def create_cps(dat_file, year, benefits=True, exportpkl=True, exportcsv=True):
             pickle.dump(cps_list, f)
 
     return cps_list
-
-
-if __name__ == "__main__":
-    create_cps(Path(CUR_PATH, "data", "{{ file_name }}"), {{ year }})
-

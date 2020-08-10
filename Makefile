@@ -121,16 +121,26 @@ puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
 	cd puf_stage3 ; python stage3.py
 
 .PHONY=cps-files
-cps-files: cps_data/cps.csv.gz \
+cps-files: cps_data/pycps/cps_raw.csv.gz \
            cps_stage1/stage_2_targets.csv \
            cps_stage2/cps_weights.csv.gz
 
-cps_data/cps.csv.gz: cps_data/finalprep.py \
-                     cps_data/cps_raw.csv.gz \
-                     cps_data/adjustment_targets.csv \
-                     cps_data/benefitprograms.csv
-	cd cps_data ; python finalprep.py && \
-        gunzip cps.csv.gz && gzip -n cps.csv
+cps_data/pycps/cps_raw.csv.gz: cps_data/pycps/create.py \
+                               cps_data/pycps/benefits.py \
+                               cps_data/pycps/filing_rules.json \
+                               cps_data/pycps/finalprep.py \
+                               cps_data/pycps/helpers.py \
+                               cps_data/pycps/impute.py \
+                               cps_data/pycps/pycps.py \
+                               cps_data/pycps/splitincome.py \
+                               cps_data/pycps/targeting.py \
+                               cps_data/pycps/taxunit.py \
+                               cps_data/pycps/template.txt \
+                               cps_data/pycps/transform_sas.py \
+                               cps_data/pycps/adjustment_targets.csv \
+                               cps_data/benefitprograms.csv
+	cd cps_data/pycps ; python create.py && \
+	gunzip cps.csv.gz && gzip -n cps.csv
 
 cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
                                 cps_stage1/SOI_estimates.csv \
@@ -140,11 +150,11 @@ cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_stage2/solve_lp_for_year.py \
-                               cps_data/cps_raw.csv.gz \
+                               cps_data/pycps/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
                                cps_stage1/stage_2_targets.csv
 	cd cps_stage2 ; python stage2.py && \
-        gunzip cps_weights.csv.gz && gzip -n cps_weights.csv
+	gunzip cps_weights.csv.gz && gzip -n cps_weights.csv
 
 .PHONY=all
 all: puf-files cps-files
