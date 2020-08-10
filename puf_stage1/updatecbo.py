@@ -59,7 +59,7 @@ def update_econproj(econ_url, cg_url, baseline):
     Function that will read new CBO economic projections and update
     CBO_baseline.csv accordingly
     """
-    print("Updating CBO Economic Proections")
+    print("Updating CBO Economic Projections")
     # read in economic projections
     econ_proj = pd.read_excel(econ_url, sheet_name="2. Calendar Year",
                               skiprows=6, index_col=[0, 1, 2, 3])
@@ -87,9 +87,17 @@ def update_econproj(econ_url, cg_url, baseline):
 
     # Extract capital gains data
     cg_proj = pd.read_excel(cg_url, sheet_name="6. Capital Gains Realizations",
-                            skiprows=7, header=[0, 1])
-    var = "Capital Gains Realizationsa"
-    cgns = cg_proj[var]['Billions of Dollars'].loc[list(range(2017, 2031))]
+                                skiprows=7, header=[0,1])
+
+    dates = cg_proj['Unnamed: 0_level_0']['Unnamed: 0_level_1'].values
+    cg = cg_proj['Capital Gains Realizationsa']['Billions of Dollars'].values
+
+    dates = pd.to_numeric(dates, errors='coerce').astype('int64')
+    cg = pd.to_numeric(cg, errors='coerce')
+
+    cg_proj = pd.Series(data=cg,index=dates).dropna()
+
+    cgns = cg_proj.loc[list(range(2017,2031))]
 
     # create one DataFrame from all of the data
 
@@ -114,7 +122,7 @@ def update_econproj(econ_url, cg_url, baseline):
 
 
 def update_cbo():
-    econ_url = "https://www.cbo.gov/system/files/2020-01/51135-2020-01-economicprojections_0.xlsx"
+    econ_url = "https://www.cbo.gov/system/files/2020-07/51135-2020-07-economicprojections.xlsx"
     cg_url = "https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx"
     baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"),
                            index_col=0)
