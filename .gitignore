@@ -22,7 +22,5 @@ cpsmar*.sas
 cpsmar*.csv
 *.dat
 
-# Pickle files (GitHub says they're too large)
-cps_data/pycps/data/cpsmar2013.pkl
-cps_data/pycps/data/cpsmar2014.pkl
-cps_data/pycps/data/cpsmar2015.pkl
+# pickle
+cps*.pkl

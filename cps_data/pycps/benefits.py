@@ -95,14 +95,20 @@ def distribute_benefits(data, other_ben):
     other_ben["2014_cost"] *= 1e6
 
     # adjust medicare and medicaid totals
-    weighted_mcare_count = (data["mcare_count"] * data["s006"]).sum()
-    weighted_mcaid_count = (data["mcaid_count"] * data["s006"]).sum()
-    weighted_mcare = (data["mcare_ben"] * data["s006"]).sum()
-    weighted_mcaid = (data["mcaid_ben"] * data["s006"]).sum()
-    mcare_amt = weighted_mcare / weighted_mcare_count
-    mcaid_amt = weighted_mcaid / weighted_mcaid_count
-    data["mcaid_ben"] = data["mcaid_count"] * mcaid_amt
-    data["mcare_ben"] = data["mcare_count"] * mcare_amt
+    try:
+        weighted_mcare_count = (data["mcare_count"] * data["s006"]).sum()
+        weighted_mcaid_count = (data["mcaid_count"] * data["s006"]).sum()
+        weighted_mcare = (data["mcare_ben"] * data["s006"]).sum()
+        weighted_mcaid = (data["mcaid_ben"] * data["s006"]).sum()
+        mcare_amt = weighted_mcare / weighted_mcare_count
+        mcaid_amt = weighted_mcaid / weighted_mcaid_count
+        data["mcaid_ben"] = data["mcaid_count"] * mcaid_amt
+        data["mcare_ben"] = data["mcare_count"] * mcare_amt
+    except KeyError:
+        # skip over adjusting medicare and medicaid if we don't impute them
+        # set to zero to avoid errors later
+        data["mcaid_ben"] = 0.
+        data["mcare_ben"] = 0
 
     # Distribute other benefits
     data["dist_ben"] = data[["mcaid_ben", "ssi_ben", "snap_ben"]].sum(axis=1)
@@ -110,11 +116,18 @@ def distribute_benefits(data, other_ben):
                      (data["dist_ben"] * data["s006"]).sum())
     # ... remove TANF and WIC from other_ben total
     tanf_total = (data["tanf_ben"] * data["s006"]).sum()
-    wic_total = (data["wic_ben"] * data["s006"]).sum()
+    try:
+        wic_total = (data["wic_ben"] * data["s006"]).sum()
+    except KeyError:
+        # Same as medicare and medicaid
+        wic_total = 0.
     other_ben_total = other_ben["2014_cost"].sum() - tanf_total - wic_total
     # ... divide by the weight to account for weighting in Tax-Calculator
     data["other_ben"] = (data["ratio"] * other_ben_total / data["s006"])
 
-    data["housing_ben"] *= 12
+    try:
+        data["housing_ben"] *= 12
+    except KeyError:
+        pass
 
     return data
