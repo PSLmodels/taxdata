@@ -15,5 +15,5 @@ This directory contains the following script:
 Documentation
 -------------
 
-The SAS scripts used to prepare the cps-matched-puf.csv file are
+The Python scripts used to prepare the cps-matched-puf.csv file are
 described in the [StatMatch subdirectory](StatMatch/README.md).
