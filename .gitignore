@@ -22,5 +22,10 @@ cpsmar*.sas
 cpsmar*.csv
 *.dat
 
+<<<<<<< HEAD
 # pickle files
 cpsmar*.pkl
+=======
+# pickle
+cps*.pkl
+>>>>>>> master
