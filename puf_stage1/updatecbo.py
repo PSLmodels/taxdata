@@ -1,9 +1,12 @@
-import os
+import re
 import requests
 import pandas as pd
+from requests_html import HTMLSession
+from pathlib import Path
+from datetime import datetime
 
 
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+CUR_PATH = Path(__file__).resolve().parent
 
 
 def update_cpim(baseline):
@@ -193,26 +196,65 @@ def update_ucomp(url, baseline):
     return baseline
 
 
+def update_doc(text, text_args, out_path):
+    """
+    Update the CBO updating instructions
+    """
+
+
 def update_cbo():
-    ECON_URL = "https://www.cbo.gov/system/files/2020-01/51135-2020-01-economicprojections_0.xlsx"
-    CG_URL = "https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx"
+    out_path = Path(
+        CUR_PATH, "CBO_Baseline_Updating_Instructions.md"
+    )
+    text = out_path.open().read()
+    previous_cbo_doc = re.search(r"Previous Document: ([\w \d]+)", text)
+    cur_cbo_doc = re.search(r"Current Document: ([\w \d]+)", text)
+    text_args = {}
+    baseline = pd.read_csv(Path(CUR_PATH, "CBO_baseline.csv"),
+                           index_col=0)
     SOCSEC_URL = "https://www.ssa.gov/oact/TR/2019/VI_C_SRfyproj.html#306103"
     RETS_URL = "https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls"
     UCOMP_URL = "https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.xlsx"
-    baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"),
-                           index_col=0)
-    baseline = update_econproj(ECON_URL, CG_URL, baseline)
+
+    # pull all of the latest CBO reports and use them for needed updates
+    session = HTMLSession()
+    r = session.get("https://www.cbo.gov/about/products/budget-economic-data")
+    divs = r.html.find("div.view.view-recurring-data")
+    revprojections = divs[4]
+    # both assertions are there to throw errors if the order of sections change
+    assert "Revenue Projections" in revprojections.text
+    latest_revprojections = revprojections.find("div.views-col.col-1")[0]
+    rev_link = latest_revprojections.find("a")[0]
+    econprojections = divs[8]
+    assert "10-Year Economic Projections" in econprojections.text
+    latest_econprojections = econprojections.find("div.views-col.col-1")[0]
+    econ_link = latest_econprojections.find("a")[0]
+    econ_url = econ_link.attrs["href"]
+    rev_url = rev_link.attrs["href"]
+    new_cbo_flag = (
+        (cur_cbo_doc != econ_link.text) and ()
+    )
+    if new_cbo_flag:
+        baseline = update_econproj(econ_url, rev_url, baseline)
+        previous_cbo_doc = cur_cbo_doc
+        cur_cbo_doc = econ_link.text
+    text_args["previous_cbo"] = previous_cbo_doc
+    text_args["new_cbo"] = cur_cbo_doc
+
     baseline = update_cpim(baseline)
+    today = datetime.today()
+    text_args["cpim_date"] = today.strftime("%B %d %Y")
     baseline = update_socsec(SOCSEC_URL, baseline)
     baseline = update_rets(RETS_URL, baseline)
     baseline = update_ucomp(UCOMP_URL, baseline)
+    update_doc(text, text_args, out_path)
 
     return baseline
 
 
 if __name__ == "__main__":
     baseline = update_cbo()
-    baseline.to_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"))
+    baseline.to_csv(Path(CUR_PATH, "CBO_baseline.csv"))
     msg = ("NOTE: Remember to update the dates and links in"
            " CBO_Baseline_Updating_Instructions.md accordingly. ")
     print(msg)
