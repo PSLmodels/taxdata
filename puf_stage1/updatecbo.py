@@ -1,15 +1,21 @@
+"""
+This module contains all of the code needed to update the CBO baseline
+projections and documentation and instructions automatically. This code is
+designed to work with
+"""
 import re
 import requests
 import pandas as pd
 from requests_html import HTMLSession
 from pathlib import Path
 from datetime import datetime
+from jinja2 import Template
 
 
 CUR_PATH = Path(__file__).resolve().parent
 
 
-def update_cpim(baseline):
+def update_cpim(baseline, text_args):
     """
     Update the CPI-M values in the CBO baseline using the BLS API
     """
@@ -53,77 +59,147 @@ def update_cpim(baseline):
         new_vals[col] = [new_val]
     future_df = pd.DataFrame(new_vals, index=["CPIM"]).round(1)
     baseline.update(future_df)
+    today = datetime.today()
+    text_args["cpim_date"] = today.strftime("%B %d %Y")
 
-    return baseline
+    return baseline, text_args
 
 
-def update_econproj(econ_url, cg_url, baseline):
+def update_econproj(url, baseline, text_args):
     """
     Function that will read new CBO economic projections and update
     CBO_baseline.csv accordingly
     """
-    print("Updating CBO Economic Proections")
-    # read in economic projections
-    econ_proj = pd.read_excel(econ_url, sheet_name="2. Calendar Year",
-                              skiprows=6, index_col=[0, 1, 2, 3])
-    # extract values for needed rows in the excel file
-    # some variables have a missing value in the multi-index. Use iloc
-    # to extract needed variables from them.
-    gdp = econ_proj.loc["Output"].loc["Gross Domestic Product (GDP)"].iloc[0]
-    income = econ_proj.loc["Income"]
-    tpy = income.loc["Income, Personal"].iloc[0]
-    wages = income.loc["Wages and Salaries"].iloc[0]
-    billions = "Billions of dollars"
-    var = "Proprietors' income, nonfarm, with IVA & CCAdj"
-    schc = income.loc["Nonwage Income"].loc[var].loc[billions]
-    var = "Proprietors' income, farm, with IVA & CCAdj"
-    schf = income.loc["Nonwage Income"].loc[var].loc[billions]
-    var = "Interest income, personal"
-    ints = income.loc["Nonwage Income"].loc[var].loc[billions]
-    var = "Dividend income, personal"
-    divs = income.loc["Nonwage Income"].loc[var].loc[billions]
-    var = "Income, rental, with CCAdj"
-    rents = income.loc["Nonwage Income"].loc[var].loc[billions]
-    book = income.loc["Profits, Corporate, With IVA & CCAdj"].iloc[0]
-    var = "Consumer Price Index, All Urban Consumers (CPI-U)"
-    cpiu = econ_proj.loc["Prices"].loc[var].iloc[0]
+    print("Updating CBO Economic Projections")
+    # pull all of the latest CBO reports and use them for needed updates
+    session = HTMLSession()
+    r = session.get(url)
+    divs = r.html.find("div.view.view-recurring-data")
+    revprojections = divs[4]
+    # both assertions are there to throw errors if the order of sections change
+    # revenue projections used for capital gains projections
+    assert "Revenue Projections" in revprojections.text
+    latest_revprojections = revprojections.find("div.views-col.col-1")[0]
+    rev_link = latest_revprojections.find("a")[0]
+    _rev_report = datetime.strptime(rev_link.text, "%b %Y")
+    rev_report = datetime.strftime(_rev_report, "%B %Y")
+    rev_url = rev_link.attrs["href"]
 
-    # Extract capital gains data
-    cg_proj = pd.read_excel(cg_url, sheet_name="6. Capital Gains Realizations",
-                            skiprows=7, header=[0, 1])
-    cg_proj.index = cg_proj[cg_proj.columns[0]]
-    var = "Capital Gains Realizationsa"
-    cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2031))]
+    econprojections = divs[8]
+    assert "10-Year Economic Projections" in econprojections.text
+    latest_econprojections = econprojections.find("div.views-col.col-1")[0]
+    econ_link = latest_econprojections.find("a")[0]
+    _cbo_report = datetime.strptime(econ_link.text, "%b %Y")
+    cbo_report = datetime.strftime(_cbo_report, "%B %Y")
+    econ_url = econ_link.attrs["href"]
 
-    # create one DataFrame from all of the data
+    if cbo_report == text_args["current_cbo"]:
+        print("No new data since last update")
+    else:
+        # read in economic projections
+        econ_proj = pd.read_excel(econ_url, sheet_name="2. Calendar Year",
+                                  skiprows=6, index_col=[0, 1, 2, 3])
+        # extract values for needed rows in the excel file
+        # some variables have a missing value in the multi-index. Use iloc
+        # to extract needed variables from them.
+        gdp = econ_proj.loc["Output"].loc["Gross Domestic Product (GDP)"].iloc[0]
+        income = econ_proj.loc["Income"]
+        tpy = income.loc["Income, Personal"].iloc[0]
+        wages = income.loc["Wages and Salaries"].iloc[0]
+        billions = "Billions of dollars"
+        var = "Proprietors' income, nonfarm, with IVA & CCAdj"
+        schc = income.loc["Nonwage Income"].loc[var].loc[billions]
+        var = "Proprietors' income, farm, with IVA & CCAdj"
+        schf = income.loc["Nonwage Income"].loc[var].loc[billions]
+        var = "Interest income, personal"
+        ints = income.loc["Nonwage Income"].loc[var].loc[billions]
+        var = "Dividend income, personal"
+        divs = income.loc["Nonwage Income"].loc[var].loc[billions]
+        var = "Income, rental, with CCAdj"
+        rents = income.loc["Nonwage Income"].loc[var].loc[billions]
+        book = income.loc["Profits, Corporate, With IVA & CCAdj"].iloc[0]
+        var = "Consumer Price Index, All Urban Consumers (CPI-U)"
+        cpiu = econ_proj.loc["Prices"].loc[var].iloc[0]
+        var_list = [
+            gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu
+        ]
+        var_names = [
+            "GDP", "TPY", "Wages", "SCHC", "SCHF", "INTS", "DIVS",
+            "RENTS", "BOOK", "CPIU"
+        ]
+        df = pd.DataFrame(var_list, index=var_names).round(1)
+        df.columns = df.columns.astype(str)
+        df_cols = set(df.columns)
+        baseline_cols = set(baseline.columns)
+        for col in df_cols - baseline_cols:
+            baseline[col] = None
+        baseline.update(df)
 
-    var_list = [gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu,
-                cgns]
-    var_names = ["GDP", "TPY", "Wages", "SCHC", "SCHF", "INTS", "DIVS",
-                 "RENTS", "BOOK", "CPIU", "CGNS"]
-    df = pd.DataFrame(var_list, index=var_names).round(1)
-    df.columns = df.columns.astype(str)
+        text_args["previous_cbo"] = text_args["current_cbo"]
+        text_args["current_cbo"] = cbo_report
 
-    # update baseline file with the new data
+    if rev_report == text_args["cgns_prev_report"]:
+        print("No new data since last update")
+        return baseline, text_args
+    elif rev_link.text == "Mar 2020":
+        msg = """
+            Capital gains realizations are not included in CBO's March 2020
+            revenue projections publication. It's unclear if this is a
+            permanent change or due to the pandemic. For now, we will skip this
+            update and re-evaluate when they release their next projections.
+        """
+        print(msg)
+        return baseline, text_args
+    else:
+        # Extract capital gains data
+        cg_proj = pd.read_excel(
+            rev_url, sheet_name="6. Capital Gains Realizations",
+            skiprows=7, header=[0, 1]
+        )
+        cg_proj.index = cg_proj[cg_proj.columns[0]]
+        var = "Capital Gains Realizationsa"
+        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2031))]
+        var_list = [cgns]
+        var_names = ["CGNS"]
+        df = pd.DataFrame(var_list, index=var_names).round(1)
+        df.columns = df.columns.astype(str)
+        # update baseline file with the new data
 
-    # add a column for any years that are in the update but not yet in the
-    # CBO baseline file before updating the values
-    df_cols = set(df.columns)
-    baseline_cols = set(baseline.columns)
-    for col in df_cols - baseline_cols:
-        baseline[col] = None
-    baseline.update(df)
+        # add a column for any years that are in the update but not yet in the
+        # CBO baseline file before updating the values
+        df_cols = set(df.columns)
+        baseline_cols = set(baseline.columns)
+        for col in df_cols - baseline_cols:
+            baseline[col] = None
+        baseline.update(df)
+
+        text_args["cgns_prev_report"] = text_args["cgns_cur_report"]
+        text_args["cgns_prev_url"] = text_args["cgns_cur_url"]
+        text_args["cgns_cur_report"] = rev_report
+        text_args["cgns_cur_url"] = rev_url
 
     return baseline
 
 
-def update_socsec(url, baseline):
+def update_socsec(url, baseline, text_args):
     """
     Function that will read the table with OASI Social Security Projections
     """
     print("Updating Social Security Projections")
+    session = HTMLSession()
+    r = session.get(url)
+    # we can determine the latest year by looking at all of the years availeble
+    # in the first drop down and adding one.
+    selector = r.html.find("select#yh1")[0]
+    latest_yr = max([int(yr) for yr in selector.text.split()]) + 1
+    report = f"{latest_yr} Report"
+    if report == text_args["socsec_cur_report"]:
+        print("No new data since last update")
+        return baseline, text_args
+
+    socsec_url = f"https://www.ssa.gov/oact/TR/{latest_yr}/VI_C_SRfyproj.html"
     match_txt = "Operations of the OASI Trust Fund, Fiscal Years"
-    html = pd.read_html(url, match=match_txt)[0]
+    html = pd.read_html(socsec_url, match=match_txt)[0]
     # merge the columns with years and data into one
     sub_data = pd.concat(
         [
@@ -153,16 +229,45 @@ def update_socsec(url, baseline):
     # finally update CBO projections
     baseline.update(cost_data)
 
-    return baseline
+    text_args["socsec_prev_report"] = text_args["socsec_cur_report"]
+    text_args["socsec_prev_url"] = text_args["socsec_cur_url"]
+    text_args["socsec_cur_report"] = report
+    text_args["socsec_cur_url"] = socsec_url
+
+    return baseline, text_args
 
 
-def update_rets(url, baseline):
+def update_rets(url, baseline, text_args):
     """
     Update projected tax returns
+    Parameters
+    ----------
+    url: URL linking to IRS website with projections of federal tax filings
+    baseline: CBO baseline we're updaint
+    text_args: Dictionary containing the arguments that will be passed to
+        the documentation template
     """
     print("updating Return Projections")
+    session = HTMLSession()
+    r = session.get(url)
+    # find year of new reports
+    title = (
+        "Calendar Year Projections of Individual Returns by Major Processing "
+        "Categories, Selected Years and Areas, {} (PDF)"
+    )
+    report = f"{r.html.search(title)[0]} Report"
+    if report == text_args["rets_cur_report"]:
+        print("No new data since last update")
+        return baseline, text_args
+
+    links = r.html.links
+    pattern = r"[\W\w]+6187[\w\W]+xls"
+    for link in links:
+        if re.match(pattern, link):
+            spreadsheet_url = link
+            break
     data = pd.read_excel(
-        url, sheet_name="1B-BOD", index_col=0, header=2
+        spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2
     )
     projections = data.loc["Forms 1040, Total*"]
     projections /= 1000000  # convert units
@@ -178,76 +283,111 @@ def update_rets(url, baseline):
     df_projections.index = ["RETS"]
     df_projections = df_projections.round(1)
     baseline.update(df_projections)
-    return baseline
+
+    text_args["rets_prev_report"] = text_args["rets_cur_report"]
+    text_args["rets_prev_url"] = text_args["rets_cur_url"]
+    text_args["rets_cur_report"] = report
+    text_args["rets_cur_url"] = spreadsheet_url
+    return baseline, text_args
 
 
-def update_ucomp(url, baseline):
+def update_ucomp(url, baseline, text_args):
     """
     Update unemployment compensation projections
     """
     print("Updating Unemployment Projections")
-    data = pd.read_excel(url, skiprows=3, index_col=0, thousands=",")
+    session = HTMLSession()
+    r = session.get(url)
+    links = r.html.links
+    ucomp_links = []
+    ucomp_years = []
+    for link in links:
+        if "unemployment" in link.lower() and link.endswith("xlsx"):
+            date = re.search(r"20\d\d-\d\d", link).group()
+            ucomp_links.append(link)
+            ucomp_years.append(datetime.strptime(date, "%Y-%m"))
+    latest_year = max(ucomp_years)
+    ucomp_url = ucomp_links[ucomp_years.index(latest_year)]
+    report = datetime.strftime(latest_year, "%B %Y")
+    if report == text_args["ucomp_cur_report"]:
+        print("No new data since last update")
+        return baseline, text_args
+    data = pd.read_excel(ucomp_url, skiprows=3, index_col=0, thousands=",")
     benefits = data.loc['     Total benefits'].astype(int) / 1000
     benefits = benefits.round(1)
     df = pd.DataFrame(benefits).transpose()
     df.index = ["UCOMP"]
     df.columns = df.columns.astype(str)
     baseline.update(df)
+
+    text_args["ucomp_prev_report"] = text_args["ucomp_cur_report"]
+    text_args["ucomp_prev_url"] = text_args["ucomp_cur_url"]
+    text_args["ucomp_cur_report"] = report
+    text_args["ucomp_cur_url"] = ucomp_url
+
     return baseline
 
 
-def update_doc(text, text_args, out_path):
+def fill_text_args(text):
     """
-    Update the CBO updating instructions
+    Provide initial values for all text arguments
     """
+    text_args = {}
+    previous_cbo_doc = re.search(
+        r"Previous Document: ([\w \d]+)", text
+    ).groups()[0]
+    cur_cbo_doc = re.search(r"Current Document: ([\w \d]+)", text).groups()[0]
+    text_args["previous_cbo"] = previous_cbo_doc
+    text_args["current_cbo"] = cur_cbo_doc
+
+    section_pattern = r"### {}[\d\w \n:\[\]\(\)/\.\-,`\?=\"#]+"
+    sections = ["CGNS", "RETS", "SOCSEC", "UCOMP"]
+    url_pattern = r"{}: [\w\[\] \d\(\)://\.\-#]+"
+    for section in sections:
+        sub_txt = re.search(section_pattern.format(section), text).group()
+        prev = re.search(url_pattern.format("Previous"), sub_txt).group()
+        cur = re.search(url_pattern.format("Current"), sub_txt).group()
+        text_args[f"{section.lower()}_prev_report"] = re.search(
+            r"\[[\w \d]+\]", prev
+        ).group()[1: -1]
+        text_args[f"{section.lower()}_cur_report"] = re.search(
+            r"\[[\w \d]+\]", cur
+        ).group()[1: -1]
+        text_args[f"{section.lower()}_prev_url"] = re.search(
+            r"\([\w\W]+\)", prev
+        ).group()[1: -1]
+        text_args[f"{section.lower()}_cur_url"] = re.search(
+            r"\([\w\W]+\)", cur
+        ).group()[1: -1]
+
+    return text_args
 
 
 def update_cbo():
     out_path = Path(
-        CUR_PATH, "CBO_Baseline_Updating_Instructions.md"
+        CUR_PATH, "doc", "CBO_Baseline_Updating_Instructions.md"
     )
-    text = out_path.open().read()
-    previous_cbo_doc = re.search(r"Previous Document: ([\w \d]+)", text)
-    cur_cbo_doc = re.search(r"Current Document: ([\w \d]+)", text)
-    text_args = {}
+    template_str = Path(
+        CUR_PATH, "doc", "cbo_instructions_template.md"
+    ).open().read()
+    current_text = out_path.open().read()
+    text_args = fill_text_args(current_text)
     baseline = pd.read_csv(Path(CUR_PATH, "CBO_baseline.csv"),
                            index_col=0)
-    SOCSEC_URL = "https://www.ssa.gov/oact/TR/2019/VI_C_SRfyproj.html#306103"
-    RETS_URL = "https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls"
-    UCOMP_URL = "https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.xlsx"
+    CBO_URL = "https://www.cbo.gov/about/products/budget-economic-data"
+    SOCSEC_URL = "https://www.ssa.gov/oact/TR/"
+    RETS_URL = "https://www.irs.gov/statistics/projections-of-federal-tax-return-filings"
+    UCOMP_URL = "https://www.cbo.gov/about/products/baseline-projections-selected-programs"
 
-    # pull all of the latest CBO reports and use them for needed updates
-    session = HTMLSession()
-    r = session.get("https://www.cbo.gov/about/products/budget-economic-data")
-    divs = r.html.find("div.view.view-recurring-data")
-    revprojections = divs[4]
-    # both assertions are there to throw errors if the order of sections change
-    assert "Revenue Projections" in revprojections.text
-    latest_revprojections = revprojections.find("div.views-col.col-1")[0]
-    rev_link = latest_revprojections.find("a")[0]
-    econprojections = divs[8]
-    assert "10-Year Economic Projections" in econprojections.text
-    latest_econprojections = econprojections.find("div.views-col.col-1")[0]
-    econ_link = latest_econprojections.find("a")[0]
-    econ_url = econ_link.attrs["href"]
-    rev_url = rev_link.attrs["href"]
-    new_cbo_flag = (
-        (cur_cbo_doc != econ_link.text) and ()
-    )
-    if new_cbo_flag:
-        baseline = update_econproj(econ_url, rev_url, baseline)
-        previous_cbo_doc = cur_cbo_doc
-        cur_cbo_doc = econ_link.text
-    text_args["previous_cbo"] = previous_cbo_doc
-    text_args["new_cbo"] = cur_cbo_doc
+    baseline, text_args = update_econproj(CBO_URL, baseline, text_args)
+    baseline, text_args = update_cpim(baseline, text_args)
+    baseline, text_args = update_socsec(SOCSEC_URL, baseline, text_args)
+    baseline, text_args = update_rets(RETS_URL, baseline, text_args)
+    baseline, text_args = update_ucomp(UCOMP_URL, baseline, text_args)
 
-    baseline = update_cpim(baseline)
-    today = datetime.today()
-    text_args["cpim_date"] = today.strftime("%B %d %Y")
-    baseline = update_socsec(SOCSEC_URL, baseline)
-    baseline = update_rets(RETS_URL, baseline)
-    baseline = update_ucomp(UCOMP_URL, baseline)
-    update_doc(text, text_args, out_path)
+    template = Template(template_str)
+    rendered = template.render(**text_args)
+    out_path.write_text(rendered)
 
     return baseline
 
@@ -255,6 +395,3 @@ def update_cbo():
 if __name__ == "__main__":
     baseline = update_cbo()
     baseline.to_csv(Path(CUR_PATH, "CBO_baseline.csv"))
-    msg = ("NOTE: Remember to update the dates and links in"
-           " CBO_Baseline_Updating_Instructions.md accordingly. ")
-    print(msg)

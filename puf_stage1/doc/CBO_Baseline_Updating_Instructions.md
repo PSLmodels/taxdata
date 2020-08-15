@@ -5,54 +5,51 @@ found in the Stage 1 folder.
 
 Most of the projections can be found in the CBO's 10-year Economic Projections.
 Those variables are listed under "Variables in the 10-Year CBO Projections."
-Those that are not in that file are listed separately with instructions
-on where/how to find/update them.
+Those that are not in that file are listed separately.
 
 The year of the file/report the current numbers come from as well as the year
 of the file/report used before the most recent update are listed for each
 variable. These will needed to be updated with each update of `CBO_baseline.csv`.
 
-Almost all of the updates to `CBO_baseline.csv` can be done by updating and
-running `puf_stage1.py/updatecbo.py`. Instructions for how to update the file
-can be found in the following sections:
+All of the updates to `CBO_baseline.csv` and this documentation can be handled
+by running `puf_stage1.py/updatecbo.py`. If you would prefer to manually update
+everything, instructions can be found below, though we would advise against that
+endevor.
 
 1. [Variables in 10-Year CBO Projections](#Variables-in-10-Year-CBO-Projections)
 2. [CGNS](#CGNS)
 3. [CPIM (CPI Medical Care)](#CPIM-(CPI-Medical-Care))
 
 The code in `puf_stage1.py/updatecbo.py` assumes that the format of the
-spreadsheets provided by the CBO and the API provided by the BLS remain
-unchanged. If the program throws an error or the results do not look correct,
-it is likely that one of those assumptions is no longer true.
-
-The only variables in `CBO_baseline.csv` that cannot be updated automatically
-are `RETS`, `SOCSEC`, and `UCOMP`. Instructions for updating those manually
-can be found below.
+spreadsheets, websites, and BLS API accessed by the program remain unchanged.
+If the program throws an error or the results do not look correct, it is likely
+that this assumption is no longer true and you should update the code accordingly
 
 If the updates include projections for years that were not there previously,
 `puf_stage1/stage1.py`, `cps_stage1/stage1.py`, `puf_stage2/stage2.py`, and
 `cps_stage2/stage2.py` will also need to be updated. Instructions for doing so
 are also included in this file.
 
-## `CBO_baseline.csv`
+If you would like to add a new variable to the baseline projections, you should
+also modify `puf_stage1.py/updatecbo.py` so that future updates are also
+automated.
+
+## About `CBO_baseline.csv`
 
 This file contains all of the data used in our initial growth factors calculations.
 Each row contains either a projected or actual value for the year associated
-with that column. When updating the projections, update every year that
-appears in the new file/report used.
+with that column.
 
 ## Variables in 10-Year CBO Projections
 
 As previously mentioned, most of the variables we used can be found in the
 [CBO 10-Year Economics Projections](https://www.cbo.gov/about/products/budget-economic-data#4).
-To update these variables, replace the URL assigned to the `econ_url` variable
-in `puf_stage1/updatecbo.py` with the link to the latest CBO economic projections
-and run the file. Or you could download the file and copy/paste the specific
-variables.
+To manually update these variables download the latest file and copy/paste the 
+specific variables.
 
-Previous Document: January 2019
+Previous Document: January 2020
 
-Current Document: January 2020
+Current Document: July 2020
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -73,27 +70,22 @@ Current Document: January 2020
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: January 2019
+Previous: [January 2019](https://www.cbo.gov/system/files/2019-02/51138-2019-01-revenueprojections.xlsx)
 
-Current: January 2020
+Current: [January 2020](https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx)
 
-Notes: In the revenue projections file, the data is in the `Capital Gains Realizations`
+In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
-
-To update this variables, replace the URL assigned to the `cg_url` variable in
-`puf_stage1/updatecbo.py` with the link to the most recent CBO revenue
-projections and run the file. Or download the spreadsheet and manually update
-the projections.
 
 ### RETS
 
 Source: [IRS Publication 6187 Table 1B](https://www.irs.gov/statistics/projections-of-federal-tax-return-filings)
 
-Previous: [Fall 2018 Update](https://www.irs.gov/pub/irs-soi/Pub6187.pdf)
+Previous: [Fall 2019 Update](https://www.irs.gov/pub/irs-pdf/p6187.pdf)
 
-Current: [Fall 2019 Update](https://www.irs.gov/pub/irs-pdf/p6187.pdf)
+Current: [Fall 2019 Report](https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls)
 
-Notes: The projections in the publication typically end a few years before the
+The projections in the publication typically end a few years before the
 10-year projections do. We use the growth rate from the final year in the
 projections to extrapolate into the additional years that are needed.
 
@@ -104,19 +96,21 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2018 Report](https://www.ssa.gov/oact/tr/2018/VI_C_SRfyproj.html#306103)
+Previous: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
 
-Current: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
+Current: [2020 Report](https://www.ssa.gov/oact/TR/2020/VI_C_SRfyproj.html)
 
-Notes: Projections are taken directly from this table.
+Projections are taken directly from the `Scheduled Benefits: Intermediate Level`
+column of this table.
 
 ### CPIM (CPI Medical Care)
 
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
+Access Date: August 15 2020
 
-Instructions:
+Manual Instructions:
 
 1. From the above link, click on "More Formatting Options"
 2. Under "Select view of the data," select "Original Data Value"
@@ -126,16 +120,13 @@ Instructions:
 6. Find the average difference between CPI-U from the CBO 10-Year projections
 7. Add this average difference to the CBO CPI-U projections
 
-OR: Simply run `puf_stage1/updatecbo.py`, which will use the BLS provided API
-to pull the latest data.
-
 ### UCOMP
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [January 2019](https://www.cbo.gov/system/files/2019-01/51316-2019-01-unemployment.pdf)
+Previous: [January 2020](https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.pdf)
 
-Current: [January 2020](https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.pdf)
+Current: [March 2020](https://www.cbo.gov/system/files/2020-03/51316-2020-03-unemployment.pdf)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars
