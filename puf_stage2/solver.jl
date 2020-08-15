@@ -48,4 +48,3 @@ tol_list = [0.40, 0.38, 0.35, 0.33, 0.30, 0.37, 0.38,
 for i in zip(year_list, tol_list)
 	Solve_func(i[1], i[2])
 end
-
