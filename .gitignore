@@ -22,8 +22,9 @@ cpsmar*.sas
 cpsmar*.csv
 *.dat
 
-# pickle file
-*.pkl
+
+# pickle
+cps*.pkl
 
 # .npz numpy files
 *.npz

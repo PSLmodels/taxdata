@@ -2,7 +2,7 @@ Number,Raw Targets,Python script var names,Source,Name in file/location in file,
 1,GDP ,GDP,CBO Economic Projections,Gross Domestic Product (GDP),AGDPN
 2,TPY,TPY,CBO Economic Projections,"Income, Personal",ATXPY
 3,Wages,Wages,CBO Economic Projections,Wages and Salaries,AWAGE
-4,Proprietors NFRM,SCHC,CBO Economic Projections,"Proprietors' Icome, Nonfarm, with IVA & CCAdj","ASCHCI, ASCHCL"
+4,Proprietors NFRM,SCHC,CBO Economic Projections,"Proprietors' Income, Nonfarm, with IVA & CCAdj","ASCHCI, ASCHCL"
 5,Proprietors Farm,SCHF,CBO Economic Projections,"Proprietors' Income, Farm, with IVA & CCAdj",ASCHF
 6,Interest,INTS,CBO Economic Projections,"Interest Income, Personal",AINTS
 7,Dividends,DIVS,CBO Economic Projections,"Dividend Income, Personal",ADIVS

@@ -206,7 +206,7 @@ class Returns(object):
         else:
             agede = 0
         # Age related variables
-        record['nu05'] = 0  # Only checked for dependents
+        record['nu06'] = 0  # Only checked for dependents
         record['nu13'] = 0  # Only checked for dependents
         record['nu18_dep'] = 0
         record['nu18'] = 0
@@ -701,8 +701,8 @@ class Returns(object):
                     dage = individual['a_age']
                     record[('dep' + str(depne))] = house.index(individual)
                     record['depage' + str(depne)] = dage
-                    if individual['a_age'] < 5:
-                        record['nu05'] += 1
+                    if individual['a_age'] < 6:
+                        record['nu06'] += 1
                     if individual['a_age'] < 13:
                         record['nu13'] += 1
                     if 0 < individual['a_age'] < 18:
@@ -846,7 +846,7 @@ class Returns(object):
                 self.house_units[ix][dep] = 0
                 self.house_units[iy][depage] = self.house_units[ix][depagex]
         # Add age variables together
-        self.house_units[iy]['nu05'] += self.house_units[ix]['nu05']
+        self.house_units[iy]['nu06'] += self.house_units[ix]['nu06']
         self.house_units[iy]['nu13'] += self.house_units[ix]['nu13']
         self.house_units[iy]['nu18_dep'] += self.house_units[ix]['nu18_dep']
         self.house_units[iy]['nu18'] += self.house_units[ix]['nu18']
@@ -1065,7 +1065,7 @@ class Returns(object):
                          'returns', 'wt', 'zifdep', 'zntdep', 'zhhinc',
                          'zagesp', 'zoldes', 'zyoung', 'zworkc', 'zsocse',
                          'zssinc', 'zpubas', 'zvetbe', 'zfinas', 'zowner',
-                         'zwaspt', 'zwassp', 'wasp', 'wass', 'nu05', 'nu13',
+                         'zwaspt', 'zwassp', 'wasp', 'wass', 'nu06', 'nu13',
                          'nu18_dep', 'nu18', 'n1820', 'n21',
                          'elderly_dependents']
         for var in repeated_vars:
