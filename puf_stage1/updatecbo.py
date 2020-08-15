@@ -1,7 +1,9 @@
 """
 This module contains all of the code needed to update the CBO baseline
-projections and documentation and instructions automatically. This code is
-designed to work with
+projections and documentation and instructions automatically. This code assumes
+that format of the websites, spreadsheets, and API we access don't change. If
+there is a bug, it's probably because that assumption no longer holds true.
+When this happens, modify the code as needed to account for this.
 """
 import re
 import requests
@@ -18,6 +20,15 @@ CUR_PATH = Path(__file__).resolve().parent
 def update_cpim(baseline, text_args):
     """
     Update the CPI-M values in the CBO baseline using the BLS API
+    Parameters
+    ----------
+    baseline: CBO baseline we're updaint
+    text_args: Dictionary containing the arguments that will be passed to
+        the documentation template
+    Returns
+    -------
+    baseline: Updated baseline numbers
+    text_args: Updated dictionary with text aruments to fill in the template
     """
     print("Updating CPI-M Values")
     url = "https://api.bls.gov/publicAPI/v1/timeseries/data/CUSR0000SAM"
@@ -69,6 +80,16 @@ def update_econproj(url, baseline, text_args):
     """
     Function that will read new CBO economic projections and update
     CBO_baseline.csv accordingly
+    Parameters
+    ----------
+    url: URL linking to IRS website with projections of federal tax filings
+    baseline: CBO baseline we're updaint
+    text_args: Dictionary containing the arguments that will be passed to
+        the documentation template
+    Returns
+    -------
+    baseline: Updated baseline numbers
+    text_args: Updated dictionary with text aruments to fill in the template
     """
     print("Updating CBO Economic Projections")
     # pull all of the latest CBO reports and use them for needed updates
@@ -185,6 +206,16 @@ def update_econproj(url, baseline, text_args):
 def update_socsec(url, baseline, text_args):
     """
     Function that will read the table with OASI Social Security Projections
+    Parameters
+    ----------
+    url: URL linking to IRS website with projections of federal tax filings
+    baseline: CBO baseline we're updaint
+    text_args: Dictionary containing the arguments that will be passed to
+        the documentation template
+    Returns
+    -------
+    baseline: Updated baseline numbers
+    text_args: Updated dictionary with text aruments to fill in the template
     """
     print("Updating Social Security Projections")
     session = HTMLSession()
@@ -247,6 +278,10 @@ def update_rets(url, baseline, text_args):
     baseline: CBO baseline we're updaint
     text_args: Dictionary containing the arguments that will be passed to
         the documentation template
+    Returns
+    -------
+    baseline: Updated baseline numbers
+    text_args: Updated dictionary with text aruments to fill in the template
     """
     print("updating Return Projections")
     session = HTMLSession()
@@ -295,6 +330,16 @@ def update_rets(url, baseline, text_args):
 def update_ucomp(url, baseline, text_args):
     """
     Update unemployment compensation projections
+    Parameters
+    ----------
+    url: URL linking to IRS website with projections of federal tax filings
+    baseline: CBO baseline we're updaint
+    text_args: Dictionary containing the arguments that will be passed to
+        the documentation template
+    Returns
+    -------
+    baseline: Updated baseline numbers
+    text_args: Updated dictionary with text aruments to fill in the template
     """
     print("Updating Unemployment Projections")
     session = HTMLSession()
