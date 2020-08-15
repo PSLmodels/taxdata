@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 from dataprep import dataprep
 
-# Initialize clock
-start = time.time()
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -63,5 +61,3 @@ z.to_csv(os.path.join(CUR_PATH, 'puf_weights.csv.gz'),
 for file in glob.glob("*.npz"):
   os.remove(file)
 
-# Print runtime
-print("Run time: " + (time.time() - start)/60 + " minutes")
