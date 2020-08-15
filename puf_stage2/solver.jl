@@ -2,7 +2,7 @@ using JuMP, Cbc, NPZ
 
 function Solve_func(year, tol)
 
-	println("Solving weights for $year ...")
+	println("Solving weights for $year ...\n\n")
 
 	array = npzread(string(year, "_input.npz"))
 
@@ -34,6 +34,8 @@ function Solve_func(year, tol)
 	s_vec = value.(s)
 
 	npzwrite(string(year, "_output.npz"), Dict("r" => r_vec, "s" => s_vec))
+
+	println("\n")
 
 end
 
