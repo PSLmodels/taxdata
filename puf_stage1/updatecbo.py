@@ -142,12 +142,13 @@ def update_econproj(url, baseline, text_args):
         print("No new data since last update")
         return baseline, text_args
     elif rev_link.text == "Mar 2020":
-        msg = """
-            Capital gains realizations are not included in CBO's March 2020
-            revenue projections publication. It's unclear if this is a
-            permanent change or due to the pandemic. For now, we will skip this
-            update and re-evaluate when they release their next projections.
-        """
+        msg = (
+            "\nCapital gains realizations are not included in CBO's March 2020"
+            " revenue projections publication. It's unclear if this is a "
+            "permanent change or due to the pandemic. For now, we will skip "
+            "this update and re-evaluate when they release their next "
+            "projections.\n"
+        )
         print(msg)
         return baseline, text_args
     else:
@@ -178,7 +179,7 @@ def update_econproj(url, baseline, text_args):
         text_args["cgns_cur_report"] = rev_report
         text_args["cgns_cur_url"] = rev_url
 
-    return baseline
+    return baseline, text_args
 
 
 def update_socsec(url, baseline, text_args):
@@ -313,7 +314,11 @@ def update_ucomp(url, baseline, text_args):
         print("No new data since last update")
         return baseline, text_args
     data = pd.read_excel(ucomp_url, skiprows=3, index_col=0, thousands=",")
-    benefits = data.loc['     Total benefits'].astype(int) / 1000
+    try:
+        benefits = data.loc["     Total Benefits"].astype(int) / 1000
+    except KeyError:
+        # the flip between capitalizing the 'B' in benefits sometimes
+        benefits = data.loc["     Total benefits"].astype(int) / 1000
     benefits = benefits.round(1)
     df = pd.DataFrame(benefits).transpose()
     df.index = ["UCOMP"]
@@ -325,7 +330,7 @@ def update_ucomp(url, baseline, text_args):
     text_args["ucomp_cur_report"] = report
     text_args["ucomp_cur_url"] = ucomp_url
 
-    return baseline
+    return baseline, text_args
 
 
 def fill_text_args(text):
