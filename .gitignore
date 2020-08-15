@@ -21,3 +21,9 @@ cps_data/pycps/cps_raw.csv.gz
 cpsmar*.sas
 cpsmar*.csv
 *.dat
+
+# pickle file
+*.pkl
+
+# .npz numpy files
+*.npz
