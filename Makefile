@@ -106,7 +106,8 @@ puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
 	cd puf_stage1 ; python factors_finalprep.py
 
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
-                               puf_stage2/solve_lp_for_year.py \
+                               puf_stage2/dataprep.py \
+                               puf_stage2/solver.jl \
                                puf_data/cps-matched-puf.csv \
                                puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
