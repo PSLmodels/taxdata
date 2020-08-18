@@ -51,6 +51,10 @@ conda env create -f environment.yml
 To run the scripts that produce `puf.csv` and `cps.csv.gz`, activate the
 `taxdata-dev` conda environment and follow the workflow laid out below.
 
+`Julia` must also be installed to solve for the PUF and CPS weights. You 
+can download `Julia` from their [website](https://julialang.org/downloads/)
+or by using `homebrew`.
+
 Data-Preparation Documentation and Workflow
 -------------------------------------------
 
