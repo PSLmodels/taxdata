@@ -296,10 +296,6 @@ Stage_I_factors.to_csv(os.path.join(CUR_PATH, 'Stage_I_factors.csv'),
                        float_format='%.4f',
                        index_label='YEAR')
 
-Stage_I_factors_transpose = pd.read_csv(os.path.join(CUR_PATH, 'Stage_I_factors.csv'), index_col = 'YEAR').transpose()
-Stage_I_factors_transpose.to_csv(os.path.join(CUR_PATH, 'Stage_I_factors_transpose.csv'),
-                       float_format='%.4f')
-
 # write Stage_II_targets for use in stage2 weights calculation
 Stage_II_targets = Stage_II_targets.transpose()
 Stage_II_targets.to_csv(os.path.join(CUR_PATH, 'Stage_II_targets.csv'),
