@@ -173,8 +173,5 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
     for m in temp:
         b.append(m)
 
-
     # export to .npz file
     np.savez(str(str(year) + "_input.npz"), A1=A1, A2=A2, b=b)
-
-
