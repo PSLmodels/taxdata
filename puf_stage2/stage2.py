@@ -30,7 +30,8 @@ for i in year_list:
              year=i)
 
 # Solver (in Julia)
-os.system('julia solver.jl')
+env_path = os.path.join(CUR_PATH, "../Project.toml")
+os.system(f'julia --project={env_path} solver.jl')
 
 
 
