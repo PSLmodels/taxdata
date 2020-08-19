@@ -104,6 +104,8 @@ to make sure your proposed code is consistent with the repository's
 coding style and then run `make pytest` to ensure that all the tests
 pass.
 
+For information on contributing to TaxData, see the [contributor guide](CONTRIBUTING.md).
+
 Disclaimer
 ----------
 
@@ -118,3 +120,17 @@ A full list of contributors on GitHub can be found
 here](https://github.com/PSLmodels/taxdata/graphs/contributors). John O'Hare
 of Quantria Strategies has also made significant contributions to the
 development of `taxdata`.
+
+Citing TaxData
+--------------
+
+Please cite the source of your analysis as "TaxData Release #.#.#, author's calculations".
+If you wish to provide a link, the preferred URL is https://github.com/PSLmodels/taxdata.
+Additionally, we strongly recommend that you describe the input data used, and 
+provide a link to the materials required to replicate your analysis or, at least, 
+note that those materials are available upon request.
+
+Release Notes and Change Log
+----------------------------
+
+Information on the changes included in new releases can be found in the [notes for each release](https://github.com/PSLmodels/taxdata/releases).

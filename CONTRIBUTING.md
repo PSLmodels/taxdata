@@ -221,6 +221,38 @@ $ pytest
 
 7. Push your changes to GitHub and open a PR.
 
+## Issuing New Releases
+
+As of now, all TaxData releases will only be stored on GitHub. To create a new
+release simply navigate to the [releases page](https://github.com/PSLmodels/taxdata/releases)
+and click "Draft a new release". When you issue a new release, be sure to include
+a link and short description to each of the PRs that have been merged in since
+the last release. These release notes will serve as our change log.
+
+TaxData uses a semantic versioning system with the following criteria:
+
+**Major Release**
+* Removing the capability to use PUF or CPS versions
+
+**Minor Release**
+* Significant methodology enhancements e.g. adding a new linear programming model, 
+updating statistical matching or tax unit creation, new imputation methods, etc.
+* Adding new variables
+* Minor changes to tax unit creation logic that don't break the API
+* Adding support for creating files from different years of the PUF and CPS, 
+assuming this doesn't break backward compatibility
+* Adding new imputation methods for new variables w/o breaking the existing API
+* Updating which CBO projections we use to calculate growth rates (until we can 
+parameterize the choice of cbo projections, after which removing an option would 
+necessitate a major release)
+
+**Patch Release**
+* Standard bug patches
+
+Eventually, we would like to generalize the TaxData API enough to create a fully
+fleshed out python package. We will revist our release procedures when this
+happens.
+
 ## IMPORTANT NOTE
 
 Never ever ever include `puf.csv`, `cps_matched_puf.csv`, or any other file
