@@ -115,7 +115,7 @@ def update_econproj(url, baseline, text_args):
     econ_url = econ_link.attrs["href"]
 
     if cbo_report == text_args["current_cbo"]:
-        print("No new data since last update")
+        print("\tNo new data since last update")
     else:
         # read in economic projections
         econ_proj = pd.read_excel(econ_url, sheet_name="2. Calendar Year",
@@ -160,7 +160,7 @@ def update_econproj(url, baseline, text_args):
         text_args["current_cbo"] = cbo_report
 
     if rev_report == text_args["cgns_prev_report"]:
-        print("No new data since last update")
+        print("\tNo new data since last update")
         return baseline, text_args
     elif rev_link.text == "Mar 2020":
         msg = (
@@ -226,7 +226,7 @@ def update_socsec(url, baseline, text_args):
     latest_yr = max([int(yr) for yr in selector.text.split()]) + 1
     report = f"{latest_yr} Report"
     if report == text_args["socsec_cur_report"]:
-        print("No new data since last update")
+        print("\tNo new data since last update")
         return baseline, text_args
 
     socsec_url = f"https://www.ssa.gov/oact/TR/{latest_yr}/VI_C_SRfyproj.html"
@@ -283,7 +283,7 @@ def update_rets(url, baseline, text_args):
     baseline: Updated baseline numbers
     text_args: Updated dictionary with text aruments to fill in the template
     """
-    print("updating Return Projections")
+    print("Updating Return Projections")
     session = HTMLSession()
     r = session.get(url)
     # find year of new reports
@@ -293,7 +293,7 @@ def update_rets(url, baseline, text_args):
     )
     report = f"{r.html.search(title)[0]} Report"
     if report == text_args["rets_cur_report"]:
-        print("No new data since last update")
+        print("\tNo new data since last update")
         return baseline, text_args
 
     links = r.html.links
@@ -356,7 +356,7 @@ def update_ucomp(url, baseline, text_args):
     ucomp_url = ucomp_links[ucomp_years.index(latest_year)]
     report = datetime.strftime(latest_year, "%B %Y")
     if report == text_args["ucomp_cur_report"]:
-        print("No new data since last update")
+        print("\tNo new data since last update")
         return baseline, text_args
     data = pd.read_excel(ucomp_url, skiprows=3, index_col=0, thousands=",")
     try:
