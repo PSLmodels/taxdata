@@ -47,9 +47,9 @@ As previously mentioned, most of the variables we used can be found in the
 To manually update these variables download the latest file and copy/paste the 
 specific variables.
 
-Previous Document: January 2020
+Previous Document: {{ previous_cbo }}
 
-Current Document: July 2020
+Current Document: {{ current_cbo }}
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -70,9 +70,9 @@ Current Document: July 2020
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: [January 2019](https://www.cbo.gov/system/files/2019-02/51138-2019-01-revenueprojections.xlsx)
+Previous: [{{ cgns_prev_report }}]({{ cgns_prev_url }})
 
-Current: [January 2020](https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx)
+Current: [{{ cgns_cur_report }}]({{ cgns_cur_url }})
 
 In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -81,9 +81,9 @@ tab under the `Capital Gains Realizations` column.
 
 Source: [IRS Publication 6187 Table 1B](https://www.irs.gov/statistics/projections-of-federal-tax-return-filings)
 
-Previous: [Fall 2019 Update](https://www.irs.gov/pub/irs-pdf/p6187.pdf)
+Previous: [{{ rets_prev_report }}]({{ rets_prev_url }})
 
-Current: [Fall 2019 Report](https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls)
+Current: [{{ rets_cur_report }}]({{ rets_cur_url }})
 
 The projections in the publication typically end a few years before the
 10-year projections do. We use the growth rate from the final year in the
@@ -96,9 +96,9 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2018 Report](https://www.ssa.gov/oact/tr/2018/VI_C_SRfyproj.html#306103)
+Previous: [{{ socsec_prev_report }}]({{ socsec_prev_url }})
 
-Current: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
+Current: [{{ socsec_cur_report }}]({{ socsec_cur_url }})
 
 Projections are taken directly from the `Scheduled Benefits: Intermediate Level`
 column of this table.
@@ -108,7 +108,7 @@ column of this table.
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
-Access Date: August 15 2020
+Access Date: {{ cpim_date }}
 
 Manual Instructions:
 
@@ -124,9 +124,9 @@ Manual Instructions:
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [January 2020](https://www.cbo.gov/system/files/2020-01/51316-2020-01-unemployment.pdf)
+Previous: [{{ ucomp_prev_report }}]({{ ucomp_prev_url }})
 
-Current: [March 2020](https://www.cbo.gov/system/files/2020-03/51316-2020-03-unemployment.pdf)
+Current: [{{ ucomp_cur_report }}]({{ ucomp_cur_url }})
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars

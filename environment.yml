@@ -16,3 +16,9 @@ dependencies:
 - xlrd
 - pulp
 - paramtools
+- pypandoc
+- selenium
+- python-chromedriver-binary
+- tabulate
+- pip:
+  - requests-html
