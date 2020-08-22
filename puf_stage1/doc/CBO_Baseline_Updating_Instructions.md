@@ -96,9 +96,9 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
+Previous: [2018 Report](https://www.ssa.gov/oact/tr/2018/VI_C_SRfyproj.html#306103)
 
-Current: [2020 Report](https://www.ssa.gov/oact/TR/2020/VI_C_SRfyproj.html)
+Current: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
 
 Projections are taken directly from the `Scheduled Benefits: Intermediate Level`
 column of this table.
