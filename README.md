@@ -119,6 +119,6 @@ Contributors
 ------------
 
 A full list of contributors on GitHub can be found 
-here](https://github.com/PSLmodels/taxdata/graphs/contributors). John O'Hare
+[here](https://github.com/PSLmodels/taxdata/graphs/contributors). John O'Hare
 of Quantria Strategies has also made significant contributions to the
 development of `taxdata`.
