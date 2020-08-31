@@ -22,10 +22,15 @@ with Path(CUR_PATH, "master_cps_dict.pkl").open("rb") as f:
 CPS_FILES = [2013, 2014, 2015]
 
 
-def create(exportcsv: bool = False, exportpkl: bool = False,
-           exportraw: bool = True, validate: bool = False,
-           benefits: bool = True, verbose: bool = False,
-           cps_files: list = CPS_FILES):
+def create(
+    exportcsv: bool = False,
+    exportpkl: bool = False,
+    exportraw: bool = True,
+    validate: bool = False,
+    benefits: bool = True,
+    verbose: bool = False,
+    cps_files: list = CPS_FILES,
+):
     """
     Logic for creating tax units from the CPS
     Parameters
@@ -73,9 +78,12 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
         else:
             # convert the DAT file
             cps_dfs[year] = create_cps(
-                Path(DATA_PATH, meta["dat_file"]), year=year,
+                Path(DATA_PATH, meta["dat_file"]),
+                year=year,
                 parsing_dict=PARSE_DICT[year],
-                benefits=_benefits, exportpkl=exportpkl, exportcsv=exportcsv
+                benefits=_benefits,
+                exportpkl=exportpkl,
+                exportcsv=exportcsv,
             )
 
     # create tax units
@@ -113,8 +121,9 @@ def create(exportcsv: bool = False, exportpkl: bool = False,
     data = target(data, STATE_DATA_LINK)
     # add other benefit data
     print("Adding Benefits")
-    other_ben = pd.read_csv(Path(DATA_PATH, "otherbenefitprograms.csv"),
-                            index_col="Program")
+    other_ben = pd.read_csv(
+        Path(DATA_PATH, "otherbenefitprograms.csv"), index_col="Program"
+    )
     data = distribute_benefits(data, other_ben)
     print("Exporting Raw File")
     data.to_csv(Path(CUR_PATH, "cps_raw.csv"), index=False)
@@ -145,15 +154,17 @@ def validate_cps_units(raw_cps, units, year):
         save_path.write_text(validation.output_str)
         print(f"Number of errors for {year}: {num_errors}")
         print(f"A CSV file with these errors can be found in {save_path}")
-        raise RuntimeError(
-                        f"Errors found in the tax unit creation for {year}"
-                    )
+        raise RuntimeError(f"Errors found in the tax unit creation for {year}")
     else:
         print(f"No errors for {year}")
 
 
 if __name__ == "__main__":
     create(
-        exportcsv=False, exportpkl=True, exportraw=False, validate=False,
-        benefits=True, verbose=True
+        exportcsv=False,
+        exportpkl=True,
+        exportraw=False,
+        validate=False,
+        benefits=True,
+        verbose=True,
     )

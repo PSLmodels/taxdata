@@ -1,19 +1,29 @@
-from helpers import (filingparams, cps_yr_idx, C_TAM_BENEFIT_TUPLES,
-                     CPS_BENEFIT_TUPLES)
+from helpers import filingparams, cps_yr_idx, C_TAM_BENEFIT_TUPLES, CPS_BENEFIT_TUPLES
 
 
 INCOME_TUPLES = [
-    ("wsal_val", "e00200"), ("int_val", "interest"),
-    ("semp_val", "e00900"), ("frse_val", "e02100"),
-    ("div_val", "divs"), ("rnt_val", "rents"),
-    ("rtm_val", "e01500"), ("alimony", "e00800"), ("ss_impute", "e02400"),
-    ("UI_impute", "e02300")
+    ("wsal_val", "e00200"),
+    ("int_val", "interest"),
+    ("semp_val", "e00900"),
+    ("frse_val", "e02100"),
+    ("div_val", "divs"),
+    ("rnt_val", "rents"),
+    ("rtm_val", "e01500"),
+    ("alimony", "e00800"),
+    ("ss_impute", "e02400"),
+    ("UI_impute", "e02300"),
 ]
 
 
 class TaxUnit:
-    def __init__(self, data: dict, year: int, hh_inc: float = 0.0,
-                 dep_status: bool = False, ctam_benefits: bool = True):
+    def __init__(
+        self,
+        data: dict,
+        year: int,
+        hh_inc: float = 0.0,
+        dep_status: bool = False,
+        ctam_benefits: bool = True,
+    ):
         """
         Parameters
         ----------
@@ -79,11 +89,11 @@ class TaxUnit:
         if data["a_maritl"] in [1, 2, 3, 4]:
             self.mars = 2
         self.XTOT = self.mars
-        if data['filestat'] == 4:
+        if data["filestat"] == 4:
             self.mars = 4
         self.hh_inc = hh_inc
         self.filer = 0
-        if data['filestat'] != 6:
+        if data["filestat"] != 6:
             self.filer = 1
 
         # age data
@@ -104,7 +114,7 @@ class TaxUnit:
         # property taxes
         self.prop_tax = data["prop_tax"]
         # state and local taxes
-        self.statetax = max(0., data["statetax_ac"])
+        self.statetax = max(0.0, data["statetax_ac"])
         # property value
         self.prop_value = data["hprop_val"]
         # presence of a mortgage
@@ -135,9 +145,7 @@ class TaxUnit:
                 self.mcaid_count += 1
             elif tc_var == "mcare_ben" and spouse[cps_var] != 0:
                 self.mcare_count += 1
-            setattr(
-                self, tc_var, getattr(self, tc_var) + spouse[cps_var]
-            )
+            setattr(self, tc_var, getattr(self, tc_var) + spouse[cps_var])
         self.agi += spouse["agi"]
         setattr(self, "blind_spouse", spouse["pediseye"])
         self.deps_spouses.append(spouse["a_lineno"])
@@ -156,9 +164,7 @@ class TaxUnit:
                 self.mcaid_count += 1
             elif tc_var == "mcare_ben" and dep_val != 0:
                 self.mcare_count += 1
-            setattr(
-                self, tc_var, getattr(self, tc_var) + dep_val
-            )
+            setattr(self, tc_var, getattr(self, tc_var) + dep_val)
         self.check_age(dependent["a_age"], True)
         self.XTOT += 1
         self.EIC += eic
@@ -177,9 +183,7 @@ class TaxUnit:
                 self.mcaid_count -= 1
             elif tc_var == "mcare_ben" and dep_val != 0:
                 self.mcare_count -= 1
-            setattr(
-                self, tc_var, getattr(self, tc_var) - dep_val
-            )
+            setattr(self, tc_var, getattr(self, tc_var) - dep_val)
         if dependent["a_age"] < 6:
             self.nu06 -= 1
         if dependent["a_age"] < 13:
@@ -233,8 +237,8 @@ class TaxUnit:
         fam_size = 1 + self.depne
         if self.mars == 2:
             fam_size += 1
-        setattr(self, 'fam_size', fam_size)
-        m = f'{self.XTOT} != {sum([self.nu18, self.n1820, self.n21])}'
+        setattr(self, "fam_size", fam_size)
+        m = f"{self.XTOT} != {sum([self.nu18, self.n1820, self.n21])}"
         assert self.XTOT >= sum([self.nu18, self.n1820, self.n21]), m
         return self.__dict__
 
@@ -261,8 +265,10 @@ class TaxUnit:
             if self.age_head >= filingparams.elderly_age[cps_yr_idx]:
                 aidx = 1
         else:
-            msg = (f"Filing status not in [1, 2, 4]. HHID: {self.h_seq} "
-                   f"a_lineno: {self.a_lineno}")
+            msg = (
+                f"Filing status not in [1, 2, 4]. HHID: {self.h_seq} "
+                f"a_lineno: {self.a_lineno}"
+            )
             raise ValueError(msg)
         income_min = filingparams.gross_inc_thd[cps_yr_idx][midx][aidx]
         if self.tot_inc >= income_min:

@@ -9,21 +9,64 @@ def target(cps, state_data_link):
     """
     Read state level income information and adjust CPS data accordingly
     """
-    state_data = pd.read_csv(state_data_link, index_col="STATE",
-                             thousands=",")
+    state_data = pd.read_csv(state_data_link, index_col="STATE", thousands=",")
     # only use aggregate data
     state_data = state_data[state_data["AGI_STUB"] == 0].copy()
 
     # map fips codes and to state abbreviations
-    FIPS_DICT = {'AK': 2, 'AL': 1, 'AR': 5, 'AZ': 4, 'CA': 6, 'CO': 8, 'CT': 9,
-                 'DC': 11, 'DE': 10, 'FL': 12, 'GA': 13, 'HI': 15, 'IA': 19,
-                 'ID': 16, 'IL': 17, 'IN': 18, 'KS': 20, 'KY': 21, 'LA': 22,
-                 'MA': 25, 'MD': 24, 'ME': 23, 'MI': 26, 'MN': 27, 'MO': 29,
-                 'MS': 28, 'MT': 30, 'NC': 37, 'ND': 38, 'NE': 31, 'NH': 33,
-                 'NJ': 34, 'NM': 35, 'NV': 32, 'NY': 36, 'OH': 39, 'OK': 40,
-                 'OR': 41, 'PA': 42, 'RI': 44, 'SC': 45, 'SD': 46, 'TN': 47,
-                 'TX': 48, 'UT': 49, 'VA': 51, 'VT': 50, 'WA': 53, 'WI': 55,
-                 'WV': 54, 'WY': 56}
+    FIPS_DICT = {
+        "AK": 2,
+        "AL": 1,
+        "AR": 5,
+        "AZ": 4,
+        "CA": 6,
+        "CO": 8,
+        "CT": 9,
+        "DC": 11,
+        "DE": 10,
+        "FL": 12,
+        "GA": 13,
+        "HI": 15,
+        "IA": 19,
+        "ID": 16,
+        "IL": 17,
+        "IN": 18,
+        "KS": 20,
+        "KY": 21,
+        "LA": 22,
+        "MA": 25,
+        "MD": 24,
+        "ME": 23,
+        "MI": 26,
+        "MN": 27,
+        "MO": 29,
+        "MS": 28,
+        "MT": 30,
+        "NC": 37,
+        "ND": 38,
+        "NE": 31,
+        "NH": 33,
+        "NJ": 34,
+        "NM": 35,
+        "NV": 32,
+        "NY": 36,
+        "OH": 39,
+        "OK": 40,
+        "OR": 41,
+        "PA": 42,
+        "RI": 44,
+        "SC": 45,
+        "SD": 46,
+        "TN": 47,
+        "TX": 48,
+        "UT": 49,
+        "VA": 51,
+        "VT": 50,
+        "WA": 53,
+        "WI": 55,
+        "WV": 54,
+        "WY": 56,
+    }
     # map income variables in the CPS and IRS data
     # TODO: Add imputed variables
     VAR_MAP = {
@@ -37,7 +80,7 @@ def target(cps, state_data_link):
         "A01400": ["TIRAD"],
         "A03270": ["SEHEALTH"],
         "A03210": ["SLINT"],
-        "A07180": ["CDC"]
+        "A07180": ["CDC"],
     }
 
     # dictionary to hold factors
@@ -73,10 +116,22 @@ def target(cps, state_data_link):
     cps["e00900"] = cps["e00900p"] + cps["e00900s"]
     cps["e02100"] = cps["e02100p"] + cps["e02100s"]
     cps["e00650"] = np.minimum(cps["divs"], cps["e00650"])
-    cps["tot_inc"] = cps[[
-        "e00200", "e00300", "e00400", "e00900", "divs", "e00800",
-        "e01500", "rents", "e02100", "e02400", "CGAGIX", "e02300"
-    ]].sum(axis=1)
+    cps["tot_inc"] = cps[
+        [
+            "e00200",
+            "e00300",
+            "e00400",
+            "e00900",
+            "divs",
+            "e00800",
+            "e01500",
+            "rents",
+            "e02100",
+            "e02400",
+            "CGAGIX",
+            "e02300",
+        ]
+    ].sum(axis=1)
     assert np.allclose(cps["e00900"], cps[["e00900p", "e00900s"]].sum(axis=1))
     assert np.allclose(cps["e02100"], cps[["e02100p", "e02100s"]].sum(axis=1))
     assert np.allclose(cps["e00200"], cps[["e00200p", "e00200s"]].sum(axis=1))

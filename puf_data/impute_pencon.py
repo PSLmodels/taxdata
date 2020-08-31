@@ -42,6 +42,7 @@ from __future__ import print_function
 import sys
 import numpy as np
 import pandas as pd
+
 if sys.version_info[0] < 3:
     from StringIO import StringIO
 else:
@@ -124,25 +125,45 @@ u5K     ,1.1581,0.0411,0.0841,0.1733,0.3118,0.1667,0.2209,0.1563,0.0040
     amt_df.columns = [name.strip() for name in amt_df.columns]
     amt_df.index = [name.strip() for name in amt_df.index]
     return cnt_df, amt_df
+
+
 # end of targets() function
 
 
 # specify top of age and wage brackets
 UNDER_AGE = [26, 35, 45, 55, 60, 65, 75, 99]
-UNDER_WAGE = [5e3, 10e3, 15e3, 20e3, 25e3, 30e3, 40e3, 50e3, 75e3,
-              100e3, 200e3, 500e3, 1e6, 2e6, 5e6, 30e6]
+UNDER_WAGE = [
+    5e3,
+    10e3,
+    15e3,
+    20e3,
+    25e3,
+    30e3,
+    40e3,
+    50e3,
+    75e3,
+    100e3,
+    200e3,
+    500e3,
+    1e6,
+    2e6,
+    5e6,
+    30e6,
+]
 
 
 def age_group(row):
     """
     Specify age group of individual.
     """
-    if row['age'] == 0:
+    if row["age"] == 0:
         return -1
     for grp, underage in enumerate(UNDER_AGE):
-        if row['age'] < underage:
+        if row["age"] < underage:
             return grp
-    raise ValueError('illegal value of age')
+    raise ValueError("illegal value of age")
+
+
 # end of age_group() function
 
 
@@ -150,12 +171,14 @@ def wage_group(row):
     """
     Specify wage group of individual.
     """
-    if row['wage'] == 0:
+    if row["wage"] == 0:
         return -1
     for grp, underwage in enumerate(UNDER_WAGE):
-        if row['wage'] < underwage:
+        if row["wage"] < underwage:
             return grp
-    raise ValueError('illegal value of wage')
+    raise ValueError("illegal value of wage")
+
+
 # end of wage_group() function
 
 
@@ -194,66 +217,61 @@ def impute(idata, target_cnt, target_amt):
     Impute idata[pencon] given other idata variables and targets.
     """
     if DUMP1 and HIWAGE_PROB_SF != 1.0:
-        print('HIWAGE_PROB_SF= {:.4f}'.format(HIWAGE_PROB_SF))
-        print('MIN_HIWAGE_GROUP= {}'.format(MIN_HIWAGE_GROUP))
+        print("HIWAGE_PROB_SF= {:.4f}".format(HIWAGE_PROB_SF))
+        print("MIN_HIWAGE_GROUP= {}".format(MIN_HIWAGE_GROUP))
     # loop through the positive-age and positive-wage cells
     for agrp in range(0, len(UNDER_AGE)):
         for wgrp in range(0, len(UNDER_WAGE)):
             # impute actual count of having positive pencon
-            in_cell = (idata['agegrp'] == agrp) & (idata['wagegrp'] == wgrp)
+            in_cell = (idata["agegrp"] == agrp) & (idata["wagegrp"] == wgrp)
             cell_idata = idata[in_cell].copy()
-            wgt_num_earners = cell_idata['weight'].sum() * 1e-6
+            wgt_num_earners = cell_idata["weight"].sum() * 1e-6
             if wgt_num_earners <= 0.0:
-                msg = 'agrp={};wgrp={} has wgt_num_earners={:.4f} <= 0'
+                msg = "agrp={};wgrp={} has wgt_num_earners={:.4f} <= 0"
                 raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
             wgt_pos_pencon = target_cnt.iloc[wgrp, agrp]
             prob = wgt_pos_pencon / wgt_num_earners
             if wgrp >= MIN_HIWAGE_GROUP:
                 prob *= HIWAGE_PROB_SF
             if DUMP1 and prob > 1.0:
-                print('agrp={};wgrp={} ==> prob= {:.3f}'.format(
-                    agrp, wgrp, prob
-                ))
-            cell_idata['pencon'] = np.where(cell_idata['urn'] < prob, 1, 0)
-            pos_pc = cell_idata['pencon'] > 0
+                print("agrp={};wgrp={} ==> prob= {:.3f}".format(agrp, wgrp, prob))
+            cell_idata["pencon"] = np.where(cell_idata["urn"] < prob, 1, 0)
+            pos_pc = cell_idata["pencon"] > 0
             if pos_pc.sum() == 0:  # no positive pension contributions in cell
                 if DUMP1:
-                    print('agrp={};wgrp={} has zero pencon'.format(agrp, wgrp))
+                    print("agrp={};wgrp={} has zero pencon".format(agrp, wgrp))
                 continue  # to next wgrp in cell loop
             # impute actual amount of each positive pension contribution
             # taking into account that pension contributions are legally capped
-            wage = cell_idata['wage']
-            wgt = cell_idata['weight']
+            wage = cell_idata["wage"]
+            wgt = cell_idata["weight"]
             wgt_pos_pc_wages = (wage[pos_pc] * wgt[pos_pc]).sum() * 1e-9
             cell_target_amt = target_amt.iloc[wgrp, agrp]
             rate0 = min(1.0, cell_target_amt / wgt_pos_pc_wages)
             if DUMP2:
-                print('agrp={};wgrp={} ==> rate0= {:.4f}'.format(
-                    agrp, wgrp, rate0
-                ))
+                print("agrp={};wgrp={} ==> rate0= {:.4f}".format(agrp, wgrp, rate0))
             # iteratively raise non-capped deferral rate to hit target_amt
             num_iterations = 10
             for itr in range(0, num_iterations):
-                uncapped_amt = np.where(pos_pc,
-                                        np.round(wage * rate0).astype(int),
-                                        0)
+                uncapped_amt = np.where(pos_pc, np.round(wage * rate0).astype(int), 0)
                 capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT)
                 over_amt = uncapped_amt - capped_amt
                 over_tot = (over_amt * wgt).sum() * 1e-9
-                rate1 = min(1.0,
-                            (cell_target_amt + over_tot) / wgt_pos_pc_wages)
+                rate1 = min(1.0, (cell_target_amt + over_tot) / wgt_pos_pc_wages)
                 if np.allclose([rate1], [rate0]):
                     if DUMP2 and itr > 0:
-                        print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
+                        print("  iter={} ==> rate= {:.4f}".format(itr, rate0))
                     break  # out of iteration loop
                 else:
                     if DUMP2 and itr == (num_iterations - 1):
-                        print('  iter={} ==> rate= {:.4f}'.format(itr, rate0))
+                        print("  iter={} ==> rate= {:.4f}".format(itr, rate0))
                     rate0 = rate1
-            cell_idata['pencon'] = capped_amt
+            cell_idata["pencon"] = capped_amt
             # store cell_idata['pencon'] in idata
-            idata.loc[in_cell, 'pencon'] = cell_idata['pencon']
+            idata.loc[in_cell, "pencon"] = cell_idata["pencon"]
             del cell_idata
+
+
 # end of impute() function
 
 
@@ -265,108 +283,112 @@ def impute_pension_contributions(alldata):
     """
     # specify target DataFrames with total column and total row removed
     target_cnt, target_amt = targets()
-    target_cnt.drop(labels='total', axis='index', inplace=True)
-    target_cnt.drop(labels='total', axis='columns', inplace=True)
-    target_amt.drop(labels='total', axis='index', inplace=True)
-    target_amt.drop(labels='total', axis='columns', inplace=True)
+    target_cnt.drop(labels="total", axis="index", inplace=True)
+    target_cnt.drop(labels="total", axis="columns", inplace=True)
+    target_amt.drop(labels="total", axis="index", inplace=True)
+    target_amt.drop(labels="total", axis="columns", inplace=True)
     if DUMP0:
-        print('target_cnt.shape={} and size={}'.format(
-            target_cnt.shape, target_cnt.size
-        ))
-        print('target_amt.shape={} and size={}'.format(
-            target_amt.shape, target_amt.size
-        ))
-        print('len(UNDER_AGE)={}'.format(len(UNDER_AGE)))
-        print('len(UNDER_WAGE)={}'.format(len(UNDER_WAGE)))
+        print(
+            "target_cnt.shape={} and size={}".format(target_cnt.shape, target_cnt.size)
+        )
+        print(
+            "target_amt.shape={} and size={}".format(target_amt.shape, target_amt.size)
+        )
+        print("len(UNDER_AGE)={}".format(len(UNDER_AGE)))
+        print("len(UNDER_WAGE)={}".format(len(UNDER_WAGE)))
         cnt = target_cnt.values.sum()
-        print('sum(target_cnt)= {:.4f}'.format(cnt))
+        print("sum(target_cnt)= {:.4f}".format(cnt))
         amt = target_amt.values.sum()
-        print('sum(target_amt)= {:.4f}'.format(amt))
+        print("sum(target_amt)= {:.4f}".format(amt))
         avg = amt / cnt
-        print('avg(target_amt)= {:.3f}'.format(avg))
+        print("avg(target_amt)= {:.3f}".format(avg))
     # construct individual-level idata from filing-unit alldata
     # (note: PUF records have filer=1 and CPS records have filer=0)
     # ... construct _p DataFrame with renamed variables
-    ivars = ['age_head', 'e00200p', 'filer']
+    ivars = ["age_head", "e00200p", "filer"]
     idata_p = alldata[ivars].copy()
-    idata_p['spouse'] = np.zeros(len(idata_p.index), dtype=np.int8)
-    idata_p['weight'] = alldata['s006'] * 0.01
-    idata_p.rename({'age_head': 'age', 'e00200p': 'e00200'},
-                   axis='columns', inplace=True)
+    idata_p["spouse"] = np.zeros(len(idata_p.index), dtype=np.int8)
+    idata_p["weight"] = alldata["s006"] * 0.01
+    idata_p.rename(
+        {"age_head": "age", "e00200p": "e00200"}, axis="columns", inplace=True
+    )
     # ... construct _s DataFrame with renamed variables
-    ivars = ['age_spouse', 'e00200s', 'filer']
+    ivars = ["age_spouse", "e00200s", "filer"]
     idata_s = alldata[ivars].copy()
-    idata_s['spouse'] = np.ones(len(idata_s.index), dtype=np.int8)
-    idata_s['weight'] = alldata['s006'] * 0.01
-    idata_s.rename({'age_spouse': 'age', 'e00200s': 'e00200'},
-                   axis='columns', inplace=True)
+    idata_s["spouse"] = np.ones(len(idata_s.index), dtype=np.int8)
+    idata_s["weight"] = alldata["s006"] * 0.01
+    idata_s.rename(
+        {"age_spouse": "age", "e00200s": "e00200"}, axis="columns", inplace=True
+    )
     # ... combine the _p and _s DataFrames
     idata = pd.concat([idata_p, idata_s], copy=True)
     del idata_p
     del idata_s
     # ... construct variables that never change over the imputation process
-    idata['agegrp'] = idata.apply(age_group, axis=1)
+    idata["agegrp"] = idata.apply(age_group, axis=1)
     np.random.seed(111111)
-    idata['urn'] = np.random.uniform(size=len(idata.index))
+    idata["urn"] = np.random.uniform(size=len(idata.index))
     # ... initialize pension contributions to zero
-    idata['pencon'] = np.zeros(len(idata.index), dtype=np.int64)
+    idata["pencon"] = np.zeros(len(idata.index), dtype=np.int64)
     if DUMP0:
-        idata['wage'] = idata['e00200']
-        idata['wagegrp'] = idata.apply(wage_group, axis=1)
-        print('raw_num_earners(#)=', (idata['wage'] > 0).sum())
-        wgt_earners = idata['weight'][idata['wage'] > 0].sum()
-        print('wgt_num_earners(#M)= {:.3f}'.format(wgt_earners * 1e-6))
-        wearnings = idata['weight'] * idata['wage']
+        idata["wage"] = idata["e00200"]
+        idata["wagegrp"] = idata.apply(wage_group, axis=1)
+        print("raw_num_earners(#)=", (idata["wage"] > 0).sum())
+        wgt_earners = idata["weight"][idata["wage"] > 0].sum()
+        print("wgt_num_earners(#M)= {:.3f}".format(wgt_earners * 1e-6))
+        wearnings = idata["weight"] * idata["wage"]
         wgt_earnings = wearnings.sum()
-        print('wgt_earnings($B)= {:.3f}'.format(wgt_earnings * 1e-9))
-        wgt_puf_earnings = wearnings[idata['filer'] == 1].sum()
-        print('wgt_PUF_earnings($B)= {:.3f}'.format(wgt_puf_earnings * 1e-9))
-        wgt_cps_earnings = wearnings[idata['filer'] == 0].sum()
-        print('wgt_CPS_earnings($B)= {:.3f}'.format(wgt_cps_earnings * 1e-9))
-        print('min_agegrp=', idata['agegrp'].min())
-        print('max_agegrp=', idata['agegrp'].max())
-        print('min_wagegrp=', idata['wagegrp'].min())
-        print('max_wagegrp=', idata['wagegrp'].max())
+        print("wgt_earnings($B)= {:.3f}".format(wgt_earnings * 1e-9))
+        wgt_puf_earnings = wearnings[idata["filer"] == 1].sum()
+        print("wgt_PUF_earnings($B)= {:.3f}".format(wgt_puf_earnings * 1e-9))
+        wgt_cps_earnings = wearnings[idata["filer"] == 0].sum()
+        print("wgt_CPS_earnings($B)= {:.3f}".format(wgt_cps_earnings * 1e-9))
+        print("min_agegrp=", idata["agegrp"].min())
+        print("max_agegrp=", idata["agegrp"].max())
+        print("min_wagegrp=", idata["wagegrp"].min())
+        print("max_wagegrp=", idata["wagegrp"].max())
     # do two imputations to construct gross wages for PUF records
-    idata['wage'] = idata['e00200']
-    idata['wagegrp'] = idata.apply(wage_group, axis=1)
+    idata["wage"] = idata["e00200"]
+    idata["wagegrp"] = idata.apply(wage_group, axis=1)
     impute(idata, target_cnt, target_amt)
-    idata['wage'] = np.where(idata['filer'] == 1,
-                             idata['e00200'] + idata['pencon'],
-                             idata['e00200'])
-    idata['wagegrp'] = idata.apply(wage_group, axis=1)  # gross wage group
+    idata["wage"] = np.where(
+        idata["filer"] == 1, idata["e00200"] + idata["pencon"], idata["e00200"]
+    )
+    idata["wagegrp"] = idata.apply(wage_group, axis=1)  # gross wage group
     impute(idata, target_cnt, target_amt)
     if DUMP0:
-        cnt = (idata['weight'] * (idata['pencon'] > 0)).sum() * 1e-6
-        print('wgt_pencon_cnt(#M)= {:.3f}'.format(cnt))
-        amt = (idata['weight'] * idata['pencon']).sum() * 1e-9
-        print('wgt_pencon_amt($B)= {:.3f}'.format(amt))
+        cnt = (idata["weight"] * (idata["pencon"] > 0)).sum() * 1e-6
+        print("wgt_pencon_cnt(#M)= {:.3f}".format(cnt))
+        amt = (idata["weight"] * idata["pencon"]).sum() * 1e-9
+        print("wgt_pencon_amt($B)= {:.3f}".format(amt))
         avg = amt / cnt
-        print('avg_pencon_amt($K)= {:.3f}'.format(avg))
+        print("avg_pencon_amt($K)= {:.3f}".format(avg))
     # subtract pencon from e00200 for CPS records to make them net earnings
-    idata['e00200'] = np.where(idata['filer'] == 1,
-                               idata['e00200'],
-                               idata['e00200'] - idata['pencon'])
+    idata["e00200"] = np.where(
+        idata["filer"] == 1, idata["e00200"], idata["e00200"] - idata["pencon"]
+    )
     if DUMP0:
-        wearnings = idata['weight'] * idata['e00200']
+        wearnings = idata["weight"] * idata["e00200"]
         wgt_earnings = wearnings.sum()
-        print('wgt_earnings($B)= {:.3f}'.format(wgt_earnings * 1e-9))
-        wgt_puf_earnings = wearnings[idata['filer'] == 1].sum()
-        print('wgt_PUF_earnings($B)= {:.3f}'.format(wgt_puf_earnings * 1e-9))
-        wgt_cps_earnings = wearnings[idata['filer'] == 0].sum()
-        print('wgt_CPS_earnings($B)= {:.3f}'.format(wgt_cps_earnings * 1e-9))
+        print("wgt_earnings($B)= {:.3f}".format(wgt_earnings * 1e-9))
+        wgt_puf_earnings = wearnings[idata["filer"] == 1].sum()
+        print("wgt_PUF_earnings($B)= {:.3f}".format(wgt_puf_earnings * 1e-9))
+        wgt_cps_earnings = wearnings[idata["filer"] == 0].sum()
+        print("wgt_CPS_earnings($B)= {:.3f}".format(wgt_cps_earnings * 1e-9))
     # set alldata values of pencon_p and pencon_s and the e00200* variables
-    alldata['pencon_p'] = idata['pencon'][idata['spouse'] == 0]
-    alldata['pencon_s'] = idata['pencon'][idata['spouse'] == 1]
-    alldata['e00200p'] = idata['e00200'][idata['spouse'] == 0]
-    alldata['e00200s'] = idata['e00200'][idata['spouse'] == 1]
-    alldata['e00200'] = alldata['e00200p'] + alldata['e00200s']
+    alldata["pencon_p"] = idata["pencon"][idata["spouse"] == 0]
+    alldata["pencon_s"] = idata["pencon"][idata["spouse"] == 1]
+    alldata["e00200p"] = idata["e00200"][idata["spouse"] == 0]
+    alldata["e00200s"] = idata["e00200"][idata["spouse"] == 1]
+    alldata["e00200"] = alldata["e00200p"] + alldata["e00200s"]
     # return revised alldata
     return alldata
+
+
 # end of impute_pension_contributions() function
 
 
-if __name__ == '__main__':
-    RAWDATA = pd.read_csv('puf.csv')
+if __name__ == "__main__":
+    RAWDATA = pd.read_csv("puf.csv")
     REVDATA = impute_pension_contributions(RAWDATA)
-    REVDATA.to_csv('puf-pc.csv', index=False)
+    REVDATA.to_csv("puf-pc.csv", index=False)

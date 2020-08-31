@@ -7,8 +7,15 @@ import argparse
 import pandas as pd
 import taxcalc as tc
 import altair as alt
-from report_utils import (run_calc, distplot, write_page, growth_scatter_plot,
-                          compare_vars, cbo_bar_chart, agg_liability_table)
+from report_utils import (
+    run_calc,
+    distplot,
+    write_page,
+    growth_scatter_plot,
+    compare_vars,
+    cbo_bar_chart,
+    agg_liability_table,
+)
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
@@ -45,7 +52,7 @@ CBO_LABELS = {
     "RETS": "IRS Projections of Individual Returns (Millions)",
     "SOCSEC": "Scheduled Social Security Benefits",
     "CPIM": "CPI Medical Care",
-    "UCOMP": "Unemployment Compensation (Billions)"
+    "UCOMP": "Unemployment Compensation (Billions)",
 }
 
 
@@ -61,7 +68,7 @@ def report():
             "Enter them as a string separated by commas"
         ),
         default="",
-        type=str
+        type=str,
     )
     parser.add_argument(
         "--desc",
@@ -70,7 +77,7 @@ def report():
             "that will appear at the begining of the report"
         ),
         default="",
-        type=str
+        type=str,
     )
     args = parser.parse_args()
     desc = args.desc
@@ -111,15 +118,11 @@ def report():
         for col in cbo_data.columns:
             if col == "index" or col == "Projections":
                 continue
-            chart = cbo_bar_chart(
-                cbo_data, col, CBO_LABELS[col]
-            )
+            chart = cbo_bar_chart(cbo_data, col, CBO_LABELS[col])
             img_path = Path(CUR_PATH, f"{col}.png")
             chart.save(str(img_path))
             plot_paths.append(img_path)
-            cbo_projections.append(
-                f"![]({str(img_path)})" + "{.center}"
-            )
+            cbo_projections.append(f"![]({str(img_path)})" + "{.center}")
     template_args["cbo_projections"] = cbo_projections
 
     # changes in data availability
@@ -156,32 +159,24 @@ def report():
         img_path = Path(CUR_PATH, "growth_factors1.png")
         chart1.save(str(img_path))
         plot_paths.append(img_path)
-        growth_rate_projections.append(
-            f"![]({str(img_path)})" + "{.center}"
-        )
-        chart2 = growth_scatter_plot(growth_data, rows[n: 2 * n])
+        growth_rate_projections.append(f"![]({str(img_path)})" + "{.center}")
+        chart2 = growth_scatter_plot(growth_data, rows[n : 2 * n])
         img_path = Path(CUR_PATH, "growth_factors2.png")
         chart2.save(str(img_path))
         plot_paths.append(img_path)
-        growth_rate_projections.append(
-            f"![]({str(img_path)})" + "{.center}"
-        )
-        chart3 = growth_scatter_plot(growth_data, rows[2 * n:])
+        growth_rate_projections.append(f"![]({str(img_path)})" + "{.center}")
+        chart3 = growth_scatter_plot(growth_data, rows[2 * n :])
         img_path = Path(CUR_PATH, "growth_factors3.png")
         chart3.save(str(img_path))
         plot_paths.append(img_path)
-        growth_rate_projections.append(
-            f"![]({str(img_path)})" + "{.center}"
-        )
+        growth_rate_projections.append(f"![]({str(img_path)})" + "{.center}")
     template_args["growth_rate_projections"] = growth_rate_projections
 
     # compare tax calculator projections
     calcs = []
     calc_labels = []
     # baseline CPS calculator
-    base_cps = tc.Calculator(
-        records=tc.Records.cps_constructor(), policy=tc.Policy()
-    )
+    base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
     base_cps.advance_to_year(first_year)
     base_cps.calc_all()
     calcs.append(base_cps)
@@ -191,14 +186,13 @@ def report():
         Path(CUR_PATH, "..", "cps_data", "pycps", "cps.csv.gz"), index_col=None
     )
     cps_weights = pd.read_csv(
-        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"),
-        index_col=None
+        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"), index_col=None
     )
     new_cps = tc.Calculator(
         records=tc.Records(
             data=cps, weights=cps_weights, adjust_ratios=None, start_year=2014
         ),
-        policy=tc.Policy()
+        policy=tc.Policy(),
     )
     new_cps.advance_to_year(first_year)
     new_cps.calc_all()
@@ -207,26 +201,20 @@ def report():
     # distribution plots
     dist_vars = [
         ("c00100", "AGI Distribution"),
-        ("combined", "Tax Liability Distribution")
+        ("combined", "Tax Liability Distribution"),
     ]
     dist_plots = []
     for var, title in dist_vars:
-        plot = distplot(
-            calcs, calc_labels, var, title=title
-        )
+        plot = distplot(calcs, calc_labels, var, title=title)
         img_path = Path(CUR_PATH, f"{var}_dist.png")
         plot.save(str(img_path))
         plot_paths.append(img_path)
-        dist_plots.append(
-            f"![]({str(img_path)})" + "{.center}"
-        )
+        dist_plots.append(f"![]({str(img_path)})" + "{.center}")
     template_args["dist_plots"] = dist_plots
 
     # aggregate totals
     aggs = defaultdict(list)
-    var_list = [
-        "payrolltax", "iitax", "combined", "standard", "c04470"
-    ]
+    var_list = ["payrolltax", "iitax", "combined", "standard", "c04470"]
     for year in range(first_year, tc.Policy.LAST_BUDGET_YEAR + 1):
         base_aggs = run_calc(base_cps, year, var_list)
         new_aggs = run_calc(new_cps, year, var_list)
@@ -251,26 +239,26 @@ def report():
     agg_df = pd.DataFrame(aggs)
 
     title = "Aggregate Tax Liability by Year"
-    agg_chart = alt.Chart(agg_df, title=title).mark_line().encode(
-        x=alt.X(
-            "Year:O", axis=alt.Axis(labelAngle=0, titleFontSize=20,
-            labelFontSize=15)
-        ),
-        y=alt.Y(
-            "Tax Liability", title="Tax Liability (Billions)",
-            axis=alt.Axis(titleFontSize=20, labelFontSize=15)
-        ),
-        color=alt.Color(
-            "Tax",
-            legend=alt.Legend(
-                symbolSize=150, labelFontSize=15, titleFontSize=20
-            )
+    agg_chart = (
+        alt.Chart(agg_df, title=title)
+        .mark_line()
+        .encode(
+            x=alt.X(
+                "Year:O",
+                axis=alt.Axis(labelAngle=0, titleFontSize=20, labelFontSize=15),
+            ),
+            y=alt.Y(
+                "Tax Liability",
+                title="Tax Liability (Billions)",
+                axis=alt.Axis(titleFontSize=20, labelFontSize=15),
+            ),
+            color=alt.Color(
+                "Tax",
+                legend=alt.Legend(symbolSize=150, labelFontSize=15, titleFontSize=20),
+            ),
         )
-    ).properties(
-        width=800,
-        height=350
-    ).configure_title(
-        fontSize=24
+        .properties(width=800, height=350)
+        .configure_title(fontSize=24)
     )
     img_path = Path(CUR_PATH, "agg_plot.png")
     agg_chart.save(str(img_path))

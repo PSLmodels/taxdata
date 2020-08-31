@@ -7,9 +7,14 @@ from cps_meta import C_TAM_YEARS
 
 
 INCOME_VARS = [
-    "wsal_val", "int_val", "div_val", "semp_val",
-    "alimony", "pensions_annuities", "frse_val",
-    "uc_val"
+    "wsal_val",
+    "int_val",
+    "div_val",
+    "semp_val",
+    "alimony",
+    "pensions_annuities",
+    "frse_val",
+    "uc_val",
 ]
 
 
@@ -22,26 +27,24 @@ def find_person(data: list, lineno: int) -> dict:
         if person["a_lineno"] == lineno:
             return person
     # raise an error if they're never found
-    msg = (f"Person with line number {lineno} not found in"
-           f"household.")
+    msg = f"Person with line number {lineno} not found in" f"household."
     raise ValueError(msg)
 
 
-def eic_eligible(person: dict, age_head: int, age_spouse: int,
-                 mars: int) -> int:
+def eic_eligible(person: dict, age_head: int, age_spouse: int, mars: int) -> int:
     """
     Function to determine if a dependent is an EIC eligible child
     df: DataFrame of just dependents
     https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit/qualifying-child-rules
     """
     # relationship test
-    relationship = person['a_exprrp'] in [5, 7, 9, 11]
+    relationship = person["a_exprrp"] in [5, 7, 9, 11]
     # age test
     eic_max_age = filingparams.eic_child_age[cps_yr_idx]
     if person["a_ftpt"] == 1:
         eic_max_age = filingparams.eic_child_age_student[cps_yr_idx]
     # person is between 1 and the max age
-    age = (0 <= person["a_age"] <= eic_max_age)
+    age = 0 <= person["a_age"] <= eic_max_age
     # person is younger than filer or their spouse
     if mars == 1:
         age *= person["a_age"] < age_head
@@ -59,8 +62,7 @@ def eic_eligible(person: dict, age_head: int, age_spouse: int,
     return eligible
 
 
-def find_claimer(claimerno: int, head_lineno: int, a_lineno: int,
-                 data: list) -> bool:
+def find_claimer(claimerno: int, head_lineno: int, a_lineno: int, data: list) -> bool:
     """
     Determine if an individual is the dependent of the head of
     the tax unit
@@ -77,8 +79,7 @@ def find_claimer(claimerno: int, head_lineno: int, a_lineno: int,
         return True
     # see if person is dependent or spouse of head
     claimer = find_person(data, claimerno)
-    spouse_dep = (claimer["a_spouse"] == claimerno |
-                  claimer["dep_stat"] == claimerno)
+    spouse_dep = claimer["a_spouse"] == claimerno | claimer["dep_stat"] == claimerno
     if spouse_dep:
         return True
     # follow any potential spouse/dependent trails to find the one
@@ -250,13 +251,11 @@ def create_units(data, year, verbose=False, ctam_benefits=True):
         if filer:
             if verbose:
                 print("dep filer", person["a_lineno"])
-            tu = TaxUnit(
-                person, year, dep_status=True, ctam_benefits=ctam_benefits
-            )
+            tu = TaxUnit(person, year, dep_status=True, ctam_benefits=ctam_benefits)
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
             if verbose:
-                print(units[person['claimer']].n24)
+                print(units[person["claimer"]].n24)
             units[person["a_lineno"]] = tu
 
     return [unit.output() for unit in units.values()]
@@ -281,14 +280,12 @@ def _create_units(data, year, verbose=False, ctam_benefits=False):
     dependents = []
     for person in data:
         # if they're not a dependent or already claimed as a spouse, unit!
-        if person['dep_stat'] == 0 and not person['s_flag']:
+        if person["dep_stat"] == 0 and not person["s_flag"]:
             # make them a tax unit
             if verbose:
                 print("making unit", person["a_lineno"])
             person["p_flag"] = True
-            tu = TaxUnit(
-                person, year, hh_inc, ctam_benefits=ctam_benefits
-            )
+            tu = TaxUnit(person, year, hh_inc, ctam_benefits=ctam_benefits)
             # loop through the rest of the household for
             # spouses and dependents
             if person["a_spouse"] != 0:
@@ -303,9 +300,7 @@ def _create_units(data, year, verbose=False, ctam_benefits=False):
                 if person["a_lineno"] == _person["dep_stat"]:
                     if verbose:
                         print("adding dependent", _person["a_lineno"])
-                    _eic = eic_eligible(
-                        _person, tu.age_head, tu.age_spouse, tu.mars
-                    )
+                    _eic = eic_eligible(_person, tu.age_head, tu.age_spouse, tu.mars)
                     tu.add_dependent(_person, _eic)
                     dependents.append(_person)
             units[person["a_lineno"]] = tu
@@ -313,16 +308,14 @@ def _create_units(data, year, verbose=False, ctam_benefits=False):
     # check and see if any dependents must file
     # https://turbotax.intuit.com/tax-tips/family/should-i-include-a-dependents-income-on-my-tax-return/L60Hf4Rsg
     for person in dependents:
-        if person['filestat'] != 6:
+        if person["filestat"] != 6:
             if verbose:
                 print("dep filer", person["a_lineno"])
-            tu = TaxUnit(
-                person, year, dep_status=True, ctam_benefits=ctam_benefits
-            )
+            tu = TaxUnit(person, year, dep_status=True, ctam_benefits=ctam_benefits)
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
             if verbose:
-                print(units[person['claimer']].n24)
+                print(units[person["claimer"]].n24)
             units[person["a_lineno"]] = tu
 
     return [unit.output() for unit in units.values()]

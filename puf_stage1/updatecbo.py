@@ -57,7 +57,7 @@ def update_cpim(baseline, text_args):
     first_year = min(baseline.columns)
     # retrieve subset of the DataFrame containing actual CPIM values
     split_col = int(last_year) - int(first_year) + 1
-    sub_baseline = baseline[baseline.columns[: split_col]]
+    sub_baseline = baseline[baseline.columns[:split_col]]
 
     # find the difference
     mean_diff = (sub_baseline.loc["CPIM"] - sub_baseline.loc["CPIU"]).mean()
@@ -118,8 +118,9 @@ def update_econproj(url, baseline, text_args):
         print("No new data since last update")
     else:
         # read in economic projections
-        econ_proj = pd.read_excel(econ_url, sheet_name="2. Calendar Year",
-                                  skiprows=6, index_col=[0, 1, 2, 3])
+        econ_proj = pd.read_excel(
+            econ_url, sheet_name="2. Calendar Year", skiprows=6, index_col=[0, 1, 2, 3]
+        )
         # extract values for needed rows in the excel file
         # some variables have a missing value in the multi-index. Use iloc
         # to extract needed variables from them.
@@ -141,12 +142,18 @@ def update_econproj(url, baseline, text_args):
         book = income.loc["Profits, Corporate, With IVA & CCAdj"].iloc[0]
         var = "Consumer Price Index, All Urban Consumers (CPI-U)"
         cpiu = econ_proj.loc["Prices"].loc[var].iloc[0]
-        var_list = [
-            gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu
-        ]
+        var_list = [gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu]
         var_names = [
-            "GDP", "TPY", "Wages", "SCHC", "SCHF", "INTS", "DIVS",
-            "RENTS", "BOOK", "CPIU"
+            "GDP",
+            "TPY",
+            "Wages",
+            "SCHC",
+            "SCHF",
+            "INTS",
+            "DIVS",
+            "RENTS",
+            "BOOK",
+            "CPIU",
         ]
         df = pd.DataFrame(var_list, index=var_names).round(1)
         df.columns = df.columns.astype(str)
@@ -175,8 +182,10 @@ def update_econproj(url, baseline, text_args):
     else:
         # Extract capital gains data
         cg_proj = pd.read_excel(
-            rev_url, sheet_name="6. Capital Gains Realizations",
-            skiprows=7, header=[0, 1]
+            rev_url,
+            sheet_name="6. Capital Gains Realizations",
+            skiprows=7,
+            header=[0, 1],
         )
         cg_proj.index = cg_proj[cg_proj.columns[0]]
         var = "Capital Gains Realizationsa"
@@ -234,17 +243,14 @@ def update_socsec(url, baseline, text_args):
     html = pd.read_html(socsec_url, match=match_txt)[0]
     # merge the columns with years and data into one
     sub_data = pd.concat(
-        [
-            html["Fiscal year", "Fiscal year.1"],
-            html["Cost", "Sched-uled benefits"]
-        ],
-        axis=1
+        [html["Fiscal year", "Fiscal year.1"], html["Cost", "Sched-uled benefits"]],
+        axis=1,
     )
     sub_data.columns = ["year", "cost"]
     # further slim down data so that we have the intermediate costs only
     start = sub_data.index[sub_data["year"] == "Intermediate:"][0]
     end = sub_data.index[sub_data["year"] == "Low-cost:"][0]
-    cost_data = sub_data.iloc[start + 1: end].dropna()
+    cost_data = sub_data.iloc[start + 1 : end].dropna()
     cost_data["cost"] = cost_data["cost"].astype(float)
     # rate we'll use to extrapolate costs to final year we'll need
     pct_change = cost_data["cost"].pct_change() + 1
@@ -302,11 +308,9 @@ def update_rets(url, baseline, text_args):
         if re.match(pattern, link):
             spreadsheet_url = link
             break
-    data = pd.read_excel(
-        spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2
-    )
+    data = pd.read_excel(spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2)
     projections = data.loc["Forms 1040, Total*"]
-    projections /= 1000000  # convert units
+    projections /= 1_000_000  # convert units
     pct_change = projections.pct_change() + 1
     # extrapolate out to final year of other CBO projections
     factor = pct_change.iloc[-1]
@@ -383,9 +387,7 @@ def fill_text_args(text):
     Provide initial values for all text arguments
     """
     text_args = {}
-    previous_cbo_doc = re.search(
-        r"Previous Document: ([\w \d]+)", text
-    ).groups()[0]
+    previous_cbo_doc = re.search(r"Previous Document: ([\w \d]+)", text).groups()[0]
     cur_cbo_doc = re.search(r"Current Document: ([\w \d]+)", text).groups()[0]
     text_args["previous_cbo"] = previous_cbo_doc
     text_args["current_cbo"] = cur_cbo_doc
@@ -399,35 +401,34 @@ def fill_text_args(text):
         cur = re.search(url_pattern.format("Current"), sub_txt).group()
         text_args[f"{section.lower()}_prev_report"] = re.search(
             r"\[[\w \d]+\]", prev
-        ).group()[1: -1]
+        ).group()[1:-1]
         text_args[f"{section.lower()}_cur_report"] = re.search(
             r"\[[\w \d]+\]", cur
-        ).group()[1: -1]
+        ).group()[1:-1]
         text_args[f"{section.lower()}_prev_url"] = re.search(
             r"\([\w\W]+\)", prev
-        ).group()[1: -1]
+        ).group()[1:-1]
         text_args[f"{section.lower()}_cur_url"] = re.search(
             r"\([\w\W]+\)", cur
-        ).group()[1: -1]
+        ).group()[1:-1]
 
     return text_args
 
 
 def update_cbo():
-    out_path = Path(
-        CUR_PATH, "doc", "CBO_Baseline_Updating_Instructions.md"
-    )
-    template_str = Path(
-        CUR_PATH, "doc", "cbo_instructions_template.md"
-    ).open().read()
+    out_path = Path(CUR_PATH, "doc", "CBO_Baseline_Updating_Instructions.md")
+    template_str = Path(CUR_PATH, "doc", "cbo_instructions_template.md").open().read()
     current_text = out_path.open().read()
     text_args = fill_text_args(current_text)
-    baseline = pd.read_csv(Path(CUR_PATH, "CBO_baseline.csv"),
-                           index_col=0)
+    baseline = pd.read_csv(Path(CUR_PATH, "CBO_baseline.csv"), index_col=0)
     CBO_URL = "https://www.cbo.gov/about/products/budget-economic-data"
     SOCSEC_URL = "https://www.ssa.gov/oact/TR/"
-    RETS_URL = "https://www.irs.gov/statistics/projections-of-federal-tax-return-filings"
-    UCOMP_URL = "https://www.cbo.gov/about/products/baseline-projections-selected-programs"
+    RETS_URL = (
+        "https://www.irs.gov/statistics/projections-of-federal-tax-return-filings"
+    )
+    UCOMP_URL = (
+        "https://www.cbo.gov/about/products/baseline-projections-selected-programs"
+    )
 
     baseline, text_args = update_econproj(CBO_URL, baseline, text_args)
     baseline, text_args = update_cpim(baseline, text_args)

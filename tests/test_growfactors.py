@@ -18,11 +18,11 @@ def test_growfactor_values(growfactors):
     """
     first_year = growfactors.index.min()
     for fname in growfactors:
-        if fname != 'YEAR':
+        if fname != "YEAR":
             assert growfactors[fname][first_year] == 1.0
     min_value = 0.50
     max_value = 1.70
     for fname in growfactors:
-        if fname != 'YEAR':
+        if fname != "YEAR":
             assert growfactors[fname].min() >= min_value
             assert growfactors[fname].max() <= max_value

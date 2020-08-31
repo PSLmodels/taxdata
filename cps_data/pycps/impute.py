@@ -27,7 +27,7 @@ def impute(df, logit_betas, ols_betas, x_vars, l_adj, o_adj, prob_mult):
     xb = np.zeros(len(df))
     for param in x_vars:
         xb += df[param] * logit_betas[param]
-    prob = np.exp(xb) / (1. + np.exp(xb)) + l_adj
+    prob = np.exp(xb) / (1.0 + np.exp(xb)) + l_adj
     prob *= prob_mult
 
     # flag which records should recieve and imputation
@@ -81,17 +81,12 @@ def imputation(data, logit_betas, ols_betas):
         # use lowercase because CPS uses lowercase at this stage
         data[f"ln{var.lower()}"] = log(data, var.lower())
 
-    data["joint_filer"] = np.where(
-        data["mars"] == 2, 1, 0
-    )
+    data["joint_filer"] = np.where(data["mars"] == 2, 1, 0)
     # cap family size at 5 to match with the PUF
     data["fam_size"] = np.minimum(data["XTOT"], 5)
-    data["agede"] = (
-        (data["age_head"] >=
-         filingparams.elderly_age[cps_yr_idx]).astype(int) +
-        (data["age_spouse"] >=
-         filingparams.elderly_age[cps_yr_idx]).astype(int)
-    )
+    data["agede"] = (data["age_head"] >= filingparams.elderly_age[cps_yr_idx]).astype(
+        int
+    ) + (data["age_spouse"] >= filingparams.elderly_age[cps_yr_idx]).astype(int)
     data["constant"] = np.ones(len(data))
 
     np.random.seed(5410)  # set random seed before imputations
@@ -101,145 +96,144 @@ def imputation(data, logit_betas, ols_betas):
     IMPUTATION_PARAMS = {
         "CGAGIX": {
             "x_vars": [
-                "lntot_inc", "joint_filer", "fam_size", "lninterest",
-                "lndivs", "lne01500", "constant"
+                "lntot_inc",
+                "joint_filer",
+                "fam_size",
+                "lninterest",
+                "lndivs",
+                "lne01500",
+                "constant",
             ],
             "logit_betas": logit_betas["cg_logit"],
             "ols_betas": ols_betas["cg_ols"],
             "l_adj": 0.065,
             "o_adj": 1.95,
-            "prob_mult": 1.
+            "prob_mult": 1.0,
         },
         "TIRAD": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["ira_logit"],
             "ols_betas": ols_betas["ira_ols"],
-            "l_adj": 0.,
+            "l_adj": 0.0,
             "o_adj": 1.7,
-            "prob_mult": 1.25
+            "prob_mult": 1.25,
         },
         "ADJIRA": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["irac_logit"],
             "ols_betas": ols_betas["irac_ols"],
-            "l_adj": 0.,
-            "o_adj": 1.,
-            "prob_mult": .06
+            "l_adj": 0.0,
+            "o_adj": 1.0,
+            "prob_mult": 0.06,
         },
         "KEOGH": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["sep_logit"],
             "ols_betas": ols_betas["sep_ols"],
-            "l_adj": 0.,
-            "o_adj": 1.,
-            "prob_mult": 1.
+            "l_adj": 0.0,
+            "o_adj": 1.0,
+            "prob_mult": 1.0,
         },
         "SEHEALTH": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["sehi_logit"],
             "ols_betas": ols_betas["sehi_ols"],
-            "l_adj": 0.,
-            "o_adj": 1.,
-            "prob_mult": 1.6
+            "l_adj": 0.0,
+            "o_adj": 1.0,
+            "prob_mult": 1.6,
         },
         "SLINT": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["sl_logit"],
             "ols_betas": ols_betas["sl_ols"],
-            "l_adj": 0.,
-            "o_adj": 1.,
-            "prob_mult": 1.1
+            "l_adj": 0.0,
+            "o_adj": 1.0,
+            "prob_mult": 1.1,
         },
         "CDC": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["cdc_logit"],
             "ols_betas": ols_betas["cdc_ols"],
-            "l_adj": 0.,
-            "o_adj": 1.,
-            "prob_mult": 1.
+            "l_adj": 0.0,
+            "o_adj": 1.0,
+            "prob_mult": 1.0,
         },
         "MEDEX": {
             "x_vars": X_VARS,
             "logit_betas": logit_betas["medex_logit"],
             "ols_betas": ols_betas["medex_ols"],
-            "l_adj": 0.,
-            "o_adj": 1.,
-            "prob_mult": 1.
-        }
+            "l_adj": 0.0,
+            "o_adj": 1.0,
+            "prob_mult": 1.0,
+        },
     }
 
     for var, params in IMPUTATION_PARAMS.items():
         data[var] = impute(data, **params)
 
     # tobit models
-    TOBIT_XVARS = [
-        "lntot_inc", "joint_filer", "fam_size", "agede", "constant"
-    ]
+    TOBIT_XVARS = ["lntot_inc", "joint_filer", "fam_size", "agede", "constant"]
 
-    data["CHARITABLE"] = tobit(
-        data, ols_betas["char_ols"], TOBIT_XVARS, 48765.45, 1.
-    )
-    data["MISCITEM"] = tobit(
-        data, ols_betas["misc_ols"], TOBIT_XVARS, 14393.99, 0.3
-    )
+    data["CHARITABLE"] = tobit(data, ols_betas["char_ols"], TOBIT_XVARS, 48765.45, 1.0)
+    data["MISCITEM"] = tobit(data, ols_betas["misc_ols"], TOBIT_XVARS, 14393.99, 0.3)
 
     # add imputed capital gains and IRA distributions to total income
     data["tot_inc"] += data["CGAGIX"] + data["TIRAD"]
     data["lntot_inc"] = log(data, "tot_inc")
 
     # DPAD imputations
-    dpad_indicator = np.where(
-        (data["e00900"] > 0) | (data["rents"] > 0), 1, 0
-    )
+    dpad_indicator = np.where((data["e00900"] > 0) | (data["rents"] > 0), 1, 0)
     DPAD_BINS = [
-        -np.inf, 1, 25000, 50000, 75000, 100000, 200000, 500000, 1000000,
-        np.inf
+        -np.inf,
+        1,
+        25000,
+        50000,
+        75000,
+        100_000,
+        200_000,
+        500_000,
+        1_000_000,
+        np.inf,
     ]
-    dpad_bin = pd.cut(data["tot_inc"], DPAD_BINS, labels=np.arange(1, 10),
-                      right=False)
+    dpad_bin = pd.cut(data["tot_inc"], DPAD_BINS, labels=np.arange(1, 10), right=False)
     DPAD_probs = [
-        0.01524, 0.00477, 0.1517, 0.02488, 0.03368, 0.05089, 0.11659, 0.26060,
-        0.54408
+        0.01524,
+        0.00477,
+        0.1517,
+        0.02488,
+        0.03368,
+        0.05089,
+        0.11659,
+        0.26060,
+        0.54408,
     ]
-    dpad_prob_dict = {
-        x: prob for x, prob in zip(range(1, 10), DPAD_probs)
-    }
-    dpad_prob = pd.Series(
-        [dpad_prob_dict[x] for x in dpad_bin]
-    ) * dpad_indicator
-    DPAD_bases = [
-        20686, 1784, 2384, 2779, 3312, 4827, 10585, 24358, 116275
-    ]
-    dpad_base_dict = {
-        x: base for x, base in zip(range(1, 10), DPAD_bases)
-    }
-    dpad_base = pd.Series(
-        [dpad_base_dict[x] for x in dpad_bin]
-    ) * dpad_indicator
+    dpad_prob_dict = {x: prob for x, prob in zip(range(1, 10), DPAD_probs)}
+    dpad_prob = pd.Series([dpad_prob_dict[x] for x in dpad_bin]) * dpad_indicator
+    DPAD_bases = [20686, 1784, 2384, 2779, 3312, 4827, 10585, 24358, 116_275]
+    dpad_base_dict = {x: base for x, base in zip(range(1, 10), DPAD_bases)}
+    dpad_base = pd.Series([dpad_base_dict[x] for x in dpad_bin]) * dpad_indicator
 
     _prob = dpad_prob * 0.7
     z1 = np.random.uniform(0, 1, len(dpad_prob))
     z2 = np.random.randn(len(dpad_base))
-    data["DPAD"] = np.where(
-        z1 < _prob, dpad_base + 0.25 * z2, 0.
-    )
+    data["DPAD"] = np.where(z1 < _prob, dpad_base + 0.25 * z2, 0.0)
 
     # interest paid calculations
     married = (data["mars"] == 2).astype(int)
     ln_value = (
-        0.006494 * data['age_head'] +
-        0.0170197 * data['fam_size'] +
-        0.1150217 * married +
-        0.4372681 * data['lntot_inc'] +
-        6.753875
+        0.006_494 * data["age_head"]
+        + 0.017_019_7 * data["fam_size"]
+        + 0.115_021_7 * married
+        + 0.437_268_1 * data["lntot_inc"]
+        + 6.753_875
     )
     home_value = np.exp(ln_value)
     ratio = (
-        -0.0115935 * data["age_head"] +
-        0.0138109 * data["fam_size"] +
-        - 0.0336637 * married +
-        0.0163805 * data["lntot_inc"] +
-        0.8048336
+        -0.011_593_5 * data["age_head"]
+        + 0.013_810_9 * data["fam_size"]
+        + -0.033_663_7 * married
+        + 0.016_380_5 * data["lntot_inc"]
+        + 0.804_833_6
     )
     ratio = np.maximum(0, np.minimum(1, ratio))
     factor = 1.73855
@@ -247,16 +241,16 @@ def imputation(data, logit_betas, ols_betas):
     mortgage_debt = ratio * _home_value
     mortgage_interest = mortgage_debt * 0.0575
     data["e19200"] = mortgage_interest
-    data['realest'] = _home_value * 0.0075
+    data["realest"] = _home_value * 0.0075
 
     # final adjustments
     data["DPAD"] *= 0.3
-    data["ADJIRA"] = np.minimum(data["ADJIRA"], 6000.) * 1.3
-    data['KEOGH'] = np.minimum(data['KEOGH'], 150000.) * 0.7
-    data['SLINT'] *= 1.9
-    data['CDC'] = np.minimum(data['CDC'], 5000.) * .3333
-    data['SEHEALTH'] = np.minimum(data['SEHEALTH'], 50000.) * 1.1
-    data['CHARITABLE'] *= 0.175
-    data['tot_inc'] += data['CGAGIX']
+    data["ADJIRA"] = np.minimum(data["ADJIRA"], 6000.0) * 1.3
+    data["KEOGH"] = np.minimum(data["KEOGH"], 150_000.0) * 0.7
+    data["SLINT"] *= 1.9
+    data["CDC"] = np.minimum(data["CDC"], 5000.0) * 0.3333
+    data["SEHEALTH"] = np.minimum(data["SEHEALTH"], 50000.0) * 1.1
+    data["CHARITABLE"] *= 0.175
+    data["tot_inc"] += data["CGAGIX"]
 
     return data
