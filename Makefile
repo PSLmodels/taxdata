@@ -136,7 +136,6 @@ cps_data/pycps/cps_raw.csv.gz: cps_data/pycps/create.py \
                                cps_data/pycps/splitincome.py \
                                cps_data/pycps/targeting.py \
                                cps_data/pycps/taxunit.py \
-                               cps_data/pycps/template.txt \
                                cps_data/pycps/transform_sas.py \
                                cps_data/pycps/adjustment_targets.csv \
                                cps_data/benefitprograms.csv
