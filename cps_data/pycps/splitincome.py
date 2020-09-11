@@ -21,22 +21,18 @@ def split_income(data):
     probs = np.random.random(len(data["divs"]))
     qualified = np.ones(len(data["divs"]))
     qualified = np.where(
-        (probs > ALL_QUALIFIED_PROB) & (probs <= NON_AVG_PROB),
-        0.0, qualified
+        (probs > ALL_QUALIFIED_PROB) & (probs <= NON_AVG_PROB), 0.0, qualified
     )
-    qualified = np.where(
-        probs > NON_AVG_PROB, QUALIFIED_FRAC, qualified
-    )
+    qualified = np.where(probs > NON_AVG_PROB, QUALIFIED_FRAC, qualified)
     data["e00650"] = data["divs"] * qualified
 
     # Split interest income into taxable and tax exempt
     SLOPE = 0.068
     RATIO = 0.46
-    prob = 1. - SLOPE * (data["interest"] * 1e-3)
+    prob = 1.0 - SLOPE * (data["interest"] * 1e-3)
     uniform_rn = np.random.random(len(prob))
     data["e00300"] = np.where(
-        uniform_rn < prob,
-        data["interest"], data["interest"] * RATIO
+        uniform_rn < prob, data["interest"], data["interest"] * RATIO
     )
     data["e00400"] = data["interest"] - data["e00300"]
 
@@ -49,13 +45,9 @@ def split_income(data):
     # determine taxability
     taxability = np.ones(len(data["e01500"]))
     taxability = np.where(
-        (probs > FULL_TAXABLE_PROB) & (probs <= NON_AVG_PROB),
-        0.0, taxability
+        (probs > FULL_TAXABLE_PROB) & (probs <= NON_AVG_PROB), 0.0, taxability
     )
-    taxability = np.where(
-        probs > NON_AVG_PROB,
-        AVG_TAXABLE_AMOUNT, taxability
-    )
+    taxability = np.where(probs > NON_AVG_PROB, AVG_TAXABLE_AMOUNT, taxability)
     data["e01700"] = data["e01500"] * taxability
 
     return data
