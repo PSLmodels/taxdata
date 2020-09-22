@@ -48,8 +48,18 @@ Next navigate to the directory and install the `taxdata-dev` conda environment
 cd taxdata
 conda env create -f environment.yml
 ```
+
+After installing the conda environment, install `pre-commit` so that all the
+pre-commit hooks are run using:
+```bash
+pre-commit install
+```
 To run the scripts that produce `puf.csv` and `cps.csv.gz`, activate the
 `taxdata-dev` conda environment and follow the workflow laid out below.
+
+`Julia` must also be installed to solve for the PUF and CPS weights. You 
+can download `Julia` from their [website](https://julialang.org/downloads/)
+or by using `homebrew`.
 
 Data-Preparation Documentation and Workflow
 -------------------------------------------
@@ -117,7 +127,7 @@ Contributors
 ------------
 
 A full list of contributors on GitHub can be found 
-here](https://github.com/PSLmodels/taxdata/graphs/contributors). John O'Hare
+[here](https://github.com/PSLmodels/taxdata/graphs/contributors). John O'Hare
 of Quantria Strategies has also made significant contributions to the
 development of `taxdata`.
 

@@ -8,8 +8,23 @@ import pandas as pd
 import statsmodels.api as sm
 
 
-def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
-                 sche, ssinc, pensions, alimony, ucagix):
+def partitioning(
+    was,
+    intst,
+    bil,
+    fil,
+    js,
+    depne,
+    ifdept,
+    agede,
+    texint,
+    dbe,
+    sche,
+    ssinc,
+    pensions,
+    alimony,
+    ucagix,
+):
     # begin partitioning phase
     ijs = 9
     iagede = 9
@@ -61,52 +76,125 @@ def partitioning(was, intst, bil, fil, js, depne, ifdept, agede, texint, dbe,
         idepne = 1
 
     # independent variables
-    tpi = float(was + intst + texint + dbe + max(0, sche) + max(0, bil) +
-                max(0, fil) + ssinc + pensions + alimony + ucagix)
-    wageshr = 0.
-    capshr = 0.
-    if tpi != 0.:
+    tpi = float(
+        was
+        + intst
+        + texint
+        + dbe
+        + max(0, sche)
+        + max(0, bil)
+        + max(0, fil)
+        + ssinc
+        + pensions
+        + alimony
+        + ucagix
+    )
+    wageshr = 0.0
+    capshr = 0.0
+    if tpi != 0.0:
         wageshr = was / tpi
         capshr = float(intst + texint + dbe) / tpi
 
-    return pd.Series({'idept': idept, 'ijs': ijs, 'iagede': iagede,
-                      'ikids': ikids, 'iself': iself, 'wageflag': wageflag,
-                      'selfflag': selfflag, 'selfempl': selfempl,
-                      'people': people, 'idepne': idepne, 'wageshr': wageshr,
-                      'capshr': capshr})
+    return pd.Series(
+        {
+            "idept": idept,
+            "ijs": ijs,
+            "iagede": iagede,
+            "ikids": ikids,
+            "iself": iself,
+            "wageflag": wageflag,
+            "selfflag": selfflag,
+            "selfempl": selfempl,
+            "people": people,
+            "idepne": idepne,
+            "wageshr": wageshr,
+            "capshr": capshr,
+        }
+    )
 
 
 def counts(file):
-    count = file.groupby(['idept', 'ijs', 'iagede', 'idepne', 'people',
-                          'ikids', 'iself']).size().reset_index(name='count')
-    wgt = file.groupby(['idept', 'ijs', 'iagede', 'idepne', 'people',
-                        'ikids', 'iself'])['wt'].sum().reset_index(name='wgt')
-    count = pd.concat([count, wgt['wgt']], axis=1, sort=False)
+    count = (
+        file.groupby(["idept", "ijs", "iagede", "idepne", "people", "ikids", "iself"])
+        .size()
+        .reset_index(name="count")
+    )
+    wgt = (
+        file.groupby(["idept", "ijs", "iagede", "idepne", "people", "ikids", "iself"])[
+            "wt"
+        ]
+        .sum()
+        .reset_index(name="wgt")
+    )
+    count = pd.concat([count, wgt["wgt"]], axis=1, sort=False)
     return count
 
 
 def reg(file):
-    indep_vars = ['const', 'agede', 'was', 'intst', 'dbe', 'bil', 'fil',
-                  'sche', 'pensions', 'ssinc', 'ucagix', 'alimony', 'wageshr',
-                  'capshr', 'wageflag', 'selfflag']
-    file['const'] = 1.
+    indep_vars = [
+        "const",
+        "agede",
+        "was",
+        "intst",
+        "dbe",
+        "bil",
+        "fil",
+        "sche",
+        "pensions",
+        "ssinc",
+        "ucagix",
+        "alimony",
+        "wageshr",
+        "capshr",
+        "wageflag",
+        "selfflag",
+    ]
+    file["const"] = 1.0
     X = file[indep_vars]
-    model = sm.WLS(file['tincx'], X, weights=file['wt'])
+    model = sm.WLS(file["tincx"], X, weights=file["wt"])
     results = model.fit()
     params = results.params
     return params
 
 
 def predict(file):
-    indep_vars = ['const', 'agede', 'was', 'intst', 'dbe', 'bil', 'fil',
-                  'sche', 'pensions', 'ssinc', 'ucagix', 'alimony', 'wageshr',
-                  'capshr', 'wageflag', 'selfflag']
-    parameters = ['params_const', 'params_agede', 'params_was', 'params_intst',
-                  'params_dbe', 'params_bil', 'params_fil', 'params_sche',
-                  'params_pensions', 'params_ssinc', 'params_ucagix',
-                  'params_alimony', 'params_wageshr', 'params_capshr',
-                  'params_wageflag', 'params_selfflag']
-    file['const'] = 1.
+    indep_vars = [
+        "const",
+        "agede",
+        "was",
+        "intst",
+        "dbe",
+        "bil",
+        "fil",
+        "sche",
+        "pensions",
+        "ssinc",
+        "ucagix",
+        "alimony",
+        "wageshr",
+        "capshr",
+        "wageflag",
+        "selfflag",
+    ]
+    parameters = [
+        "params_const",
+        "params_agede",
+        "params_was",
+        "params_intst",
+        "params_dbe",
+        "params_bil",
+        "params_fil",
+        "params_sche",
+        "params_pensions",
+        "params_ssinc",
+        "params_ucagix",
+        "params_alimony",
+        "params_wageshr",
+        "params_capshr",
+        "params_wageflag",
+        "params_selfflag",
+    ]
+    file["const"] = 1.0
     X = file[indep_vars]
     P = file[parameters]
     predictions = X.mul(P.values, axis="index").sum(axis=1)
@@ -115,71 +203,105 @@ def predict(file):
 
 def phaseone(CPS, SOI):
 
-    CPS.rename(columns={'rents': 'sche', 'ucomp': 'ucagix', 'socsec': 'ssinc'},
-               inplace=True)
-    CPS['texint'] = 0
+    CPS.rename(
+        columns={"rents": "sche", "ucomp": "ucagix", "socsec": "ssinc"}, inplace=True
+    )
+    CPS["texint"] = 0
 
-    df_CPS = CPS.apply(lambda row: partitioning(row['was'], row['intst'],
-                                                row['bil'], row['fil'],
-                                                row['js'], row['depne'],
-                                                row['ifdept'], row['agede'],
-                                                row['texint'], row['dbe'],
-                                                row['sche'], row['ssinc'],
-                                                row['pensions'],
-                                                row['alimony'], row['ucagix']),
-                       axis=1)
+    df_CPS = CPS.apply(
+        lambda row: partitioning(
+            row["was"],
+            row["intst"],
+            row["bil"],
+            row["fil"],
+            row["js"],
+            row["depne"],
+            row["ifdept"],
+            row["agede"],
+            row["texint"],
+            row["dbe"],
+            row["sche"],
+            row["ssinc"],
+            row["pensions"],
+            row["alimony"],
+            row["ucagix"],
+        ),
+        axis=1,
+    )
 
-    df_SOI = SOI.apply(lambda row: partitioning(row['was'], row['intst'],
-                                                row['bil'], row['fil'],
-                                                row['js'], row['depne'],
-                                                row['ifdept'], row['agede'],
-                                                row['texint'], row['dbe'],
-                                                row['sche'], row['ssinc'],
-                                                row['pensions'],
-                                                row['alimony'], row['ucagix']),
-                       axis=1)
+    df_SOI = SOI.apply(
+        lambda row: partitioning(
+            row["was"],
+            row["intst"],
+            row["bil"],
+            row["fil"],
+            row["js"],
+            row["depne"],
+            row["ifdept"],
+            row["agede"],
+            row["texint"],
+            row["dbe"],
+            row["sche"],
+            row["ssinc"],
+            row["pensions"],
+            row["alimony"],
+            row["ucagix"],
+        ),
+        axis=1,
+    )
 
     CPS = pd.concat([CPS, df_CPS], axis=1, sort=False)
     SOI = pd.concat([SOI, df_SOI], axis=1, sort=False)
 
     SOI_counts = counts(SOI)
     CPS_counts = counts(CPS)
-    SOI_counts.rename(columns={'count': 'SOI_count', 'wgt': 'SOI_wgt'},
-                      inplace=True)
-    CPS_counts.rename(columns={'count': 'CPS_count', 'wgt': 'CPS_wgt'},
-                      inplace=True)
+    SOI_counts.rename(columns={"count": "SOI_count", "wgt": "SOI_wgt"}, inplace=True)
+    CPS_counts.rename(columns={"count": "CPS_count", "wgt": "CPS_wgt"}, inplace=True)
 
-    countx = pd.merge(SOI_counts, CPS_counts, how='inner',
-                      on=['idept', 'ijs', 'iagede', 'idepne',
-                          'ikids', 'iself', 'people'])
-    countx['factor'] = np.where(countx['CPS_wgt'] > 0,
-                                countx['SOI_wgt'] /
-                                countx['CPS_wgt'].astype(float),
-                                0.)
-    countx['cellid'] = countx.index + 1
+    countx = pd.merge(
+        SOI_counts,
+        CPS_counts,
+        how="inner",
+        on=["idept", "ijs", "iagede", "idepne", "ikids", "iself", "people"],
+    )
+    countx["factor"] = np.where(
+        countx["CPS_wgt"] > 0, countx["SOI_wgt"] / countx["CPS_wgt"].astype(float), 0.0
+    )
+    countx["cellid"] = countx.index + 1
 
-    SOI_reg = pd.merge(SOI, countx, how='inner',
-                       on=['idept', 'ijs', 'iagede', 'idepne',
-                           'ikids', 'iself', 'people'])
-    params = SOI_reg.groupby('cellid', as_index=False).apply(reg)
-    params = params.add_prefix('params_')
-    params['cellid'] = params.index + 1
+    SOI_reg = pd.merge(
+        SOI,
+        countx,
+        how="inner",
+        on=["idept", "ijs", "iagede", "idepne", "ikids", "iself", "people"],
+    )
+    params = SOI_reg.groupby("cellid", as_index=False).apply(reg)
+    params = params.add_prefix("params_")
+    params["cellid"] = params.index + 1
 
-    SOI_new = pd.merge(SOI, countx, how='inner',
-                       on=['idept', 'ijs', 'iagede', 'idepne',
-                           'ikids', 'iself', 'people'])
-    SOI_new = pd.merge(SOI_new, params, on=['cellid'])
-    CPS_new = pd.merge(CPS, countx, how='inner',
-                       on=['idept', 'ijs', 'iagede', 'idepne',
-                           'ikids', 'iself', 'people'])
-    CPS_new = pd.merge(CPS_new, params, on=['cellid'])
+    SOI_new = pd.merge(
+        SOI,
+        countx,
+        how="inner",
+        on=["idept", "ijs", "iagede", "idepne", "ikids", "iself", "people"],
+    )
+    SOI_new = pd.merge(SOI_new, params, on=["cellid"])
+    CPS_new = pd.merge(
+        CPS,
+        countx,
+        how="inner",
+        on=["idept", "ijs", "iagede", "idepne", "ikids", "iself", "people"],
+    )
+    CPS_new = pd.merge(CPS_new, params, on=["cellid"])
 
-    SOI_new['yhat'] = predict(SOI_new)
-    CPS_new['yhat'] = predict(CPS_new)
+    SOI_new["yhat"] = predict(SOI_new)
+    CPS_new["yhat"] = predict(CPS_new)
 
-    SOI_final = pd.merge(SOI, SOI_new[['soiseq', 'cellid', 'yhat', 'factor']],
-                         on=['soiseq'])
-    CPS_final = pd.merge(CPS, CPS_new[['cpsseq', 'cellid', 'yhat', 'factor']],
-                         on=['cpsseq'])
+    SOI_final = pd.merge(
+        SOI, SOI_new[["soiseq", "cellid", "yhat", "factor"]], on=["soiseq"]
+    )
+    CPS_final = pd.merge(
+        CPS, CPS_new[["cpsseq", "cellid", "yhat", "factor"]], on=["cpsseq"]
+    )
 
     return SOI_final, CPS_final, countx

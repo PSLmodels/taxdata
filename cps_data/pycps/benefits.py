@@ -19,6 +19,7 @@ def merge_benefits(cps, year, data_path, export=True):
     WIC: (women, children, infants): wic_impute (renamed wic_women,
         wic_children, and wic_infants)
     """
+
     def read_ben(path_prefix, usecols):
         path = Path(data_path, path_prefix + str(year) + ".csv")
         return pd.read_csv(path, usecols=usecols)
@@ -30,11 +31,12 @@ def merge_benefits(cps, year, data_path, export=True):
     vb = read_ben("VB_Imputation", ["vb_impute", "peridnum"])
     snap = read_ben("SNAP_Imputation_", ["h_seq", "snap_impute"])
     ssi = read_ben("SSI_Imputation", ["ssi_impute", "peridnum"])
-    ss = read_ben(
-        "SS_augmentation_", ["ss_val", "peridnum"]
-    ).rename(columns={"ss_val": "ss_impute"})
-    housing = read_ben("Housing_Imputation_logreg_",
-                       ["fh_seq", "ffpos", "housing_impute"])
+    ss = read_ben("SS_augmentation_", ["ss_val", "peridnum"]).rename(
+        columns={"ss_val": "ss_impute"}
+    )
+    housing = read_ben(
+        "Housing_Imputation_logreg_", ["fh_seq", "ffpos", "housing_impute"]
+    )
     tanf = read_ben("TANF_Imputation_", ["peridnum", "tanf_impute"])
     # drop duplicated people in tanf
     tanf.drop_duplicates("peridnum", inplace=True)
@@ -47,31 +49,30 @@ def merge_benefits(cps, year, data_path, export=True):
     wic_infants = read_ben(
         WIC_STR.format("infants"), ["peridnum", "WIC_impute"]
     ).rename(columns={"WIC_impute": "wic_infants"})
-    wic_women = read_ben(
-        WIC_STR.format("women"), ["peridnum", "WIC_impute"]
-    ).rename(columns={"WIC_impute": "wic_women"})
+    wic_women = read_ben(WIC_STR.format("women"), ["peridnum", "WIC_impute"]).rename(
+        columns={"WIC_impute": "wic_women"}
+    )
 
     # combine all WIC imputation into one variable
-    wic = reduce(lambda left, right: pd.merge(left, right, on="peridnum"),
-                 [wic_children, wic_infants, wic_women])
-    wic["wic_impute"] = wic[
-        ["wic_women", "wic_infants", "wic_children"]
-    ].sum(axis=1)
+    wic = reduce(
+        lambda left, right: pd.merge(left, right, on="peridnum"),
+        [wic_children, wic_infants, wic_women],
+    )
+    wic["wic_impute"] = wic[["wic_women", "wic_infants", "wic_children"]].sum(axis=1)
 
     # merge housing and snap
     cps_merged = cps.merge(housing, on=["fh_seq", "ffpos"], how="left")
     cps_merged = cps_merged.merge(snap, on="h_seq", how="left")
     # merge other variables
     peridnum_dfs = [cps_merged, vb, ssi, ss, tanf, ui, wic, mcaid, mcare]
-    cps_merged = reduce(lambda left, right: pd.merge(left, right,
-                                                     on="peridnum",
-                                                     how="left"),
-                        peridnum_dfs).fillna(0.)
+    cps_merged = reduce(
+        lambda left, right: pd.merge(left, right, on="peridnum", how="left"),
+        peridnum_dfs,
+    ).fillna(0.0)
 
     if export:
         print("Saving {} Data".format(year))
-        cps_merged.to_csv(Path(data_path, f"cpsmar{year}_ben.csv"),
-                          index=False)
+        cps_merged.to_csv(Path(data_path, f"cpsmar{year}_ben.csv"), index=False)
 
     del mcaid, mcare, vb, ssi, ss, tanf, ui, wic, housing, snap
     # assert that no additional rows have been introduced by bad merges
@@ -107,23 +108,24 @@ def distribute_benefits(data, other_ben):
     except KeyError:
         # skip over adjusting medicare and medicaid if we don't impute them
         # set to zero to avoid errors later
-        data["mcaid_ben"] = 0.
+        data["mcaid_ben"] = 0.0
         data["mcare_ben"] = 0
 
     # Distribute other benefits
     data["dist_ben"] = data[["mcaid_ben", "ssi_ben", "snap_ben"]].sum(axis=1)
-    data["ratio"] = (data["dist_ben"] * data["s006"] /
-                     (data["dist_ben"] * data["s006"]).sum())
+    data["ratio"] = (
+        data["dist_ben"] * data["s006"] / (data["dist_ben"] * data["s006"]).sum()
+    )
     # ... remove TANF and WIC from other_ben total
     tanf_total = (data["tanf_ben"] * data["s006"]).sum()
     try:
         wic_total = (data["wic_ben"] * data["s006"]).sum()
     except KeyError:
         # Same as medicare and medicaid
-        wic_total = 0.
+        wic_total = 0.0
     other_ben_total = other_ben["2014_cost"].sum() - tanf_total - wic_total
     # ... divide by the weight to account for weighting in Tax-Calculator
-    data["other_ben"] = (data["ratio"] * other_ben_total / data["s006"])
+    data["other_ben"] = data["ratio"] * other_ben_total / data["s006"]
 
     try:
         data["housing_ben"] *= 12

@@ -6,17 +6,25 @@ from helpers import filingparams, cps_yr_idx
 
 CUR_PATH = Path(__file__).resolve().parent
 INCOME_TUPLES = [
-    ("wsal_val", "e00200"), ("int_val", "interest"),
-    ("semp_val", "e00900"), ("frse_val", "e02100"),
-    ("div_val", "divs"), ("uc_val", "e02300"),
-    ("rtm_val", "e01500")
+    ("wsal_val", "e00200"),
+    ("int_val", "interest"),
+    ("semp_val", "e00900"),
+    ("frse_val", "e02100"),
+    ("div_val", "divs"),
+    ("uc_val", "e02300"),
+    ("rtm_val", "e01500"),
 ]
 BENEFIT_TUPLES = [
-    ("MedicaidX", "mcaid_ben"), ("housing_impute", "housing_ben"),
-    ("MedicareX", "mcare_ben"), ("snap_impute", "snap_ben"),
-    ("ssi_impute", "ssi_ben"), ("tanf_impute", "tanf_ben"),
-    ("UI_impute", "e02300"), ("vb_impute", "vet_ben"),
-    ("wic_impute", "wic_ben"), ("ss_impute", "e02400")
+    ("MedicaidX", "mcaid_ben"),
+    ("housing_impute", "housing_ben"),
+    ("MedicareX", "mcare_ben"),
+    ("snap_impute", "snap_ben"),
+    ("ssi_impute", "ssi_ben"),
+    ("tanf_impute", "tanf_ben"),
+    ("UI_impute", "e02300"),
+    ("vb_impute", "vet_ben"),
+    ("wic_impute", "wic_ben"),
+    ("ss_impute", "e02400"),
 ]
 output_str = "var, year, h_seq, pycps, cps\n"
 
@@ -29,6 +37,7 @@ def compare(data, cps, h_seq, year):
         global output_str
         err_str = f"{var},{year},{h_seq},{pycps},{cps}\n"
         output_str += err_str
+
     num_errors = 0
 
     # compare age variables. everyone should have
@@ -65,8 +74,7 @@ def compare(data, cps, h_seq, year):
     # elderly people in the household
     if elderly_deps_data > elderly_deps_cps:
         record_error(
-            "elderly_dependents", h_seq, elderly_deps_data,
-            elderly_deps_cps, year
+            "elderly_dependents", h_seq, elderly_deps_data, elderly_deps_cps, year
         )
         num_errors += 1
 

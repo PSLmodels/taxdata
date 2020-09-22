@@ -8,9 +8,7 @@ from pathlib import Path
 from helpers import CUR_PATH
 
 
-ADJ_TARGETS = pd.read_csv(
-    Path(CUR_PATH, "adjustment_targets.csv")
-)
+ADJ_TARGETS = pd.read_csv(Path(CUR_PATH, "adjustment_targets.csv"))
 
 
 def drop_vars(data):
@@ -18,22 +16,107 @@ def drop_vars(data):
     Returns Pandas DataFrame of data without unuseable variables
     """
     USEABLE_VARS = {
-        "DSI", "EIC", "FLPDYR", "MARS", "MIDR", "RECID", "XTOT", "age_head",
-        "age_spouse", "agi_bin", "blind_head", "blind_spouse", "cmbtp",
-        "e00200", "e00200p", "e00200s", "e00300", "e00400", "e00600", "e00650",
-        "e00700", "e00800", "e00900", "e00900p", "e00900s", "e01100", "e01200",
-        "e01400", "e01500", "e01700", "e02000", "e02100", "e02100p", "e02100s",
-        "e02300", "e02400", "e03150", "e03220", "e03230", "e03240", "e03270",
-        "e03290", "e03300", "e03400", "e03500", "e07240", "e07260", "e07300",
-        "e07400", "e07600", "e09700", "e09800", "e09900", "e11200", "e17500",
-        "e18400", "e18500", "e19200", "e19800", "e20100", "e20400", "g20500",
-        "e24515", "e24518", "e26270", "e27200", "e32800", "e58990", "e62900",
-        "e87530", "elderly_dependents", "f2441", "f6251", "n24",
-        "nu06", "nu13", "nu18", "n1820", "n21", "p08000", "p22250", "p23250",
-        "p25470", "p87521", "s006", "e03210", "ssi_ben", "snap_ben",
-        "vet_ben", "mcare_ben", "mcaid_ben", "oasdi_ben", "other_ben",
-        "h_seq", "ffpos", "fips", "a_lineno", "tanf_ben", "wic_ben",
-        "housing_ben", "linenos"
+        "DSI",
+        "EIC",
+        "FLPDYR",
+        "MARS",
+        "MIDR",
+        "RECID",
+        "XTOT",
+        "age_head",
+        "age_spouse",
+        "agi_bin",
+        "blind_head",
+        "blind_spouse",
+        "cmbtp",
+        "e00200",
+        "e00200p",
+        "e00200s",
+        "e00300",
+        "e00400",
+        "e00600",
+        "e00650",
+        "e00700",
+        "e00800",
+        "e00900",
+        "e00900p",
+        "e00900s",
+        "e01100",
+        "e01200",
+        "e01400",
+        "e01500",
+        "e01700",
+        "e02000",
+        "e02100",
+        "e02100p",
+        "e02100s",
+        "e02300",
+        "e02400",
+        "e03150",
+        "e03220",
+        "e03230",
+        "e03240",
+        "e03270",
+        "e03290",
+        "e03300",
+        "e03400",
+        "e03500",
+        "e07240",
+        "e07260",
+        "e07300",
+        "e07400",
+        "e07600",
+        "e09700",
+        "e09800",
+        "e09900",
+        "e11200",
+        "e17500",
+        "e18400",
+        "e18500",
+        "e19200",
+        "e19800",
+        "e20100",
+        "e20400",
+        "g20500",
+        "e24515",
+        "e24518",
+        "e26270",
+        "e27200",
+        "e32800",
+        "e58990",
+        "e62900",
+        "e87530",
+        "elderly_dependents",
+        "f2441",
+        "f6251",
+        "n24",
+        "nu06",
+        "nu13",
+        "nu18",
+        "n1820",
+        "n21",
+        "p08000",
+        "p22250",
+        "p23250",
+        "p25470",
+        "p87521",
+        "s006",
+        "e03210",
+        "ssi_ben",
+        "snap_ben",
+        "vet_ben",
+        "mcare_ben",
+        "mcaid_ben",
+        "oasdi_ben",
+        "other_ben",
+        "h_seq",
+        "ffpos",
+        "fips",
+        "a_lineno",
+        "tanf_ben",
+        "wic_ben",
+        "housing_ben",
+        "linenos",
     }
 
     drop_vars = list(set(data.columns) - USEABLE_VARS)
@@ -46,12 +129,33 @@ def add_agi_bin(data, col_name):
     """
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
     """
-    THRESHOLDS_K = [-np.inf, 0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 200,
-                    500, 1000, 1500, 2000, np.inf]
+    THRESHOLDS_K = [
+        -np.inf,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50,
+        75,
+        100,
+        200,
+        500,
+        1000,
+        1500,
+        2000,
+        np.inf,
+    ]
     thresholds = [x * 1000 for x in THRESHOLDS_K]
-    data["agi_bin"] = pd.cut(data[col_name], thresholds,
-                             labels=np.arange(0, len(THRESHOLDS_K) - 1),
-                             right=False)
+    data["agi_bin"] = pd.cut(
+        data[col_name],
+        thresholds,
+        labels=np.arange(0, len(THRESHOLDS_K) - 1),
+        right=False,
+    )
 
     return data
 
@@ -62,7 +166,7 @@ def deduction_limits(data):
     """
     # Split charitable contributions into cash and non-cash using ratio in PUF
     cash = 0.82013
-    non_cash = 1. - cash
+    non_cash = 1.0 - cash
     data["e19800"] = data["CHARITABLE"] * cash
     data["e20100"] = data["CHARITABLE"] * non_cash
 
@@ -73,7 +177,7 @@ def deduction_limits(data):
     deductable_ira = np.where(
         data["age_head"] >= 50,
         np.where(data["ADJIRA"] > 6500, 6500, data["ADJIRA"]),
-        np.where(data["ADJIRA"] > 5500, 5500, data["ADJIRA"])
+        np.where(data["ADJIRA"] > 5500, 5500, data["ADJIRA"]),
     )
     data["e03150"] = deductable_ira
 
@@ -100,45 +204,46 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     goal_amts = goal_total * distribution
     assert np.allclose(goal_amts.sum(), goal_total)
     # Find current totals in each bin
-    bin_0 = np.where(agi < 0,
-                     var * weight, 0).sum()
-    bin_1 = np.where((agi >= 0) & (agi < 5000),
-                     var * weight, 0).sum()
-    bin_2 = np.where((agi >= 5000) & (agi < 10000),
-                     var * weight, 0).sum()
-    bin_3 = np.where((agi >= 10000) & (agi < 15000),
-                     var * weight, 0).sum()
-    bin_4 = np.where((agi >= 15000) & (agi < 20000),
-                     var * weight, 0).sum()
-    bin_5 = np.where((agi >= 20000) & (agi < 25000),
-                     var * weight, 0).sum()
-    bin_6 = np.where((agi >= 25000) & (agi < 30000),
-                     var * weight, 0).sum()
-    bin_7 = np.where((agi >= 30000) & (agi < 40000),
-                     var * weight, 0).sum()
-    bin_8 = np.where((agi >= 40000) & (agi < 50000),
-                     var * weight, 0).sum()
-    bin_9 = np.where((agi >= 50000) & (agi < 75000),
-                     var * weight, 0).sum()
-    bin_10 = np.where((agi >= 75000) & (agi < 100000),
-                      var * weight, 0).sum()
-    bin_11 = np.where((agi >= 100000) & (agi < 200000),
-                      var * weight, 0).sum()
-    bin_12 = np.where((agi >= 200000) & (agi < 500000),
-                      var * weight, 0).sum()
-    bin_13 = np.where((agi >= 500000) & (agi < 1e6),
-                      var * weight, 0).sum()
-    bin_14 = np.where((agi >= 1e6) & (agi < 1.5e6),
-                      var * weight, 0).sum()
-    bin_15 = np.where((agi >= 1.5e6) & (agi < 2e6),
-                      var * weight, 0).sum()
-    bin_16 = np.where((agi >= 2e6),
-                      var * weight, 0).sum()
+    bin_0 = np.where(agi < 0, var * weight, 0).sum()
+    bin_1 = np.where((agi >= 0) & (agi < 5000), var * weight, 0).sum()
+    bin_2 = np.where((agi >= 5000) & (agi < 10000), var * weight, 0).sum()
+    bin_3 = np.where((agi >= 10000) & (agi < 15000), var * weight, 0).sum()
+    bin_4 = np.where((agi >= 15000) & (agi < 20000), var * weight, 0).sum()
+    bin_5 = np.where((agi >= 20000) & (agi < 25000), var * weight, 0).sum()
+    bin_6 = np.where((agi >= 25000) & (agi < 30000), var * weight, 0).sum()
+    bin_7 = np.where((agi >= 30000) & (agi < 40000), var * weight, 0).sum()
+    bin_8 = np.where((agi >= 40000) & (agi < 50000), var * weight, 0).sum()
+    bin_9 = np.where((agi >= 50000) & (agi < 75000), var * weight, 0).sum()
+    bin_10 = np.where((agi >= 75000) & (agi < 100_000), var * weight, 0).sum()
+    bin_11 = np.where((agi >= 100_000) & (agi < 200_000), var * weight, 0).sum()
+    bin_12 = np.where((agi >= 200_000) & (agi < 500_000), var * weight, 0).sum()
+    bin_13 = np.where((agi >= 500_000) & (agi < 1e6), var * weight, 0).sum()
+    bin_14 = np.where((agi >= 1e6) & (agi < 1.5e6), var * weight, 0).sum()
+    bin_15 = np.where((agi >= 1.5e6) & (agi < 2e6), var * weight, 0).sum()
+    bin_16 = np.where((agi >= 2e6), var * weight, 0).sum()
     # Create series holding each of the current totals
-    actual_amts = pd.Series([bin_0, bin_1, bin_2, bin_3, bin_4, bin_5,
-                             bin_6, bin_7, bin_8, bin_9, bin_10, bin_11,
-                             bin_12, bin_13, bin_14, bin_15, bin_16],
-                            index=goal_amts.index)
+    actual_amts = pd.Series(
+        [
+            bin_0,
+            bin_1,
+            bin_2,
+            bin_3,
+            bin_4,
+            bin_5,
+            bin_6,
+            bin_7,
+            bin_8,
+            bin_9,
+            bin_10,
+            bin_11,
+            bin_12,
+            bin_13,
+            bin_14,
+            bin_15,
+            bin_16,
+        ],
+        index=goal_amts.index,
+    )
     ratios_index = [num for num in range(0, len(actual_amts))]
     # Determine the ratios
     ratios = pd.Series(goal_amts / actual_amts)
@@ -147,13 +252,13 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     # Apply adjustment ratios
     var_array = np.array(var)
     var_array = np.nan_to_num(var_array)
-    ratios = np.where(ratios == np.inf, 1., ratios)
+    ratios = np.where(ratios == np.inf, 1.0, ratios)
     adj_array = ratios[agi_bin]
     _var = var * adj_array
 
     # assert that we don't lose any of the variable
     tot = (_var * weight).sum()
-    m = f'{tot:,.2f} != {goal_total:,.2f}'
+    m = f"{tot:,.2f} != {goal_total:,.2f}"
 
     try:
         assert np.allclose(np.array(goal_total), np.array(tot)), m
@@ -162,7 +267,7 @@ def adjust_helper(agi, var, target, weight, agi_bin):
         print("Reversing Adjustment")
         _var = var
     tot = (_var * weight).sum()
-    m = f'{tot:,.2f} != {goal_total:,.2f}'
+    m = f"{tot:,.2f} != {goal_total:,.2f}"
     assert np.allclose(np.array(goal_total), np.array(tot)), m
 
     return _var
@@ -180,32 +285,32 @@ def adjust(data, targets):
     qdiv_inc = copy.deepcopy(data["e00650"])
     biz_inc = copy.deepcopy(data["e00900"])
     print("e00300")
-    data["e00300"] = adjust_helper(inc, int_inc,
-                                   targets["INT"], data["s006"],
-                                   data["agi_bin"])
+    data["e00300"] = adjust_helper(
+        inc, int_inc, targets["INT"], data["s006"], data["agi_bin"]
+    )
     div_ratio = data["e00600"] / (data["e00600"] + data["e00650"])
     print("e00600")
-    data["e00600"] = adjust_helper(inc, odiv_inc,
-                                   targets["ODIV"], data["s006"],
-                                   data["agi_bin"])
+    data["e00600"] = adjust_helper(
+        inc, odiv_inc, targets["ODIV"], data["s006"], data["agi_bin"]
+    )
     print("e00650")
-    data["e00650"] = adjust_helper(inc, qdiv_inc,
-                                   targets["QDIV"], data["s006"],
-                                   data["agi_bin"])
+    data["e00650"] = adjust_helper(
+        inc, qdiv_inc, targets["QDIV"], data["s006"], data["agi_bin"]
+    )
     total = data["e00600"] + data["e00650"]
     data["e00600"] = total * div_ratio
-    data["e00650"] = total * (1. - div_ratio)
+    data["e00650"] = total * (1.0 - div_ratio)
     biz_ratio_p = data["e00900p"] / data["e00900"]
-    biz_ratio_s = 1. - biz_ratio_p
+    biz_ratio_s = 1.0 - biz_ratio_p
     biz_ratio_p = np.nan_to_num(biz_ratio_p, nan=0, posinf=1, neginf=1)
     biz_ratio_s = np.nan_to_num(biz_ratio_s, nan=0, posinf=1, neginf=1)
     sub = biz_ratio_s[data["MARS"] != 2]
     zeros = np.zeros_like(sub)
     assert np.allclose(sub, zeros)
     print("e00900")
-    data["e00900"] = adjust_helper(inc, biz_inc,
-                                   targets["BIZ"], data["s006"],
-                                   data["agi_bin"])
+    data["e00900"] = adjust_helper(
+        inc, biz_inc, targets["BIZ"], data["s006"], data["agi_bin"]
+    )
     data["e00900p"] = data["e00900"] * biz_ratio_p
     data["e00900s"] = data["e00900"] * biz_ratio_s
 
@@ -216,14 +321,10 @@ def final_prep(data):
     """
     Function for cleaning up the CPS file
     """
-    data = data.fillna(0.)
+    data = data.fillna(0.0)
     # recode blind variables
-    data["blind_head"] = np.where(
-        data["blind_head"] == 1, 1, 0
-    )
-    data["blind_spouse"] = np.where(
-        data["blind_spouse"] == 1, 1, 0
-    )
+    data["blind_head"] = np.where(data["blind_head"] == 1, 1, 0)
+    data["blind_spouse"] = np.where(data["blind_spouse"] == 1, 1, 0)
 
     # cap EIC
     data["EIC"] = np.minimum(data["EIC"], 3)
@@ -247,7 +348,7 @@ def final_prep(data):
         "realest": "e18500",
         "statetax": "e18400",
         "cash_char": "e19800",
-        "non_cash_char": "e20100"
+        "non_cash_char": "e20100",
     }
     data = data.rename(columns=RENAMES)
     # assert that no non-married filers have non-zero values for spouse income
@@ -275,7 +376,7 @@ def final_prep(data):
     data["pencon_p"] = np.zeros(len(data.index), dtype=np.int32)
     data["pencon_s"] = np.zeros(len(data.index), dtype=np.int32)
     # clean data
-    data = data.fillna(0.)
+    data = data.fillna(0.0)
     data = data.astype(np.int32)
     data["e00200"] = data["e00200p"] + data["e00200s"]
     data["e00900"] = data["e00900p"] + data["e00900s"]

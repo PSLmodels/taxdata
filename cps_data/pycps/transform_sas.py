@@ -23,7 +23,7 @@ def find_section(sas):
         # Account for new line values
         newline_check = len(split_line) == 0
         if not newline_check:
-            if split_line[0] == 'INPUT' and len(split_line) == 1:
+            if split_line[0] == "INPUT" and len(split_line) == 1:
                 input_line = True
 
 
@@ -77,11 +77,7 @@ def main():
         person = parse_sas(sas)
         sas.close()
 
-        master_dict[year] = {
-            "household": household,
-            "family": family,
-            "person": person
-        }
+        master_dict[year] = {"household": household, "family": family, "person": person}
 
     with Path(CUR_PATH, "master_cps_dict.pkl").open("wb") as f:
         pickle.dump(master_dict, f)

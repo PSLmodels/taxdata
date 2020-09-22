@@ -106,7 +106,8 @@ puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
 	cd puf_stage1 ; python factors_finalprep.py
 
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
-                               puf_stage2/solve_lp_for_year.py \
+                               puf_stage2/dataprep.py \
+                               puf_stage2/solver.jl \
                                puf_data/cps-matched-puf.csv \
                                puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
@@ -135,7 +136,6 @@ cps_data/pycps/cps_raw.csv.gz: cps_data/pycps/create.py \
                                cps_data/pycps/splitincome.py \
                                cps_data/pycps/targeting.py \
                                cps_data/pycps/taxunit.py \
-                               cps_data/pycps/template.txt \
                                cps_data/pycps/transform_sas.py \
                                cps_data/pycps/adjustment_targets.csv \
                                cps_data/benefitprograms.csv
@@ -149,10 +149,11 @@ cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
 	cd cps_stage1 ; python stage1.py
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
-                               cps_stage2/solve_lp_for_year.py \
+                               cps_stage2/dataprep.py \
                                cps_data/pycps/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
-                               cps_stage1/stage_2_targets.csv
+                               cps_stage1/stage_2_targets.csv \
+                               cps_stage2/solver.jl
 	cd cps_stage2 ; python stage2.py && \
 	gunzip cps_weights.csv.gz && gzip -n cps_weights.csv
 
