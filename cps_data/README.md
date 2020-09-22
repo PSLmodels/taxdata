@@ -93,7 +93,7 @@ Documentation
 -------------
 
 More information about the data in the `cps_raw.csv.gz` file is
-available in [this document](cps_file_doc.md).
+available in [this document](https://github.com/PSLmodels/taxdata/blob/master/doc/cps_file_doc.md).
 
 All of the benefit costs listed in `benefitprograms.csv` can be found
 in tables 3.2 and 11.3 of the archived [Historical

@@ -78,11 +78,16 @@ We use data from the CBO 10-Year economic projections, revenue projections, and
 unemployment compensation projections, in conjunction with data from IRS
 publication 6187, OASI Trust Fund Annual Trustees Report, and BLS and the basis
 of our extrapolations. The entire update process has been automated and instructions
-on how to do it can be found [here](https://github.com/PSLmodels/taxdata/blob/master/puf_stage1/doc/CBO_Baseline_Updating_Instructions.md).
+on how to do it can be found [here](https://github.com/PSLmodels/taxdata/blob/master/doc/CBO_Baseline_Updating_Instructions.md).
+
+NOTE: If you want to change the content contained in the CBO update documentation,
+you must change the template used to create the documentation, otherwise your
+changes will be written over. The template can be found at
+`taxdata/puf_stage1/doc/cbo_instructions_template.md`.
 
 ### Updating SOI Estimates
 
-Documentation for updating the SOI estimates can be found [here](https://github.com/PSLmodels/taxdata/blob/master/puf_stage1/doc/SOI_Estimates_Updating_Instructions.md).
+Documentation for updating the SOI estimates can be found [here](https://github.com/PSLmodels/taxdata/blob/master/doc/SOI_Estimates_Updating_Instructions.md).
 
 ### Adding and Removing Variables
 
