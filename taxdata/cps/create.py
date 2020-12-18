@@ -15,7 +15,7 @@ from .cpsmar import create_cps
 
 
 CUR_PATH = Path(__file__).resolve().parent
-DATA_PATH = Path(CUR_PATH, "data")
+_DATA_PATH = Path(CUR_PATH, "data")
 with Path(CUR_PATH, "master_cps_dict.pkl").open("rb") as f:
     PARSE_DICT = pickle.load(f)
 # list of which CPS file to actually use
@@ -23,6 +23,7 @@ CPS_FILES = [2013, 2014, 2015]
 
 
 def create(
+    datapath,
     exportcsv: bool = False,
     exportpkl: bool = False,
     exportraw: bool = True,
@@ -35,6 +36,9 @@ def create(
     Logic for creating tax units from the CPS
     Parameters
     ----------
+    datapath: path-like object to the directory where to export data. Taxdata
+              will also look in this directory for the CPS files it needs to
+              run
     exportcsv: if True, the raw CPS file will be exported as a CSV
     exportpkl: if True, the list version of the CPS used to create the tax
                units will be saved as a pickle file
@@ -70,7 +74,7 @@ def create(
             msg = f"Using the {year} CPS is not yet supported."
             raise KeyError(msg)
         # potential path to pickled CPS file
-        pkl_path = Path(DATA_PATH, f"cpsmar{year}.pkl")
+        pkl_path = Path(datapath, f"cpsmar{year}.pkl")
         # check and see if pickled version of this year's CPS has been created
         if pkl_path.exists():
             print("Reading Pickled File")
@@ -78,7 +82,7 @@ def create(
         else:
             # convert the DAT file
             cps_dfs[year] = create_cps(
-                Path(DATA_PATH, meta["dat_file"]),
+                Path(datapath, meta["dat_file"]),
                 year=year,
                 parsing_dict=PARSE_DICT[year],
                 benefits=_benefits,
@@ -105,15 +109,15 @@ def create(
     # export raw CPS file
     if exportraw:
         print("Exporting raw file")
-        units.to_csv(Path(DATA_PATH, "raw_cps.csv"), index=False)
+        units.to_csv(Path(datapath, "raw_cps.csv"), index=False)
     # split up income
     print("Splitting up income")
     data = split_income(units)
 
     # imputations
     print("Imputing Variables")
-    logit_betas = pd.read_csv(Path(DATA_PATH, "logit_betas.csv"), index_col=0)
-    ols_betas = pd.read_csv(Path(DATA_PATH, "ols_betas.csv"), index_col=0)
+    logit_betas = pd.read_csv(Path(_DATA_PATH, "logit_betas.csv"), index_col=0)
+    ols_betas = pd.read_csv(Path(_DATA_PATH, "ols_betas.csv"), index_col=0)
     data = imputation(data, logit_betas, ols_betas)
     # target state totals
     print("Targeting State Level Data")
@@ -122,18 +126,18 @@ def create(
     # add other benefit data
     print("Adding Benefits")
     other_ben = pd.read_csv(
-        Path(DATA_PATH, "otherbenefitprograms.csv"), index_col="Program"
+        Path(_DATA_PATH, "otherbenefitprograms.csv"), index_col="Program"
     )
     data = distribute_benefits(data, other_ben)
     print("Exporting Raw File")
-    raw_output_path = Path(CUR_PATH, "cps_raw.csv")
+    raw_output_path = Path(datapath, "cps_raw.csv")
     data.to_csv(raw_output_path, index=False)
     subprocess.check_call(["gzip", "-nf", str(raw_output_path)])
     # final prep
     print("Cleaning file")
     final_cps = final_prep(data)
     print("Exporting final file")
-    output_path = Path(CUR_PATH, "cps.csv")
+    output_path = Path(datapath, "cps.csv")
     final_cps.to_csv(output_path, index=False)
     subprocess.check_call(["gzip", "-nf", str(output_path)])
 

@@ -19,7 +19,7 @@ def test_path():
 
 @pytest.fixture(scope="session")
 def cps_path(test_path):
-    return Path(test_path, "..", "taxdata", "cps", "cps.csv.gz")
+    return Path(test_path, "..", "data", "cps.csv.gz")
 
 
 @pytest.fixture(scope="session")

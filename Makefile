@@ -122,11 +122,11 @@ puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
 	cd puf_stage3 ; python stage3.py
 
 .PHONY=cps-files
-cps-files: taxdata/cps/cps_raw.csv.gz \
+cps-files: data/cps_raw.csv.gz \
            cps_stage1/stage_2_targets.csv \
            cps_stage2/cps_weights.csv.gz
 
-cps_data/pycps/cps_raw.csv.gz: taxdata/cps/create.py \
+data/cps_raw.csv.gz: taxdata/cps/create.py \
                                taxdata/cps/benefits.py \
                                taxdata/cps/filing_rules.json \
                                taxdata/cps/finalprep.py \
@@ -139,7 +139,7 @@ cps_data/pycps/cps_raw.csv.gz: taxdata/cps/create.py \
                                taxdata/cps/transform_sas.py \
                                taxdata/cps/adjustment_targets.csv \
                                taxdata/cps/benefitprograms.csv
-	python createcps.py ; cd taxdata/cps &&\
+	python createcps.py ; cd data &&\
 	gunzip cps.csv.gz && gzip -n cps.csv
 
 cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
@@ -150,7 +150,7 @@ cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_stage2/dataprep.py \
-                               taxdata/cps/cps_raw.csv.gz \
+                               data/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
                                cps_stage1/stage_2_targets.csv \
                                cps_stage2/solver.jl
