@@ -1,10 +1,10 @@
 import subprocess
 import pandas as pd
 import pickle
-import validation
+from . import validation
 from pathlib import Path
 from tqdm import tqdm
-from pycps import pycps
+from .pycps import pycps
 from .splitincome import split_income
 from .targeting import target
 from .finalprep import final_prep
@@ -126,14 +126,16 @@ def create(
     )
     data = distribute_benefits(data, other_ben)
     print("Exporting Raw File")
-    data.to_csv(Path(CUR_PATH, "cps_raw.csv"), index=False)
-    subprocess.check_call(["gzip", "-nf", "cps_raw.csv"])
+    raw_output_path = Path(CUR_PATH, "cps_raw.csv")
+    data.to_csv(raw_output_path, index=False)
+    subprocess.check_call(["gzip", "-nf", str(raw_output_path)])
     # final prep
     print("Cleaning file")
     final_cps = final_prep(data)
     print("Exporting final file")
-    final_cps.to_csv(Path(CUR_PATH, "cps.csv"), index=False)
-    subprocess.check_call(["gzip", "-nf", "cps.csv"])
+    output_path = Path(CUR_PATH, "cps.csv")
+    final_cps.to_csv(output_path, index=False)
+    subprocess.check_call(["gzip", "-nf", str(output_path)])
 
 
 def validate_cps_units(raw_cps, units, year):
@@ -157,14 +159,3 @@ def validate_cps_units(raw_cps, units, year):
         raise RuntimeError(f"Errors found in the tax unit creation for {year}")
     else:
         print(f"No errors for {year}")
-
-
-if __name__ == "__main__":
-    create(
-        exportcsv=False,
-        exportpkl=True,
-        exportraw=False,
-        validate=False,
-        benefits=True,
-        verbose=True,
-    )
