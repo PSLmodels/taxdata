@@ -58,7 +58,7 @@ def cps_start_year():
 
 @pytest.fixture(scope="session")
 def puf_path(test_path):
-    return Path(test_path, "..", "puf_data", "puf.csv")
+    return Path(test_path, "..", "data", "puf.csv")
 
 
 @pytest.fixture(scope="session")

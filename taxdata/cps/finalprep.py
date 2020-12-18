@@ -317,9 +317,12 @@ def adjust(data, targets):
     return data
 
 
-def final_prep(data):
+def finalprep(data: pd.DataFrame):
     """
     Function for cleaning up the CPS file
+    Parameters
+    ----------
+    data: pandas DataFrame with the raw CPS tax unit file
     """
     data = data.fillna(0.0)
     # recode blind variables
@@ -387,7 +390,7 @@ def final_prep(data):
     return data
 
 
-if __name__ == "__main__":
-    data = pd.read_csv("cps_raw.csv.gz")
-    data = final_prep(data)
-    data.to_csv("cps.csv.gz", index=None, compression="gzip")
+# if __name__ == "__main__":
+#     data = pd.read_csv("cps_raw.csv.gz")
+#     data = final_prep(data)
+#     data.to_csv("cps.csv.gz", index=None, compression="gzip")

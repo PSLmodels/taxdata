@@ -1,4 +1,3 @@
-import subprocess
 import pandas as pd
 import pickle
 from . import validation
@@ -7,7 +6,6 @@ from tqdm import tqdm
 from .pycps import pycps
 from .splitincome import split_income
 from .targeting import target
-from .finalprep import final_prep
 from .impute import imputation
 from .benefits import distribute_benefits
 from .cps_meta import CPS_META_DATA, C_TAM_YEARS
@@ -18,7 +16,7 @@ CUR_PATH = Path(__file__).resolve().parent
 _DATA_PATH = Path(CUR_PATH, "data")
 with Path(CUR_PATH, "master_cps_dict.pkl").open("rb") as f:
     PARSE_DICT = pickle.load(f)
-# list of which CPS file to actually use
+# default list of which CPS files to use
 CPS_FILES = [2013, 2014, 2015]
 
 
@@ -129,17 +127,18 @@ def create(
         Path(_DATA_PATH, "otherbenefitprograms.csv"), index_col="Program"
     )
     data = distribute_benefits(data, other_ben)
-    print("Exporting Raw File")
-    raw_output_path = Path(datapath, "cps_raw.csv")
-    data.to_csv(raw_output_path, index=False)
-    subprocess.check_call(["gzip", "-nf", str(raw_output_path)])
-    # final prep
-    print("Cleaning file")
-    final_cps = final_prep(data)
-    print("Exporting final file")
-    output_path = Path(datapath, "cps.csv")
-    final_cps.to_csv(output_path, index=False)
-    subprocess.check_call(["gzip", "-nf", str(output_path)])
+    return data
+    # print("Exporting Raw File")
+    # raw_output_path = Path(datapath, "cps_raw.csv")
+    # data.to_csv(raw_output_path, index=False)
+    # subprocess.check_call(["gzip", "-nf", str(raw_output_path)])
+    # # final prep
+    # print("Cleaning file")
+    # final_cps = final_prep(data)
+    # print("Exporting final file")
+    # output_path = Path(datapath, "cps.csv")
+    # final_cps.to_csv(output_path, index=False)
+    # subprocess.check_call(["gzip", "-nf", str(output_path)])
 
 
 def validate_cps_units(raw_cps, units, year):
