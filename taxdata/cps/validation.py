@@ -1,7 +1,7 @@
 import collections
 import numpy as np
 from pathlib import Path
-from helpers import filingparams, cps_yr_idx
+from .helpers import filingparams, cps_yr_idx
 
 
 CUR_PATH = Path(__file__).resolve().parent

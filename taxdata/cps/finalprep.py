@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import copy
 from pathlib import Path
-from helpers import CUR_PATH
+from .helpers import CUR_PATH
 
 
 ADJ_TARGETS = pd.read_csv(Path(CUR_PATH, "adjustment_targets.csv"))

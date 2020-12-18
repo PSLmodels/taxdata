@@ -5,13 +5,13 @@ import validation
 from pathlib import Path
 from tqdm import tqdm
 from pycps import pycps
-from splitincome import split_income
-from targeting import target
-from finalprep import final_prep
-from impute import imputation
-from benefits import distribute_benefits
-from cps_meta import CPS_META_DATA, C_TAM_YEARS
-from cpsmar import create_cps
+from .splitincome import split_income
+from .targeting import target
+from .finalprep import final_prep
+from .impute import imputation
+from .benefits import distribute_benefits
+from .cps_meta import CPS_META_DATA, C_TAM_YEARS
+from .cpsmar import create_cps
 
 
 CUR_PATH = Path(__file__).resolve().parent

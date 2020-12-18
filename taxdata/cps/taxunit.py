@@ -1,4 +1,4 @@
-from helpers import filingparams, cps_yr_idx, C_TAM_BENEFIT_TUPLES, CPS_BENEFIT_TUPLES
+from .helpers import filingparams, cps_yr_idx, C_TAM_BENEFIT_TUPLES, CPS_BENEFIT_TUPLES
 
 
 INCOME_TUPLES = [

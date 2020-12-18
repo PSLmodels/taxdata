@@ -3,7 +3,7 @@ import pickle
 from collections import OrderedDict
 from tqdm import tqdm
 from pathlib import Path
-from helpers import read_benefits
+from .helpers import read_benefits
 
 
 CUR_PATH = Path(__file__).resolve().parent
