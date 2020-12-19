@@ -163,6 +163,7 @@ def impute_itemized_expenses(alldata):
         """
         Specifies 2011 standard deduction amount by MARS
         """
+        # TODO: parameterize this function
         if row["MARS"] == 1:
             return 5800  # single
         elif row["MARS"] == 2:

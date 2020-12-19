@@ -66,7 +66,7 @@ def match(
     donor_list = []  # list to store IDs from donor file
     recipient_list = []  # list to store IDs from recipient
     cwt_list = []  # list to hold the new weights
-    #     cell_ids = np.unique(recipient[cell_id])
+    diffs = []  # list to hold difference in match values
 
     # get cell counts and ID's if they partition
     if groupby:
@@ -126,6 +126,8 @@ def match(
                 donor_list.append(donor_seq)
                 recipient_list.append(recipient_seq)
                 cwt_list.append(cwt)
+                diff = record["yhat"] - _donor[j]["yhat"]
+                diffs.append(diff)
                 # recalculate weights
                 awt = max(0, awt - cwt)
                 bwt = max(0, bwt - cwt)
@@ -135,7 +137,7 @@ def match(
                         bwt = _donor[j][donor_wt]
 
     _match = pd.DataFrame(
-        {"donor": donor_list, "recip": recipient_list, "cwt": cwt_list}
+        {"donor": donor_list, "recip": recipient_list, "cwt": cwt_list, "diff": diffs}
     )
     del recipient, donor
     return _match

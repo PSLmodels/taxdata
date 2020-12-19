@@ -228,7 +228,8 @@ def impute(idata, target_cnt, target_amt):
             wgt_num_earners = cell_idata["weight"].sum() * 1e-6
             if wgt_num_earners <= 0.0:
                 msg = "agrp={};wgrp={} has wgt_num_earners={:.4f} <= 0"
-                raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
+                print(msg.format(agrp, wgrp, wgt_num_earners))
+                # raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
             wgt_pos_pencon = target_cnt.iloc[wgrp, agrp]
             prob = wgt_pos_pencon / wgt_num_earners
             if wgrp >= MIN_HIWAGE_GROUP:

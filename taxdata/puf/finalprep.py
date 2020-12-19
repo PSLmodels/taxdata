@@ -1,27 +1,24 @@
-import os
-import sys
 import numpy as np
-import pandas
-from impute_itmexp import impute_itemized_expenses
-from impute_pencon import impute_pension_contributions
+import pandas as pd
+import taxcalc as tc
+from .impute_pencon import impute_pension_contributions
+from pathlib import Path
 
 
-BENPUF = False  # set temporarily to True to generate a benpuf.csv file
-# BENPUF = False will generate a puf.csv file without any benefits variables
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+CUR_PATH = Path(__file__).resolve().parent
+USABLE_VARS = tc.Records(data=None).USABLE_READ_VARS
+USABLE_VARS.add("filer")
 
 
-def main():
+def finalprep(data):
     """
     Contains all the logic of the puf_data/finalprep.py script.
     """
     # (*) Read unprocessed input file into a Pandas Dataframe
-    cps_matched_puf_path = os.path.join(CUR_PATH, "cps-matched-puf.csv")
-    data = pandas.read_csv(cps_matched_puf_path)
 
     # Rename certain CPS variables
-    renames = {"XHID": "h_seq", "XFID": "ffpos", "xstate": "fips"}
-    data = data.rename(columns=renames)
+    # renames = {"XHID": "h_seq", "XFID": "ffpos", "xstate": "fips"}
+    # data = data.rename(columns=renames)
 
     # - Check the PUF year
     max_flpdyr = max(data["flpdyr"])
@@ -66,18 +63,13 @@ def main():
     data = replace_20500(data)
 
     # - Remove variables not expected by Tax-Calculator:
-    if max_flpdyr >= 2009:
-        data = remove_unused_variables(data)
-
-    # - Remove benefits variables when BENPUF is False:
-    if not BENPUF:
-        data = remove_benefits_variables(data)
+    data = data.filter(USABLE_VARS, axis=1)
 
     # - Convert data to integers:
     data = data.round(0).astype("int64")
 
     # - Impute itemized expense amounts for non-itemizers:
-    data = impute_itemized_expenses(data.copy())
+    # data = impute_itemized_expenses(data.copy())
 
     # - Impute pension contributions:
     data = impute_pension_contributions(data.copy())
@@ -85,15 +77,7 @@ def main():
     # - Rename 'filer' to 'data_source'
     data = data.rename(columns={"filer": "data_source"})
 
-    # - Write processed data to the final CSV-formatted file:
-    if BENPUF:
-        write_path = os.path.join(CUR_PATH, "benpuf.csv")
-        data.to_csv(write_path, index=False)
-    else:
-        write_path = os.path.join(CUR_PATH, "puf.csv")
-        data.to_csv(write_path, index=False)
-
-    return 0
+    return data
 
 
 # end of main function code
@@ -207,371 +191,6 @@ def capitalize_varnames(data):
         "recid": "RECID",
     }
     data = data.rename(columns=renames)
-    return data
-
-
-def remove_unused_variables(data):
-    """
-    Delete non-benefit variables not expected by Tax-Calculator.
-    """
-    data["s006"] = data["matched_weight"] * 100
-
-    UNUSED_READ_VARS = [
-        "agir1",
-        "efi",
-        "elect",
-        "flpdmo",
-        "wage_head",
-        "wage_spouse",
-        "f3800",
-        "f8582",
-        "f8606",
-        "f8829",
-        "f8910",
-        "n20",
-        "n25",
-        "n30",
-        "prep",
-        "schb",
-        "schcf",
-        "sche",
-        "tform",
-        "ie",
-        "txst",
-        "xfpt",
-        "xfst",
-        "xocah",
-        "xocawh",
-        "xoodep",
-        "xopar",
-        "agerange",
-        "s008",
-        "s009",
-        "wsamp",
-        "txrt",
-        "matched_weight",
-        "e01000",
-        "e03260",
-        "e09400",
-        "e24516",
-        "e62720",
-        "e62730",
-        "e62740",
-        "e05100",
-        "e05800",
-        "e08800",
-        "e15360",
-        "p04470",
-        "e00100",
-        "e20800",
-        "e21040",
-        "e62100",
-        "e59560",
-        "p60100",
-        "e19550",
-        "e20550",
-        "e20600",
-        "e19700",
-        "e02500",
-        "e07200",
-        "e87870",
-        "e30400",
-        "e24598",
-        "e11300",
-        "e30500",
-        "e07180",
-        "e53458",
-        "e33000",
-        "e25940",
-        "e12000",
-        "p65400",
-        "e15210",
-        "e24615",
-        "e07230",
-        "e11100",
-        "e10900",
-        "e11582",
-        "e11583",
-        "e25920",
-        "s27860",
-        "e10960",
-        "e59720",
-        "e87550",
-        "e26190",
-        "e53317",
-        "e53410",
-        "e04600",
-        "e26390",
-        "e15250",
-        "p65300",
-        "p25350",
-        "e06500",
-        "e10300",
-        "e26170",
-        "e26400",
-        "e11400",
-        "p25700",
-        "e04250",
-        "e07150",
-        "e60000",
-        "e59680",
-        "e24570",
-        "e11570",
-        "e53300",
-        "e10605",
-        "e22320",
-        "e26160",
-        "e22370",
-        "e53240",
-        "p25380",
-        "e10700",
-        "e09600",
-        "e06200",
-        "e24560",
-        "p61850",
-        "e25980",
-        "e53280",
-        "e25850",
-        "e25820",
-        "e10950",
-        "e68000",
-        "e26110",
-        "e58950",
-        "e26180",
-        "e04800",
-        "e06000",
-        "e87880",
-        "t27800",
-        "e06300",
-        "e59700",
-        "e26100",
-        "e05200",
-        "e87875",
-        "e82200",
-        "e25860",
-        "e07220",
-        "e11070",
-        "e11550",
-        "e11580",
-        "p87482",
-        "e20500",
-        "FDED",
-        "e11900",
-        "e18600",
-        "e25960",
-        "e15100",
-        "p27895",
-        "e12200",
-        "nu18_dep",
-        "e11601",
-        "e11603",
-        "e11602",
-        "e25550",
-        "f8867",
-        "f8949",
-    ]
-    MORE_UNUSED_READ_VARS = [
-        "jcps88",
-        "jcps89",
-        "jcps80",
-        "jcps81",
-        "jcps82",
-        "jcps83",
-        "jcps84",
-        "jcps85",
-        "jcps86",
-        "jcps87",
-        "zwaspt",
-        "e52872",
-        "jcps19",
-        "jcps18",
-        "jcps17",
-        "jcps16",
-        "jcps15",
-        "jcps14",
-        "jcps13",
-        "jcps12",
-        "jcps11",
-        "jcps10",
-        "icps4",
-        "icps5",
-        "jcps68",
-        "jcps69",
-        "cweight",
-        "jcps63",
-        "jcps60",
-        "jcps61",
-        "jcps66",
-        "jcps67",
-        "jcps64",
-        "jcps65",
-        "cpsseq",
-        "jcps97",
-        "jcps96",
-        "jcps95",
-        "jcps94",
-        "jcps93",
-        "jcps92",
-        "jcps91",
-        "jcps90",
-        "jcps99",
-        "jcps98",
-        "soiseq",
-        "jcps79",
-        "jcps78",
-        "wt",
-        "jcps71",
-        "jcps70",
-        "jcps73",
-        "jcps72",
-        "jcps75",
-        "jcps74",
-        "jcps77",
-        "jcps76",
-        "jcps62",
-        "jcps44",
-        "jcps45",
-        "jcps46",
-        "jcps47",
-        "jcps40",
-        "jcps41",
-        "jcps42",
-        "jcps43",
-        "zwassp",
-        "jcps48",
-        "jcps49",
-        "p86421",
-        "prodseq",
-        "jcps53",
-        "jcps52",
-        "jcps51",
-        "jcps50",
-        "jcps57",
-        "jcps56",
-        "jcps55",
-        "jcps54",
-        "jcps59",
-        "jcps58",
-        "icps6",
-        "jcps4",
-        "finalseq",
-        "jcps100",
-        "e07140",
-        "jcps26",
-        "jcps27",
-        "jcps24",
-        "jcps25",
-        "jcps22",
-        "jcps23",
-        "jcps20",
-        "jcps21",
-        "jcps28",
-        "jcps29",
-        "e52852",
-        "jcps35",
-        "jcps34",
-        "jcps37",
-        "jcps36",
-        "jcps31",
-        "jcps30",
-        "jcps33",
-        "jcps32",
-        "jcps39",
-        "jcps38",
-        "jcps7",
-        "jcps6",
-        "jcps5",
-        "icps7",
-        "jcps3",
-        "jcps2",
-        "jcps1",
-        "icps3",
-        "icps8",
-        "icps9",
-        "jcps9",
-        "jcps8",
-    ]
-    ALL_UNUSED_READ_VARS = UNUSED_READ_VARS + MORE_UNUSED_READ_VARS
-    data = data.drop(ALL_UNUSED_READ_VARS, 1)
-
-    NEW_POST_PR83_UNUSED_READ_VARS = [
-        "SOISEQ",
-        "age_dep1",
-        "age_dep2",
-        "age_dep3",
-        "age_dep4",
-        "age_dep5",
-        "age_oldest",
-        "age_youngest",
-        "cpsseq",
-        "e07140",
-        "e52852",
-        "e52872",
-        "finalseq",
-        "ftpt_head",
-        "ftpt_spouse",
-        "gender_head",
-        "gender_spouse",
-        "h_seq",
-        "hga_head",
-        "hga_spouse",
-        "head_age",
-        "i",
-        "jcps25",
-        "jcps28",
-        "jcps35",
-        "jcps38",
-        "medicaid",
-        "medicarex_dep",
-        "num_medicaid",
-        "num_medicare",
-        "num_snap",
-        "num_ss",
-        "num_ssi",
-        "num_vet",
-        "p86421",
-        "peridnum",
-        "prodseq",
-        "snap_dep",
-        "snap_participationp",
-        "snap_participations",
-        "sp_ptr",
-        "spouse_age",
-        "ss",
-        "ssi_dep",
-        "ssi_participationp",
-        "ssi_participations",
-        "vb",
-        "vb_participationp",
-        "vb_participations",
-        "vbp",
-        "vbs",
-        "wt",
-    ]
-    # data = data.drop(NEW_POST_PR83_UNUSED_READ_VARS, 1)
-
-    data = data.fillna(value=0)
-    return data
-
-
-def remove_benefits_variables(data):
-    """
-    Delete benefits variables.
-    """
-    BENEFIT_VARS = [
-        "ssi",
-        "ssip",
-        "ssis",
-        "ssi_participation",
-        "snap",
-        "snapp",
-        "snaps",
-        "snap_participation",
-        "medicarex",
-        "medicarexp",
-        "medicarexs",
-    ]
-    # data = data.drop(BENEFIT_VARS, 1)
     return data
 
 
@@ -706,14 +325,17 @@ def split_earnings_variables(data, data_year):
     Split earnings subject to FICA or SECA taxation between taxpayer and spouse
     """
     # split wage-and-salary earnings subject to FICA taxation
-    total = np.where(
-        data["MARS"] == 2, data["wage_head"] + data["wage_spouse"], 0
-    ).astype(float)
-    frac_p = np.where(total != 0, data["wage_head"] / total, 1.0)
+    # the two e00200x variables come from the CPS. We'll use them just for
+    # the wage ratio that we split up the PUF wages from
+    total = np.where(data["MARS"] == 2, data["e00200p"] + data["e00200s"], 0).astype(
+        float
+    )
+    frac_p = np.where(total != 0, data["e00200p"] / total, 1.0)
     frac_s = 1.0 - frac_p
     data["e00200p"] = np.around(frac_p * data["e00200"], 2)
     data["e00200s"] = np.around(frac_s * data["e00200"], 2)
     # specify FICA-SECA maximum taxable earnings (mte) for data_year
+    # TODO: add these to a parameter file
     if data_year == 2008:
         mte = 102000
     elif data_year == 2009:
@@ -766,7 +388,7 @@ def add_agi_bin(data):
     """
     Add an AGI bin indicator used in Tax-Calc to apply adjustment factors
     """
-    agi = pandas.Series([0] * len(data.e00100))
+    agi = pd.Series([0] * len(data.e00100))
     agi[data.e00100 < 0] = 0
     agi[(data.e00100 >= 0) & (data.e00100 < 5000)] = 1
     agi[(data.e00100 >= 5000) & (data.e00100 < 10000)] = 2
@@ -802,7 +424,3 @@ def replace_20500(data):
     )
     data["g20500"] = np.int_(gross.round())
     return data
-
-
-if __name__ == "__main__":
-    sys.exit(main())
