@@ -86,9 +86,13 @@ class TaxUnit:
         self.mars = 1  # start with being single
         # update marital status based on CPS indication
         # note that to match the IRS PUF we include widowed people in this
-        if data["a_maritl"] in [1, 2, 3, 4]:
+        if data["a_maritl"] in [1, 2, 3]:
             self.mars = 2
-        self.XTOT = self.mars
+            if data["filestat"] in [5, 6] and data["a_maritl"] == 3:
+                self.mars = 3
+        self.XTOT = 1
+        if self.mars == 2:
+            self.XTOT = 2
         if data["filestat"] == 4:
             self.mars = 4
         self.hh_inc = hh_inc
@@ -232,7 +236,12 @@ class TaxUnit:
             for _, tc_var in INCOME_TUPLES:
                 value = getattr(self, f"{tc_var}s")
                 msg = f"{tc_var}s is not zero for household {self.h_seq}"
-                assert value == 0, msg
+                try:
+                    assert value == 0, msg
+                except AssertionError:
+                    import pdb
+
+                    pdb.set_trace()
         # add family size variable
         fam_size = 1 + self.depne
         if self.mars == 2:

@@ -11,10 +11,10 @@ __pycache__/
 *.DS_Store
 
 # IRS-SOI PUF and related CPS matching data files
-puf_data/puf.csv
-puf_data/cps-matched-puf.csv
-puf_data/StatMatch/Matching/puf2011.csv
-puf_data/StatMatch/Matching/cpsmar2016.csv
+puf*.csv
+cps-matched-puf.csv
+StatMatch/Matching/puf2011.csv
+cpsmar2016.csv
 
 # Intermediate CPS files and SAS scripts
 cps_data/pycps/cps_raw.csv.gz

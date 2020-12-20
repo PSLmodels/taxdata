@@ -161,7 +161,7 @@ def age_group(row):
     for grp, underage in enumerate(UNDER_AGE):
         if row["age"] < underage:
             return grp
-    raise ValueError("illegal value of age")
+    raise ValueError(f"illegal value of age: {row['age']}")
 
 
 # end of age_group() function
@@ -228,8 +228,7 @@ def impute(idata, target_cnt, target_amt):
             wgt_num_earners = cell_idata["weight"].sum() * 1e-6
             if wgt_num_earners <= 0.0:
                 msg = "agrp={};wgrp={} has wgt_num_earners={:.4f} <= 0"
-                print(msg.format(agrp, wgrp, wgt_num_earners))
-                # raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
+                raise ValueError(msg.format(agrp, wgrp, wgt_num_earners))
             wgt_pos_pencon = target_cnt.iloc[wgrp, agrp]
             prob = wgt_pos_pencon / wgt_num_earners
             if wgrp >= MIN_HIWAGE_GROUP:
@@ -327,7 +326,7 @@ def impute_pension_contributions(alldata):
     del idata_s
     # ... construct variables that never change over the imputation process
     idata["agegrp"] = idata.apply(age_group, axis=1)
-    np.random.seed(111111)
+    np.random.seed(111_111)
     idata["urn"] = np.random.uniform(size=len(idata.index))
     # ... initialize pension contributions to zero
     idata["pencon"] = np.zeros(len(idata.index), dtype=np.int64)

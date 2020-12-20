@@ -108,7 +108,13 @@ def parse(rec, parse_dict):
 
 
 def create_cps(
-    dat_file, year, parsing_dict, benefits=True, exportpkl=True, exportcsv=True
+    dat_file,
+    year,
+    parsing_dict,
+    benefits=True,
+    exportpkl=True,
+    exportcsv=True,
+    datapath=None,
 ):
     """
     Read the .DAT CPS file and convert it to a list of dictionaries that
@@ -122,7 +128,11 @@ def create_cps(
     benefits: Set to true to include C-TAM imputed benefits in the CPS
     exportpkl: Set to true to export a pickled list of households in the CPS
     exportcsv: Set to true to export a CSV version of the CPS
+    datapath: base export path
     """
+    if (exportpkl or exportcsv) and not datapath:
+        msg = "A value for `datapath` must be specified when `exportpkl` or `exportcsv` is true"
+        raise ValueError(msg)
     # read in file
     print("Reading DAT file")
     with Path(dat_file).open("r") as f:
@@ -172,12 +182,12 @@ def create_cps(
         print("Converting to DataFrame")
         cpsmar = pd.DataFrame(record_list).fillna(0)
         print("Exporting CSV")
-        export_path = Path(DATA_PATH, f"cpsmar{year}.csv")
+        export_path = Path(datapath, f"cpsmar{year}.csv")
         cpsmar.to_csv(export_path, index=False)
 
     if exportpkl:
         print("Pickling File")
-        with Path(DATA_PATH, f"cpsmar{year}.pkl").open("wb") as f:
+        with Path(datapath, f"cpsmar{year}.pkl").open("wb") as f:
             pickle.dump(cps_list, f)
 
     return cps_list

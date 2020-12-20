@@ -86,6 +86,7 @@ def create(
                 benefits=_benefits,
                 exportpkl=exportpkl,
                 exportcsv=exportcsv,
+                datapath=datapath,
             )
 
     # create tax units

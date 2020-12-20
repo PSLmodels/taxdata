@@ -9,7 +9,7 @@ DATA_PATH = Path(CUR_PATH, "data")
 CPS_YEAR = 2016
 PUF_YEAR = 2011
 # variables used in the matching process
-PARTITION_VARS = ["dsi", "_mars", "agede", "_depne", "people"]
+PARTITION_VARS = ["dsi", "mars", "agede", "_depne", "people"]
 REG_VARS = [
     "const",
     "agede",
@@ -91,7 +91,7 @@ def dataprep(data):
 
 # create CPS tax units
 print("Creating CPS tax units")
-raw_cps = cps.create(DATA_PATH, exportpkl=False, cps_files=[CPS_YEAR], benefits=False)
+raw_cps = cps.create(DATA_PATH, exportpkl=True, cps_files=[CPS_YEAR], benefits=False)
 # minor PUF prep
 print("Prepping PUF")
 puf2011 = pd.read_csv(Path(DATA_PATH, "puf2011.csv"))
@@ -129,6 +129,8 @@ raw_puf = dataprep(raw_puf)
 raw_cps["recid"] = range(1, len(raw_cps.index) + 1)
 raw_cps["agerange"] = 0
 raw_cps["eic"] = np.minimum(3, raw_cps["eic"])
+raw_cps.drop(["mcaid_ben", "mcare_ben"], axis=1, inplace=True)
+raw_cps.to_csv(Path(DATA_PATH, "tu16.csv"), index=False)
 
 # split CPS into filers and non-filers
 filers = raw_cps[raw_cps["filer"] == 1].copy()
@@ -171,9 +173,9 @@ data = pd.concat([data, nonfilers], sort=False, ignore_index=True)
 data = data.fillna(0.0)
 data.reset_index(inplace=True)
 print("Exporting raw data")
-# data.to_csv(Path(DATA_PATH, 'cps-matched-puf.csv'), index=False)
+data.to_csv(Path(DATA_PATH, "cps-matched-puf.csv"), index=False)
 print("Cleaning data")
 data = puf.finalprep(data)
 print("Exporting data")
-data.to_csv(Path(DATA_PATH, "puf.csv"))
+data.to_csv(Path(DATA_PATH, "puf.csv"), index=False)
 print("Done!")

@@ -8,12 +8,12 @@
 #              report the correct status of each .csv.gz file's contents.
 # USAGE: taxdata$ make [TARGET]
 
-MADE_FILES = puf_data/puf.csv \
+MADE_FILES = data/puf.csv \
              puf_stage1/growfactors.csv \
              puf_stage1/Stage_I_factors.csv \
              puf_stage2/puf_weights.csv.gz \
              puf_stage3/puf_ratios.csv.gz \
-             cps_data/cps.csv.gz \
+             data/cps.csv.gz \
              cps_stage1/stage_2_targets.csv \
              cps_stage2/cps_weights.csv.gz
 
@@ -72,23 +72,23 @@ git-pr:
 	@./gitpr $(N)
 
 .PHONY=puf-files
-puf-files: puf_data/puf.csv \
+puf-files: data/puf.csv \
            puf_stage1/growfactors.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
 
-PM_DIR=./puf_data/StatMatch/Matching
-PM_PY_FILES := $(shell ls -l $(PM_DIR)/*py | awk '{print $$9}')
-puf_data/cps-matched-puf.csv: $(PM_PY_FILES) \
-                              $(PM_DIR)/puf2011.csv \
-                              $(PM_DIR)/cpsmar2016.csv
-	cd $(PM_DIR) ; python runmatch.py
+# PM_DIR=./puf_data/StatMatch/Matching
+# PM_PY_FILES := $(shell ls -l $(PM_DIR)/*py | awk '{print $$9}')
+# data/cps-matched-puf.csv: $(PM_PY_FILES) \
+#                               $(PM_DIR)/puf2011.csv \
+#                               $(PM_DIR)/cpsmar2016.csv
+# 	cd $(PM_DIR) ; python runmatch.py
 
-puf_data/puf.csv: puf_data/finalprep.py \
-                  puf_data/impute_itmexp.py \
-                  puf_data/impute_pencon.py \
-                  puf_data/cps-matched-puf.csv
-	cd puf_data ; python finalprep.py
+data/puf.csv: taxdata/puf/finalprep.py \
+                  taxdata/puf/impute_itmexp.py \
+                  taxdata/puf/impute_pencon.py \
+                  data/cps-matched-puf.csv
+	python createpuf.py
 
 puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/CBO_baseline.csv \
@@ -108,7 +108,7 @@ puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_stage2/dataprep.py \
                                puf_stage2/solver.jl \
-                               puf_data/cps-matched-puf.csv \
+                               data/cps-matched-puf.csv \
                                puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
 	cd puf_stage2 ; python stage2.py && \
@@ -116,7 +116,7 @@ puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
 
 puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
                            puf_stage3/stage3_targets.csv \
-                           puf_data/cps-matched-puf.csv \
+                           data/cps-matched-puf.csv \
                            puf_stage1/growfactors.csv \
                            puf_stage2/puf_weights.csv.gz
 	cd puf_stage3 ; python stage3.py
