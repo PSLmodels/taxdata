@@ -67,11 +67,11 @@ def finalprep(data):
     # - Remove variables not expected by Tax-Calculator:
     data = data.filter(USABLE_VARS, axis=1)
 
+    data["blind_head"] = np.where(data["blind_head"] == 1, 1, 0)
+    data["blind_spouse"] = np.where(data["blind_spouse"] == 1, 1, 0)
+
     # - Convert data to integers:
     data = data.round(0).astype("int64")
-
-    # - Impute itemized expense amounts for non-itemizers:
-    # data = impute_itemized_expenses(data.copy())
 
     # - Impute pension contributions:
     data = impute_pension_contributions(data.copy())

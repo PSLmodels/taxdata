@@ -8,8 +8,8 @@ from pathlib import Path
 # TODO: revise the following constants when using new or revised CPS/PUF data
 CPS_START_YEAR = 2014
 PUF_START_YEAR = 2011
-PUF_COUNT = 248591
-LAST_YEAR = 2029
+PUF_COUNT = 252868
+LAST_YEAR = 2030
 
 
 @pytest.fixture(scope="session")

@@ -127,7 +127,7 @@
     "form": {
       "2013-2016": "1040 line 39a"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 1
@@ -139,7 +139,7 @@
     "form": {
       "2013-2016": "1040 line 39a"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 1
@@ -904,7 +904,7 @@
     "form": {
       "2013-2016": "sample construction info"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 1,
       "max": 16
@@ -916,7 +916,7 @@
     "form": {
       "2013-2016": "sample construction info"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 1,
       "max": 12
@@ -952,7 +952,7 @@
     "form": {
       "2013-2016": "sample construction info"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 1,
       "max": 99461
@@ -1084,7 +1084,7 @@
     "form": {
       "2014-20??": "determined using government benefit program data"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1157,7 +1157,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1169,7 +1169,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1181,7 +1181,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1193,7 +1193,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1205,7 +1205,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_cps",
+    "availability": "taxdata_puf, taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
