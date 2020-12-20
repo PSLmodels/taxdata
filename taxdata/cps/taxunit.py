@@ -236,12 +236,7 @@ class TaxUnit:
             for _, tc_var in INCOME_TUPLES:
                 value = getattr(self, f"{tc_var}s")
                 msg = f"{tc_var}s is not zero for household {self.h_seq}"
-                try:
-                    assert value == 0, msg
-                except AssertionError:
-                    import pdb
-
-                    pdb.set_trace()
+                assert value == 0, msg
         # add family size variable
         fam_size = 1 + self.depne
         if self.mars == 2:
