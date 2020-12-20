@@ -129,17 +129,6 @@ def create(
     )
     data = distribute_benefits(data, other_ben)
     return data
-    # print("Exporting Raw File")
-    # raw_output_path = Path(datapath, "cps_raw.csv")
-    # data.to_csv(raw_output_path, index=False)
-    # subprocess.check_call(["gzip", "-nf", str(raw_output_path)])
-    # # final prep
-    # print("Cleaning file")
-    # final_cps = final_prep(data)
-    # print("Exporting final file")
-    # output_path = Path(datapath, "cps.csv")
-    # final_cps.to_csv(output_path, index=False)
-    # subprocess.check_call(["gzip", "-nf", str(output_path)])
 
 
 def validate_cps_units(raw_cps, units, year):
@@ -148,7 +137,6 @@ def validate_cps_units(raw_cps, units, year):
     """
     print(f"Validating for {year}")
     gdf = units.groupby("h_seq")
-    # errors = gdf.progress_apply(validation.compare, cps=raw_cps, year=year)
     num_errors = 0
     # Loop through each household
     for hh in tqdm(raw_cps):

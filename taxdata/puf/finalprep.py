@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import taxcalc as tc
 from .impute_pencon import impute_pension_contributions
+from .constants import UNUSED_READ_VARS
 from pathlib import Path
 
 
@@ -14,12 +15,6 @@ def finalprep(data):
     """
     Contains all the logic of the puf_data/finalprep.py script.
     """
-    # (*) Read unprocessed input file into a Pandas Dataframe
-
-    # Rename certain CPS variables
-    # renames = {"XHID": "h_seq", "XFID": "ffpos", "xstate": "fips"}
-    # data = data.rename(columns=renames)
-
     # - Check the PUF year
     max_flpdyr = max(data["flpdyr"])
     if max_flpdyr == 2008:
@@ -217,107 +212,6 @@ def transform_2008_varnames_to_2009_varnames(data):
     data = data.drop(UNUSED, 1)
 
     # drop variables not expected by Tax-Calculator
-    UNUSED_READ_VARS = {
-        "agir1",
-        "efi",
-        "elect",
-        "flpdmo",
-        "f3800",
-        "f8582",
-        "f8606",
-        "n20",
-        "n25",
-        "prep",
-        "schb",
-        "schcf",
-        "sche",
-        "tform",
-        "ie",
-        "txst",
-        "xfpt",
-        "xfst",
-        "xocah",
-        "xocawh",
-        "xoodep",
-        "xopar",
-        "s008",
-        "s009",
-        "wsamp",
-        "txrt",
-        "e30400",
-        "e24598",
-        "e11300",
-        "e24535",
-        "e30500",
-        "e07180",
-        "e53458",
-        "e33000",
-        "e25940",
-        "e12000",
-        "p65400",
-        "e24615",
-        "e07230",
-        "e11100",
-        "e10900",
-        "e11581",
-        "e11582",
-        "e11583",
-        "e25920",
-        "s27860",
-        "e59720",
-        "e87550",
-        "e26190",
-        "e53317",
-        "e53410",
-        "e04600",
-        "e26390",
-        "p65300",
-        "p25350",
-        "e06500",
-        "e10300",
-        "e26170",
-        "e26400",
-        "e11400",
-        "p25700",
-        "e04250",
-        "e07150",
-        "e59680",
-        "e24570",
-        "e11570",
-        "e53300",
-        "e10605",
-        "e22320",
-        "e26160",
-        "e22370",
-        "e53240",
-        "e10700",
-        "e09600",
-        "e06200",
-        "e24560",
-        "p61850",
-        "e25980",
-        "e53280",
-        "e25850",
-        "e25820",
-        "e68000",
-        "e26110",
-        "e58950",
-        "e26180",
-        "e04800",
-        "e06000",
-        "t27800",
-        "e06300",
-        "e59700",
-        "e26100",
-        "e05200",
-        "e82200",
-        "e25860",
-        "e07220",
-        "e11900",
-        "e25960",
-        "p27895",
-        "e12200",
-    }
     data = data.drop(UNUSED_READ_VARS, 1)
     return data
 

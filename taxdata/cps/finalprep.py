@@ -6,6 +6,7 @@ import pandas as pd
 import copy
 from pathlib import Path
 from .helpers import CUR_PATH
+from .constants import USEABLE_VARS
 
 
 ADJ_TARGETS = pd.read_csv(Path(CUR_PATH, "adjustment_targets.csv"))
@@ -15,110 +16,6 @@ def drop_vars(data):
     """
     Returns Pandas DataFrame of data without unuseable variables
     """
-    USEABLE_VARS = {
-        "DSI",
-        "EIC",
-        "FLPDYR",
-        "MARS",
-        "MIDR",
-        "RECID",
-        "XTOT",
-        "age_head",
-        "age_spouse",
-        "agi_bin",
-        "blind_head",
-        "blind_spouse",
-        "cmbtp",
-        "e00200",
-        "e00200p",
-        "e00200s",
-        "e00300",
-        "e00400",
-        "e00600",
-        "e00650",
-        "e00700",
-        "e00800",
-        "e00900",
-        "e00900p",
-        "e00900s",
-        "e01100",
-        "e01200",
-        "e01400",
-        "e01500",
-        "e01700",
-        "e02000",
-        "e02100",
-        "e02100p",
-        "e02100s",
-        "e02300",
-        "e02400",
-        "e03150",
-        "e03220",
-        "e03230",
-        "e03240",
-        "e03270",
-        "e03290",
-        "e03300",
-        "e03400",
-        "e03500",
-        "e07240",
-        "e07260",
-        "e07300",
-        "e07400",
-        "e07600",
-        "e09700",
-        "e09800",
-        "e09900",
-        "e11200",
-        "e17500",
-        "e18400",
-        "e18500",
-        "e19200",
-        "e19800",
-        "e20100",
-        "e20400",
-        "g20500",
-        "e24515",
-        "e24518",
-        "e26270",
-        "e27200",
-        "e32800",
-        "e58990",
-        "e62900",
-        "e87530",
-        "elderly_dependents",
-        "f2441",
-        "f6251",
-        "n24",
-        "nu06",
-        "nu13",
-        "nu18",
-        "n1820",
-        "n21",
-        "p08000",
-        "p22250",
-        "p23250",
-        "p25470",
-        "p87521",
-        "s006",
-        "e03210",
-        "ssi_ben",
-        "snap_ben",
-        "vet_ben",
-        "mcare_ben",
-        "mcaid_ben",
-        "oasdi_ben",
-        "other_ben",
-        "h_seq",
-        "ffpos",
-        "fips",
-        "a_lineno",
-        "tanf_ben",
-        "wic_ben",
-        "housing_ben",
-        "linenos",
-    }
-
     drop_vars = list(set(data.columns) - USEABLE_VARS)
     data = data.drop(drop_vars, axis=1)
 
@@ -388,9 +285,3 @@ def finalprep(data: pd.DataFrame):
     data["s006"] *= 100
 
     return data
-
-
-# if __name__ == "__main__":
-#     data = pd.read_csv("cps_raw.csv.gz")
-#     data = final_prep(data)
-#     data.to_csv("cps.csv.gz", index=None, compression="gzip")
