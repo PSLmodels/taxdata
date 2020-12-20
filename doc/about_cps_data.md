@@ -1,30 +1,57 @@
-About cps_data
+About CPS Data
 ==============
 
-This directory contains the python scripts used to create `cps.csv.gz`. You
-can run all of the scripts with the command `python create.py`. By default,
-you will get a CPS file composed of the 2013, 2014, and 2015 March CPS Supplemental
-files. If you would like to use another combination of the 2013, 2014, 2015,
-2016, 2017, and 2018 files, there are two ways to do so.
-
-1. You can modify `create.py` by adding the `cps_files` argument to the `create()`
-function call at the bottom of the file to specify which files you would like to
-use. For example, to use the 2016, 2017, and 2018 files, the function call would
-now be
+The python scripts used to create `cps.csv.gz` can be found in `taxdata/cps`.
+To create this file your self, import and run the `cps.create` function as
+demonstrated below:
 ```python
-if __name__ == "__main__":
-    create(
-        exportcsv=False, exportpkl=True, exportraw=False, validate=False,
-        benefits=True, verbose=True, cps_files=[2016, 2017, 2018]
-    )
+from taxdata import cps
+
+raw_cps = cps.create(
+    datapath=DATA_PATH,
+    exportcsv=False,
+    exportpkl=True,
+    exportraw=False,
+    validate=False,
+    benefits=True,
+    verbose=True,
+)
+```
+where `DATA_PATH` is a path to the directory where you store the original CPS
+files. If you are only interested in using the default settings, you can just
+run `createcps.py`.
+
+By default, the CPS file will be composed of the 2013, 2014, and 2015 March CPS
+Supplemental files. `taxdata` also supports using the 2016, 2017, and 2018 files.
+Support for additional files will be added as they become available.
+
+To use a non-default set of files, add the `cps_files` parameter to your function
+call:
+
+```python
+raw_cps = cps.create(
+    datapath=DATA_PATH,
+    exportcsv=False,
+    exportpkl=True,
+    exportraw=False,
+    validate=False,
+    benefits=True,
+    verbose=True,
+    cps_files=[2016, 2017, 2018]
+)
 ```
 
-2. You could write a separate python file that imports the `create()` function
-and calls it in the same way as above.
+Once the raw file has been created, you will need to run it through the
+`finalprep` function before it it ready to be used by Tax-Calculator.
+
+```python
+final_cps = cps.finalprep(raw_cps)
+final_cps.to_csv(final_output_path, index=False)
+```
 
 ## Input files:
 With the exception of the CPS March Supplements, all input files can be found
-in the `pycps/data` directory.
+in the `cps/data` directory.
 
 ### CPS March Supplements
 * asec2013_pubuse.dat
@@ -78,7 +105,7 @@ For other years, we just use the benefit program information in the CPS
 
 ### Imputation Parameters
 
-These parameters are used in the imputations found in `pycps/impute.py`
+These parameters are used in the imputations found in `taxdata/cps/data/impute.py`
 * logit_beta.csv
 * ols_betas.csv
 
