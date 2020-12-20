@@ -137,7 +137,12 @@ def match(
                         bwt = _donor[j][donor_wt]
 
     _match = pd.DataFrame(
-        {"donor": donor_list, "recip": recipient_list, "cwt": cwt_list, "diff": diffs}
+        {
+            "donor": donor_list,
+            "recip": recipient_list,
+            "matched_weight": cwt_list,
+            "diff": diffs,
+        }
     )
     del recipient, donor
     return _match

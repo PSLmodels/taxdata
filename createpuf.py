@@ -164,9 +164,7 @@ data = pd.merge(
 
 # filter off the duplicated columns
 data.drop(list(data.filter(regex=".*_cps")), axis=1, inplace=True)
-# new weight is now the match weight
-data.drop("s006", axis=1, inplace=True)
-data.rename(columns={"cwt": "s006"}, inplace=True)
+
 # add back non-filers
 print("Adding non-filers")
 data = pd.concat([data, nonfilers], sort=False, ignore_index=True)

@@ -62,6 +62,8 @@ def finalprep(data):
     # - Replace e20500 with g20500:
     data = replace_20500(data)
 
+    data["s006"] = data["matched_weight"] * 100
+
     # - Remove variables not expected by Tax-Calculator:
     data = data.filter(USABLE_VARS, axis=1)
 

@@ -133,7 +133,7 @@ def adjustment(agi, var, var_name, target, weights, blowup):
 
 
 # Read all necessary files
-puf = pd.read_csv(os.path.join(CUR_PATH, "../puf_data/cps-matched-puf.csv"))
+puf = pd.read_csv(os.path.join(CUR_PATH, "../data/cps-matched-puf.csv"))
 targets = pd.read_csv(os.path.join(CUR_PATH, "stage3_targets.csv"), index_col=0)
 wght = pd.read_csv(os.path.join(CUR_PATH, "../puf_stage2/puf_weights.csv.gz"))
 bf = pd.read_csv(os.path.join(CUR_PATH, "../puf_stage1/growfactors.csv"), index_col=0)
