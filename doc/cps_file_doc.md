@@ -64,7 +64,7 @@ To ensure that our aggregate numbers line up with those reported by
 the IRS, we derive factors to blow-up certain income and deduction
 variables at the state level.<sup>1</sup> The state totals used to calculate the
 factors can be found [here](https://www.irs.gov/statistics/soi-tax-stats-state-data-at-a-glance-fy-2014). The factors themselves
-can be found in `cps_data/pycps/state_factors.csv`.
+can be found in `taxdata/cps/state_factors.csv`.
 
 ## Final Prep
 

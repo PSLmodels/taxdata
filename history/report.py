@@ -75,7 +75,7 @@ def report():
         "--desc",
         help=(
             "File path to a text or markdown file with additonal information "
-            "that will appear at the begining of the report"
+            "that will appear at the beginning of the report"
         ),
         default="",
         type=str,
