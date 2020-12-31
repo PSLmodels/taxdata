@@ -8,7 +8,7 @@ from dataprep import dataprep
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Read private CPS-matched-PUF file into a Pandas DataFrame
-puf = pd.read_csv(os.path.join(CUR_PATH, "../puf_data/cps-matched-puf.csv"))
+puf = pd.read_csv(os.path.join(CUR_PATH, "../data/cps-matched-puf.csv"))
 
 # Read stage1 factors and stage2 targets written by stage1.py script
 factors = pd.read_csv(

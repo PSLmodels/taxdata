@@ -5,9 +5,13 @@ import pypandoc
 import pandas as pd
 import numpy as np
 import altair as alt
+import taxcalc as tc
 from jinja2 import Template
+from pathlib import Path
+from collections import defaultdict
 
 
+CUR_PATH = Path(__file__).resolve().parent
 EPSILON = 1e-9
 
 
@@ -424,7 +428,7 @@ def cbo_bar_chart(cbo_data, var, title, bar_width=30, width=600, height=250):
     return chart
 
 
-def compare_vars(cur_meta, new_meta, file):
+def compare_vars(cur_meta, new_meta, file_):
     """
     Searches for differences in variable availability
     Parameters
@@ -445,12 +449,12 @@ def compare_vars(cur_meta, new_meta, file):
             output.append(f"* {var}: {desc}")
         return output
 
-    if file not in ["puf", "cps"]:
+    if file_ not in ["puf", "cps"]:
         msg = "'file' must be either 'cps' or 'puf'"
         raise ValueError(msg)
-    _file = f"taxdata_{file}"
+    _file = f"taxdata_{file_}"
     cur_avail = set(cur_meta[cur_meta["availability"].str.contains(_file)].index)
-    new_avail = set(new_meta[cur_meta["availability"].str.contains(_file)].index)
+    new_avail = set(new_meta[new_meta["availability"].str.contains(_file)].index)
     _added_vars = new_avail - cur_avail
     _removed_vars = cur_avail - new_avail
     # get detailed information
@@ -527,3 +531,96 @@ def agg_liability_table(data, tax):
     pct_change = diff / final_df.loc["Current"] * 100
     final_df.loc["Pct Change"] = pct_change.round(2)
     return final_df.to_markdown()
+
+
+def compare_calcs(base, new, name, template_args, plot_paths):
+    """
+    Function for comparing the results from tax-calculator using the old and
+    new data
+
+    Parameters
+    ----------
+    base : Calculator object
+        Tax-Calculator object using the old data
+    new : Calculator object
+        Tax-Calculator object using the new data
+    name : str
+        string name for which dataset is being compared. Must be `puf` or `cps`
+    """
+    if name not in ["puf", "cps"]:
+        raise ValueError(f"{name} is not valid. Must be `puf` or `cps`.")
+    calcs = [base, new]
+    calc_labels = [f"Current {name.upper()}", f"New {name.upper()}"]
+    # distribution plots
+    dist_vars = [
+        ("c00100", "AGI Distribution"),
+        ("combined", "Tax Liability Distribution"),
+    ]
+    dist_plots = []
+    for var, title in dist_vars:
+        plot = distplot(calcs, calc_labels, var, title=title)
+        img_path = Path(CUR_PATH, f"{name}_{var}_dist.png")
+        plot.save(str(img_path))
+        plot_paths.append(img_path)
+        dist_plots.append(f"![]({str(img_path)})" + "{.center}")
+    template_args["cps_dist_plots"] = dist_plots
+
+    # aggregate totals
+    aggs = defaultdict(list)
+    var_list = ["payrolltax", "iitax", "combined", "standard", "c04470"]
+    for year in range(base.current_year, tc.Policy.LAST_BUDGET_YEAR + 1):
+        base_aggs = run_calc(base, year, var_list)
+        new_aggs = run_calc(new, year, var_list)
+        aggs["Tax Liability"].append(base_aggs["payrolltax"])
+        aggs["Tax"].append("Current Payroll")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(new_aggs["payrolltax"])
+        aggs["Tax"].append("New Payroll")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(base_aggs["iitax"])
+        aggs["Tax"].append("Current Income")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(new_aggs["iitax"])
+        aggs["Tax"].append("New Income")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(base_aggs["combined"])
+        aggs["Tax"].append("Current Combined")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(new_aggs["combined"])
+        aggs["Tax"].append("New Combined")
+        aggs["Year"].append(year)
+    agg_df = pd.DataFrame(aggs)
+
+    title = "Aggregate Tax Liability by Year"
+    agg_chart = (
+        alt.Chart(agg_df, title=title)
+        .mark_line()
+        .encode(
+            x=alt.X(
+                "Year:O",
+                axis=alt.Axis(labelAngle=0, titleFontSize=20, labelFontSize=15),
+            ),
+            y=alt.Y(
+                "Tax Liability",
+                title="Tax Liability (Billions)",
+                axis=alt.Axis(titleFontSize=20, labelFontSize=15),
+            ),
+            color=alt.Color(
+                "Tax",
+                legend=alt.Legend(symbolSize=150, labelFontSize=15, titleFontSize=20),
+            ),
+        )
+        .properties(width=800, height=350)
+        .configure_title(fontSize=24)
+    )
+    img_path = Path(CUR_PATH, f"{name}_agg_plot.png")
+    agg_chart.save(str(img_path))
+    plot_paths.append(img_path)
+    template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
+
+    # create tax liability tables
+    template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
+    template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
+    template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
+
+    return template_args, plot_paths
