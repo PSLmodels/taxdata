@@ -5,7 +5,8 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
 EYR = 2030  # last calendar year we have data for
-SOI_YR = 2014  # most recently available SOI estimates
+SOI_YR = 2017  # most recently available SOI estimates
+IRS_RET_YR = 2022  # most recently available IRS return projections
 
 # define constants for the number refers total population,
 # dependent age upper limit, and senior age lower limit
@@ -137,8 +138,13 @@ irs_returns = pd.read_csv(
 )
 irs_returns = irs_returns.transpose()
 return_growth_rate = irs_returns.pct_change() + 1.0
-for year in range(2023, EYR + 1):
-    return_growth_rate.Returns[str(year)] = return_growth_rate.Returns["2022"]
+vals = []
+indicies = []
+for year in range(IRS_RET_YR + 1, EYR + 1):
+    vals.append(return_growth_rate.Returns[str(IRS_RET_YR)])
+    indicies.append(str(year))
+ret_growth_vals = pd.DataFrame({"Returns": vals}, index=indicies)
+return_growth_rate = return_growth_rate.append(ret_growth_vals)
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
@@ -247,7 +253,7 @@ Stage_I_factors["AIPD"] = Stage_II_targets.IPD / Stage_II_targets.IPD[SYR]
 
 # Add benefit growth rates to Stage 1 factors
 benefit_programs = pd.read_csv(
-    os.path.join(CUR_PATH, "../cps_data/benefitprograms.csv"), index_col="Program"
+    os.path.join(CUR_PATH, "../taxdata/cps/benefitprograms.csv"), index_col="Program"
 )
 benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
 # Find growth rate between 2020 and 2021 and extrapolate out to EYR
