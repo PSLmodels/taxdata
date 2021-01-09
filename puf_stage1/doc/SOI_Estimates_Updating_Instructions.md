@@ -14,6 +14,17 @@ table column from which the data is pulled. To update the two files, use both
 tables to find the relevant information and insert it as a new column in the
 associated file.
 
+If you are not making any changes to the estimates used, you can make all of
+these updates using `puf_stage1/updatesoi.py`. When running the script, you must
+include two arguments: the year you're adding to the SOI estimates, and a path
+to the directory where you have downloaded said files. For example, if you're
+adding the 2017 estimates and have downloaded all of the files to a directory called
+`soifiles`, you would run
+
+```bash
+python updatesoi.py 2017 soifiles
+```
+
 ## PUF
 
 | Row Variable | Description                                                            | Table | Table Column Name                                                                                                         |
