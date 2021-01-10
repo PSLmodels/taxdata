@@ -6,7 +6,13 @@ from collections import defaultdict
 
 CUR_PATH = Path(__file__).resolve().parent
 
-
+# these are all of the columns used in the table 1.4 spreadsheet. The pattern
+# used for this list is (SOI_estimates variable name, col1, col2, col3, col4)
+# each of those columns is needed because pandas will read the spreadsheet as
+# a DataFrame with multiple column labels. If the IRS changes the format of
+# the table 1.4 spreadsheet, this script will break and you'll need to update
+# the columns in this list. You will also need to update this list if you add
+# a new variable to the estimates.
 TABLE14COLS = [
     (
         "SS_return",
@@ -66,6 +72,8 @@ TABLE14COLS = [
         "Amount",
     ),
 ]
+# these lists are the indicies for the wage bins used to split up wage targetts
+# in the SOI estimates.
 PUFWAGES = [
     (2, 2),
     (3, 4),
@@ -85,7 +93,8 @@ CPSWAGES = [(2, 4), (5, 6), (7, 8), (9, 9), (10, 10), (11, 11), (12, 12), (13, 2
 
 def update_soi(year, datapath, wage_indicies, file_):
     """
-    Update SOI estimates for a given year
+    Update SOI estimates for a given year by reading and parsing the given SOI
+    spreadsheets
 
     Paramters
     ---------
@@ -158,7 +167,11 @@ def table23(year, datapath):
 
 def table21(year, datapath):
     """
-    Return interest paid deduction amount
+    Return interest paid deduction amount from table 2.1
+    Parameters
+    ----------
+    year: integer representing the year of the table
+    datapath: path to the directory holding the SOI files
     """
     file_ = f"{str(year)[-2:]}in21id.xls"
     data = pd.read_excel(Path(datapath, file_), header=[2, 3, 4, 5, 6], index_col=0)
@@ -173,7 +186,11 @@ def table21(year, datapath):
 
 def table14_nonwages(data, cols):
     """
-    Extracts all data except wages from table 1.4
+    Extracts all needed data except wages from table 1.4
+    Parameters
+    ----------
+    data: SOI data
+    cols: See TABLE14COLS
     """
     values = defaultdict(int)
     for col in cols:
@@ -184,7 +201,11 @@ def table14_nonwages(data, cols):
 
 def table14_wages(data, indicies):
     """
-    return all of the wage totals
+    Return all of the wage totals
+    Parameters
+    ----------
+    data: table 1.4 data
+    indicies: See PUFWAGES and CPSWAGES
     """
     was = []
     assert len(data) == 21  # they sometimes change up the wage bins they use
@@ -197,7 +218,13 @@ def table14_wages(data, indicies):
 
 def table14(year, wage_indicies, datapath):
     """
-    grabs everything from table 1.4
+    Grabs everything from table 1.4 by calling the two other table 1.4
+    functions.
+    Parameters
+    ----------
+    year: year we're pulling the data for
+    wage_indicies: see PUFWAGES and CPSWAGES
+    datapath: path to directory where the SOI data is stored
     """
     data = pd.read_excel(
         Path(datapath, f"{str(year)[-2:]}in14ar.xls"), header=[2, 3, 4, 5], index_col=0
