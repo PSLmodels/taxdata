@@ -1,0 +1,58 @@
+{
+    "project_one_line": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<p>The TaxData project prepares microdata files to be used by Tax-Calculator</p>"
+    },
+    "project_overview": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/taxdata/blob/master/README.md\">TaxData Overview</a>"
+    },
+    "core_maintainers": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<ul><li>Anderson Frailey</li></ul>"
+    },
+    "user_documentation": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/taxdata/tree/master/doc\"></a>"
+    },
+    "contributor_overview": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/taxdata/blob/master/CONTRIBUTING.md\"></a>"
+    },
+    "user_changelog": {
+        "start_header": null,
+        "end_header": null,
+        "source": "https://github.com/PSLmodels/taxdata/releases",
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/taxdata/releases\">https://github.com/PSLmodels/taxdata/releases</a>"
+    },
+    "user_changelog_recent": {
+        "start_header": null,
+        "end_header": null,
+        "source": "https://github.com/PSLmodels/taxdata/releases",
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/taxdata/releases\"></a>"
+    },
+    "link_to_webapp": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    }
+}
