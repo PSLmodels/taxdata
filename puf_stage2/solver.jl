@@ -42,9 +42,9 @@ end
 
 
 year_list = [x for x in 2012:2030]
-tol_list = [0.40, 0.38, 0.35, 0.33, 0.30, 0.37, 0.38,
-			0.38, 0.39, 0.39, 0.38, 0.40, 0.39, 0.41,
-			0.41, 0.42, 0.42, 0.42, 0.42]
+tol_list = [0.40, 0.38, 0.35, 0.33, 0.30, 0.45, 0.45,
+			0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45,
+			0.45, 0.45, 0.45, 0.45, 0.45]
 
 # Run solver function for all years and tolerances (in order)
 for i in zip(year_list, tol_list)

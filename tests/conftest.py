@@ -8,8 +8,8 @@ from pathlib import Path
 # TODO: revise the following constants when using new or revised CPS/PUF data
 CPS_START_YEAR = 2014
 PUF_START_YEAR = 2011
-PUF_COUNT = 248591
-LAST_YEAR = 2029
+PUF_COUNT = 252868
+LAST_YEAR = 2030
 
 
 @pytest.fixture(scope="session")
@@ -19,7 +19,7 @@ def test_path():
 
 @pytest.fixture(scope="session")
 def cps_path(test_path):
-    return Path(test_path, "..", "cps_data", "pycps", "cps.csv.gz")
+    return Path(test_path, "..", "data", "cps.csv.gz")
 
 
 @pytest.fixture(scope="session")
@@ -58,7 +58,7 @@ def cps_start_year():
 
 @pytest.fixture(scope="session")
 def puf_path(test_path):
-    return Path(test_path, "..", "puf_data", "puf.csv")
+    return Path(test_path, "..", "data", "puf.csv")
 
 
 @pytest.fixture(scope="session")

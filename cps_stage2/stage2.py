@@ -17,7 +17,7 @@ def main():
     """
     print("Reading Data")
     cps = pd.read_csv(
-        Path(CUR_PATH, "..", "cps_data", "pycps", "cps_raw.csv.gz"), compression="gzip"
+        Path(CUR_PATH, "..", "data", "cps_raw.csv.gz"), compression="gzip"
     )
     cps = cps.fillna(0.0)
     stage_1_factors = pd.read_csv(STAGE_1_PATH, index_col=0)

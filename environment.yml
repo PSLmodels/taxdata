@@ -1,6 +1,7 @@
 name: taxdata-dev
 channels:
 - conda-forge
+- pslmodels
 dependencies:
 - python>=3.6.5,<3.7
 - numpy>=1.12.1
@@ -21,5 +22,6 @@ dependencies:
 - python-chromedriver-binary
 - tabulate
 - pre-commit
+- taxcalc>=3.0.0
 - pip:
   - requests-html

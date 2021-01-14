@@ -8,12 +8,12 @@
 #              report the correct status of each .csv.gz file's contents.
 # USAGE: taxdata$ make [TARGET]
 
-MADE_FILES = puf_data/puf.csv \
+MADE_FILES = data/puf.csv \
              puf_stage1/growfactors.csv \
              puf_stage1/Stage_I_factors.csv \
              puf_stage2/puf_weights.csv.gz \
              puf_stage3/puf_ratios.csv.gz \
-             cps_data/cps.csv.gz \
+             data/cps.csv.gz \
              cps_stage1/stage_2_targets.csv \
              cps_stage2/cps_weights.csv.gz
 
@@ -72,23 +72,23 @@ git-pr:
 	@./gitpr $(N)
 
 .PHONY=puf-files
-puf-files: puf_data/puf.csv \
+puf-files: data/puf.csv \
            puf_stage1/growfactors.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
 
-PM_DIR=./puf_data/StatMatch/Matching
-PM_PY_FILES := $(shell ls -l $(PM_DIR)/*py | awk '{print $$9}')
-puf_data/cps-matched-puf.csv: $(PM_PY_FILES) \
-                              $(PM_DIR)/puf2011.csv \
-                              $(PM_DIR)/cpsmar2016.csv
-	cd $(PM_DIR) ; python runmatch.py
+# PM_DIR=./puf_data/StatMatch/Matching
+# PM_PY_FILES := $(shell ls -l $(PM_DIR)/*py | awk '{print $$9}')
+# data/cps-matched-puf.csv: $(PM_PY_FILES) \
+#                               $(PM_DIR)/puf2011.csv \
+#                               $(PM_DIR)/cpsmar2016.csv
+# 	cd $(PM_DIR) ; python runmatch.py
 
-puf_data/puf.csv: puf_data/finalprep.py \
-                  puf_data/impute_itmexp.py \
-                  puf_data/impute_pencon.py \
-                  puf_data/cps-matched-puf.csv
-	cd puf_data ; python finalprep.py
+data/puf.csv: taxdata/puf/finalprep.py \
+                  taxdata/puf/impute_itmexp.py \
+                  taxdata/puf/impute_pencon.py \
+                  data/cps-matched-puf.csv
+	python createpuf.py
 
 puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/CBO_baseline.csv \
@@ -108,7 +108,7 @@ puf_stage1/growfactors.csv: puf_stage1/factors_finalprep.py \
 puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
                                puf_stage2/dataprep.py \
                                puf_stage2/solver.jl \
-                               puf_data/cps-matched-puf.csv \
+                               data/cps-matched-puf.csv \
                                puf_stage1/Stage_I_factors.csv \
                                puf_stage1/Stage_II_targets.csv
 	cd puf_stage2 ; python stage2.py && \
@@ -116,30 +116,30 @@ puf_stage2/puf_weights.csv.gz: puf_stage2/stage2.py \
 
 puf_stage3/puf_ratios.csv: puf_stage3/stage3.py \
                            puf_stage3/stage3_targets.csv \
-                           puf_data/cps-matched-puf.csv \
+                           data/cps-matched-puf.csv \
                            puf_stage1/growfactors.csv \
                            puf_stage2/puf_weights.csv.gz
 	cd puf_stage3 ; python stage3.py
 
 .PHONY=cps-files
-cps-files: cps_data/pycps/cps_raw.csv.gz \
+cps-files: data/cps_raw.csv.gz \
            cps_stage1/stage_2_targets.csv \
            cps_stage2/cps_weights.csv.gz
 
-cps_data/pycps/cps_raw.csv.gz: cps_data/pycps/create.py \
-                               cps_data/pycps/benefits.py \
-                               cps_data/pycps/filing_rules.json \
-                               cps_data/pycps/finalprep.py \
-                               cps_data/pycps/helpers.py \
-                               cps_data/pycps/impute.py \
-                               cps_data/pycps/pycps.py \
-                               cps_data/pycps/splitincome.py \
-                               cps_data/pycps/targeting.py \
-                               cps_data/pycps/taxunit.py \
-                               cps_data/pycps/transform_sas.py \
-                               cps_data/pycps/adjustment_targets.csv \
-                               cps_data/benefitprograms.csv
-	cd cps_data/pycps ; python create.py && \
+data/cps_raw.csv.gz: taxdata/cps/create.py \
+                               taxdata/cps/benefits.py \
+                               taxdata/cps/filing_rules.json \
+                               taxdata/cps/finalprep.py \
+                               taxdata/cps/helpers.py \
+                               taxdata/cps/impute.py \
+                               taxdata/cps/pycps.py \
+                               taxdata/cps/splitincome.py \
+                               taxdata/cps/targeting.py \
+                               taxdata/cps/taxunit.py \
+                               taxdata/cps/transform_sas.py \
+                               taxdata/cps/adjustment_targets.csv \
+                               taxdata/cps/benefitprograms.csv
+	python createcps.py ; cd data &&\
 	gunzip cps.csv.gz && gzip -n cps.csv
 
 cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
@@ -150,7 +150,7 @@ cps_stage1/stage_2_targets.csv: cps_stage1/stage1.py \
 
 cps_stage2/cps_weights.csv.gz: cps_stage2/stage2.py \
                                cps_stage2/dataprep.py \
-                               cps_data/pycps/cps_raw.csv.gz \
+                               data/cps_raw.csv.gz \
                                puf_stage1/Stage_I_factors.csv \
                                cps_stage1/stage_2_targets.csv \
                                cps_stage2/solver.jl

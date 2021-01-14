@@ -63,22 +63,48 @@ This report corresponds with the issues and pull requests listed below.
 
 # Distribution of Select Variables
 
-{% for item in dist_plots %}
+## CPS
+
+{% for item in cps_dist_plots %}
 {{ item }}
 {% endfor %}
 
+## PUF
+
 # Aggregate Tax Liability
 
-{{ agg_plot }}
+## CPS
+
+{{ cps_agg_plot }}
 
 ## Combined Tax Liability by Year (Billions)
 
-{{ combined_table }}
+{{ cps_combined_table }}
 
 ## Income Tax Liability by Year (Billions)
 
-{{ income_table }}
+{{ cps_income_table }}
 
 ## Payroll Tax Liability by Year (Billions)
 
-{{ payroll_table }}
+{{ cps_payroll_table }}
+
+\pagebreak
+
+## PUF
+
+{{ puf_msg }}
+
+{{ puf_agg_plot }}
+
+## Combined Tax Liability by Year (Billions)
+
+{{ puf_combined_table }}
+
+## Income Tax Liability by Year (Billions)
+
+{{ puf_income_table }}
+
+## Payroll Tax Liability by Year (Billions)
+
+{{ puf_payroll_table }}
