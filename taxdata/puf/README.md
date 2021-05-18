@@ -16,4 +16,4 @@ Documentation
 -------------
 
 The Python scripts used to prepare the cps-matched-puf.csv file are
-described in the [StatMatch subdirectory](StatMatch/README.md).
+described in the [matching subdirectory](https://github.com/PSLmodels/taxdata/tree/master/taxdata/matching).
