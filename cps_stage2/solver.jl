@@ -1,8 +1,24 @@
-using JuMP, Cbc, NPZ
+using NPZ, JuMP, Cbc, Tulip
 
 function Solve_func(year, tol)
 
-	println("Solving weights for $year ...\n\n")
+	println("\nSolving weights for $year ...\n")
+
+	solver = "Tulip"  # Tulip, Cbc
+	Tulip_max_iter = 100  # 100 default, 500 seems good enough
+
+	println("Using solver: ", solver)
+	if solver == "Tulip"
+		model = Model(Tulip.Optimizer)
+		set_optimizer_attribute(model, "OutputLevel", 1)  # 0=disable output (default), 1=show iterations
+		set_optimizer_attribute(model, "IPM_IterationsLimit", Tulip_max_iter)  # default 100
+	elseif solver == "Cbc"
+		model = Model(Cbc.Optimizer)
+		set_optimizer_attribute(model, "logLevel", 1)
+		# I have not figured out option to limit iterations
+	else
+		println("ERROR! Solver must be Tulip or Cbc.")
+	end
 
 	array = npzread(string(year, "_input.npz"))
 
@@ -10,8 +26,6 @@ function Solve_func(year, tol)
 	A2 = array["A2"]
 	b = array["b"]
 
-	model = Model(Cbc.Optimizer)
-	set_optimizer_attribute(model, "logLevel", 1)
 	N = size(A1)[2]
 
 	@variable(model, r[1:N] >= 0)
@@ -28,7 +42,9 @@ function Solve_func(year, tol)
 
 
 	optimize!(model)
-	termination_status(model)
+	println("Termination status: ", termination_status(model))
+	println("Objective: ", objective_value(model))
+	println("\nSolver used was: ", solver_name(model), "\n")
 
 	r_vec = value.(r)
 	s_vec = value.(s)
