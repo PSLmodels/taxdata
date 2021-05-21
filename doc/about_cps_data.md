@@ -57,7 +57,7 @@ in the `cps/data` directory.
 * asec2013_pubuse.dat
 * asec2014_pubuse_tax_fix_5x8_2017.dat
 * asec2015_pubuse.dat
-* asec2016_pubuse.dat
+* asec2016_pubuse_v3.dat
 * asec2017_pubuse.dat
 * asec2018_pubuse.dat
 

@@ -23,5 +23,6 @@ dependencies:
 - tabulate
 - pre-commit
 - taxcalc>=3.0.0
+- pip
 - pip:
   - requests-html
