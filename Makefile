@@ -8,7 +8,7 @@
 #              report the correct status of each .csv.gz file's contents.
 # USAGE: taxdata$ make [TARGET]
 
-MADE_FILES = data/puf.csv \
+MADE_FILES = data/cps-matched-puf.csv \
              puf_stage1/growfactors.csv \
              puf_stage1/Stage_I_factors.csv \
              puf_stage2/puf_weights.csv.gz \
@@ -30,6 +30,7 @@ help:
 	@echo "git-sync    : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n  : create local pr-n branch containing upstream PR"
 	@echo "puf-files   : make each of the following files:"
+	@echo "                cps-matched-puf.csv"
 	@echo "                puf.csv"
 	@echo "                growfactors.csv"
 	@echo "                puf_weights.csv.gz"
@@ -72,7 +73,7 @@ git-pr:
 	@./gitpr $(N)
 
 .PHONY=puf-files
-puf-files: data/puf.csv \
+puf-files: data/cps-matched-puf.csv \
            puf_stage1/growfactors.csv \
            puf_stage2/puf_weights.csv.gz \
            puf_stage3/puf_ratios.csv
@@ -84,11 +85,11 @@ puf-files: data/puf.csv \
 #                               $(PM_DIR)/cpsmar2016.csv
 # 	cd $(PM_DIR) ; python runmatch.py
 
-data/puf.csv: taxdata/puf/finalprep.py \
+data/cps-matched-puf.csv: taxdata/puf/finalprep.py \
                   taxdata/puf/impute_itmexp.py \
-                  taxdata/puf/impute_pencon.py \
-                  data/cps-matched-puf.csv
+                  taxdata/puf/impute_pencon.py
 	python createpuf.py
+# Above recipe also makes data/puf.csv
 
 puf_stage1/Stage_I_factors.csv: puf_stage1/stage1.py \
                                 puf_stage1/CBO_baseline.csv \
