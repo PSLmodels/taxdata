@@ -166,6 +166,7 @@ data = pd.merge(
 data.drop(list(data.filter(regex=".*_cps")), axis=1, inplace=True)
 # add back non-filers
 print("Adding non-filers")
+nonfilers.rename(columns={"s006": "matched_weight"}, inplace=True)
 data = pd.concat([data, nonfilers], sort=False, ignore_index=True)
 data = data.fillna(0.0)
 data.reset_index(inplace=True)
