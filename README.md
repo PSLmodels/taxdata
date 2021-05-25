@@ -59,7 +59,8 @@ To run the scripts that produce `puf.csv` and `cps.csv.gz`, activate the
 
 `Julia` must also be installed to solve for the PUF and CPS weights. You 
 can download `Julia` from their [website](https://julialang.org/downloads/)
-or by using `homebrew`.
+or by using `homebrew`. After installing Julia, you will need to also install
+these three packages: `JuMP, Cbc, NPZ`.
 
 Data-Preparation Documentation and Workflow
 -------------------------------------------
