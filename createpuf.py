@@ -96,7 +96,6 @@ raw_cps = cps.create(DATA_PATH, exportpkl=True, cps_files=[CPS_YEAR], benefits=F
 print("Prepping PUF")
 puf2011 = pd.read_csv(Path(DATA_PATH, "puf2011.csv"))
 raw_puf = puf.preppuf(puf2011, PUF_YEAR)
-# raw_puf.to_csv(Path(DATA_PATH, "raw_puf.csv"), index=False)
 
 # rename CPS file to match PUF
 print("Prepping CPS")
@@ -118,12 +117,6 @@ non_cash = 1.0 - cash
 raw_cps["e19800"] = raw_cps["charitable"] * cash
 raw_cps["e20100"] = raw_cps["charitable"] * non_cash
 
-# cap number of dependents in CPS to line up with PUF
-# raw_cps["depne"] = np.where(
-#     raw_cps["mars"] == 2,
-#     np.minimum(5, raw_cps["depne"]),
-#     np.minimum(3, raw_cps["depne"]),
-# )
 raw_cps = dataprep(raw_cps)
 raw_puf = dataprep(raw_puf)
 raw_cps["recid"] = range(1, len(raw_cps.index) + 1)
@@ -166,6 +159,7 @@ data = pd.merge(
 data.drop(list(data.filter(regex=".*_cps")), axis=1, inplace=True)
 # add back non-filers
 print("Adding non-filers")
+nonfilers.rename(columns={"s006": "matched_weight"}, inplace=True)
 data = pd.concat([data, nonfilers], sort=False, ignore_index=True)
 data = data.fillna(0.0)
 data.reset_index(inplace=True)
