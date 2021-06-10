@@ -47,8 +47,8 @@ def test_weights(
     MIN_WEIGHT = 0  # weight must be non-negative,
     MAX_WEIGHT = 2000000  # but can be quite large
     for col in weights:
-        if weights[col].min() < MIN_WEIGHT:
-            msg = "{} weights[{}].min()={} < {}"
+        if weights[col].min() <= MIN_WEIGHT:
+            msg = "{} weights[{}].min()={} <= {}"
             raise ValueError(msg.format(kind, col, weights[col].min(), MIN_WEIGHT))
         if weights[col].max() > MAX_WEIGHT:
             msg = "{} weights[{}].max()={} > {}"
