@@ -87,7 +87,8 @@ puf-files: data/cps-matched-puf.csv \
 
 data/cps-matched-puf.csv: taxdata/puf/finalprep.py \
                   taxdata/puf/impute_itmexp.py \
-                  taxdata/puf/impute_pencon.py
+                  taxdata/puf/impute_pencon.py\
+                  createpuf.py
 	python createpuf.py
 # Above recipe also makes data/puf.csv
 

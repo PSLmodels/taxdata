@@ -28,6 +28,7 @@ for key, file_path in zip(key_names, file_paths):
         file_hash = hashlib.sha256(f.read()).hexdigest()
     files_match = HASHES[key] == file_hash
     if not files_match:
+        print("fail", key)
         break
 
 # Read current factors and targets
