@@ -47,9 +47,9 @@ As previously mentioned, most of the variables we used can be found in the
 To manually update these variables download the latest file and copy/paste the 
 specific variables.
 
-Previous Document: January 2020
+Previous Document: July 2020
 
-Current Document: July 2020
+Current Document: February 2021
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -70,9 +70,9 @@ Current Document: July 2020
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: [January 2019](https://www.cbo.gov/system/files/2019-02/51138-2019-01-revenueprojections.xlsx)
+Previous: [January 2020](https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx)
 
-Current: [January 2020](https://www.cbo.gov/system/files/2020-01/51138-2020-01-revenue-projections.xlsx)
+Current: [February 2021](https://www.cbo.gov/system/files/2021-02/51138-2021-02-11-revenueprojections.xlsx)
 
 In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -81,9 +81,9 @@ tab under the `Capital Gains Realizations` column.
 
 Source: [IRS Publication 6187 Table 1B](https://www.irs.gov/statistics/projections-of-federal-tax-return-filings)
 
-Previous: [Fall 2019 Update](https://www.irs.gov/pub/irs-pdf/p6187.pdf)
+Previous: [Fall 2019 Report](https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls)
 
-Current: [Fall 2019 Report](https://www.irs.gov/pub/irs-soi/19projpub6187tables.xls)
+Current: [Fall 2020 Report](https://www.irs.gov/pub/irs-soi/20projpub6187tables.xls)
 
 The projections in the publication typically end a few years before the
 10-year projections do. We use the growth rate from the final year in the
@@ -108,7 +108,7 @@ column of this table.
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
-Access Date: August 22 2020
+Access Date: June 16 2021
 
 Manual Instructions:
 
