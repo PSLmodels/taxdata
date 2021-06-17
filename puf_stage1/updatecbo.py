@@ -189,7 +189,7 @@ def update_econproj(url, baseline, text_args):
         )
         cg_proj.index = cg_proj[cg_proj.columns[0]]
         var = "Capital Gains Realizationsa"
-        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2031))]
+        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2032))]
         var_list = [cgns]
         var_names = ["CGNS"]
         df = pd.DataFrame(var_list, index=var_names).round(1)
@@ -295,9 +295,11 @@ def update_rets(url, baseline, text_args):
     # find year of new reports
     title = (
         "Calendar Year Projections of Individual Returns by Major Processing "
-        "Categories, Selected Years and Areas, {} (PDF)"
+        "Categories, Selected Years and Areas, {} {} "
     )
-    report = f"{r.html.search(title)[0]} Report"
+    search = r.html.search(title)
+    report_name = f"{search[0]} {search[1][:4]}"
+    report = f"{report_name} Report"
     if report == text_args["rets_cur_report"]:
         print("\tNo new data since last update")
         return baseline, text_args
@@ -309,7 +311,7 @@ def update_rets(url, baseline, text_args):
             spreadsheet_url = link
             break
     data = pd.read_excel(spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2)
-    projections = data.loc["Forms 1040, Total*"]
+    projections = data.loc["Form 1040, Total*"]
     projections /= 1_000_000  # convert units
     pct_change = projections.pct_change() + 1
     # extrapolate out to final year of other CBO projections
@@ -361,6 +363,9 @@ def update_ucomp(url, baseline, text_args):
     report = datetime.strftime(latest_year, "%B %Y")
     if report == text_args["ucomp_cur_report"]:
         print("\tNo new data since last update")
+        return baseline, text_args
+    elif report == "February 2021":
+        print("Latest data is from pandemic. Enter by hand")
         return baseline, text_args
     data = pd.read_excel(ucomp_url, skiprows=3, index_col=0, thousands=",")
     try:
@@ -423,9 +428,7 @@ def update_cbo():
     baseline = pd.read_csv(Path(CUR_PATH, "CBO_baseline.csv"), index_col=0)
     CBO_URL = "https://www.cbo.gov/about/products/budget-economic-data"
     SOCSEC_URL = "https://www.ssa.gov/oact/TR/"
-    RETS_URL = (
-        "https://www.irs.gov/statistics/projections-of-federal-tax-return-filings"
-    )
+    RETS_URL = "https://www.irs.gov/statistics/soi-tax-stats-calendar-year-projections-publication-6187"
     UCOMP_URL = (
         "https://www.cbo.gov/about/products/baseline-projections-selected-programs"
     )
