@@ -26,3 +26,5 @@ def test_growfactor_values(growfactors):
         if fname != "YEAR":
             assert growfactors[fname].min() >= min_value
             assert growfactors[fname].max() <= max_value
+
+    assert growfactors.isnull().sum().sum() == 0
