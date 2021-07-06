@@ -122,7 +122,20 @@ raw_puf = dataprep(raw_puf)
 raw_cps["recid"] = range(1, len(raw_cps.index) + 1)
 raw_cps["agerange"] = 0
 raw_cps["eic"] = np.minimum(3, raw_cps["eic"])
-raw_cps.drop(["mcaid_ben", "mcare_ben"], axis=1, inplace=True)
+raw_cps.drop(
+    [
+        "mcaid_ben",
+        "mcare_ben",
+        "other_ben",
+        "snap_ben",
+        "housing_ben",
+        "ssi_ben",
+        "tanf_ben",
+        "vet_ben",
+    ],
+    axis=1,
+    inplace=True,
+)
 raw_cps.to_csv(Path(DATA_PATH, "tu16.csv"), index=False)
 
 # split CPS into filers and non-filers
