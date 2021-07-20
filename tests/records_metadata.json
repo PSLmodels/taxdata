@@ -1084,7 +1084,7 @@
     "form": {
       "2014-20??": "determined using government benefit program data"
     },
-    "availability": "taxdata_puf, taxdata_cps",
+    "availability": "taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1157,7 +1157,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_puf, taxdata_cps",
+    "availability": "taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1169,7 +1169,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_puf, taxdata_cps",
+    "availability": "taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1181,7 +1181,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_puf, taxdata_cps",
+    "availability": "taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1193,7 +1193,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_puf, taxdata_cps",
+    "availability": "taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
@@ -1205,7 +1205,7 @@
     "form": {
       "2014-20??": "imputed using the C-TAM model"
     },
-    "availability": "taxdata_puf, taxdata_cps",
+    "availability": "taxdata_cps",
     "range": {
       "min": 0,
       "max": 9e99
