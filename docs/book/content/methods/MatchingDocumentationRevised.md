@@ -1,7 +1,7 @@
 
 This memorandum documents the procedures, programs and results from performing a constrained statistical match between the 2004 SOI Public Use File (PUF) and the March 2005 Current Population Survey (CPS). First, we provide an overview of statistical matching and how this relates to the specific challenges of combining information from the SOI and CPS. Second, we describe the SAS programs we developed in the course of implementing the match. Finally, we present the results of the match performed in November 2009.
 
-
+(content:matchdoc)=
 # Overview of Statistical Matching
 
 In the standard statistical matching framework, one has observations from two data sets (File A and File B) on a set of common variables (X-variables). Additionally, records from File A contain information on another set of variables (Y-Variables) that are not available on File B. Similarly, File B contains information on a third set of variables (Z- Variables) that are not available on File A. Statistical matching involves creating a new data set (File C) containing information on X, Y and Z.
@@ -33,9 +33,11 @@ Unconstrained statistical matching is probably the most popular type of matching
 In unconstrained matching, one seeks a record in File B that resembles or is in some sense “close” to a record in File A. This presumes some sort of metric or distance function is introduced. One commonly used metric, the Euclidean distance normalized by the standard deviation, appears frequently in the literature.
 
 Let $X^A_{i1}$, $X^A_{i2}$, ..... $X^A_{in}$ denote a set of X-variables from record i in File A used to construct the distance function and $X^B_{j1}$, $X^B_{j2}$, ......, $X^B_{jn}$ be similar values of the <u>same</u> variables from record j in File B. Then the distance function is:
+
 $$
 d_{ij} = \left[\sum_{k}\left(\left(X^A_{ik}-X^B_{jk} / \sigma_k^2 \right)\right) \right]^{\frac{1}{2}}
 $$
+
 where $\sigma_k$ is the standard deviation of the kth X-variable in File A. It should be emphasized that the choice of an appropriate distance function can have important consequences for the integrity of the matched dataset [Paass(1985)].
 
 Minimum distance matching (or “nearest neighbor” matching) was probably the first large-scale statistical matching method to be performed for use in a microsimulation environment [see Okner (1972)]. It’s also very easy to describe: for each record in File A, select the record in File B that is “closest” in a minimum distance sense. Like all unconstrained matches, minimum distance matching suffers from the fact that the marginal distributions of the Z-variables in the matched file could be quite different than on the original file and it is important to check the validity of the results. In a sense, most unconstrained methods represent refinements of this procedure [Armstrong (1989)].
@@ -127,33 +129,21 @@ level detail.)
 
 * <u>Partitioning</u>: Attempt to keep (unweighted) cell sizes to a minimum of 30 and a maximum of 500. Check the weighted cell counts for each of the partitions and check for unbalanced cells.
 * <u>Estimation</u>: Fit a (weighted) linear model for two Y- and Z-variables as a function of the X-variables common to both files.
-<table border="0">
- <tr>
-    <td>Host File: A(X,Y)</td>
-    <td>Donor File: B(X,Z)</td>
- </tr>
- <tr>
-    <td>$Y_1 = F_1(X) = XB_1 + e_1$</td>
-    <td>$Z_1 = F_1(X) = XB_1 + e_1$</td>
- </tr>
- <tr>
-    <td>$Y_2 = F_2(X) = XB_2 + e_2$</td>
-    <td>$Z_2 = F_2(X) = XB_2 + e_2$</td>
- </tr>
-</table>
+
+| Host File: $A(X,Y)$      | Donor File: $B(X,Z)$ |
+| ----------- | ----------- |
+| $Y_1 = F_1(X) = XB_1 + e_1$     | $Z_1 = F_1(X) = XB_1 + e_1$       |
+| $Y_2 = F_2(X) = XB_2 + e_2$   | $Z_2 = F_2(X) = XB_2 + e_2$        |
+
 * <u>Predicted Values</u>: Calculate fitted values of all four variables on each file.
-<table border="0">
- <tr>
-    <td>Host File: A(X,Y)</td>
-    <td>Donor File: B(X,Z)</td>
- </tr>
- <tr>
-    <td>$Y_1^*,Y_2^*,Z_1^*,Z_2^*$</td>
-    <td>$Y_1^*,Y_2^*,Z_1^*,Z_2^*$</td>
- </tr>
-</table>
+
+| Host File: $A(X,Y)$      | Donor File: $B(X,Z)$ |
+| ----------- | ----------- |
+| $Y_1^*,Y_2^*,Z_1^*,Z_2^*$    | $Y_1^*,Y_2^*,Z_1^*,Z_2^*$       |
+|
+
 * <u>Align Partitions</u>: Scale the weights for each cell in the Donor File so that they are equal to the weights in the Host file. Next, sort cells on the predicted value of one of the Z-variables so records with the closest values of the match variables are ordered correctly.
-* * <u>Perform Match</u>: Match each record in Host File to the closest Donor record, splitting records if necessary to ensure all the "weight" on the Donor records are used up.
+* <u>Perform Match</u>: Match each record in Host File to the closest Donor record, splitting records if necessary to ensure all the "weight" on the Donor records are used up.
 
 
 [^footnote1]: In applied work, it is often the case that the two input data sources are from surveys taken over different time frames so that the weighted population totals are slightly different across the two files. In this case, it is a common procedure to "scale" one of the files (usually the Donor file) so that the weighted population totals agree.

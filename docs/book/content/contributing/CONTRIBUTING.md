@@ -1,3 +1,4 @@
+(content:contributing)=
 # TaxData Contributor Guide
 
 Contributions to TaxData are always welcome. This document aims to serve as a
@@ -10,17 +11,19 @@ More information about Conda can be found [here](https://docs.conda.io/en/latest
 
 **Contents**
 
-* [Feature Requests](#Feature-Requests)
-* [Bug Reports](#Bug-Reports)]
-* [Developer Set Up](#Developer-Set-Up)
-* [About the Data](#About-the-Data)
-* [Common Contributions](#Common-Contributions)
-  * [Updating CBO Projectoins](#Updating-CBO-Projections)
-  * [Updating SOI Estimates](#Updating-SOI-Estimates)
-  * [Adding and Removing Variables](#Adding-and-Removing-Variables)
-* [Testing](#Testing)
-* [Workflow](#Workflow)
-* [IMPORTANT NOTE](#IMPORTANT-NOTE)
+- [TaxData Contributor Guide](#taxdata-contributor-guide)
+  - [Feature Requests](#feature-requests)
+  - [Bug Reports](#bug-reports)
+  - [Developer Set Up](#developer-set-up)
+  - [About the Data](#about-the-data)
+  - [Common Contributions](#common-contributions)
+    - [Updating CBO Projections](#updating-cbo-projections)
+    - [Updating SOI Estimates](#updating-soi-estimates)
+    - [Adding and Removing Variables](#adding-and-removing-variables)
+  - [Testing](#testing)
+  - [Workflow](#workflow)
+  - [Issuing New Releases](#issuing-new-releases)
+  - [IMPORTANT NOTE](#important-note)
 
 ## Feature Requests
 
@@ -101,7 +104,7 @@ workings of these files. In the meantime, please include any questions you
 have in the issue related to the new variable.
 
 You will also need to add that variable to `taxdata/tests/records_metadata.json`.
-For example, the metadata for the variable `e00200` is 
+For example, the metadata for the variable `e00200` is
 ```json
 "e00200": {
     "type": "float",
@@ -240,15 +243,15 @@ TaxData uses a semantic versioning system with the following criteria:
 * Removing the capability to use PUF or CPS versions
 
 **Minor Release**
-* Significant methodology enhancements e.g. adding a new linear programming model, 
+* Significant methodology enhancements e.g. adding a new linear programming model,
 updating statistical matching or tax unit creation, new imputation methods, etc.
 * Adding new variables
 * Minor changes to tax unit creation logic that don't break the API
-* Adding support for creating files from different years of the PUF and CPS, 
+* Adding support for creating files from different years of the PUF and CPS,
 assuming this doesn't break backward compatibility
 * Adding new imputation methods for new variables w/o breaking the existing API
-* Updating which CBO projections we use to calculate growth rates (until we can 
-parameterize the choice of cbo projections, after which removing an option would 
+* Updating which CBO projections we use to calculate growth rates (until we can
+parameterize the choice of cbo projections, after which removing an option would
 necessitate a major release)
 
 **Patch Release**

@@ -1,3 +1,5 @@
+# Extrapolation Methods
+
 In this memorandum we describe a methodology for extrapolating, or aging, microdata files for several years into the future. While the procedures can be applied to any type of microdata, we pay special attention to the unique challenges faced when dealing with individual income tax data. These data will include, for example, administrative tax return records and samples such as the Statistics of Income (SOI) Public Use File (PUF).
 
 It is useful and occasionally necessary to make a distinction between the methodology we employ to age the data and the development of the macroeconomic forecasts that we would like the data to represent. We treat both here.
