@@ -7,6 +7,8 @@ parts:
 - caption: taxdata Data
   chapters:
   - file: content/data/datasets
+  - file: content/data/about_puf_data
+  - file: content/data/puf_file_doc
   - file: content/data/about_cps_data
   - file: content/data/cps_file_doc
 - caption: taxdata Methodology
@@ -14,9 +16,9 @@ parts:
   - file: content/methods/CBO_Baseline_Updating_Instructions
   - file: content/methods/SOI_Estimates_Updating_Instructions
   - file: content/methods/MATCH
-  - file: content/methods/MatchingDocumentationRevised.pdf
-  - file: content/methods/Stage1_Stage2_Methodology.pdf
-  - file: content/methods/Stage1_Stage2_2009PUF.pdf
+  - file: content/methods/MatchingDocumentationRevised
+  - file: content/methods/Stage1_Stage2_Methodology
+  - file: content/methods/Stage1_Stage2_2009PUF
   - file: content/methods/puf_stage3
 # - caption: taxdata API
 #   chapters:
@@ -27,11 +29,6 @@ parts:
   chapters:
   # - file: content/about/roadmap
   - file: content/about/history
-  - file: content/about/taxdata_report_2021-06-16.pdf
-  - file: content/about/taxdata_report_2021-06-10.pdf
-  - file: content/about/taxdata_report_2021-01-02.pdf
-  - file: content/about/taxdata_report_2020-12-20.pdf
-  - file: content/about/taxdata_report_2021-08-22.pdf
   - file: ../../LICENSE
 # - caption: References
 #   chapters:
