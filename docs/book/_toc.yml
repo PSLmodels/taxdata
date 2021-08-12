@@ -29,7 +29,7 @@ parts:
   chapters:
   # - file: content/about/roadmap
   - file: content/about/history
-  - file: ../../LICENSE
+  - file: content/about/LICENSE
 # - caption: References
 #   chapters:
 #   - file: content/references
