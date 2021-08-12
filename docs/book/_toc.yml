@@ -27,7 +27,7 @@ parts:
 #     - file: content/api/targeting
 - caption: About
   chapters:
-  # - file: content/about/roadmap
+  - file: content/about/roadmap
   - file: content/about/history
   - file: content/about/LICENSE
 # - caption: References
