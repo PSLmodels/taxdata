@@ -1,5 +1,6 @@
-#### Stage III Documentation
-#### February 2017
+(content:puf_stage3)=
+# Stage III Documentation
+## February 2017
 
 Stage I and Stage II of OSPC’s extrapolation procedure blow up and
 re-weight each variable in the PUF-CPS matched data file (PUF) in
@@ -20,7 +21,7 @@ level of AGI in the PUF. The factor is calculated so that the
 aggregate value of the variable targeted does not change, but the
 distribution more accurately reflects the data.
 
-### Procedure
+## Procedure
 
 For the targeted variable, Stage III uses information from [SOI Tax
 Stats](https://www.irs.gov/uac/soi-tax-stats-individual-statistical-tables-by-size-of-adjusted-gross-income)
@@ -53,7 +54,7 @@ any possible relationship between two types of income will be
 lost. However, in the case of interest income, there do not appear to
 be any strong correlations with other income items (see appendix).
 
-### Results 
+## Results
 Despite relying on AGI level found in the original PUF rather than
 recalculating AGI each year to account for growth as Tax-Calc does,
 the final distribution when including the adjustment is much more
@@ -63,7 +64,7 @@ figure A.
 *fig. A*
 ![Distribution image](https://github.com/andersonfrailey/Notebook-Uploads/blob/master/intincomedistribution.png)
 
-### Tax-Calculator Implementation
+## Tax-Calculator Implementation
 Running `stage3.py` in the `stage3` directory will output a file
 called `puf_ratios.csv`. This file is placed in the `taxcalc`
 directory within the larger Tax-Calculator package. To apply the
@@ -74,41 +75,41 @@ AGI bin they fall in. Tax-Calculator reads in `puf_ratios.csv` in the
 Records class and applies the adjustment factors based on the value of
 `agi_bin` for each tax unit.
 
-### Appendix
+## Appendix
 
 AGI Level Bins:
 
-| AGI Level              | 
-|------------------------| 
-| Less than zero         | 
-| $1-$5,000              | 
-| $5,000 -$10,000        | 
-| $10,000-$15,000        | 
-| $15,000-$20,000        | 
-| $20,000-$25,000        | 
-| $25,000-$30,000        | 
-| $30,000-$40,000        | 
-| $40,000-$50,000        | 
-| $50,000-$75,000        | 
-| $75,000-$100,000       | 
-| $100,000-$200,000      | 
-| $200,000-$500,000      | 
-| $500,000-$1,000,000    | 
-| $1,000,000-$1,500,000  | 
-| $1,500,000-$2,000,000  | 
-| $2,000,000-$5,000,000  | 
-| $5,000,000-$10,000,000 | 
-| $10,000,000 and over   | 
+| AGI Level              |
+|------------------------|
+| Less than zero         |
+| $1-$5,000              |
+| $5,000 -$10,000        |
+| $10,000-$15,000        |
+| $15,000-$20,000        |
+| $20,000-$25,000        |
+| $25,000-$30,000        |
+| $30,000-$40,000        |
+| $40,000-$50,000        |
+| $50,000-$75,000        |
+| $75,000-$100,000       |
+| $100,000-$200,000      |
+| $200,000-$500,000      |
+| $500,000-$1,000,000    |
+| $1,000,000-$1,500,000  |
+| $1,500,000-$2,000,000  |
+| $2,000,000-$5,000,000  |
+| $5,000,000-$10,000,000 |
+| $10,000,000 and over   |
 
 Correlations:
 
-| Income Item         | No Adjustment | Adjustment | 
-|---------------------|---------------|------------| 
-| Wages and Salaries  | 0.091         | 0.089      | 
-| Ordinary Dividends  | 0.217         | 0.206      | 
-| Qualified Dividends | 0.162         | 0.154      | 
-| Business Income     | -0.005        | 0.002      | 
-| Capital Gains       | 0.171         | 0.170      | 
+| Income Item         | No Adjustment | Adjustment |
+|---------------------|---------------|------------|
+| Wages and Salaries  | 0.091         | 0.089      |
+| Ordinary Dividends  | 0.217         | 0.206      |
+| Qualified Dividends | 0.162         | 0.154      |
+| Business Income     | -0.005        | 0.002      |
+| Capital Gains       | 0.171         | 0.170      |
 
 
 

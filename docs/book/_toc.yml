@@ -1,0 +1,38 @@
+format: jb-book
+root: index
+parts:
+- caption: Contributing to taxdata
+  chapters:
+  - file: content/contributing/CONTRIBUTING
+- caption: taxdata Data
+  chapters:
+  - file: content/data/datasets
+  - file: content/data/about_puf_data
+  - file: content/data/puf_file_doc
+  - file: content/data/about_cps_data
+  - file: content/data/cps_file_doc
+- caption: taxdata Methodology
+  chapters:
+  - file: content/methods/CBO_Baseline_Updating_Instructions
+  - file: content/methods/SOI_Estimates_Updating_Instructions
+  - file: content/methods/MATCH
+  - file: content/methods/MatchingDocumentationRevised
+  - file: content/methods/Stage1_Stage2_Methodology
+  - file: content/methods/Stage1_Stage2_2009PUF
+  - file: content/methods/puf_stage3
+# - caption: taxdata API
+#   chapters:
+#   - file: content/api/public_api
+#     sections:
+#     - file: content/api/targeting
+- caption: About
+  chapters:
+  - file: content/about/roadmap
+  - file: content/about/history
+  - file: content/about/LICENSE
+# - caption: References
+#   chapters:
+#   - file: content/references
+# - caption: Citations of taxdata
+#   chapters:
+#   - file: content/citations
