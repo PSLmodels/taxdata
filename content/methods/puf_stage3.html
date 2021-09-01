@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stage III Documentation &#8212; taxdata</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet" />
+  <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Roadmap" href="../about/roadmap.html" />
+    <link rel="prev" title="Extrapolation of 2009 PUF" href="Stage1_Stage2_2009PUF.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      <h1 class="site-logo" id="site-title">taxdata</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   About taxdata
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing to taxdata
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/CONTRIBUTING.html">
+   TaxData Contributor Guide
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  taxdata Data
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/datasets.html">
+   TaxData Dataset Documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/about_puf_data.html">
+   About IRS Public Use Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/puf_file_doc.html">
+   Current Population Survey Tax Unit File Documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/about_cps_data.html">
+   About CPS Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/cps_file_doc.html">
+   Current Population Survey Tax Unit File Documentation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  taxdata Methodology
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="CBO_Baseline_Updating_Instructions.html">
+   Updating the CBO Baseline
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="SOI_Estimates_Updating_Instructions.html">
+   Updating the SOI Estimates
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="MATCH.html">
+   CPS Match File documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="MatchingDocumentationRevised.html">
+   Overview of Statistical Matching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Stage1_Stage2_Methodology.html">
+   Extrapolation Methods
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Stage1_Stage2_2009PUF.html">
+   Extrapolation of 2009 PUF
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Stage III Documentation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/LICENSE.html">
+   CC0 1.0 Universal Summary
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/content/methods/puf_stage3.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/taxdata"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/methods/puf_stage3.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#february-2017">
+   February 2017
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#procedure">
+   Procedure
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#results">
+   Results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#tax-calculator-implementation">
+   Tax-Calculator Implementation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="stage-iii-documentation">
+<span id="content-puf-stage3"></span><h1>Stage III Documentation<a class="headerlink" href="#stage-iii-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="february-2017">
+<h2>February 2017<a class="headerlink" href="#february-2017" title="Permalink to this headline">¶</a></h2>
+<p>Stage I and Stage II of OSPC’s extrapolation procedure blow up and
+re-weight each variable in the PUF-CPS matched data file (PUF) in
+order to match macroeconomic projections of growth rates and aggregate
+totals. Stage I determines per capita grow (or “blowup”) factors using
+both macro targets and population growth rates. In Stage II, a linear
+programming algorithm is applied in order to adjust the weight given
+to each record so that all targeted variables will sum up to their
+respective targets, while non-targeted variables also stay in
+reasonable ranges.</p>
+<p>While Stage II does target wage distribution, only the aggregate
+totals for all other income variables are targeted and the resulting
+distributions of those variables can be inconsistent with what
+publicly available tax data shows. Stage III fixes this error by
+applying an adjustment factor to each record in the PUF based on the
+level of AGI in the PUF. The factor is calculated so that the
+aggregate value of the variable targeted does not change, but the
+distribution more accurately reflects the data.</p>
+</div>
+<div class="section" id="procedure">
+<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this headline">¶</a></h2>
+<p>For the targeted variable, Stage III uses information from <a class="reference external" href="https://www.irs.gov/uac/soi-tax-stats-individual-statistical-tables-by-size-of-adjusted-gross-income">SOI Tax
+Stats</a>
+tables to determine what percent of its total is in each AGI bin for
+2009-2014 (see appendix for the bin breakdown). The distribution is
+assumed to hold at 2014 levels for the years 2015-2026. These are the
+goal distributions.</p>
+<p>For each year adjustment factors are needed, the targeted variable is
+extrapolated to that year using the same routine as in
+Tax-Calculator. The goal bin amounts are then found using the goal
+distributions and aggregate total found in the PUF.</p>
+<p>The goal bin amounts are divided by the actual bin amounts, which are
+calculated using the AGI variable found in the PUF before final
+processing, in order to find a set of adjustment factors that can be
+multiplied by each record in each AGI bin so that bin totals reach
+their targeted levels.</p>
+<p>While this process does benefit from its simplicity, there are some
+trade-offs:</p>
+<ul class="simple">
+<li><p>Because AGI bin is determined using 2009 AGI levels, it does not
+account for any change in AGI overtime that could result in a tax unit
+moving into a different AGI bin. Thus, the final distribution will not
+be identical to what is found in IRS tax data.</p></li>
+<li><p>Because the factor is only being applied to one element of income,
+any possible relationship between two types of income will be
+lost. However, in the case of interest income, there do not appear to
+be any strong correlations with other income items (see appendix).</p></li>
+</ul>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>Despite relying on AGI level found in the original PUF rather than
+recalculating AGI each year to account for growth as Tax-Calc does,
+the final distribution when including the adjustment is much more
+representative of the distribution found in SOI data, as seen in
+figure A.</p>
+<p><em>fig. A</em>
+<img alt="Distribution image" src="https://github.com/andersonfrailey/Notebook-Uploads/blob/master/intincomedistribution.png" /></p>
+</div>
+<div class="section" id="tax-calculator-implementation">
+<h2>Tax-Calculator Implementation<a class="headerlink" href="#tax-calculator-implementation" title="Permalink to this headline">¶</a></h2>
+<p>Running <code class="docutils literal notranslate"><span class="pre">stage3.py</span></code> in the <code class="docutils literal notranslate"><span class="pre">stage3</span></code> directory will output a file
+called <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code>. This file is placed in the <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code>
+directory within the larger Tax-Calculator package. To apply the
+proper adjustment factor, Tax-Calc uses the variable <code class="docutils literal notranslate"><span class="pre">agi_bin</span></code> in
+<code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>. This variable is added during the final preparation of
+<code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> and is between 0 and 18 for each tax unit dependent on which
+AGI bin they fall in. Tax-Calculator reads in <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> in the
+Records class and applies the adjustment factors based on the value of
+<code class="docutils literal notranslate"><span class="pre">agi_bin</span></code> for each tax unit.</p>
+</div>
+<div class="section" id="appendix">
+<h2>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
+<p>AGI Level Bins:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>AGI Level</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Less than zero</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(1-\)</span>5,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(5,000 -\)</span>10,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(10,000-\)</span>15,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(15,000-\)</span>20,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(20,000-\)</span>25,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(25,000-\)</span>30,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(30,000-\)</span>40,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(40,000-\)</span>50,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(50,000-\)</span>75,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(75,000-\)</span>100,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(100,000-\)</span>200,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(200,000-\)</span>500,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(500,000-\)</span>1,000,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(1,000,000-\)</span>1,500,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(1,500,000-\)</span>2,000,000</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(2,000,000-\)</span>5,000,000</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(5,000,000-\)</span>10,000,000</p></td>
+</tr>
+<tr class="row-even"><td><p>$10,000,000 and over</p></td>
+</tr>
+</tbody>
+</table>
+<p>Correlations:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Income Item</p></th>
+<th class="head"><p>No Adjustment</p></th>
+<th class="head"><p>Adjustment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Wages and Salaries</p></td>
+<td><p>0.091</p></td>
+<td><p>0.089</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ordinary Dividends</p></td>
+<td><p>0.217</p></td>
+<td><p>0.206</p></td>
+</tr>
+<tr class="row-even"><td><p>Qualified Dividends</p></td>
+<td><p>0.162</p></td>
+<td><p>0.154</p></td>
+</tr>
+<tr class="row-odd"><td><p>Business Income</p></td>
+<td><p>-0.005</p></td>
+<td><p>0.002</p></td>
+</tr>
+<tr class="row-even"><td><p>Capital Gains</p></td>
+<td><p>0.171</p></td>
+<td><p>0.170</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./content/methods"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+    <div id="prev">
+        <a class="left-prev" href="Stage1_Stage2_2009PUF.html" title="previous page">
+            <i class="prevnext-label fas fa-angle-left"></i>
+            <div class="prevnext-info">
+                <p class="prevnext-label">previous</p>
+                <p class="prevnext-title">Extrapolation of 2009 PUF</p>
+            </div>
+        </a>
+    </div>
+     <div id="next">
+        <a class="right-next" href="../about/roadmap.html" title="next page">
+            <div class="prevnext-info">
+                <p class="prevnext-label">next</p>
+                <p class="prevnext-title">Roadmap</p>
+            </div>
+            <i class="prevnext-label fas fa-angle-right"></i>
+        </a>
+     </div>
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Anderson Frailey<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

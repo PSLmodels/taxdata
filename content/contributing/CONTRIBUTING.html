@@ -1,0 +1,700 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaxData Contributor Guide &#8212; taxdata</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet" />
+  <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="TaxData Dataset Documentation" href="../data/datasets.html" />
+    <link rel="prev" title="About taxdata" href="../../index.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      <h1 class="site-logo" id="site-title">taxdata</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   About taxdata
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing to taxdata
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   TaxData Contributor Guide
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  taxdata Data
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/datasets.html">
+   TaxData Dataset Documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/about_puf_data.html">
+   About IRS Public Use Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/puf_file_doc.html">
+   Current Population Survey Tax Unit File Documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/about_cps_data.html">
+   About CPS Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/cps_file_doc.html">
+   Current Population Survey Tax Unit File Documentation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  taxdata Methodology
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/CBO_Baseline_Updating_Instructions.html">
+   Updating the CBO Baseline
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/SOI_Estimates_Updating_Instructions.html">
+   Updating the SOI Estimates
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/MATCH.html">
+   CPS Match File documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/MatchingDocumentationRevised.html">
+   Overview of Statistical Matching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/Stage1_Stage2_Methodology.html">
+   Extrapolation Methods
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/Stage1_Stage2_2009PUF.html">
+   Extrapolation of 2009 PUF
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../methods/puf_stage3.html">
+   Stage III Documentation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/LICENSE.html">
+   CC0 1.0 Universal Summary
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/content/contributing/CONTRIBUTING.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/taxdata"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/contributing/CONTRIBUTING.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#feature-requests">
+   Feature Requests
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bug-reports">
+   Bug Reports
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#developer-set-up">
+   Developer Set Up
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#about-the-data">
+   About the Data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#common-contributions">
+   Common Contributions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#updating-cbo-projections">
+     Updating CBO Projections
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#updating-soi-estimates">
+     Updating SOI Estimates
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#adding-and-removing-variables">
+     Adding and Removing Variables
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#testing">
+   Testing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#workflow">
+   Workflow
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issuing-new-releases">
+   Issuing New Releases
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#important-note">
+   IMPORTANT NOTE
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="taxdata-contributor-guide">
+<span id="content-contributing"></span><h1>TaxData Contributor Guide<a class="headerlink" href="#taxdata-contributor-guide" title="Permalink to this headline">¶</a></h1>
+<p>Contributions to TaxData are always welcome. This document aims to serve as a
+guide to setting up your developer environment, and requesting
+and contributing new features, and reporting bugs. It assumes familiarity with
+the Conda package manager, Git, and GitHub.</p>
+<p>More information on Git and GitHub can be found <a class="reference external" href="https://docs.github.com/en/github/getting-started-with-github">here</a>.
+More information about Conda can be found <a class="reference external" href="https://docs.conda.io/en/latest/">here</a>.</p>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="#taxdata-contributor-guide">TaxData Contributor Guide</a></p>
+<ul>
+<li><p><a class="reference external" href="#feature-requests">Feature Requests</a></p></li>
+<li><p><a class="reference external" href="#bug-reports">Bug Reports</a></p></li>
+<li><p><a class="reference external" href="#developer-set-up">Developer Set Up</a></p></li>
+<li><p><a class="reference external" href="#about-the-data">About the Data</a></p></li>
+<li><p><a class="reference external" href="#common-contributions">Common Contributions</a></p>
+<ul>
+<li><p><a class="reference external" href="#updating-cbo-projections">Updating CBO Projections</a></p></li>
+<li><p><a class="reference external" href="#updating-soi-estimates">Updating SOI Estimates</a></p></li>
+<li><p><a class="reference external" href="#adding-and-removing-variables">Adding and Removing Variables</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#testing">Testing</a></p></li>
+<li><p><a class="reference external" href="#workflow">Workflow</a></p></li>
+<li><p><a class="reference external" href="#issuing-new-releases">Issuing New Releases</a></p></li>
+<li><p><a class="reference external" href="#important-note">IMPORTANT NOTE</a></p></li>
+</ul>
+</li>
+</ul>
+<div class="section" id="feature-requests">
+<h2>Feature Requests<a class="headerlink" href="#feature-requests" title="Permalink to this headline">¶</a></h2>
+<p>To request a new feature, variable, etc. in TaxData, open up an <a class="reference external" href="https://github.com/PSLmodels/taxdata">issue</a>
+detailing your request. If your request is to include a new variable in either
+<code class="docutils literal notranslate"><span class="pre">cps.csv.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>, please include a description of how that variable will
+be used.</p>
+</div>
+<div class="section" id="bug-reports">
+<h2>Bug Reports<a class="headerlink" href="#bug-reports" title="Permalink to this headline">¶</a></h2>
+<p>If you find an error in the final datasets or in the code used to produce our
+datasets, please open up an <a class="reference external" href="https://github.com/PSLmodels/taxdata">issue</a> with
+details about the bug and what you believe the solution should be.</p>
+</div>
+<div class="section" id="developer-set-up">
+<h2>Developer Set Up<a class="headerlink" href="#developer-set-up" title="Permalink to this headline">¶</a></h2>
+<p>All development must be done in the <code class="docutils literal notranslate"><span class="pre">taxdata-dev</span></code> conda environment. To set up
+the environment, first <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">install conda</a>
+locally. Next, fork the TaxData repository and activate the conda environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> taxdata
+$ conda env create -f environment.yml
+$ conda activate taxdata-dev
+</pre></div>
+</div>
+<p>Once you have successfully created and activated the <code class="docutils literal notranslate"><span class="pre">taxdata-dev</span></code> conda
+environment, you’re ready to start contributing.</p>
+</div>
+<div class="section" id="about-the-data">
+<h2>About the Data<a class="headerlink" href="#about-the-data" title="Permalink to this headline">¶</a></h2>
+<p>The two data sources we currently use are the <a class="reference external" href="https://data.nber.org/data/current-population-survey-data.html">CPS March Supplements</a>
+and <a class="reference external" href="https://www.irs.gov/statistics/soi-tax-stats-individual-public-use-microdata-files">IRS SOI Public Use File (PUF)</a>.
+The CPS supplements are publicly available while the PUF must be purchased from
+the IRS. We cannot provide our copy to anyone who has not signed the necessary
+documents from the IRS.</p>
+<p>TaxData produces two microdata files: <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">cps.csv.gz</span></code>. More information
+about these files can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/blob/master/datasets.md">here</a>. Each file has a corresponding weights file, <code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code>
+and <code class="docutils literal notranslate"><span class="pre">cps_weights.csv.gz</span></code>, respectively. Additionally, TaxData creates <code class="docutils literal notranslate"><span class="pre">grow_factors.csv</span></code>
+and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code>. These two files are used to extrapolate the microdata in
+the future. Documentation on our extrapolation methods can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/tree/master/doc">here</a>.
+Documentation on <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/blob/master/puf_stage3/doc/puf_stage3.md">here</a>.</p>
+</div>
+<div class="section" id="common-contributions">
+<h2>Common Contributions<a class="headerlink" href="#common-contributions" title="Permalink to this headline">¶</a></h2>
+<p>Contributions typically fall into two categories:</p>
+<ol class="simple">
+<li><p>Updating the CBO forecasts and IRS-SOI estimates that we use during our extrapolation
+routines.</p></li>
+<li><p>Adding or removing variables from <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">cps.csv.gz</span></code>.</p></li>
+</ol>
+<div class="section" id="updating-cbo-projections">
+<h3>Updating CBO Projections<a class="headerlink" href="#updating-cbo-projections" title="Permalink to this headline">¶</a></h3>
+<p>We use data from the CBO 10-Year economic projections, revenue projections, and
+unemployment compensation projections, in conjunction with data from IRS
+publication 6187, OASI Trust Fund Annual Trustees Report, and BLS and the basis
+of our extrapolations. The entire update process has been automated and instructions
+on how to do it can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/blob/master/doc/CBO_Baseline_Updating_Instructions.md">here</a>.</p>
+<p>NOTE: If you want to change the content contained in the CBO update documentation,
+you must change the template used to create the documentation, otherwise your
+changes will be written over. The template can be found at
+<code class="docutils literal notranslate"><span class="pre">taxdata/puf_stage1/doc/cbo_instructions_template.md</span></code>.</p>
+</div>
+<div class="section" id="updating-soi-estimates">
+<h3>Updating SOI Estimates<a class="headerlink" href="#updating-soi-estimates" title="Permalink to this headline">¶</a></h3>
+<p>Documentation for updating the SOI estimates can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/blob/master/doc/SOI_Estimates_Updating_Instructions.md">here</a>.</p>
+</div>
+<div class="section" id="adding-and-removing-variables">
+<h3>Adding and Removing Variables<a class="headerlink" href="#adding-and-removing-variables" title="Permalink to this headline">¶</a></h3>
+<p>Before you start to add new variables, open up an <a class="reference external" href="https://github.com/PSLmodels/taxdata">issue</a>
+to explain what the new variables is, why it’s needed, how it will be used by
+Tax-Calculator, etc. Once you’ve done that, all of the code used to create the
+microdata files can be found in the <code class="docutils literal notranslate"><span class="pre">cps_data</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_data</span></code> directories. The
+exact changes you will need to make depend on the nature of the variable you’re
+adding. We’re working on documentation to provide more details on the internal
+workings of these files. In the meantime, please include any questions you
+have in the issue related to the new variable.</p>
+<p>You will also need to add that variable to <code class="docutils literal notranslate"><span class="pre">taxdata/tests/records_metadata.json</span></code>.
+For example, the metadata for the variable <code class="docutils literal notranslate"><span class="pre">e00200</span></code> is</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;e00200&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Wages, salaries, and tips for filing unit&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;form&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;2013-2016&quot;</span><span class="p">:</span> <span class="s2">&quot;1040 line 7&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;availability&quot;</span><span class="p">:</span> <span class="s2">&quot;taxdata_puf, taxdata_cps&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;range&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&quot;max&quot;</span><span class="p">:</span> <span class="mf">9e+99</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> is typically <code class="docutils literal notranslate"><span class="pre">float</span></code> for monetary variables such as wages and <code class="docutils literal notranslate"><span class="pre">int</span></code> for
+categorical or boolean variables e.g. <code class="docutils literal notranslate"><span class="pre">MARS</span></code> and <code class="docutils literal notranslate"><span class="pre">MIDR</span></code></p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;MARS&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;form&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;2013-2016&quot;</span><span class="p">:</span> <span class="s2">&quot;1040 lines 1-5&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;availability&quot;</span><span class="p">:</span> <span class="s2">&quot;taxdata_puf, taxdata_cps&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;range&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;min&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="nt">&quot;max&quot;</span><span class="p">:</span> <span class="mi">5</span>
+    <span class="p">}</span>
+<span class="p">},</span>
+<span class="nt">&quot;MIDR&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;1 if separately filing spouse itemizes; otherwise 0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;form&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;2013-2016&quot;</span><span class="p">:</span> <span class="s2">&quot;1040 line 39b&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;availability&quot;</span><span class="p">:</span> <span class="s2">&quot;taxdata_puf&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;range&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&quot;max&quot;</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">desc</span></code> is a short description of the variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">form</span></code> is the IRS form where the variable would be found (if applicable).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">availability</span></code> indicated which files the variable will be available in.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">range</span></code> gives the minimum and maximum allowable values for that variable.</p></li>
+</ul>
+<p>You can (and should) make any additions to the test suite you feel are necessary
+to ensure that any mistakes related to this new variable are caught before they
+are merged into the master branch.</p>
+<p>All of the above also applies to removing variables. You will need to open up an
+issue to explain exactly why that variable is no longer needed and to remove
+its metadata from <code class="docutils literal notranslate"><span class="pre">records_metadata.json</span></code>.</p>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>TaxData has a robust test suite used to validate all of the data it produces
+before it is merged into Tax-Calculator. All of these tests are run from the
+commmand line by navigating to the top of the <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> directory and entering</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pytest
+</pre></div>
+</div>
+<p>Depending on what changes you made multiple tests may initially fail. This is
+completely expected at first. Each failed test’s error message will contain
+instruction for resolving the failure.</p>
+<p>A common failure occurs if you cause any changes to the microdata files. We track
+the expected aggregate totals for each variable in <code class="docutils literal notranslate"><span class="pre">taxdata/tests/cps_agg_expected.txt</span></code>
+and <code class="docutils literal notranslate"><span class="pre">taxdata/tests/puf_agg_expected.txt</span></code>. If the new microdata files do not match
+those aggregate numbers, new files called <code class="docutils literal notranslate"><span class="pre">cps_agg_actual.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_agg_actual.txt</span></code>
+will be created. If the changes are expected and explainable, simply copy the
+contents of the <code class="docutils literal notranslate"><span class="pre">{file}_actual.txt</span></code> file into <code class="docutils literal notranslate"><span class="pre">{file}_expected.txt</span></code> file. Do
+not include the <code class="docutils literal notranslate"><span class="pre">{file}_actual.txt</span></code> files to your Git commits.</p>
+</div>
+<div class="section" id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
+<p>A typical workflow is</p>
+<ol class="simple">
+<li><p>Update your local master branch</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git checkout master
+$ git fetch upstream
+$ git merge upstream/master
+$ git push origin master
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Activate <code class="docutils literal notranslate"><span class="pre">taxdata-dev</span></code> and create a new branch to work on</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> taxdata
+$ conda activate taxdata-dev
+$ git checkout -b <span class="o">{</span>branchname<span class="o">}</span>
+</pre></div>
+</div>
+<p>Creating a new branch instead of working on your master branch will prevent your
+master branch from getting ahead or behing of the central repository and save
+you a massive headache down the line.</p>
+<ol class="simple">
+<li><p>Make all of the changes you need following the general guidelines laid out
+above.</p></li>
+<li><p>Run the Makefile to create all of the files by navigating to the top of the
+directory and running one of the following commands:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make all
+$ make puf-files
+$ make cps-files
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">puf-filles</span></code> will run only the scripts used to make files associated with
+the PUF file. <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">cps-files</span></code> will run only the scripts ued to make files
+associated with the CPS file. <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">all</span></code> will run everything.</p>
+<p>To minimize changes caught by version control, it is vital that you use these
+<code class="docutils literal notranslate"><span class="pre">make</span></code> commands rather than running each python file manually.</p>
+<ol class="simple">
+<li><p>Test your changes using pytest.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pytest
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Resolving any test failures.</p></li>
+<li><p>Push your changes to GitHub and open a PR.</p></li>
+</ol>
+</div>
+<div class="section" id="issuing-new-releases">
+<h2>Issuing New Releases<a class="headerlink" href="#issuing-new-releases" title="Permalink to this headline">¶</a></h2>
+<p>As of now, all TaxData releases will only be stored on GitHub. To create a new
+release simply navigate to the <a class="reference external" href="https://github.com/PSLmodels/taxdata/releases">releases page</a>
+and click “Draft a new release”. When you issue a new release, be sure to include
+a link and short description to each of the PRs that have been merged in since
+the last release. These release notes will serve as our change log.</p>
+<p>TaxData uses a semantic versioning system with the following criteria:</p>
+<p><strong>Major Release</strong></p>
+<ul class="simple">
+<li><p>Removing the capability to use PUF or CPS versions</p></li>
+</ul>
+<p><strong>Minor Release</strong></p>
+<ul class="simple">
+<li><p>Significant methodology enhancements e.g. adding a new linear programming model,
+updating statistical matching or tax unit creation, new imputation methods, etc.</p></li>
+<li><p>Adding new variables</p></li>
+<li><p>Minor changes to tax unit creation logic that don’t break the API</p></li>
+<li><p>Adding support for creating files from different years of the PUF and CPS,
+assuming this doesn’t break backward compatibility</p></li>
+<li><p>Adding new imputation methods for new variables w/o breaking the existing API</p></li>
+<li><p>Updating which CBO projections we use to calculate growth rates (until we can
+parameterize the choice of cbo projections, after which removing an option would
+necessitate a major release)</p></li>
+</ul>
+<p><strong>Patch Release</strong></p>
+<ul class="simple">
+<li><p>Standard bug patches</p></li>
+</ul>
+<p>Eventually, we would like to generalize the TaxData API enough to create a fully
+fleshed out python package. We will revist our release procedures when this
+happens.</p>
+</div>
+<div class="section" id="important-note">
+<h2>IMPORTANT NOTE<a class="headerlink" href="#important-note" title="Permalink to this headline">¶</a></h2>
+<p>Never ever ever include <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">cps_matched_puf.csv</span></code>, or any other file
+containing non-aggregated data from the PUF in your Git commits. We have
+included them in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file to help prevent this from happening. Do
+not change that. Ever.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./content/contributing"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+    <div id="prev">
+        <a class="left-prev" href="../../index.html" title="previous page">
+            <i class="prevnext-label fas fa-angle-left"></i>
+            <div class="prevnext-info">
+                <p class="prevnext-label">previous</p>
+                <p class="prevnext-title">About taxdata</p>
+            </div>
+        </a>
+    </div>
+     <div id="next">
+        <a class="right-next" href="../data/datasets.html" title="next page">
+            <div class="prevnext-info">
+                <p class="prevnext-label">next</p>
+                <p class="prevnext-title">TaxData Dataset Documentation</p>
+            </div>
+            <i class="prevnext-label fas fa-angle-right"></i>
+        </a>
+     </div>
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Anderson Frailey<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

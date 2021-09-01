@@ -1,0 +1,763 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Updating the SOI Estimates &#8212; taxdata</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet" />
+  <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="CPS Match File documentation" href="MATCH.html" />
+    <link rel="prev" title="Updating the CBO Baseline" href="CBO_Baseline_Updating_Instructions.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      <h1 class="site-logo" id="site-title">taxdata</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   About taxdata
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing to taxdata
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/CONTRIBUTING.html">
+   TaxData Contributor Guide
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  taxdata Data
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/datasets.html">
+   TaxData Dataset Documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/about_puf_data.html">
+   About IRS Public Use Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/puf_file_doc.html">
+   Current Population Survey Tax Unit File Documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/about_cps_data.html">
+   About CPS Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../data/cps_file_doc.html">
+   Current Population Survey Tax Unit File Documentation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  taxdata Methodology
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="CBO_Baseline_Updating_Instructions.html">
+   Updating the CBO Baseline
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Updating the SOI Estimates
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="MATCH.html">
+   CPS Match File documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="MatchingDocumentationRevised.html">
+   Overview of Statistical Matching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Stage1_Stage2_Methodology.html">
+   Extrapolation Methods
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Stage1_Stage2_2009PUF.html">
+   Extrapolation of 2009 PUF
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="puf_stage3.html">
+   Stage III Documentation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/LICENSE.html">
+   CC0 1.0 Universal Summary
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/content/methods/SOI_Estimates_Updating_Instructions.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/taxdata"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/methods/SOI_Estimates_Updating_Instructions.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#puf">
+   PUF
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cps">
+   CPS
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-required-in-stage1-py">
+   Changes Required in
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     stage1.py
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     PUF
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     CPS
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adding-a-new-target">
+   Adding a new target
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#changes-required-to-stage1-py">
+     Changes required to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       stage1.py
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#changes-to-solve-lp-for-year-py">
+     Changes to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       solve_lp_for_year.py
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="updating-the-soi-estimates">
+<h1>Updating the SOI Estimates<a class="headerlink" href="#updating-the-soi-estimates" title="Permalink to this headline">¶</a></h1>
+<p>This document provides instructions for updating <code class="docutils literal notranslate"><span class="pre">SOI_estimates.csv</span></code> in the
+<code class="docutils literal notranslate"><span class="pre">puf_stage1</span></code> and <code class="docutils literal notranslate"><span class="pre">cps_stage1</span></code> directories. Updating the SOI estimates will also
+require you to update <code class="docutils literal notranslate"><span class="pre">stage1.py</span></code> in both directories.</p>
+<p>All of the data used comes from the
+<a class="reference external" href="https://www.irs.gov/statistics/soi-tax-stats-individual-statistical-tables-by-size-of-adjusted-gross-income">SOI Tax Stats - Individual Statistical Tables by Size of Adjusted Gross Income</a>
+and updates should occur every time new data is released.</p>
+<p>Each table bellow contains the row variables found in the <code class="docutils literal notranslate"><span class="pre">SOI_estimates.csv</span></code>
+files, a brief description, the SOI table where that data can be found, and the
+table column from which the data is pulled. To update the two files, use both
+tables to find the relevant information and insert it as a new column in the
+associated file.</p>
+<p>If you are not making any changes to the estimates used, you can make all of
+these updates using <code class="docutils literal notranslate"><span class="pre">puf_stage1/updatesoi.py</span></code>. When running the script, you must
+include two arguments: the year you’re adding to the SOI estimates, and a path
+to the directory where you have downloaded said files. For example, if you’re
+adding the 2017 estimates and have downloaded all of the files to a directory called
+<code class="docutils literal notranslate"><span class="pre">soifiles</span></code>, you would run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python updatesoi.py <span class="m">2017</span> soifiles
+</pre></div>
+</div>
+<div class="section" id="puf">
+<h2>PUF<a class="headerlink" href="#puf" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Row Variable</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Table</p></th>
+<th class="head"><p>Table Column Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Single</p></td>
+<td><p>Number of single filers</p></td>
+<td><p>1.2</p></td>
+<td><p>Returns of single persons - Number of returns</p></td>
+</tr>
+<tr class="row-odd"><td><p>Joint</p></td>
+<td><p>Number of joint filers</p></td>
+<td><p>1.2</p></td>
+<td><p>Sum of the number of returns for married persons filing jointly and surviving spouses, married persons filing separately</p></td>
+</tr>
+<tr class="row-even"><td><p>HH</p></td>
+<td><p>Number of head of household filers</p></td>
+<td><p>1.2</p></td>
+<td><p>Returns of head of households - Number of returns</p></td>
+</tr>
+<tr class="row-odd"><td><p>SS_return</p></td>
+<td><p>Number of returns with Social Security income</p></td>
+<td><p>1.4</p></td>
+<td><p>Social security benefits - Total - Number of returns</p></td>
+</tr>
+<tr class="row-even"><td><p>Dep_return</p></td>
+<td><p>Number of dependent exemptions</p></td>
+<td><p>2.3</p></td>
+<td><p>Exemptions for dependents - Number of exemptions</p></td>
+</tr>
+<tr class="row-odd"><td><p>INTS</p></td>
+<td><p>Taxable Interest Income</p></td>
+<td><p>1.4</p></td>
+<td><p>Taxable interest - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>DIVS</p></td>
+<td><p>Ordinary dividends</p></td>
+<td><p>1.4</p></td>
+<td><p>Ordinary Dividends - Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>SCHCI</p></td>
+<td><p>Business Income (Schedule C)</p></td>
+<td><p>1.4</p></td>
+<td><p>Business or profession - Net income</p></td>
+</tr>
+<tr class="row-even"><td><p>SCHCL</p></td>
+<td><p>Business Loss (Schedule C)</p></td>
+<td><p>1.4</p></td>
+<td><p>Business or profession - Net loss</p></td>
+</tr>
+<tr class="row-odd"><td><p>CGNS</p></td>
+<td><p>Net Capital Gains in AGI</p></td>
+<td><p>1.4</p></td>
+<td><p>Sales of capital assets reported on Form 1040, Schedule D [2] - Taxable net gain - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>Pension</p></td>
+<td><p>Taxable Pensions and Annuities</p></td>
+<td><p>1.4</p></td>
+<td><p>Pensions and annuities - Taxable - Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>SCHEI</p></td>
+<td><p>Supplemental Income (Schedule E)</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of the net income amount for Total rent and royalty, Partnership and S corporation, and Estate and trust</p></td>
+</tr>
+<tr class="row-even"><td><p>SCHEL</p></td>
+<td><p>Supplemental Loss (Schedule E)</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of the net loss amount for Total rent and royalty, Partnership and S corporation, and Estate and trust</p></td>
+</tr>
+<tr class="row-odd"><td><p>SS</p></td>
+<td><p>Gross Social Security Income</p></td>
+<td><p>1.4</p></td>
+<td><p>Social security benefits - Total - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>UCOMP</p></td>
+<td><p>Unemployment Compensation</p></td>
+<td><p>1.4</p></td>
+<td><p>Unemployment compensation - Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>IPD</p></td>
+<td><p>Interest Paid Deduction</p></td>
+<td><p>2.1</p></td>
+<td><p>Itemized Deductions - Interest paid - Total - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>WAGE_1</p></td>
+<td><p>Wages and Salaries for AGI Less than Zero</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>WAGE_2</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(1 and less than \)</span>10K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>WAGE_3</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(10K and less than \)</span>20K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>WAGE_4</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(20K and less than \)</span>30K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>WAGE_5</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(30K and less than \)</span>40K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>WAGE_6</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(40K and less than \)</span>50K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>WAGE_7</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(50K and less than \)</span>75K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>WAGE_8</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(75K and less than \)</span>100K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>WAGE_9</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(100K and less than \)</span>200K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>WAGE_10</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(200K and less than \)</span>500K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>WAGE_11</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(500K and less than \)</span>1 million</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>WAGE_12</p></td>
+<td><p>Wages and Salaries for AGI greater than $1 million</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="cps">
+<h2>CPS<a class="headerlink" href="#cps" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Row Variable</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Table</p></th>
+<th class="head"><p>Table Column Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Single</p></td>
+<td><p>Number of single filers</p></td>
+<td><p>1.2</p></td>
+<td><p>Returns of single persons - Number of returns</p></td>
+</tr>
+<tr class="row-odd"><td><p>Joint</p></td>
+<td><p>Number of joint filers</p></td>
+<td><p>1.2</p></td>
+<td><p>Sum of the number of returns for married persons filing jointly, married persons filing separately, and surviving spouses</p></td>
+</tr>
+<tr class="row-even"><td><p>HH</p></td>
+<td><p>Number of head of household filers</p></td>
+<td><p>1.2</p></td>
+<td><p>Returns of head of households - Number of returns</p></td>
+</tr>
+<tr class="row-odd"><td><p>SS_return</p></td>
+<td><p>Number of returns with Social Security income</p></td>
+<td><p>1.4</p></td>
+<td><p>Social security benefits - Number of returns</p></td>
+</tr>
+<tr class="row-even"><td><p>Dep_return</p></td>
+<td><p>Number of dependent exemptions</p></td>
+<td><p>2.3</p></td>
+<td><p>Exemptions for dependents - Number of exemptions</p></td>
+</tr>
+<tr class="row-odd"><td><p>INTS</p></td>
+<td><p>Taxable Interest Income</p></td>
+<td><p>1.4</p></td>
+<td><p>Taxable interest - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>DIVS</p></td>
+<td><p>Ordinary dividends</p></td>
+<td><p>1.4</p></td>
+<td><p>Ordinary Dividends - Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>SCHCI</p></td>
+<td><p>Business Income (Schedule C)</p></td>
+<td><p>1.4</p></td>
+<td><p>Business or profession - Net income</p></td>
+</tr>
+<tr class="row-even"><td><p>SCHCL</p></td>
+<td><p>Business Loss (Schedule C)</p></td>
+<td><p>1.4</p></td>
+<td><p>Business or profession - Net loss</p></td>
+</tr>
+<tr class="row-odd"><td><p>CGNS</p></td>
+<td><p>Net Capital Gains in AGI</p></td>
+<td><p>1.4</p></td>
+<td><p>Sales of capital assets reported on Form 1040, Schedule D [2] - Taxable net gain - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>Pension</p></td>
+<td><p>Taxable Pensions and Annuities</p></td>
+<td><p>1.4</p></td>
+<td><p>Pensions and annuities - Taxable - Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>SCHEI</p></td>
+<td><p>Supplemental Income (Schedule E)</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of the net income amount for Total rent and royalty, Partnership and S corporation, and Estate and trust</p></td>
+</tr>
+<tr class="row-even"><td><p>SCHEL</p></td>
+<td><p>Supplemental Loss (Schedule E)</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of the net loss amount for Total rent and royalty, Partnership and S corporation, and Estate and trust</p></td>
+</tr>
+<tr class="row-odd"><td><p>SS</p></td>
+<td><p>Gross Social Security Income</p></td>
+<td><p>1.4</p></td>
+<td><p>Social security benefits - Total - Amount</p></td>
+</tr>
+<tr class="row-even"><td><p>UCOMP</p></td>
+<td><p>Unemployment Compensation</p></td>
+<td><p>1.4</p></td>
+<td><p>Unemployment compensation - Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>wage1</p></td>
+<td><p>Wages and Salaries for AGI less that $10K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>wage2</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(10K and less than \)</span>20K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>wage3</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(20K and less than \)</span>30K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>wage4</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(30K and less than \)</span>40K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>wage5</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(40K and less than \)</span>50K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>wage6</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(50K and less than \)</span>75K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-odd"><td><p>wage7</p></td>
+<td><p>Wages and Salaries for AGI greater than <span class="math notranslate nohighlight">\(75K and less than \)</span>100K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+<tr class="row-even"><td><p>wage8</p></td>
+<td><p>Wages and Salaries for AGI greater than $100K</p></td>
+<td><p>1.4</p></td>
+<td><p>Sum of Salaries and wages - Amount for specified AGI group</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="changes-required-in-stage1-py">
+<h2>Changes Required in <code class="docutils literal notranslate"><span class="pre">stage1.py</span></code><a class="headerlink" href="#changes-required-in-stage1-py" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>PUF<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The only change needed in <code class="docutils literal notranslate"><span class="pre">puf_stage1/stage1.py</span></code> is to update the
+<code class="docutils literal notranslate"><span class="pre">SOI_YR</span></code> variable to match the year of the new SOI estimates.</p>
+</div>
+<div class="section" id="id2">
+<h3>CPS<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>The only change needed in <code class="docutils literal notranslate"><span class="pre">cps_stage1/stage1.py</span></code> is to update <code class="docutils literal notranslate"><span class="pre">SYR</span></code> to match the
+year of the new SOI estimates.</p>
+</div>
+</div>
+<div class="section" id="adding-a-new-target">
+<h2>Adding a new target<a class="headerlink" href="#adding-a-new-target" title="Permalink to this headline">¶</a></h2>
+<p>If you are adding a new target to the list in <code class="docutils literal notranslate"><span class="pre">SOI_estimates</span></code>, be sure to
+backfill its values for all years in the file.</p>
+<div class="section" id="changes-required-to-stage1-py">
+<h3>Changes required to <code class="docutils literal notranslate"><span class="pre">stage1.py</span></code><a class="headerlink" href="#changes-required-to-stage1-py" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add the new target to the list of targets calculated in the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop that extrapolated the SOI estimates</p></li>
+<li><p>Add the new target to the <code class="docutils literal notranslate"><span class="pre">current_year</span></code> DataFrame.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-to-solve-lp-for-year-py">
+<h3>Changes to <code class="docutils literal notranslate"><span class="pre">solve_lp_for_year.py</span></code><a class="headerlink" href="#changes-to-solve-lp-for-year-py" title="Permalink to this headline">¶</a></h3>
+<p>These instructions apply to both the CPS and PUF stage 2 scripts.</p>
+<ul class="simple">
+<li><p>Add code to calculate the target like all other targets currently estimated</p></li>
+<li><p>Add the target to the <code class="docutils literal notranslate"><span class="pre">One_half_LHS</span></code> and <code class="docutils literal notranslate"><span class="pre">temp</span></code> lists</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./content/methods"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+    <div id="prev">
+        <a class="left-prev" href="CBO_Baseline_Updating_Instructions.html" title="previous page">
+            <i class="prevnext-label fas fa-angle-left"></i>
+            <div class="prevnext-info">
+                <p class="prevnext-label">previous</p>
+                <p class="prevnext-title">Updating the CBO Baseline</p>
+            </div>
+        </a>
+    </div>
+     <div id="next">
+        <a class="right-next" href="MATCH.html" title="next page">
+            <div class="prevnext-info">
+                <p class="prevnext-label">next</p>
+                <p class="prevnext-title">CPS Match File documentation</p>
+            </div>
+            <i class="prevnext-label fas fa-angle-right"></i>
+        </a>
+     </div>
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Anderson Frailey<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>
