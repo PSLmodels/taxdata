@@ -15,7 +15,7 @@ def create_hashes(_file):
     hashes = {}
     with open(Path(CUR_PATH, "data", _file), "rb") as f:
         hashes["data"] = hashlib.sha256(f.read()).hexdigest()
-    if _file == "puf.csv":
+    if _file == "cps-matched-puf.csv":
         basepath = Path(CUR_PATH, "puf_stage2")
     else:
         basepath = Path(CUR_PATH, "cps_stage2")
@@ -28,7 +28,7 @@ def create_hashes(_file):
 
 
 finalhashes = {}
-finalhashes["puf"] = create_hashes("puf.csv")
+finalhashes["puf"] = create_hashes("cps-matched-puf.csv")
 finalhashes["cps"] = create_hashes("cps.csv.gz")
 with open(Path(CUR_PATH, "datahashes.json"), "w") as f:
     json.dump(finalhashes, f, indent=4)

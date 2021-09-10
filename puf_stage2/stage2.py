@@ -16,7 +16,7 @@ with open(Path(CUR_PATH, "..", "datahashes.json")) as f:
 
 # compare hashes of all files used in stage 2 to ensure they didn't change
 file_paths = [
-    Path(CUR_PATH, "..", "data", "puf.csv"),
+    Path(CUR_PATH, "..", "data", "cps-matched-puf.csv"),
     Path(CUR_PATH, "solver.jl"),
     Path(CUR_PATH, "dataprep.py"),
     Path(CUR_PATH, "stage2.py"),
@@ -28,7 +28,7 @@ for key, file_path in zip(key_names, file_paths):
         file_hash = hashlib.sha256(f.read()).hexdigest()
     files_match = HASHES[key] == file_hash
     if not files_match:
-        print("fail", key)
+        print(f"{key} has changed")
         break
 
 # Read current factors and targets
