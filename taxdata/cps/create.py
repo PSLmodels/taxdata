@@ -1,5 +1,9 @@
 import pandas as pd
 import pickle
+import requests
+import zipfile
+import io
+import os
 from . import validation
 from pathlib import Path
 from tqdm import tqdm
@@ -78,6 +82,15 @@ def create(
             print("Reading Pickled File")
             cps_dfs[year] = pickle.load(pkl_path.open("rb"))
         else:
+            # check if .dat file exists, and, if not, download it
+            data_file = Path(os.path.join(datapath, "asec" + str(year) + "_pubuse.dat"))
+            if data_file.exists():
+                pass
+            else:
+                cpsmar_url = "http://data.nber.org/cps/cpsmar" + str(year) + ".zip"
+                r = requests.get(cpsmar_url)
+                z = zipfile.ZipFile(io.BytesIO(r.content))
+                z.extractall(datapath)
             # convert the DAT file
             cps_dfs[year] = create_cps(
                 Path(datapath, meta["dat_file"]),
