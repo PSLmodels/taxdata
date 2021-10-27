@@ -171,8 +171,6 @@ def dataprep(data, factors, targets, year, weights=None):
         vstack_vars.append(lhs_vars[var])
         t = rhs_vars[var]
         b.append(t)
-        # print(f'{var:14} {t:0.2f}') uncomment when moving to 3.6
-        print("{:14} {:0.2f}".format(var, t))
 
     vstack_vars = tuple(vstack_vars)
     one_half_lhs = np.vstack(vstack_vars)
