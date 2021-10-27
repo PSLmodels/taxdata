@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -33,19 +33,19 @@
     
   <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script >
+    <script>
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
@@ -74,6 +74,7 @@
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
+      
       <h1 class="site-logo" id="site-title">taxdata</h1>
       
     </a>
@@ -89,7 +90,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Contributing to taxdata
  </span>
@@ -101,7 +102,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   taxdata Data
  </span>
@@ -133,7 +134,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   taxdata Methodology
  </span>
@@ -175,7 +176,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -345,7 +346,7 @@
               <div>
                 
   <p>This memorandum documents the procedures, programs and results from performing a constrained statistical match between the 2004 SOI Public Use File (PUF) and the March 2005 Current Population Survey (CPS). First, we provide an overview of statistical matching and how this relates to the specific challenges of combining information from the SOI and CPS. Second, we describe the SAS programs we developed in the course of implementing the match. Finally, we present the results of the match performed in November 2009.</p>
-<div class="section" id="overview-of-statistical-matching">
+<div class="tex2jax_ignore mathjax_ignore section" id="overview-of-statistical-matching">
 <span id="content-matchdoc"></span><h1>Overview of Statistical Matching<a class="headerlink" href="#overview-of-statistical-matching" title="Permalink to this headline">¶</a></h1>
 <p>In the standard statistical matching framework, one has observations from two data sets (File A and File B) on a set of common variables (X-variables). Additionally, records from File A contain information on another set of variables (Y-Variables) that are not available on File B. Similarly, File B contains information on a third set of variables (Z- Variables) that are not available on File A. Statistical matching involves creating a new data set (File C) containing information on X, Y and Z.</p>
 <p>Statistically matched data sets are used most extensively as inputs to microsimulation models [Cohen(1991)] where the impacts of a policy change are examined across various subgroups of the population where data limitations are often severe. For example, the SOI contains a great deal of detail on taxable income sources and certain expenditures (e.g., health-related costs and home mortgage interest expenses for those taxpayers who itemize) but very little information on transfer payments (e.g., food stamps and AFDC), employment-related fringe benefits (health insurance) and family composition. An ideal data set would combine information from both sources.</p>
@@ -400,7 +401,7 @@ d_{ij} = \left[\sum_{k}\left(\left(X^A_{ik}-X^B_{jk} / \sigma_k^2 \right)\right)
 </div>
 </div>
 </div>
-<div class="section" id="results">
+<div class="tex2jax_ignore mathjax_ignore section" id="results">
 <h1>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h1>
 <p>In the first step of the match, we construct tax units from the CPS file. We impose the constraint that there should be at least one tax unit in every household. We combine information from the household, family and person records to construct each tax unit. A summary of the March 2005 CPS records is contained in Tables 1A through 1D in Appendix A.</p>
 <p>Once person records in each household are combined to form tax units, we make an initial determination of whether that tax unit is legally required to file a federal income tax return based on filing thresholds in place for the Tax Year 2004, the most recent year for which a Public Use File (PUF) is available.<a class="footnote-reference brackets" href="#footnote6" id="id6">5</a> In this match, we used a slightly different methodology for choosing tax filers. In prior matches, we adjusted filing thresholds to get the approximate number of returns in broad, taxpayer classes. We modified this approach in the current match to more closely approximate what is done in the Tax Policy Center’s (TPC) model. That is, we randomly selected tax units that were initially determined to not be required to file a tax return and reclassified them as a tax filer. We did this across all taxpayer subgroups. Weighted and unweighted counts of CPS tax units are shown in Tables 2A through 2D. Similar counts from the 2004 PUF are shown in Tables 3A and 3B.</p>
@@ -409,13 +410,13 @@ d_{ij} = \left[\sum_{k}\left(\left(X^A_{ik}-X^B_{jk} / \sigma_k^2 \right)\right)
 <p>These variables include: a indicator if the taxpayer is 65 years of age or older, various income sources (e.g., wages, interest, dividends), the share of total income attributable to capital and labor, respectively, and indicator variables if the taxpayer received either wages or self-employed income. We estimate 18 separate regressions, one for each cell, and construct fitted values on the CPS using the same set of predictor variables. The distance between records on the CPS and the PUF is then calculated as the square root of the (squared) difference between the fitted values. The methodology for matching records between the files is described in Appendix B. The regression coefficients and other measures of goodness-of-fit are shown in Tables C1 through C18 in Appendix C.</p>
 <p>In our final step, we evaluate the match by comparing means and standard errors for CPS variables added to the PUF on both the original CPS file and the final Match File. These results are reported in Table 5. The final column in Table 5 is a t-test to examine differences in means between the two files. (The null hypothesis is that the means are equal in the two files.) These results should be interpreted with caution as the values of the standard errors on the Match File are not adjusted for sample design.</p>
 </div>
-<div class="section" id="differences-between-pwc-match-and-tpc-match">
+<div class="tex2jax_ignore mathjax_ignore section" id="differences-between-pwc-match-and-tpc-match">
 <h1>Differences Between PwC Match and TPC Match<a class="headerlink" href="#differences-between-pwc-match-and-tpc-match" title="Permalink to this headline">¶</a></h1>
 <p>We are aware of only two differences in the methodology reported here and the methodology described in TPC’s documentation.<a class="footnote-reference brackets" href="#footnote7" id="id7">6</a></p>
 <p><u>Partitioning</u>. TPC expanded the number of cells in the partition to include indicators if the tax unit had self-employed income or income from capital. This resulted in a much larger number of cells (49) in the TPC match. One drawback of expanding the number of cells in this way is that certain cells become “unbalanced” and in the process of adjusting the weights on the CPS file to match the weights on the PUF (this is necessary to perform a constrained statistical match) certain CPS variables might not be indicative of their true values.<a class="footnote-reference brackets" href="#footnote8" id="id8">7</a> The trade-off between more cells and a potentially large adjustment is more an art than a science. In any event, adding more cells to the PwC match is a simple extension.</p>
 <p><u>Non-filers</u>. TPC relied on a series of probit equations reported by Cilke (1998)<a class="footnote-reference brackets" href="#footnote9" id="id9">8</a> to identify potential CPS tax units that were not legally required to file a federal income tax return but did. Cilke related the probability of filing a return (given that the taxpayer was not legally required to do so) as a function of income and numerous demographic variables. These probabilities were then adjusted to approximate control totals for certain taxpayer groups. Incorporating this methodology, while somewhat time-consuming, is straightforward. Because this would have necessitated rerunning the match to include many more demographic variables, we approximated this approach by randomly selecting non-filers in specific taxpayer subgroups and re-classified them as filers so as to match SOI totals in that subgroup.</p>
 </div>
-<div class="section" id="description-of-the-sas-programs">
+<div class="tex2jax_ignore mathjax_ignore section" id="description-of-the-sas-programs">
 <h1>Description of the SAS Programs<a class="headerlink" href="#description-of-the-sas-programs" title="Permalink to this headline">¶</a></h1>
 <p>In this project, we perform a constrained statistical match between the 2004 SOI Public Use File (PUF) and March 2005 Current Population Survey (CPS).<a class="footnote-reference brackets" href="#footnote10" id="id10">9</a> The PUF plays the role of the Host file while the CPS is the Donor. Before we can perform the match, however, we must make sure both files represent the same observational unit. Because the PUF is a sample of tax returns, an important early step in this process is to construct tax returns, or tax units, from the CPS. Not all tax units constructed this way from the CPS will necessarily be legally required to file and individual income tax return and therefore will not be represented on the SOI. Our algorithms determine which CPS tax units are likely to file an income tax return and these will comprise our Donor file (e.g. the “filers”) for matching with the PUF. The remaining CPS tax units are not required to file an income tax return, but they are represented in our final matched data set (e.g., the “non-filers”).</p>
 <p>We perform the match by running seven (7) SAS programs in sequence. A brief description of these programs and their inputs and outputs follows.</p>
@@ -465,7 +466,7 @@ level detail.)</p></li>
 </li>
 </ol>
 </div>
-<div class="section" id="appendix-b-brief-description-of-predictive-mean-matching">
+<div class="tex2jax_ignore mathjax_ignore section" id="appendix-b-brief-description-of-predictive-mean-matching">
 <h1>APPENDIX B – Brief Description of Predictive Mean Matching<a class="footnote-reference brackets" href="#footnote11" id="id11">10</a><a class="headerlink" href="#appendix-b-brief-description-of-predictive-mean-matching" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><u>Partitioning</u>: Attempt to keep (unweighted) cell sizes to a minimum of 30 and a maximum of 500. Check the weighted cell counts for each of the partitions and check for unbalanced cells.</p></li>
@@ -595,7 +596,7 @@ level detail.)</p></li>
         
         </div>
     </div>
-    <footer class="footer mt-5 mt-md-0">
+    <footer class="footer">
     <div class="container">
       <p>
         
