@@ -86,7 +86,7 @@ PUFWAGES = [
     (13, 13),
     (14, 14),
     (15, 15),
-    (17, 20),
+    (16, 20),
 ]
 CPSWAGES = [(2, 4), (5, 6), (7, 8), (9, 9), (10, 10), (11, 11), (12, 12), (13, 20)]
 
@@ -213,6 +213,10 @@ def table14_wages(data, indicies):
     for i, j in indicies:
         val = data.iloc[i : j + 1].sum()[0].astype(int)
         was.append(val)
+    # ensure all wages are accounted for. Total is at index 21 in the data
+    # the totals might not be exactly the same due to rounding in the IRS data,
+    #  but they should still be very close
+    assert abs(sum(was) - data.iloc[1].values[0]) < 2
     return was
 
 
