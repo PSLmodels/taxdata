@@ -1,6 +1,10 @@
 """
 Script used to automatically generate PDF report comparing TaxData outputs
-after updates
+after updates.
+
+Example usage:
+
+python report.py "400, 401" --desc text_description.txt --basepuf ../puf.csv
 """
 # flake8: noqa: E501
 import argparse
