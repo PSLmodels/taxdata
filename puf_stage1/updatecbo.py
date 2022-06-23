@@ -421,7 +421,15 @@ def fill_text_args(text):
 
 
 def update_cbo():
-    out_path = Path(CUR_PATH, "..", "doc", "CBO_Baseline_Updating_Instructions.md")
+    out_path = Path(
+        CUR_PATH,
+        "..",
+        "docs",
+        "book",
+        "content",
+        "methods",
+        "CBO_Baseline_Updating_Instructions.md",
+    )
     template_str = Path(CUR_PATH, "doc", "cbo_instructions_template.md").open().read()
     current_text = out_path.open().read()
     text_args = fill_text_args(current_text)
