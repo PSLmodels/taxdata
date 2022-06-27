@@ -311,7 +311,7 @@ def update_rets(url, baseline, text_args):
             spreadsheet_url = link
             break
     data = pd.read_excel(spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2)
-    projections = data.loc["Form 1040, Total*"]
+    projections = data.loc["Forms 1040, 1040-SR, and 1040-SP, Total"]
     projections /= 1_000_000  # convert units
     pct_change = projections.pct_change() + 1
     # extrapolate out to final year of other CBO projections
@@ -369,10 +369,9 @@ def update_ucomp(url, baseline, text_args):
         return baseline, text_args
     data = pd.read_excel(ucomp_url, skiprows=3, index_col=0, thousands=",")
     try:
-        benefits = data.loc["     Total Benefits"].astype(int) / 1000
+        benefits = data.loc["Budget Authority"].dropna().astype(int) / 1000
     except KeyError:
-        # the flip between capitalizing the 'B' in benefits sometimes
-        benefits = data.loc["     Total benefits"].astype(int) / 1000
+        benefits = data.loc["Budget Authority"].dropna().astype(int) / 1000
     benefits = benefits.round(1)
     df = pd.DataFrame(benefits).transpose()
     df.index = ["UCOMP"]
