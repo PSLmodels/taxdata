@@ -4,7 +4,7 @@ import os
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
-EYR = 2031  # last calendar year we have data for
+EYR = 2032  # last calendar year we have data for
 SOI_YR = 2017  # most recently available SOI estimates
 IRS_RET_YR = 2022  # most recently available IRS return projections
 
@@ -123,6 +123,7 @@ pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0], axis=0)
 cbo_baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"), index_col=0)
 cbobase = cbo_baseline.transpose()
 cbobase.index = index
+cbobase = cbobase.astype(float)
 Stage_I_factors["AGDPN"] = pd.DataFrame(cbobase.GDP / cbobase.GDP[SYR], index=index)
 Stage_I_factors["ATXPY"] = pd.DataFrame(cbobase.TPY / cbobase.TPY[SYR], index=index)
 Stage_I_factors["ASCHF"] = pd.DataFrame(cbobase.SCHF / cbobase.SCHF[SYR], index=index)
