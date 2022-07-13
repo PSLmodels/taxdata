@@ -62,12 +62,15 @@ def main():
     # write .npz input files for solver
     skipped_years = []
     for year in range(START_YEAR, END_YEAR + 1):
-        factor_match = _factors[year].equals(CUR_FACTORS[year])
-        target_match = stage_2_targets[f"{year}"].equals(CUR_TARGETS[f"{year}"])
-        if files_match and factor_match and target_match:
-            print(f"Skipping {year}")
-            skipped_years.append(year)
-            continue
+        try:
+            factor_match = _factors[year].equals(CUR_FACTORS[year])
+            target_match = stage_2_targets[f"{year}"].equals(CUR_TARGETS[f"{year}"])
+            if files_match and factor_match and target_match:
+                print(f"Skipping {year}")
+                skipped_years.append(year)
+                continue
+        except KeyError:
+            pass
         dataprep(cps, stage_1_factors, stage_2_targets, year)
 
     # Solver (in Julia)
