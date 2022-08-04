@@ -32,12 +32,6 @@ CBO_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/puf_stage1
 SOI_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/puf_stage1/SOI_estimates.csv"
 META_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/tests/records_metadata.json"
 GROW_FACTORS_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/puf_stage1/growfactors.csv"
-CPS_BASE_URL = (
-    "https://raw.githubusercontent.com/PSLmodels/taxdata/master/data/cps.csv.gz"
-)
-CPS_WEIGHTS_BASE_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/cps_stage2/cps_weights.csv.gz"
-PUF_WEIGHTS_BASE_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/puf_stage2/puf_weights.csv.gz"
-PUF_RATIO_BASE_URL = "https://raw.githubusercontent.com/PSLmodels/taxdata/master/puf_stage3/puf_ratios.csv"
 
 PUF_PATH = Path(CUR_PATH, "..", "data", "puf.csv")
 PUF_AVAILABLE = PUF_PATH.exists()
@@ -189,18 +183,7 @@ def report():
 
     # compare tax calculator projections
     # baseline CPS calculator
-    base_cps_data = pd.read_csv(CPS_BASE_URL, index_col=0)
-    base_cps_weights = pd.read_csv(CPS_WEIGHTS_BASE_URL, index_col=0)
-
-    base_cps = tc.Calculator(
-        records=tc.Records(
-            data=base_cps_data,
-            weights=base_cps_weights,
-            adjust_ratios=None,
-            start_year=2014,
-        ),
-        policy=tc.Policy(),
-    )
+    base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
     base_cps.advance_to_year(first_year)
     base_cps.calc_all()
     # updated CPS calculator
@@ -224,12 +207,9 @@ def report():
     if base_puf_path and PUF_AVAILABLE:
         template_args["puf_msg"] = None
         # base puf calculator
-        base_puf_weights = pd.read_csv(PUF_WEIGHTS_BASE_URL, index_col=None)
-        base_puf_ratios = pd.read_csv(PUF_RATIO_BASE_URL, index_col=0).transpose()
-        base_records = tc.Records(
-            data=base_puf_path, weights=base_puf_weights, adjust_ratios=base_puf_ratios
+        base_puf = tc.Calculator(
+            records=tc.Records(data=base_puf_path), policy=tc.Policy()
         )
-        base_puf = tc.Calculator(records=base_records, policy=tc.Policy())
         base_puf.advance_to_year(first_year)
         base_puf.calc_all()
         # updated puf calculator
