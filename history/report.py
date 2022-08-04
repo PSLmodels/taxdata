@@ -224,12 +224,8 @@ def report():
     if base_puf_path and PUF_AVAILABLE:
         template_args["puf_msg"] = None
         # base puf calculator
-        base_puf_weights = pd.read_csv(
-            PUF_WEIGHTS_BASE_URL, index_col=None
-        )
-        base_puf_ratios = pd.read_csv(
-            PUF_RATIO_BASE_URL, index_col=0
-        ).transpose()
+        base_puf_weights = pd.read_csv(PUF_WEIGHTS_BASE_URL, index_col=None)
+        base_puf_ratios = pd.read_csv(PUF_RATIO_BASE_URL, index_col=0).transpose()
         base_records = tc.Records(
             data=base_puf_path, weights=base_puf_weights, adjust_ratios=base_puf_ratios
         )
