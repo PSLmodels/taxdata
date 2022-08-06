@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Extrapolation of 2009 PUF &#8212; taxdata</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet" />
-  <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,48 +20,64 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Stage III Documentation" href="puf_stage3.html" />
     <link rel="prev" title="Extrapolation Methods" href="Stage1_Stage2_Methodology.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -68,9 +86,10 @@
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
@@ -83,14 +102,15 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
-   About taxdata
-  </a>
- </li>
-</ul>
-<p class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    About taxdata
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Contributing to taxdata
  </span>
@@ -102,7 +122,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   taxdata Data
  </span>
@@ -134,7 +154,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   taxdata Methodology
  </span>
@@ -176,7 +196,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -195,90 +215,180 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/content/methods/Stage1_Stage2_2009PUF.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/PSLmodels/taxdata"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/methods/Stage1_Stage2_2009PUF.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/PSLmodels/taxdata"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/methods/Stage1_Stage2_2009PUF.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/content/methods/Stage1_Stage2_2009PUF.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
    Extrapolation of 2009 PUF
@@ -318,24 +428,79 @@
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Extrapolation of 2009 PUF</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Extrapolation of 2009 PUF
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#overview">
+     Overview
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stage-1">
+     Stage 1
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stage-2">
+     Stage 2
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-a-stage-i-factors">
+   Appendix A Stage I factors
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-b-puf-variables-and-blow-up-factors">
+   Appendix B PUF variables and blow-up factors
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-c-stage-ii-targets">
+   Appendix C Stage II targets
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="extrapolation-of-2009-puf">
-<h1>Extrapolation of 2009 PUF<a class="headerlink" href="#extrapolation-of-2009-puf" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="extrapolation-of-2009-puf">
+<h1>Extrapolation of 2009 PUF<a class="headerlink" href="#extrapolation-of-2009-puf" title="Permalink to this headline">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">#</a></h2>
 <p>OSPC’s current micro simulation model is using CPS-matched data file based on 2009 Public Use File (PUF) to generate tax revenue projections on a 10-year budget window. In order to do the calculations in the projection time period (2015-2024), the model needs to extrapolate the variables in PUF to the future years. OSPC follows a two-stage procedure, originally developed by John O’Hare, to extrapolate the PUF variables. The first stage is to ‘blow-up’ those variables directly using external macro-economic baseline projections, mainly to reflect inflation. Then the second step is to maintain proper distribution of wage and salaries, as well as key macro targets.</p>
 <p>The CPS-matched file is a statistically matched file base on 09 PUF. It not only includes filers information from PUF, but also non-filers from Current Population Survey (CPS). The Public Use File of 2009, currently base of the statistical match, is a stratified sample from the IRS full file with all taxpayers’ information. In PUF, there are in total 152,526 records. One records was removed before futhur procedures, due to the fact that this record, with Record ID (RECID = 999999) contains aggregated information that would potential distort later steps. All the information in this aggregated record was re- distributed to all other records using a Stage I and Stage II extrapolation routine described below. All the remaining record has a weight variable indicating approximately how many taxpayers this record represents in the full file. In addition to the weight information, each record has 201 variables, roughly 169 of which are used in the OSPC tax calculator. The aggregate values (weighted sum) of each variable are very close to the statistics for all taxpayers provided by IRS.</p>
-</div>
-<div class="section" id="stage-1">
-<h2>Stage 1<a class="headerlink" href="#stage-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="stage-1">
+<h2>Stage 1<a class="headerlink" href="#stage-1" title="Permalink to this headline">#</a></h2>
 <p>In Stage I, the model blows up PUF variables using per capita adjustment factors. This step will make sure the aggregated values of these variables match certain macroeconomic projections in terms of growth rates. Currently, the external baseline projection used in Stage I is mainly from the CBO economic outlook. In near future, the calculations from OSPC’s dynamic model, LOGUS, will replace these external projections.</p>
 <p>The per capita adjustment factors applied to each record in PUF are calculated based on both macroeconomic targets growth rates and population growth rates. Both of these rates are simple- compounded rates, derived from multiple data resources, including CBO, IRS and Census Bureau. For example, the projected GDP in year t is projected at Xt, then the OSPC model calculates growth rate r as:</p>
 <div class="math notranslate nohighlight">
@@ -379,9 +544,9 @@ stage-I extrapolated value of weight for each return i.</p>
 \end{split}\]</div>
 <p>Currently in Stage I, OSPC’s model has 20 factors, 16 macro factors and 4 population related factors. For macroeconomic economic targets like GDP that do not have corresponding variables in the PUF, they are derived directly from CBO baseline projections. While the other factors, taxable interests for example, are calculated from both CBO projection and IRS statistics. Specifically, the model takes the most recent (currently 2012) statistics of this variable released by IRS as the base of macroeconomic targets projection. Then the model ‘ages’ those statistics with the yearly growth rates of CBO targets to extrapolate those statistics on the budget window. Some of the values extrapolated here are used as target in Stage II as well. More details will be provided later in this description. With these extrapolated values, the model then using the 2008 data as base, calculates simple growth rates of these extrapolated values for each projection year. Please see appendix A for a complete list of all factors.</p>
 <p>As you can see, there are roughly 169 variables that need to be blown up in PUF but only 20 factors and less than 16 per-capita adjustments are available. At the moment for simplicity reasons, many variables are sharing one factor. Most variables are aged at personal income growth rate. Variables that don’t follow the trajectory of personal income are applied a factor that fits the best. For example, home mortgage interest deduction is currently using taxable interest income factor for adjustment. The complete table for the correspondence between stage I factors and PUF variables can be found in Appendix B.</p>
-</div>
-<div class="section" id="stage-2">
-<h2>Stage 2<a class="headerlink" href="#stage-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="stage-2">
+<h2>Stage 2<a class="headerlink" href="#stage-2" title="Permalink to this headline">#</a></h2>
 <p>At the end of Stage I, the OSPC model blows up the base year data through the projection years. Even though all targets set up in Stage I can be hit at this point, some other variables, mainly the ones not included in the targets, might behave oddly if we only target the aggregate values. For example, we targeted total wage in Stage I and this would kick Earned Income Credit (EIC) out of place in future years. But the Stage I simple-compounded rate blow-up process cannot get both total wage and EIC fell in reasonable ranges at the same time, as those two variables impose closely related but different requirements on wage and population distribution. John found that if wage distribution were maintained same over years, this problem would be fixed automatically.</p>
 <p>In Stage II, the OSPC model applies a linear programming (LP) algorithm on the post-Stage-I records to adjust the weights. In this way, all the targeted variables would sum up to the targets, and other non-target variables stay in reasonable ranges. The stage II targets not only include those stage I targets calculated based on both CBO baseline growth rates and IRS statistics, but also certain targets on population and return groups, and wage distribution. For the wage distribution, the model currently assumes the distribution of wage stays the same over the projection time period. This assumption is subject to change as many other resources, including JCT’s present model, suggest that the growth rate of higher income class is greater than lower income class. A complete list of Stage II targets is attached as Appendix C.</p>
 <p>In this LP model, the object function is based on the absolute value of percentage adjustment on weights. Assume $z_{it} is the percentage adjustment on weights w for record i between any projection year t and post-stage-I base year weight. One twist on top of the original Stage I blow up here is that we applied different factor to different age groups for the weight variable. From the population growth rates by age in the past few years, the 65+ group grows at a higher rate than the overall population. (citation needed!!!) As PUF doesn’t contain any age information, we use social security benefits, represented by variable e02400 in PUF, to approximate the age characteristic of PUF. Specifically, if one filer received social security benefits in 2008, we assume he or she is older than 65 and blow up the weight of this return using the senior population growth rate (APOPSNR). Otherwise, the weight is blown up at the total return growth rate (ARETS). In this way, the weight variable at year t is:</p>
@@ -468,10 +633,10 @@ return targets.</p>
 <p>The third category of aggregate by income class includes 12 targets. These targets are the weighted sum of wages and salaries ranked and grouped by adjusted gross income (AGI) classes. Currently, the distribution of wages and salaries is maintained the same as the base year through the entire projection period.</p>
 <p>After setting up the object function and all the constraint, the OSPC model runs the CLP solver to find solutions for this LP problem. To finish the Stage II adjustment, the model applies the solution from CLP solver, <span class="math notranslate nohighlight">\(r_{it} − s_{it}\)</span>, to the post-stage-I weights and gets the final adjusted weights.</p>
 <p>To sum up, the OSPC tax calculator applies the Stage I factors to blow up most of the PUF variables and uses the adjusted weights generated in Stage II for all projection years. This description outlines the current extrapolation routine, which is subject to change in near future for various reasons. Many factors would change the routine significantly, which includes a new version of PUF released by IRS. This description will be updated accordingly.</p>
-</div>
-</div>
-<div class="tex2jax_ignore mathjax_ignore section" id="appendix-a-stage-i-factors">
-<h1>Appendix A Stage I factors<a class="headerlink" href="#appendix-a-stage-i-factors" title="Permalink to this headline">¶</a></h1>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="appendix-a-stage-i-factors">
+<h1>Appendix A Stage I factors<a class="headerlink" href="#appendix-a-stage-i-factors" title="Permalink to this headline">#</a></h1>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Var_name</p></th>
@@ -529,9 +694,9 @@ return targets.</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="tex2jax_ignore mathjax_ignore section" id="appendix-b-puf-variables-and-blow-up-factors">
-<h1>Appendix B PUF variables and blow-up factors<a class="headerlink" href="#appendix-b-puf-variables-and-blow-up-factors" title="Permalink to this headline">¶</a></h1>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="appendix-b-puf-variables-and-blow-up-factors">
+<h1>Appendix B PUF variables and blow-up factors<a class="headerlink" href="#appendix-b-puf-variables-and-blow-up-factors" title="Permalink to this headline">#</a></h1>
 <p>For each e-variable below, please refer to <a class="reference external" href="https://docs.google.com/spreadsheets/d/1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit#gid=1029315862">the spreadsheet</a> for complete definition.</p>
 <table class="colwidths-auto table">
 <thead>
@@ -953,9 +1118,9 @@ return targets.</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="tex2jax_ignore mathjax_ignore section" id="appendix-c-stage-ii-targets">
-<h1>Appendix C Stage II targets<a class="headerlink" href="#appendix-c-stage-ii-targets" title="Permalink to this headline">¶</a></h1>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="appendix-c-stage-ii-targets">
+<h1>Appendix C Stage II targets<a class="headerlink" href="#appendix-c-stage-ii-targets" title="Permalink to this headline">#</a></h1>
 <ul class="simple">
 <li><p>US Population</p></li>
 <li><p>Total Returns</p></li>
@@ -983,7 +1148,7 @@ return targets.</p>
 <li><p>Wages and Salaries: <span class="math notranslate nohighlight">\(500,000 Less Than \)</span>1 Million</p></li>
 <li><p>Wages and Salaries: $1 Million and Over</p></li>
 </ul>
-</div>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1007,54 +1172,48 @@ return targets.</p>
 
               </div>
               
-        
-            
-
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="Stage1_Stage2_Methodology.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Extrapolation Methods</p>
-            </div>
-        </a>
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Stage1_Stage2_Methodology.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Extrapolation Methods</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="puf_stage3.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Stage III Documentation</p>
     </div>
-     <div id="next">
-        <a class="right-next" href="puf_stage3.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Stage III Documentation</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-        
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Anderson Frailey<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Anderson Frailey<br/>
+  
+      &copy; Copyright 2021.<br/>
+</p>
+        </footer>
     </div>
-  </footer>
-</main>
+    
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 
-  
+
   </body>
 </html>

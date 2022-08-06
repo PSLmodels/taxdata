@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>TaxData Dataset Documentation &#8212; taxdata</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet" />
-  <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,46 +20,62 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="About IRS Public Use Data" href="about_puf_data.html" />
     <link rel="prev" title="TaxData Contributor Guide" href="../contributing/CONTRIBUTING.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -66,9 +84,10 @@
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
@@ -81,14 +100,15 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
-   About taxdata
-  </a>
- </li>
-</ul>
-<p class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    About taxdata
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Contributing to taxdata
  </span>
@@ -100,7 +120,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   taxdata Data
  </span>
@@ -132,7 +152,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   taxdata Methodology
  </span>
@@ -174,7 +194,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -193,90 +213,180 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/content/data/datasets.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/PSLmodels/taxdata"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/data/datasets.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/PSLmodels/taxdata"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/data/datasets.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/content/data/datasets.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#summary">
    Summary
@@ -347,17 +457,103 @@
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>TaxData Dataset Documentation</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#variable-availability">
+     Variable Availability
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#aggregate-totals">
+     Aggregate Totals
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#puf">
+   PUF
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#input-files">
+     Input files
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data-limitations-and-clarifications">
+   Data Limitations and Clarifications
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mortgage-interest-expense-and-investment-interest">
+     Mortgage Interest Expense and Investment Interest
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#claiming-dependent-filers">
+     Claiming Dependent Filers
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#state-local-and-real-estate-taxes">
+     State, Local, and Real Estate Taxes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cps">
+   CPS
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#current-input-files">
+     Current Input Files
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-limitations">
+     Data Limitations
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="taxdata-dataset-documentation">
-<h1>TaxData Dataset Documentation<a class="headerlink" href="#taxdata-dataset-documentation" title="Permalink to this headline">¶</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="taxdata-dataset-documentation">
+<h1>TaxData Dataset Documentation<a class="headerlink" href="#taxdata-dataset-documentation" title="Permalink to this headline">#</a></h1>
 <p>TaxData is an open source library used to prepare micro-data for <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">Tax-Calculator</a>,
 a microsimulation tax model. This document details the process we create the
 datasets. It contains the following sections:</p>
@@ -366,8 +562,8 @@ datasets. It contains the following sections:</p>
 <li><p><a class="reference external" href="#PUF">PUF</a></p></li>
 <li><p><a class="reference external" href="#CPS">CPS</a></p></li>
 </ol>
-<div class="section" id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
 <p>TaxData offers two datasets created to run in Tax-Calculator:
 <code class="docutils literal notranslate"><span class="pre">PUF.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">CPS.csv</span></code>. Both files are representative micro-datasets containing
 tax unit level data. The key differences are the sources used to create each file
@@ -388,8 +584,8 @@ Additional data on welfare and transfer program participation and benefits is
 added to the CPS using the open source CPS Transfer Augmentation Model (C-TAM).
 C-TAM is used to impute benefit values for SNAP, SSI, Social Security,
 Medicare, Medicaid, veterans benefits, housing assistance, TANF, and WIC.</p>
-<div class="section" id="variable-availability">
-<h3>Variable Availability<a class="headerlink" href="#variable-availability" title="Permalink to this headline">¶</a></h3>
+<section id="variable-availability">
+<h3>Variable Availability<a class="headerlink" href="#variable-availability" title="Permalink to this headline">#</a></h3>
 <p>Because benefit data is imputed onto the CPS, it is not available in the PUF.
 Similarly, the CPS is missing some income and deduction variables only available
 in the PUF.</p>
@@ -403,55 +599,55 @@ parameters available in Tax-Calculator can be found in
 <a class="reference external" href="https://pslmodels.github.io/Tax-Calculator/#pol">here</a>. The
 dataset(s) compatible with each parameter are indicated by true/false values in
 the <em>Has An Effect When Using</em> section.</p>
-</div>
-<div class="section" id="aggregate-totals">
-<h3>Aggregate Totals<a class="headerlink" href="#aggregate-totals" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="aggregate-totals">
+<h3>Aggregate Totals<a class="headerlink" href="#aggregate-totals" title="Permalink to this headline">#</a></h3>
 <p>The weighted totals of each variable will differ between the two datasets.
 Totals by year for the CPS can be found <a class="reference external" href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/tests/cpscsv_agg_expect.txt">here</a>.
 For the PUF, <a class="reference external" href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/tests/pufcsv_agg_expect.txt">here</a>.</p>
-</div>
-</div>
-<div class="section" id="puf">
-<h2>PUF<a class="headerlink" href="#puf" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="puf">
+<h2>PUF<a class="headerlink" href="#puf" title="Permalink to this headline">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> (PUF) is created by combining the 2011 IRS-SOI Public Use File and the
 2016 Current Population Annual Social and Economic Supplement using a statistical
 matching technique. The code used to generate <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> and its associated files
 can be found in the various <code class="docutils literal notranslate"><span class="pre">puf_*</span></code> directories. Because use of the IRS-SOI file
 is restricted, we cannot share it with the general public.</p>
-<div class="section" id="input-files">
-<h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
+<section id="input-files">
+<h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.nber.org/data/current-population-survey-data.html">2016 Current Population Annual Social and Economic Supplement</a></p></li>
 <li><p><a class="reference external" href="https://www.irs.gov/statistics/soi-tax-stats-individual-public-use-microdata-files">2011 IRS-SOI Public Use File</a></p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="data-limitations-and-clarifications">
-<h2>Data Limitations and Clarifications<a class="headerlink" href="#data-limitations-and-clarifications" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="data-limitations-and-clarifications">
+<h2>Data Limitations and Clarifications<a class="headerlink" href="#data-limitations-and-clarifications" title="Permalink to this headline">#</a></h2>
 <p>As with all datasets, the PUF has some limitations that we are aware of. As we
 more are discovered we will add them to this section.</p>
-<div class="section" id="mortgage-interest-expense-and-investment-interest">
-<h3>Mortgage Interest Expense and Investment Interest<a class="headerlink" href="#mortgage-interest-expense-and-investment-interest" title="Permalink to this headline">¶</a></h3>
+<section id="mortgage-interest-expense-and-investment-interest">
+<h3>Mortgage Interest Expense and Investment Interest<a class="headerlink" href="#mortgage-interest-expense-and-investment-interest" title="Permalink to this headline">#</a></h3>
 <p>These two deductions have been folded into a general “interest paid deduction”
 variable. Unfortunately there is not currently any way to separate them.</p>
-</div>
-<div class="section" id="claiming-dependent-filers">
-<h3>Claiming Dependent Filers<a class="headerlink" href="#claiming-dependent-filers" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="claiming-dependent-filers">
+<h3>Claiming Dependent Filers<a class="headerlink" href="#claiming-dependent-filers" title="Permalink to this headline">#</a></h3>
 <p>There is no way to link dependent filers in the PUF with the tax unit that is
 claiming them as a dependent. This should be accounted for when performing tasks
 such as calculating average income.</p>
-</div>
-<div class="section" id="state-local-and-real-estate-taxes">
-<h3>State, Local, and Real Estate Taxes<a class="headerlink" href="#state-local-and-real-estate-taxes" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="state-local-and-real-estate-taxes">
+<h3>State, Local, and Real Estate Taxes<a class="headerlink" href="#state-local-and-real-estate-taxes" title="Permalink to this headline">#</a></h3>
 <p>The PUF includes two variables that encompass some aspect of state and local
 taxes: <code class="docutils literal notranslate"><span class="pre">e18400</span></code> includes either state and local income taxes or state and local
 general sales taxes. <code class="docutils literal notranslate"><span class="pre">e18500</span></code> includes all state, local, and foreign taxes on
 real estate. There is no way to separate the exact sources of those real estate
 taxes.</p>
-</div>
-</div>
-<div class="section" id="cps">
-<h2>CPS<a class="headerlink" href="#cps" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="cps">
+<h2>CPS<a class="headerlink" href="#cps" title="Permalink to this headline">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> (CPS) is created by forming tax units out of the 2013, 2014, and 2015
 Current Population Annual Social and Economic Supplement.
 Household and family information from the surveys are used to create tax units
@@ -461,22 +657,22 @@ to be different from those in the PUF in terms of both aggregates and distributi
 Additional data on imputed benefits receipts are merged onto all three CPS
 files before the tax units are formed. These imputations are performed by the
 open source CPS Transfer Augmentation Model (C-TAM).</p>
-<div class="section" id="current-input-files">
-<h3>Current Input Files<a class="headerlink" href="#current-input-files" title="Permalink to this headline">¶</a></h3>
+<section id="current-input-files">
+<h3>Current Input Files<a class="headerlink" href="#current-input-files" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.nber.org/data/current-population-survey-data.html">2013 Current Population Annual Social and Economic Supplement</a></p></li>
 <li><p><a class="reference external" href="https://www.nber.org/data/current-population-survey-data.html">2014 Current Population Annual Social and Economic Supplement</a></p></li>
 <li><p><a class="reference external" href="https://www.nber.org/data/current-population-survey-data.html">2015 Current Population Annual Social and Economic Supplement</a></p></li>
 </ul>
-</div>
-<div class="section" id="data-limitations">
-<h3>Data Limitations<a class="headerlink" href="#data-limitations" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="data-limitations">
+<h3>Data Limitations<a class="headerlink" href="#data-limitations" title="Permalink to this headline">#</a></h3>
 <p>As previously stated, the CPS was not intended for tax policy analysis. Thus,
 we do see less reliable data on income, particularly at the extreme ends of the
 spectrum.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -500,54 +696,48 @@ spectrum.</p>
 
               </div>
               
-        
-            
-
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="../contributing/CONTRIBUTING.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">TaxData Contributor Guide</p>
-            </div>
-        </a>
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../contributing/CONTRIBUTING.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">TaxData Contributor Guide</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="about_puf_data.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">About IRS Public Use Data</p>
     </div>
-     <div id="next">
-        <a class="right-next" href="about_puf_data.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">About IRS Public Use Data</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-        
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Anderson Frailey<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Anderson Frailey<br/>
+  
+      &copy; Copyright 2021.<br/>
+</p>
+        </footer>
     </div>
-  </footer>
-</main>
+    
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 
-  
+
   </body>
 </html>
