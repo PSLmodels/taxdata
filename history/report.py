@@ -191,9 +191,15 @@ def report():
     cps_weights = pd.read_csv(
         Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"), index_col=None
     )
+    gfactor_path_str = str(GROW_FACTORS_PATH)
+    gft = tc.GrowFactors(growfactors_filename=gfactor_path_str)
     new_cps = tc.Calculator(
         records=tc.Records(
-            data=cps, weights=cps_weights, adjust_ratios=None, start_year=2014
+            data=cps,
+            weights=cps_weights,
+            adjust_ratios=None,
+            start_year=2014,
+            gfactors=gft,
         ),
         policy=tc.Policy(),
     )
