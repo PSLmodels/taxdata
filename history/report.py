@@ -226,7 +226,10 @@ def report():
             Path(CUR_PATH, "..", "puf_stage3", "puf_ratios.csv"), index_col=0
         ).transpose()
         new_records = tc.Records(
-            data=str(PUF_PATH), weights=puf_weights, adjust_ratios=puf_ratios
+            data=str(PUF_PATH),
+            weights=puf_weights,
+            adjust_ratios=puf_ratios,
+            gfactors=gft,
         )
         new_puf = tc.Calculator(records=new_records, policy=tc.Policy())
         new_puf.advance_to_year(first_year)
