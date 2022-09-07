@@ -602,65 +602,11 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
     # aggregate totals
     aggs = defaultdict(list)
+    aggs2 = defaultdict(list)
     var_list = ["payrolltax", "iitax", "combined", "standard", "c04470"]
     for year in range(base.current_year, tc.Policy.LAST_BUDGET_YEAR + 1):
         base_aggs = run_calc(base, year, var_list)
         new_aggs = run_calc(new, year, var_list)
-        aggs["Tax Liability"].append(base_aggs["payrolltax"])
-        aggs["Tax"].append("Current Payroll")
-        aggs["Year"].append(year)
-        aggs["Tax Liability"].append(new_aggs["payrolltax"])
-        aggs["Tax"].append("New Payroll")
-        aggs["Year"].append(year)
-        aggs["Tax Liability"].append(base_aggs["iitax"])
-        aggs["Tax"].append("Current Income")
-        aggs["Year"].append(year)
-        aggs["Tax Liability"].append(new_aggs["iitax"])
-        aggs["Tax"].append("New Income")
-        aggs["Year"].append(year)
-        aggs["Tax Liability"].append(base_aggs["combined"])
-        aggs["Tax"].append("Current Combined")
-        aggs["Year"].append(year)
-        aggs["Tax Liability"].append(new_aggs["combined"])
-        aggs["Tax"].append("New Combined")
-        aggs["Year"].append(year)
-    agg_df = pd.DataFrame(aggs)
-
-    title = "Aggregate Tax Liability by Year"
-    agg_chart = (
-        alt.Chart(agg_df, title=title)
-        .mark_line()
-        .encode(
-            x=alt.X(
-                "Year:O",
-                axis=alt.Axis(labelAngle=0, titleFontSize=20, labelFontSize=15),
-            ),
-            y=alt.Y(
-                "Tax Liability",
-                title="Tax Liability (Billions)",
-                axis=alt.Axis(titleFontSize=20, labelFontSize=15),
-            ),
-            color=alt.Color(
-                "Tax",
-                legend=alt.Legend(symbolSize=150, labelFontSize=15, titleFontSize=20),
-            ),
-        )
-        .properties(width=800, height=350)
-        .configure_title(fontSize=24)
-    )
-    img_path = Path(CUR_PATH, f"{name}_agg_plot.png")
-    agg_chart.save(str(img_path))
-    plot_paths.append(img_path)
-    template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
-
-    # create tax liability tables
-    template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
-    template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
-    template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
-
-    # projections
-    aggs = defaultdict(list)
-    for year in range(2028, 2031):
         cur_salary_wage = run_calc_var(base, year, "e00200")
         cur_taxable_interest_ordinary_divid = (
             run_calc_var(base, year, "e00300")
@@ -695,7 +641,6 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             - cur_pension_annuities_IRAdis
             - cur_ssb
         )
-
         new_salary_wage = run_calc_var(new, year, "e00200")
         new_taxable_interest_ordinary_divid = (
             run_calc_var(new, year, "e00300")
@@ -730,143 +675,194 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             - new_pension_annuities_IRAdis
             - new_ssb
         )
-
-        aggs["Value"].append(cur_salary_wage)
-        aggs["Category"].append("Current salaries and wages")
+        aggs["Tax Liability"].append(base_aggs["payrolltax"])
+        aggs["Tax"].append("Current Payroll")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(new_aggs["payrolltax"])
+        aggs["Tax"].append("New Payroll")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(base_aggs["iitax"])
+        aggs["Tax"].append("Current Income")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(new_aggs["iitax"])
+        aggs["Tax"].append("New Income")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(base_aggs["combined"])
+        aggs["Tax"].append("Current Combined")
+        aggs["Year"].append(year)
+        aggs["Tax Liability"].append(new_aggs["combined"])
+        aggs["Tax"].append("New Combined")
         aggs["Year"].append(year)
 
-        aggs["Value"].append(new_salary_wage)
-        aggs["Category"].append("New salaries and wages")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_salary_wage)
+        aggs2["Category"].append("Current salaries and wages")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_taxable_interest_ordinary_divid)
-        aggs["Category"].append(
+        aggs2["Value"].append(new_salary_wage)
+        aggs2["Category"].append("New salaries and wages")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_taxable_interest_ordinary_divid)
+        aggs2["Category"].append(
             "Current taxable interest and ordinary dividends (excludes qualified dividends"
         )
-        aggs["Year"].append(year)
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_taxable_interest_ordinary_divid)
-        aggs["Category"].append(
+        aggs2["Value"].append(new_taxable_interest_ordinary_divid)
+        aggs2["Category"].append(
             "New taxable interest and ordinary dividends (excludes qualified dividends"
         )
-        aggs["Year"].append(year)
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_q_div)
-        aggs["Category"].append("Current qualified dividends")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_q_div)
+        aggs2["Category"].append("Current qualified dividends")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_q_div)
-        aggs["Category"].append("New qualified dividends")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_q_div)
+        aggs2["Category"].append("New qualified dividends")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_capital_g_l)
-        aggs["Category"].append("Current capital gain or loss")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_capital_g_l)
+        aggs2["Category"].append("Current capital gain or loss")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_capital_g_l)
-        aggs["Category"].append("New capital gain or loss")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_capital_g_l)
+        aggs2["Category"].append("New capital gain or loss")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_business_inc)
-        aggs["Category"].append("Current net business income")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_business_inc)
+        aggs2["Category"].append("Current net business income")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_business_inc)
-        aggs["Category"].append("New net business income")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_business_inc)
+        aggs2["Category"].append("New net business income")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_pension_annuities_IRAdis)
-        aggs["Category"].append(
+        aggs2["Value"].append(cur_pension_annuities_IRAdis)
+        aggs2["Category"].append(
             "Current taxable pensions and annuities and IRA distributions"
         )
-        aggs["Year"].append(year)
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_pension_annuities_IRAdis)
-        aggs["Category"].append(
+        aggs2["Value"].append(new_pension_annuities_IRAdis)
+        aggs2["Category"].append(
             "New taxable pensions and annuities and IRA distributions"
         )
-        aggs["Year"].append(year)
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_ssb)
-        aggs["Category"].append("Current taxable Social Security benefits")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_ssb)
+        aggs2["Category"].append("Current taxable Social Security benefits")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_ssb)
-        aggs["Category"].append("New taxable Social Security benefits")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_ssb)
+        aggs2["Category"].append("New taxable Social Security benefits")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_other_inc)
-        aggs["Category"].append("Current all other sources of income")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_other_inc)
+        aggs2["Category"].append("Current all other sources of income")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_other_inc)
-        aggs["Category"].append("New all other sources of income")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_other_inc)
+        aggs2["Category"].append("New all other sources of income")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_total_inc)
-        aggs["Category"].append("Current total income")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_total_inc)
+        aggs2["Category"].append("Current total income")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_total_inc)
-        aggs["Category"].append("New total income")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_total_inc)
+        aggs2["Category"].append("New total income")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_stat_adj)
-        aggs["Category"].append("Current statutory Adjustments")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_stat_adj)
+        aggs2["Category"].append("Current statutory Adjustments")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_stat_adj)
-        aggs["Category"].append("New statutory Adjustments")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_stat_adj)
+        aggs2["Category"].append("New statutory Adjustments")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(cur_total_agi)
-        aggs["Category"].append("Current total AGI")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(cur_total_agi)
+        aggs2["Category"].append("Current total AGI")
+        aggs2["Year"].append(year)
 
-        aggs["Value"].append(new_total_agi)
-        aggs["Category"].append("New total AGI")
-        aggs["Year"].append(year)
+        aggs2["Value"].append(new_total_agi)
+        aggs2["Category"].append("New total AGI")
+        aggs2["Year"].append(year)
 
     agg_df = pd.DataFrame(aggs)
+    agg2_df = pd.DataFrame(aggs2)
+
+    title = "Aggregate Tax Liability by Year"
+    agg_chart = (
+        alt.Chart(agg_df, title=title)
+        .mark_line()
+        .encode(
+            x=alt.X(
+                "Year:O",
+                axis=alt.Axis(labelAngle=0, titleFontSize=20, labelFontSize=15),
+            ),
+            y=alt.Y(
+                "Tax Liability",
+                title="Tax Liability (Billions)",
+                axis=alt.Axis(titleFontSize=20, labelFontSize=15),
+            ),
+            color=alt.Color(
+                "Tax",
+                legend=alt.Legend(symbolSize=150, labelFontSize=15, titleFontSize=20),
+            ),
+        )
+        .properties(width=800, height=350)
+        .configure_title(fontSize=24)
+    )
+    img_path = Path(CUR_PATH, f"{name}_agg_plot.png")
+    agg_chart.save(str(img_path))
+    plot_paths.append(img_path)
+    template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
+
+    # create tax liability tables
+    template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
+    template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
+    template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
 
     # create projection tables
     template_args[f"{name}_salaries and wages_table"] = agg_liability_table(
-        agg_df, "salaries and wages"
+        agg2_df, "salaries and wages"
     )
     template_args[
         f"{name}_taxable interest and ordinary dividends _table"
     ] = agg_liability_table(
-        agg_df, "taxable interest and ordinary dividends (excludes qualified dividends"
+        agg2_df, "taxable interest and ordinary dividends (excludes qualified dividends"
     )
     template_args[f"{name}_qualified dividends_table"] = agg_liability_table(
-        agg_df, "qualified dividends"
+        agg2_df, "qualified dividends"
     )
     template_args[f"{name}_capital gain or loss_table"] = agg_liability_table(
-        agg_df, "capital gain or loss"
+        agg2_df, "capital gain or loss"
     )
     template_args[f"{name}_net business income _table"] = agg_liability_table(
-        agg_df, "net business income"
+        agg2_df, "net business income"
     )
     template_args[f"{name}_qualified dividends_table"] = agg_liability_table(
-        agg_df, "qualified dividends"
+        agg2_df, "qualified dividends"
     )
     template_args[
         f"{name}_taxable pensions and annuities and IRA distributions_table"
     ] = agg_liability_table(
-        agg_df, "taxable pensions and annuities and IRA distributions"
+        agg2_df, "taxable pensions and annuities and IRA distributions"
     )
     template_args[
         f"{name}_taxable Social Security benefits_table"
-    ] = agg_liability_table(agg_df, "taxable Social Security benefits")
+    ] = agg_liability_table(agg2_df, "taxable Social Security benefits")
     template_args[f"{name}_all other sources of income_table"] = agg_liability_table(
-        agg_df, "all other sources of income"
+        agg2_df, "all other sources of income"
     )
     template_args[f"{name}_total income_table"] = agg_liability_table(
-        agg_df, "total income"
+        agg2_df, "total income"
     )
     template_args[f"{name}_statutory Adjustments_table"] = agg_liability_table(
-        agg_df, "statutory Adjustments"
+        agg2_df, "statutory Adjustments"
     )
-    template_args[f"{name}_total AGI_table"] = agg_liability_table(agg_df, "total AGI")
+    template_args[f"{name}_total AGI_table"] = agg_liability_table(agg2_df, "total AGI")
 
     return template_args, plot_paths
