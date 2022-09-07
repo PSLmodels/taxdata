@@ -31,6 +31,20 @@ def run_calc(calc, year, var_list):
     return totals
 
 
+def run_calc_var(calc, year, var):
+    """
+    Parameters
+    ----------
+    calc: tax calculator object
+    year: year to run calculator for
+    var: the variable to return waited total of
+    """
+    calc.advance_to_year(year)
+    calc.calc_all()
+    total = calc.weighted_total(var) * 1e-9
+    return total
+
+
 def add_bins(
     dframe,
     income_measure,
