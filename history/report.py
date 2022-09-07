@@ -191,9 +191,15 @@ def report():
     cps_weights = pd.read_csv(
         Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"), index_col=None
     )
+    gfactor_path_str = str(GROW_FACTORS_PATH)
+    gft = tc.GrowFactors(growfactors_filename=gfactor_path_str)
     new_cps = tc.Calculator(
         records=tc.Records(
-            data=cps, weights=cps_weights, adjust_ratios=None, start_year=2014
+            data=cps,
+            weights=cps_weights,
+            adjust_ratios=None,
+            start_year=2014,
+            gfactors=gft,
         ),
         policy=tc.Policy(),
     )
@@ -220,7 +226,10 @@ def report():
             Path(CUR_PATH, "..", "puf_stage3", "puf_ratios.csv"), index_col=0
         ).transpose()
         new_records = tc.Records(
-            data=str(PUF_PATH), weights=puf_weights, adjust_ratios=puf_ratios
+            data=str(PUF_PATH),
+            weights=puf_weights,
+            adjust_ratios=puf_ratios,
+            gfactors=gft,
         )
         new_puf = tc.Calculator(records=new_records, policy=tc.Policy())
         new_puf.advance_to_year(first_year)
