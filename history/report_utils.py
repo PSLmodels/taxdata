@@ -561,10 +561,10 @@ def projection_table(data, category):
     cur_df.index = ["Current"]
     new_df.index = ["New"]
     final_df = pd.concat([cur_df, new_df])
-    diff = final_df.loc["Current"] - final_df.loc["New"]
-    final_df.loc["Change"] = diff.round(1)
-    pct_change = diff / final_df.loc["Current"] * 100
-    final_df.loc["Pct Change"] = pct_change.round(2)
+    # diff = final_df.loc["Current"] - final_df.loc["New"]
+    # final_df.loc["Change"] = diff.round(1)
+    # pct_change = diff / final_df.loc["Current"] * 100
+    # final_df.loc["Pct Change"] = pct_change.round(2)
     return final_df.to_markdown()
 
 
@@ -826,16 +826,30 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
 
     # create projection tables
-    template_args[f"{name}_salaries_and_wages_table"] = projection_table(agg2_df, "salaries")
-    template_args[f"{name}_taxable_interest_and_ordinary_dividends_table"] = projection_table(agg2_df, "interest")
-    template_args[f"{name}_qualified_dividends_table"] = projection_table(agg2_df, "qualified")
+    template_args[f"{name}_salaries_and_wages_table"] = projection_table(
+        agg2_df, "salaries"
+    )
+    template_args[
+        f"{name}_taxable_interest_and_ordinary_dividends_table"
+    ] = projection_table(agg2_df, "interest")
+    template_args[f"{name}_qualified_dividends_table"] = projection_table(
+        agg2_df, "qualified"
+    )
     template_args[f"{name}_capital_table"] = projection_table(agg2_df, "capital")
     template_args[f"{name}_business_table"] = projection_table(agg2_df, "business")
-    template_args[f"{name}_pensions_annuities_IRA_distributions_table"] = projection_table(agg2_df, "pensions")
-    template_args[f"{name}_Social_Security_benefits_table"] = projection_table(agg2_df, "Security")
+    template_args[
+        f"{name}_pensions_annuities_IRA_distributions_table"
+    ] = projection_table(agg2_df, "pensions")
+    template_args[f"{name}_Social_Security_benefits_table"] = projection_table(
+        agg2_df, "Security"
+    )
     template_args[f"{name}_all_other_income_table"] = projection_table(agg2_df, "other")
-    template_args[f"{name}_total_income_table"] = projection_table(agg2_df, "totalincome")
-    template_args[f"{name}_statutory_Adjustments_table"] = projection_table(agg2_df, "statutory")
+    template_args[f"{name}_total_income_table"] = projection_table(
+        agg2_df, "totalincome"
+    )
+    template_args[f"{name}_statutory_Adjustments_table"] = projection_table(
+        agg2_df, "statutory"
+    )
     template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
 
     return template_args, plot_paths
