@@ -704,90 +704,90 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
         aggs2["Value"].append(cur_taxable_interest_ordinary_divid)
         aggs2["Category"].append(
-            "Current taxable interest and ordinary dividends (excludes qualified dividends)"
+            "Current Interests"
         )
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_taxable_interest_ordinary_divid)
         aggs2["Category"].append(
-            "New taxable interest and ordinary dividends (excludes qualified dividends)"
+            "New Interests"
         )
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_q_div)
-        aggs2["Category"].append("Current qualified dividends")
+        aggs2["Category"].append("Current Qdividends")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_q_div)
-        aggs2["Category"].append("New qualified dividends")
+        aggs2["Category"].append("New Qdividends")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_capital_g_l)
-        aggs2["Category"].append("Current capital gain or loss")
+        aggs2["Category"].append("Current Capital")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_capital_g_l)
-        aggs2["Category"].append("New capital gain or loss")
+        aggs2["Category"].append("New Capital")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_business_inc)
-        aggs2["Category"].append("Current net business income")
+        aggs2["Category"].append("Current Business")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_business_inc)
-        aggs2["Category"].append("New net business income")
+        aggs2["Category"].append("New Business")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_pension_annuities_IRAdis)
         aggs2["Category"].append(
-            "Current taxable pensions and annuities and IRA distributions"
+            "Current Pensions"
         )
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_pension_annuities_IRAdis)
         aggs2["Category"].append(
-            "New taxable pensions and annuities and IRA distributions"
+            "New Pensions"
         )
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_ssb)
-        aggs2["Category"].append("Current taxable Social Security benefits")
+        aggs2["Category"].append("Current Security")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_ssb)
-        aggs2["Category"].append("New taxable Social Security benefits")
+        aggs2["Category"].append("New Security")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_other_inc)
-        aggs2["Category"].append("Current all other sources of income")
+        aggs2["Category"].append("Current Other")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_other_inc)
-        aggs2["Category"].append("New all other sources of income")
+        aggs2["Category"].append("New Other")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_total_inc)
-        aggs2["Category"].append("Current totalincome")
+        aggs2["Category"].append("Current Totalincome")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_total_inc)
-        aggs2["Category"].append("New totalincome")
+        aggs2["Category"].append("New Totalincome")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_stat_adj)
-        aggs2["Category"].append("Current statutory Adjustments")
+        aggs2["Category"].append("Current Statutory")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_stat_adj)
-        aggs2["Category"].append("New statutory Adjustments")
+        aggs2["Category"].append("New Statutory")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_total_agi)
-        aggs2["Category"].append("Current total AGI")
+        aggs2["Category"].append("Current AGI")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_total_agi)
-        aggs2["Category"].append("New total AGI")
+        aggs2["Category"].append("New AGI")
         aggs2["Year"].append(year)
 
     agg_df = pd.DataFrame(aggs)
@@ -827,36 +827,29 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
     # create projection tables
     template_args[f"{name}_salaries_and_wages_table"] = projection_table(
-        agg2_df, "salaries"
+        agg2_df, "Salaries"
     )
     template_args[
         f"{name}_taxable_interest_and_ordinary_dividends_table"
-    ] = projection_table(agg2_df, "interest")
+    ] = projection_table(agg2_df, "Interests")
     template_args[f"{name}_qualified_dividends_table"] = projection_table(
-        agg2_df, "qualified"
+        agg2_df, "Qdividents"
     )
-    template_args[f"{name}_capital_table"] = projection_table(agg2_df, "capital")
-    template_args[f"{name}_business_table"] = projection_table(agg2_df, "business")
+    template_args[f"{name}_capital_table"] = projection_table(agg2_df, "Capital")
+    template_args[f"{name}_business_table"] = projection_table(agg2_df, "Business")
     template_args[
         f"{name}_pensions_annuities_IRA_distributions_table"
-    ] = projection_table(agg2_df, "pensions")
+    ] = projection_table(agg2_df, "Pensions")
     template_args[f"{name}_Social_Security_benefits_table"] = projection_table(
         agg2_df, "Security"
     )
-    template_args[f"{name}_all_other_income_table"] = projection_table(agg2_df, "other")
+    template_args[f"{name}_all_other_income_table"] = projection_table(agg2_df, "Other")
     template_args[f"{name}_total_income_table"] = projection_table(
-        agg2_df, "totalincome"
+        agg2_df, "Totalincome"
     )
     template_args[f"{name}_statutory_Adjustments_table"] = projection_table(
-        agg2_df, "statutory"
+        agg2_df, "Statutory"
     )
     template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
-
-    print("template_args")
-    print(template_args[f"{name}_total_AGI_table"])
-    print("projection table salaries")
-    print(projection_table(agg2_df, "Salaries"))
-    print("agg2 df")
-    print(agg2_df)
 
     return template_args, plot_paths
