@@ -695,11 +695,11 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs["Year"].append(year)
 
         aggs2["Value"].append(cur_salary_wage)
-        aggs2["Category"].append("Current salaries and wages")
+        aggs2["Category"].append("Current Salaries")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_salary_wage)
-        aggs2["Category"].append("New salaries and wages")
+        aggs2["Category"].append("New Salaries")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_taxable_interest_ordinary_divid)
@@ -854,8 +854,8 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
     print("template_args")
     print(template_args[f"{name}_total_AGI_table"])
-    print("projection table")
-    print(projection_table(agg2_df, "AGI"))
+    print("projection table salaries")
+    print(projection_table(agg2_df, "Salaries"))
     print("agg2 df")
     print(agg2_df)
 
