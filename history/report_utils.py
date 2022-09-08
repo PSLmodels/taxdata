@@ -554,8 +554,8 @@ def projection_table(data, category):
     df = data[data["Category"].str.contains(category)].copy()
     cur_df = df[df["Category"] == f"Current {category}"].copy()
     new_df = df[df["Category"] == f"New {category}"].copy()
-    cur_df.drop("Category", inplace=True)
-    new_df.drop("Category", inplace=True)
+    cur_df.drop("Category", axis=1, inplace=True)
+    new_df.drop("Category", axis=1, inplace=True)
     cur_df = cur_df.set_index("Year").transpose().round(1)
     new_df = new_df.set_index("Year").transpose().round(1)
     cur_df.index = ["Current"]
@@ -704,13 +704,13 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
         aggs2["Value"].append(cur_taxable_interest_ordinary_divid)
         aggs2["Category"].append(
-            "Current taxable interest and ordinary dividends (excludes qualified dividends"
+            "Current taxable interest and ordinary dividends (excludes qualified dividends)"
         )
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_taxable_interest_ordinary_divid)
         aggs2["Category"].append(
-            "New taxable interest and ordinary dividends (excludes qualified dividends"
+            "New taxable interest and ordinary dividends (excludes qualified dividends)"
         )
         aggs2["Year"].append(year)
 
@@ -767,11 +767,11 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_total_inc)
-        aggs2["Category"].append("Current total income")
+        aggs2["Category"].append("Current totalincome")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_total_inc)
-        aggs2["Category"].append("New total income")
+        aggs2["Category"].append("New totalincome")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_stat_adj)
@@ -826,17 +826,16 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
 
     # create projection tables
-    template_args[f"{name}_salaries and wages_table"] = projection_table(agg2_df, "salaries and wages")
-    template_args[f"{name}_taxable interest and ordinary dividends _table"] = projection_table(agg2_df, "taxable interest and ordinary dividends (excludes qualified dividends")
-    template_args[f"{name}_qualified dividends_table"] = projection_table(agg2_df, "qualified dividends")
-    template_args[f"{name}_capital gain or loss_table"] = projection_table(agg2_df, "capital gain or loss")
-    template_args[f"{name}_net business income _table"] = projection_table(agg2_df, "net business income")
-    template_args[f"{name}_qualified dividends_table"] = projection_table(agg2_df, "qualified dividends")
-    template_args[f"{name}_taxable pensions and annuities and IRA distributions_table"] = projection_table(agg2_df, "taxable pensions and annuities and IRA distributions")
-    template_args[f"{name}_taxable Social Security benefits_table"] = projection_table(agg2_df, "taxable Social Security benefits")
-    template_args[f"{name}_all other sources of income_table"] = projection_table(agg2_df, "all other sources of income")
-    template_args[f"{name}_total income_table"] = projection_table(agg2_df, "total income")
-    template_args[f"{name}_statutory Adjustments_table"] = projection_table(agg2_df, "statutory Adjustments")
-    template_args[f"{name}_total AGI_table"] = projection_table(agg2_df, "total AGI")
+    template_args[f"{name}_salaries_and_wages_table"] = projection_table(agg2_df, "salaries")
+    template_args[f"{name}_taxable_interest_and_ordinary_dividends_table"] = projection_table(agg2_df, "interest")
+    template_args[f"{name}_qualified_dividends_table"] = projection_table(agg2_df, "qualified")
+    template_args[f"{name}_capital_table"] = projection_table(agg2_df, "capital")
+    template_args[f"{name}_business_table"] = projection_table(agg2_df, "business")
+    template_args[f"{name}_pensions_annuities_IRA_distributions_table"] = projection_table(agg2_df, "pensions")
+    template_args[f"{name}_Social_Security_benefits_table"] = projection_table(agg2_df, "Security")
+    template_args[f"{name}_all_other_income_table"] = projection_table(agg2_df, "other")
+    template_args[f"{name}_total_income_table"] = projection_table(agg2_df, "totalincome")
+    template_args[f"{name}_statutory_Adjustments_table"] = projection_table(agg2_df, "statutory")
+    template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
 
     return template_args, plot_paths
