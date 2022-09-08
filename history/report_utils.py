@@ -554,8 +554,8 @@ def projection_table(data, category):
     df = data[data["Category"].str.contains(category)].copy()
     cur_df = df[df["Category"] == f"Current {category}"].copy()
     new_df = df[df["Category"] == f"New {category}"].copy()
-    cur_df.drop("Category", axis=1, inplace=True)
-    new_df.drop("Category", axis=1, inplace=True)
+    cur_df.drop("Category", inplace=True)
+    new_df.drop("Category", inplace=True)
     cur_df = cur_df.set_index("Year").transpose().round(1)
     new_df = new_df.set_index("Year").transpose().round(1)
     cur_df.index = ["Current"]
