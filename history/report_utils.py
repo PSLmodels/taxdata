@@ -852,4 +852,12 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     )
     template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
 
+
+    print("template args agi")
+    print(template_args[f"{name}_total_AGI_table"])
+    print("projection table agi")
+    print(projection_table(agg2_df, "AGI"))
+    print("complete template args")
+    print(template_args)
+
     return template_args, plot_paths
