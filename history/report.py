@@ -332,6 +332,7 @@ def report():
     # write report and delete images used
     output_path = Path(CUR_PATH, "reports", f"taxdata_report_{date}.pdf")
     write_page(output_path, TEMPLATE_PATH, **template_args)
+
     for path in plot_paths:
         path.unlink()
 

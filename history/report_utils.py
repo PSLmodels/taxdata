@@ -558,13 +558,16 @@ def projection_table(data, category):
     new_df.drop("Category", axis=1, inplace=True)
     cur_df = cur_df.set_index("Year").transpose().round(1)
     new_df = new_df.set_index("Year").transpose().round(1)
+    diff = cur_df - new_df
+    diff = diff.round(1)
+    pct_change = diff / cur_df * 100
+    pct_change = pct_change.round(2)
     cur_df.index = ["Current"]
     new_df.index = ["New"]
-    final_df = pd.concat([cur_df, new_df])
-    # diff = final_df.loc["Current"] - final_df.loc["New"]
-    # final_df.loc["Change"] = diff.round(1)
-    # pct_change = diff / final_df.loc["Current"] * 100
-    # final_df.loc["Pct Change"] = pct_change.round(2)
+    diff.index = ["Change"]
+    pct_change.index = ["Pct Change"]
+    final_df = pd.concat([cur_df, new_df, diff, pct_change])
+
     return final_df.to_markdown()
 
 
@@ -831,7 +834,7 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         f"{name}_taxable_interest_and_ordinary_dividends_table"
     ] = projection_table(agg2_df, "Interests")
     template_args[f"{name}_qualified_dividends_table"] = projection_table(
-        agg2_df, "Qdividents"
+        agg2_df, "Qdividends"
     )
     template_args[f"{name}_capital_table"] = projection_table(agg2_df, "Capital")
     template_args[f"{name}_business_table"] = projection_table(agg2_df, "Business")
@@ -849,13 +852,5 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         agg2_df, "Statutory"
     )
     template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
-
-
-    print("template args agi")
-    print(template_args[f"{name}_total_AGI_table"])
-    print("projection table agi")
-    print(projection_table(agg2_df, "AGI"))
-    print("complete template args")
-    print(template_args)
 
     return template_args, plot_paths
