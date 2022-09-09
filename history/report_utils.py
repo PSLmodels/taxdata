@@ -820,12 +820,10 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     plot_paths.append(img_path)
     template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
 
-    # create tax liability tables
+    # create tax liability and projection tables
     template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
     template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
     template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
-
-    # create projection tables
     template_args[f"{name}_salaries_and_wages_table"] = projection_table(
         agg2_df, "Salaries"
     )

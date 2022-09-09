@@ -244,6 +244,18 @@ def report():
         template_args["puf_combined_table"] = None
         template_args["puf_income_table"] = None
         template_args["puf_payroll_table"] = None
+        template_args["puf_salaries_and_wages_table"] = None
+        template_args["puf_taxable_interest_and_ordinary_dividends_table"] = None
+        template_args["puf_qualified_dividends_table"] = None
+        template_args["puf_capital_table"] = None
+        template_args["puf_business_table"] = None
+        template_args["puf_pensions_annuities_IRA_distributions_table"] = None
+        template_args["puf_Social_Security_benefits_table"] = None
+        template_args["puf_all_other_income_table"] = None
+        template_args["puf_total_income_table"] = None
+        template_args["puf_statutory_Adjustments_table"] = None
+        template_args["puf_total_AGI_table"] = None
+
 
     # # distribution plots
     # dist_vars = [
