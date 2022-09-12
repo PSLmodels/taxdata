@@ -644,6 +644,22 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             - cur_pension_annuities_IRAdis
             - cur_ssb
         )
+        cur_sub_peronal_expt = run_calc_var(base, year, "c04600")
+        cur_sub_std = run_calc_var(base, year, "standard")
+        cur_sub_tot_item = run_calc_var(base, year, "c04470")
+        cur_sub_qbid = run_calc_var(base, year, "qbided")
+        cur_sub_tot_expt = (
+            run_calc_var(base, year, "c04600")
+            + run_calc_var(base, year, "standard")
+            + run_calc_var(base, year, "c04470")
+            + run_calc_var(base, year, "qbided")
+        )
+        cur_taxable_inc = run_calc_var(base, year, "c04800")
+        cur_tot_inctax = run_calc_var(base, year, "c05800")
+        cur_tot_cdt = run_calc_var(base, year, "c07100")
+        cur_inctax_af_credit = run_calc_var(base, year, "c05800") - run_calc_var(
+            base, year, "c07100"
+        )
         new_salary_wage = run_calc_var(new, year, "e00200")
         new_taxable_interest_ordinary_divid = (
             run_calc_var(new, year, "e00300")
@@ -678,6 +694,22 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             - new_pension_annuities_IRAdis
             - new_ssb
         )
+        new_sub_peronal_expt = run_calc_var(new, year, "c04600")
+        new_sub_std = run_calc_var(new, year, "standard")
+        new_sub_tot_item = run_calc_var(new, year, "c04470")
+        new_sub_qbid = run_calc_var(new, year, "qbided")
+        new_sub_tot_expt = (
+            run_calc_var(new, year, "c04600")
+            + run_calc_var(new, year, "standard")
+            + run_calc_var(new, year, "c04470")
+            + run_calc_var(new, year, "qbided")
+        )
+        new_taxable_inc = run_calc_var(new, year, "c04800")
+        new_tot_inctax = run_calc_var(new, year, "c05800")
+        new_tot_cdt = run_calc_var(new, year, "c07100")
+        new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
+            new, year, "c07100"
+        )
         aggs["Tax Liability"].append(base_aggs["payrolltax"])
         aggs["Tax"].append("Current Payroll")
         aggs["Year"].append(year)
@@ -706,15 +738,11 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_taxable_interest_ordinary_divid)
-        aggs2["Category"].append(
-            "Current Interests"
-        )
+        aggs2["Category"].append("Current Interests")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_taxable_interest_ordinary_divid)
-        aggs2["Category"].append(
-            "New Interests"
-        )
+        aggs2["Category"].append("New Interests")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_q_div)
@@ -742,15 +770,11 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_pension_annuities_IRAdis)
-        aggs2["Category"].append(
-            "Current Pensions"
-        )
+        aggs2["Category"].append("Current Pensions")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(new_pension_annuities_IRAdis)
-        aggs2["Category"].append(
-            "New Pensions"
-        )
+        aggs2["Category"].append("New Pensions")
         aggs2["Year"].append(year)
 
         aggs2["Value"].append(cur_ssb)
@@ -791,6 +815,78 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
         aggs2["Value"].append(new_total_agi)
         aggs2["Category"].append("New AGI")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_sub_peronal_expt)
+        aggs2["Category"].append("Current Pexpt")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_sub_peronal_expt)
+        aggs2["Category"].append("New Pexpt")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_sub_std)
+        aggs2["Category"].append("Current Standardded")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_sub_std)
+        aggs2["Category"].append("New Standardded")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_sub_tot_item)
+        aggs2["Category"].append("Current totitem")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_sub_tot_item)
+        aggs2["Category"].append("New totitem")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_sub_qbid)
+        aggs2["Category"].append("Current qbid")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_sub_qbid)
+        aggs2["Category"].append("New qbid")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_sub_tot_expt)
+        aggs2["Category"].append("Current totalexpt")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_sub_tot_expt)
+        aggs2["Category"].append("New totalexpt")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_taxable_inc)
+        aggs2["Category"].append("Current taxincome")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_taxable_inc)
+        aggs2["Category"].append("New taxincome")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_tot_inctax)
+        aggs2["Category"].append("Current totalinctax")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_tot_inctax)
+        aggs2["Category"].append("New totalinctax")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_tot_cdt)
+        aggs2["Category"].append("Current totalcredit")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_tot_cdt)
+        aggs2["Category"].append("New totalcredit")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(cur_inctax_af_credit)
+        aggs2["Category"].append("Current aftercdttax")
+        aggs2["Year"].append(year)
+
+        aggs2["Value"].append(new_inctax_af_credit)
+        aggs2["Category"].append("New aftercdttax")
         aggs2["Year"].append(year)
 
     agg_df = pd.DataFrame(aggs)
@@ -852,5 +948,16 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         agg2_df, "Statutory"
     )
     template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
+    template_args[f"{name}_sub_peronal_expt_table"] = projection_table(agg2_df, "Pexpt")
+    template_args[f"{name}_sub_std_table"] = projection_table(agg2_df, "Standardded")
+    template_args[f"{name}_sub_tot_item_table"] = projection_table(agg2_df, "totitem")
+    template_args[f"{name}_sub_qbid_table"] = projection_table(agg2_df, "qbid")
+    template_args[f"{name}_sub_tot_expt_table"] = projection_table(agg2_df, "totalexpt")
+    template_args[f"{name}_taxable_inc_table"] = projection_table(agg2_df, "taxincome")
+    template_args[f"{name}_tot_inctax_table"] = projection_table(agg2_df, "totalinctax")
+    template_args[f"{name}_tot_cdt_table"] = projection_table(agg2_df, "totalcredit")
+    template_args[f"{name}_inctax_af_credit_table"] = projection_table(
+        agg2_df, "aftercdttax"
+    )
 
     return template_args, plot_paths

@@ -255,7 +255,16 @@ def report():
         template_args["puf_total_income_table"] = None
         template_args["puf_statutory_Adjustments_table"] = None
         template_args["puf_total_AGI_table"] = None
-
+        template_args["puf_total_AGI_table"] = None
+        template_args["puf_sub_peronal_expt_table"] = None
+        template_args["puf_sub_std_table"] = None
+        template_args["puf_sub_tot_item_table"] = None
+        template_args["puf_sub_qbid_table"] = None
+        template_args["puf_sub_tot_expt_table"] = None
+        template_args["puf_taxable_inc_table"] = None
+        template_args["puf_tot_inctax_table"] = None
+        template_args["puf_tot_cdt_table"] = None
+        template_args["puf_inctax_af_credit_table"] = None
 
     # # distribution plots
     # dist_vars = [

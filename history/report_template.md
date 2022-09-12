@@ -137,6 +137,43 @@ This report corresponds with the issues and pull requests listed below.
 
 {{ cps_total_AGI_table }}
 
+## Subtract Personal exemption amount (after limit) by Year (Billions)
+
+{{ cps_sub_peronal_expt_table }}
+
+## Subtract Standard deduction (non-itemizers only) by Year (Billions)
+
+{{ cps_sub_std_table }}
+
+## Subtract Total itemized deductions (itemizers only) after limits by Year (Billions)
+
+{{ cps_sub_tot_item_table }}
+
+## Subtract Qualified business income deduction by Year (Billions)
+
+{{ cps_sub_qbid_table }}
+
+## Total exemptions and deductions after limits by Year (Billions)
+
+{{ cps_sub_tot_expt_table }}
+
+## Taxable income by Year (Billions)
+
+{{ cps_taxable_inc_table }}
+
+## Total Income Tax by Year (Billions)
+
+{{ cps_tot_inctax_table }}
+
+## Total credits (refundable and nonrefundable) by Year (Billions)
+
+{{ cps_tot_cdt_table }}
+
+## Income tax after credits (Excluding refundable tax credits) by Year (Billions)
+
+{{ cps_inctax_af_credit_table }}
+
+
 \pagebreak
 
 # Aggregate Tax Liability 
@@ -207,5 +244,40 @@ This report corresponds with the issues and pull requests listed below.
 
 {{ puf_total_AGI_table }}
 
+## Subtract Personal exemption amount (after limit) by Year (Billions)
+
+{{ puf_sub_peronal_expt_table }}
+
+## Subtract Standard deduction (non-itemizers only) by Year (Billions)
+
+{{ puf_sub_std_table }}
+
+## Subtract Total itemized deductions (itemizers only) after limits by Year (Billions)
+
+{{ puf_sub_tot_item_table }}
+
+## Subtract Qualified business income deduction by Year (Billions)
+
+{{ puf_sub_qbid_table }}
+
+## Total exemptions and deductions after limits by Year (Billions)
+
+{{ puf_sub_tot_expt_table }}
+
+## Taxable income by Year (Billions)
+
+{{ puf_taxable_inc_table }}
+
+## Total Income Tax by Year (Billions)
+
+{{ puf_tot_inctax_table }}
+
+## Total credits (refundable and nonrefundable) by Year (Billions)
+
+{{ puf_tot_cdt_table }}
+
+## Income tax after credits (Excluding refundable tax credits) by Year (Billions)
+
+{{ puf_inctax_af_credit_table }}
 
 
