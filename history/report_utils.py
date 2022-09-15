@@ -571,6 +571,79 @@ def projection_table(data, category):
     return final_df.to_markdown()
 
 
+def calculate_agi_share(calc, year):
+
+    calc.advance_to_year(year)
+    calc.calc_all()
+
+    vdf = calc.dataframe(['s006', 'c00100', 'expanded_income']).sort_values(by='expanded_income', ascending=False)
+    vdf = tc.add_quantile_table_row_variable(vdf, 'expanded_income', num_quantiles=100, pop_quantiles=False, decile_details=False, weight_by_income_measure=False)
+    gbydf = vdf.groupby('table_row', as_index=False)
+
+    agi_share = 0
+    tot_agi = float((vdf['c00100'] * vdf['s006']).sum())
+    idx = 1
+    agi_brk = []
+
+    for grp_interval, grp in gbydf:
+        agi_item = (grp['c00100']*grp['s006']).sum()
+        agi_brk.append(agi_item)
+        idx += 1
+
+    agi_brk.reverse()
+
+    agi_q1 = 0
+    agi_q5 = 0
+    agi_q10 = 0
+    agi_q25 = 0
+    agi_q50 = 0
+
+    for i in range(0,1):
+        agi_q1 = agi_q1 + agi_brk[i]
+    for i in range(0,5):
+        agi_q5 = agi_q5 + agi_brk[i]
+    for i in range(0,10):
+        agi_q10 = agi_q10 + agi_brk[i]
+    for i in range(0,25):
+        agi_q25 = agi_q25 + agi_brk[i]
+    for i in range(0,50):
+        agi_q50 = agi_q50 + agi_brk[i]
+    
+    agi_s1 = (agi_q1 / tot_agi)*100
+    agi_s5 = (agi_q5 / tot_agi)*100
+    agi_s10 = (agi_q10 / tot_agi)*100
+    agi_s25 = (agi_q25 / tot_agi)*100
+    agi_s50 = (agi_q50 / tot_agi)*100
+    
+    return agi_s1, agi_s5, agi_s10, agi_s25, agi_s50
+
+
+def agi_share_table(data, incomegroup):
+    """
+    Creates a markdown table to display detailed agi share
+    """
+    df = data[data["Incomegroup"].str.contains(incomegroup)]
+    cur_df = df[df["Incomegroup"] == f"Current {incomegroup}"]
+    new_df = df[df["Incomegroup"] == f"New {incomegroup}"]
+    cur_df.drop('Incomegroup', axis=1, inplace=True)
+    new_df.drop('Incomegroup', axis=1, inplace=True)
+    cur_df = cur_df.set_index("Year").transpose().round(2)
+    new_df = new_df.set_index("Year").transpose().round(2)
+    
+    diff = cur_df - new_df
+    diff = diff.round(1)
+    pct_change = diff / cur_df * 100
+    pct_change = pct_change.round(2)
+
+    cur_df.index = ["Current"]
+    new_df.index = ["New"]
+    diff.index = ["Change"]
+    pct_change.index = ["Pct Change"]
+    final_df = pd.concat([cur_df, new_df, diff, pct_change])
+
+    return final_df.to_markdown()
+
+
 def compare_calcs(base, new, name, template_args, plot_paths):
     """
     Function for comparing the results from tax-calculator using the old and
@@ -606,6 +679,7 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     # aggregate totals
     aggs = defaultdict(list)
     aggs2 = defaultdict(list)
+    aggs3 = defaultdict(list)
     var_list = ["payrolltax", "iitax", "combined", "standard", "c04470"]
     for year in range(base.current_year, tc.Policy.LAST_BUDGET_YEAR + 1):
         base_aggs = run_calc(base, year, var_list)
@@ -889,8 +963,42 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs2["Category"].append("New aftercdttax")
         aggs2["Year"].append(year)
 
+        base_agi_aggs = calculate_agi_share(base, year)
+        new_agi_aggs = calculate_agi_share(new, year)
+        aggs3["Shares of AGI"].append(base_agi_aggs[0])
+        aggs3["Incomegroup"].append("Current Top1p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(new_agi_aggs[0])
+        aggs3["Incomegroup"].append("New Top1p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(base_agi_aggs[1])
+        aggs3["Incomegroup"].append("Current Top5p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(new_agi_aggs[1])
+        aggs3["Incomegroup"].append("New Top5p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(base_agi_aggs[2])
+        aggs3["Incomegroup"].append("Current Top10p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(new_agi_aggs[2])
+        aggs3["Incomegroup"].append("New Top10p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(base_agi_aggs[3])
+        aggs3["Incomegroup"].append("Current Top25p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(new_agi_aggs[3])
+        aggs3["Incomegroup"].append("New Top25p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(base_agi_aggs[4])
+        aggs3["Incomegroup"].append("Current Top50p")
+        aggs3["Year"].append(year)
+        aggs3["Shares of AGI"].append(new_agi_aggs[4])
+        aggs3["Incomegroup"].append("New Top50p")
+        aggs3["Year"].append(year)
+
     agg_df = pd.DataFrame(aggs)
     agg2_df = pd.DataFrame(aggs2)
+    agg3_df = pd.DataFrame(aggs3)
 
     title = "Aggregate Tax Liability by Year"
     agg_chart = (
@@ -959,5 +1067,10 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     template_args[f"{name}_inctax_af_credit_table"] = projection_table(
         agg2_df, "aftercdttax"
     )
+    template_args[f"{name}_Top1_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top1p")
+    template_args[f"{name}_Top5_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top5p")
+    template_args[f"{name}_Top10_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top10p")
+    template_args[f"{name}_Top25_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top25p")
+    template_args[f"{name}_Top50_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top50p")
 
     return template_args, plot_paths

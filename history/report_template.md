@@ -173,6 +173,26 @@ This report corresponds with the issues and pull requests listed below.
 
 {{ cps_inctax_af_credit_table }}
 
+## Top 1% income group shares of AGI (percent)
+
+{{ cps_Top1_percent_income_group_shares_of_AGI_table }}
+
+## Top 5% income group shares of AGI (percent)
+
+{{ cps_Top5_percent_income_group_shares_of_AGI_table }}
+
+## Top 10% income group shares of AGI (percent)
+
+{{ cps_Top10_percent_income_group_shares_of_AGI_table }}
+
+## Top 25% income group shares of AGI (percent)
+
+{{ cps_Top25_percent_income_group_shares_of_AGI_table }}
+
+## Top 50% income group shares of AGI (percent)
+
+{{ cps_Top50_percent_income_group_shares_of_AGI_table }}
+
 
 \pagebreak
 
@@ -279,5 +299,27 @@ This report corresponds with the issues and pull requests listed below.
 ## Income tax after credits (Excluding refundable tax credits) by Year (Billions)
 
 {{ puf_inctax_af_credit_table }}
+
+
+## Top 1% income group shares of AGI (percent)
+
+{{ puf_Top1_percent_income_group_shares_of_AGI_table }}
+
+## Top 5% income group shares of AGI (percent)
+
+{{ puf_Top5_percent_income_group_shares_of_AGI_table }}
+
+## Top 10% income group shares of AGI (percent)
+
+{{ puf_Top10_percent_income_group_shares_of_AGI_table }}
+
+## Top 25% income group shares of AGI (percent)
+
+{{ puf_Top25_percent_income_group_shares_of_AGI_table }}
+
+## Top 50% income group shares of AGI (percent)
+
+{{ puf_Top50_percent_income_group_shares_of_AGI_table }}
+
 
 
