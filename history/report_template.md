@@ -61,7 +61,7 @@ This report corresponds with the issues and pull requests listed below.
 
 \pagebreak
 
-# Distribution of Select Variables
+# Distribution of Select Variables (year: first year in the projection tables)
 
 ## CPS
 
@@ -71,9 +71,13 @@ This report corresponds with the issues and pull requests listed below.
 
 ## PUF
 
+{% for item in puf_dist_plots %}
+{{ item }}
+{% endfor %}
+
 # Aggregate Tax Liability
 
-## CPS
+## CPS 
 
 {{ cps_agg_plot }}
 

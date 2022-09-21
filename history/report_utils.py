@@ -540,7 +540,7 @@ def agg_liability_table(data, tax):
     cur_df.index = ["Current"]
     new_df.index = ["New"]
     final_df = pd.concat([cur_df, new_df])
-    diff = final_df.loc["Current"] - final_df.loc["New"]
+    diff = final_df.loc["New"] - final_df.loc["Current"]
     final_df.loc["Change"] = diff.round(1)
     pct_change = diff / final_df.loc["Current"] * 100
     final_df.loc["Pct Change"] = pct_change.round(2)
@@ -558,7 +558,7 @@ def projection_table(data, category):
     new_df.drop("Category", axis=1, inplace=True)
     cur_df = cur_df.set_index("Year").transpose().round(1)
     new_df = new_df.set_index("Year").transpose().round(1)
-    diff = cur_df - new_df
+    diff = new_df - cur_df
     diff = diff.round(1)
     pct_change = diff / cur_df * 100
     pct_change = pct_change.round(2)
@@ -630,7 +630,7 @@ def agi_share_table(data, incomegroup):
     cur_df = cur_df.set_index("Year").transpose().round(2)
     new_df = new_df.set_index("Year").transpose().round(2)
     
-    diff = cur_df - new_df
+    diff = new_df - cur_df
     diff = diff.round(1)
     pct_change = diff / cur_df * 100
     pct_change = pct_change.round(2)
@@ -674,7 +674,7 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         plot.save(str(img_path))
         plot_paths.append(img_path)
         dist_plots.append(f"![]({str(img_path)})" + "{.center}")
-    template_args["cps_dist_plots"] = dist_plots
+    template_args[f"{name}_dist_plots"] = dist_plots
 
     # aggregate totals
     aggs = defaultdict(list)
