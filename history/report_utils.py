@@ -570,6 +570,26 @@ def projection_table(data, category):
 
     return final_df.to_markdown()
 
+def validation_table(df_tax_data, df_cbo, tax_data_category, cbo_category):
+    """
+    Creates a markdown table to display detailed validation between taxdata
+    new projections and CBO projections
+    """
+    df_taxdata = projection_table(df_tax_data, tax_data_category)
+    df_taxdata = df_taxdata.transpose()
+    df_taxdata_new = df_taxdata["New"]
+    df_taxdata_new.index = df_taxdata_new.index.map(str)
+    df_cbo = df_cbo.drop(columns=["2019", "2020", "2021", "2022", "2032"], axis=1, inplace=False)
+    df_cbo = df_cbo.transpose()
+    df_cbo_sal = df_cbo.loc[: ,df_cbo.columns.str.contains(cbo_category)].squeeze()
+    diff = df_taxdata_new - df_cbo_sal
+    pct_change = diff / df_taxdata_new * 100
+    pct_change = pct_change.round(2)
+    final_df = pd.DataFrame(dict(TaxData_projection=df_taxdata_new, CBO_projection=df_cbo_sal, 
+                                 difference=diff, percent_difference=pct_change))
+    
+    return final_df.to_markdown()
+
 
 def calculate_agi_share(calc, year):
 
@@ -577,7 +597,8 @@ def calculate_agi_share(calc, year):
     calc.calc_all()
 
     vdf = calc.dataframe(['s006', 'c00100', 'expanded_income']).sort_values(by='expanded_income', ascending=False)
-    vdf = tc.add_quantile_table_row_variable(vdf, 'expanded_income', num_quantiles=100, pop_quantiles=False, decile_details=False, weight_by_income_measure=False)
+    vdf = tc.add_quantile_table_row_variable(vdf, 'expanded_income', num_quantiles=100, pop_quantiles=False,
+                                                decile_details=False, weight_by_income_measure=False)
     gbydf = vdf.groupby('table_row', as_index=False)
 
     agi_share = 0
@@ -718,7 +739,7 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             - cur_pension_annuities_IRAdis
             - cur_ssb
         )
-        cur_sub_peronal_expt = run_calc_var(base, year, "c04600")
+        cur_sub_personal_expt = run_calc_var(base, year, "c04600")
         cur_sub_std = run_calc_var(base, year, "standard")
         cur_sub_tot_item = run_calc_var(base, year, "c04470")
         cur_sub_qbid = run_calc_var(base, year, "qbided")
@@ -768,7 +789,7 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             - new_pension_annuities_IRAdis
             - new_ssb
         )
-        new_sub_peronal_expt = run_calc_var(new, year, "c04600")
+        new_sub_personal_expt = run_calc_var(new, year, "c04600")
         new_sub_std = run_calc_var(new, year, "standard")
         new_sub_tot_item = run_calc_var(new, year, "c04470")
         new_sub_qbid = run_calc_var(new, year, "qbided")
@@ -803,198 +824,45 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs["Tax"].append("New Combined")
         aggs["Year"].append(year)
 
-        aggs2["Value"].append(cur_salary_wage)
-        aggs2["Category"].append("Current Salaries")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_salary_wage)
-        aggs2["Category"].append("New Salaries")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_taxable_interest_ordinary_divid)
-        aggs2["Category"].append("Current Interests")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_taxable_interest_ordinary_divid)
-        aggs2["Category"].append("New Interests")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_q_div)
-        aggs2["Category"].append("Current Qdividends")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_q_div)
-        aggs2["Category"].append("New Qdividends")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_capital_g_l)
-        aggs2["Category"].append("Current Capital")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_capital_g_l)
-        aggs2["Category"].append("New Capital")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_business_inc)
-        aggs2["Category"].append("Current Business")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_business_inc)
-        aggs2["Category"].append("New Business")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_pension_annuities_IRAdis)
-        aggs2["Category"].append("Current Pensions")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_pension_annuities_IRAdis)
-        aggs2["Category"].append("New Pensions")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_ssb)
-        aggs2["Category"].append("Current Security")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_ssb)
-        aggs2["Category"].append("New Security")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_other_inc)
-        aggs2["Category"].append("Current Other")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_other_inc)
-        aggs2["Category"].append("New Other")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_total_inc)
-        aggs2["Category"].append("Current Totalincome")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_total_inc)
-        aggs2["Category"].append("New Totalincome")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_stat_adj)
-        aggs2["Category"].append("Current Statutory")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_stat_adj)
-        aggs2["Category"].append("New Statutory")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_total_agi)
-        aggs2["Category"].append("Current AGI")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_total_agi)
-        aggs2["Category"].append("New AGI")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_sub_peronal_expt)
-        aggs2["Category"].append("Current Pexpt")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_sub_peronal_expt)
-        aggs2["Category"].append("New Pexpt")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_sub_std)
-        aggs2["Category"].append("Current Standardded")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_sub_std)
-        aggs2["Category"].append("New Standardded")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_sub_tot_item)
-        aggs2["Category"].append("Current totitem")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_sub_tot_item)
-        aggs2["Category"].append("New totitem")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_sub_qbid)
-        aggs2["Category"].append("Current qbid")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_sub_qbid)
-        aggs2["Category"].append("New qbid")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_sub_tot_expt)
-        aggs2["Category"].append("Current totalexpt")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_sub_tot_expt)
-        aggs2["Category"].append("New totalexpt")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_taxable_inc)
-        aggs2["Category"].append("Current taxincome")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_taxable_inc)
-        aggs2["Category"].append("New taxincome")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_tot_inctax)
-        aggs2["Category"].append("Current totalinctax")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_tot_inctax)
-        aggs2["Category"].append("New totalinctax")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_tot_cdt)
-        aggs2["Category"].append("Current totalcredit")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_tot_cdt)
-        aggs2["Category"].append("New totalcredit")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(cur_inctax_af_credit)
-        aggs2["Category"].append("Current aftercdttax")
-        aggs2["Year"].append(year)
-
-        aggs2["Value"].append(new_inctax_af_credit)
-        aggs2["Category"].append("New aftercdttax")
-        aggs2["Year"].append(year)
+        agi_list = [cur_salary_wage, new_salary_wage, cur_taxable_interest_ordinary_divid, 
+                               new_taxable_interest_ordinary_divid, cur_q_div, new_q_div,
+                               cur_capital_g_l, new_capital_g_l, cur_business_inc, new_business_inc,
+                               cur_pension_annuities_IRAdis, new_pension_annuities_IRAdis, cur_ssb, new_ssb, 
+                               cur_other_inc, new_other_inc, cur_total_inc, new_total_inc,
+                               cur_stat_adj, new_stat_adj, cur_total_agi, new_total_agi, 
+                               cur_sub_personal_expt, new_sub_personal_expt, cur_sub_std, new_sub_std,
+                               cur_sub_tot_item, new_sub_tot_item, cur_sub_qbid, new_sub_qbid,
+                               cur_sub_tot_expt, new_sub_tot_expt, cur_taxable_inc, new_taxable_inc, 
+                               cur_tot_inctax, new_tot_inctax, cur_tot_cdt, new_tot_cdt,
+                               cur_inctax_af_credit, new_inctax_af_credit]
+        agi_nlist = ["Current Salaries", "New Salaries", "Current Interests", "New Interests", 
+                    "Current Qdividends", "New Qdividends", "Current Capital", "New Capital", 
+                    "Current Business", "New Business", "Current Pensions", "New Pensions", 
+                    "Current Security", "New Security", "Current Other", "New Other", 
+                    "Current Totalincome", "New Totalincome", "Current Statutory", "New Statutory",
+                    "Current AGI", "New AGI", "Current Pexpt", "New Pexpt", "Current Standardded", "New Standardded", 
+                    "Current totitem", "New totitem", "Current qbid", "New qbid", "Current totalexpt", "New totalexpt", 
+                    "Current taxincome", "New taxincome", "Current totalinctax", "New totalinctax", 
+                    "Current totalcredit", "New totalcredit", "Current aftercdttax", "New aftercdttax"]
+        for ae, an in zip(agi_list, agi_nlist):
+            aggs2["Value"].append(ae)
+            aggs2["Category"].append(an)
+            aggs2["Year"].append(year)
 
         base_agi_aggs = calculate_agi_share(base, year)
         new_agi_aggs = calculate_agi_share(new, year)
-        aggs3["Shares of AGI"].append(base_agi_aggs[0])
-        aggs3["Incomegroup"].append("Current Top1p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(new_agi_aggs[0])
-        aggs3["Incomegroup"].append("New Top1p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(base_agi_aggs[1])
-        aggs3["Incomegroup"].append("Current Top5p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(new_agi_aggs[1])
-        aggs3["Incomegroup"].append("New Top5p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(base_agi_aggs[2])
-        aggs3["Incomegroup"].append("Current Top10p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(new_agi_aggs[2])
-        aggs3["Incomegroup"].append("New Top10p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(base_agi_aggs[3])
-        aggs3["Incomegroup"].append("Current Top25p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(new_agi_aggs[3])
-        aggs3["Incomegroup"].append("New Top25p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(base_agi_aggs[4])
-        aggs3["Incomegroup"].append("Current Top50p")
-        aggs3["Year"].append(year)
-        aggs3["Shares of AGI"].append(new_agi_aggs[4])
-        aggs3["Incomegroup"].append("New Top50p")
-        aggs3["Year"].append(year)
+        share_list = [base_agi_aggs[0], new_agi_aggs[0], base_agi_aggs[1], 
+                               new_agi_aggs[1], base_agi_aggs[2], new_agi_aggs[2],
+                               base_agi_aggs[3], new_agi_aggs[3], base_agi_aggs[4],
+                               new_agi_aggs[4]]
+        share_nlist = ["Current Top1p", "New Top1p", "Current Top5p", "New Top5p", 
+                    "Current Top10p", "New Top10p", "Current Top25p", "New Top25p", 
+                    "Current Top50p", "New Top50p"]
+
+        for se, sn in zip(share_list, share_nlist):
+            aggs3["Shares of AGI"].append(se)
+            aggs3["Incomegroup"].append(sn)
+            aggs3["Year"].append(year)
 
     agg_df = pd.DataFrame(aggs)
     agg2_df = pd.DataFrame(aggs2)
@@ -1031,46 +899,31 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
     template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
     template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
-    template_args[f"{name}_salaries_and_wages_table"] = projection_table(
-        agg2_df, "Salaries"
-    )
-    template_args[
-        f"{name}_taxable_interest_and_ordinary_dividends_table"
-    ] = projection_table(agg2_df, "Interests")
-    template_args[f"{name}_qualified_dividends_table"] = projection_table(
-        agg2_df, "Qdividends"
-    )
-    template_args[f"{name}_capital_table"] = projection_table(agg2_df, "Capital")
-    template_args[f"{name}_business_table"] = projection_table(agg2_df, "Business")
-    template_args[
-        f"{name}_pensions_annuities_IRA_distributions_table"
-    ] = projection_table(agg2_df, "Pensions")
-    template_args[f"{name}_Social_Security_benefits_table"] = projection_table(
-        agg2_df, "Security"
-    )
-    template_args[f"{name}_all_other_income_table"] = projection_table(agg2_df, "Other")
-    template_args[f"{name}_total_income_table"] = projection_table(
-        agg2_df, "Totalincome"
-    )
-    template_args[f"{name}_statutory_Adjustments_table"] = projection_table(
-        agg2_df, "Statutory"
-    )
-    template_args[f"{name}_total_AGI_table"] = projection_table(agg2_df, "AGI")
-    template_args[f"{name}_sub_peronal_expt_table"] = projection_table(agg2_df, "Pexpt")
-    template_args[f"{name}_sub_std_table"] = projection_table(agg2_df, "Standardded")
-    template_args[f"{name}_sub_tot_item_table"] = projection_table(agg2_df, "totitem")
-    template_args[f"{name}_sub_qbid_table"] = projection_table(agg2_df, "qbid")
-    template_args[f"{name}_sub_tot_expt_table"] = projection_table(agg2_df, "totalexpt")
-    template_args[f"{name}_taxable_inc_table"] = projection_table(agg2_df, "taxincome")
-    template_args[f"{name}_tot_inctax_table"] = projection_table(agg2_df, "totalinctax")
-    template_args[f"{name}_tot_cdt_table"] = projection_table(agg2_df, "totalcredit")
-    template_args[f"{name}_inctax_af_credit_table"] = projection_table(
-        agg2_df, "aftercdttax"
-    )
-    template_args[f"{name}_Top1_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top1p")
-    template_args[f"{name}_Top5_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top5p")
-    template_args[f"{name}_Top10_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top10p")
-    template_args[f"{name}_Top25_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top25p")
-    template_args[f"{name}_Top50_percent_income_group_shares_of_AGI_table"] = agi_share_table(agg3_df, "Top50p")
+
+    agi_table_name_list = [f"{name}_salaries_and_wages_table",
+                   f"{name}_taxable_interest_and_ordinary_dividends_table",
+                   f"{name}_qualified_dividends_table", f"{name}_capital_table",
+                   f"{name}_business_table",f"{name}_pensions_annuities_IRA_distributions_table",
+                   f"{name}_Social_Security_benefits_table", f"{name}_all_other_income_table",
+                   f"{name}_total_income_table", f"{name}_statutory_Adjustments_table", 
+                   f"{name}_total_AGI_table", f"{name}_sub_peronal_expt_table", f"{name}_sub_std_table",
+                   f"{name}_sub_tot_item_table", f"{name}_sub_qbid_table", f"{name}_sub_tot_expt_table",
+                   f"{name}_taxable_inc_table", f"{name}_tot_inctax_table", f"{name}_tot_cdt_table",
+                   f"{name}_inctax_af_credit_table"]
+    agi_keyword_list = ["Salaries", "Interests", "Qdividends", "Capital", "Business", "Pensions", "Security",
+                    "Other", "Totalincome", "Statutory", "AGI", "Pexpt", "Standardded", "totitem", "qbid",
+                    "totalexpt", "taxincome", "totalinctax", "totalcredit", "aftercdttax"]
+    for table_name, keyword in zip(agi_table_name_list, agi_keyword_list):
+        template_args[table_name] = projection_table(agg2_df, keyword)
+
+    share_table_name_list = [f"{name}_Top1_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top5_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top10_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top25_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top50_percent_income_group_shares_of_AGI_table"]
+    share_keyword_list = ["Top1p", "Top5p", "Top10p", "Top25p", "Top50p"]
+    for table_name, keyword in zip(share_table_name_list, share_keyword_list):
+        template_args[table_name] = agi_share_table(agg3_df, keyword)
+
 
     return template_args, plot_paths
