@@ -244,6 +244,27 @@ def report():
         template_args["puf_combined_table"] = None
         template_args["puf_income_table"] = None
         template_args["puf_payroll_table"] = None
+        template_args["puf_salaries_and_wages_table"] = None
+        template_args["puf_taxable_interest_and_ordinary_dividends_table"] = None
+        template_args["puf_qualified_dividends_table"] = None
+        template_args["puf_capital_table"] = None
+        template_args["puf_business_table"] = None
+        template_args["puf_pensions_annuities_IRA_distributions_table"] = None
+        template_args["puf_Social_Security_benefits_table"] = None
+        template_args["puf_all_other_income_table"] = None
+        template_args["puf_total_income_table"] = None
+        template_args["puf_statutory_Adjustments_table"] = None
+        template_args["puf_total_AGI_table"] = None
+        template_args["puf_total_AGI_table"] = None
+        template_args["puf_sub_peronal_expt_table"] = None
+        template_args["puf_sub_std_table"] = None
+        template_args["puf_sub_tot_item_table"] = None
+        template_args["puf_sub_qbid_table"] = None
+        template_args["puf_sub_tot_expt_table"] = None
+        template_args["puf_taxable_inc_table"] = None
+        template_args["puf_tot_inctax_table"] = None
+        template_args["puf_tot_cdt_table"] = None
+        template_args["puf_inctax_af_credit_table"] = None
 
     # # distribution plots
     # dist_vars = [
@@ -320,6 +341,7 @@ def report():
     # write report and delete images used
     output_path = Path(CUR_PATH, "reports", f"taxdata_report_{date}.pdf")
     write_page(output_path, TEMPLATE_PATH, **template_args)
+
     for path in plot_paths:
         path.unlink()
 

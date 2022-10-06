@@ -31,6 +31,20 @@ def run_calc(calc, year, var_list):
     return totals
 
 
+def run_calc_var(calc, year, var):
+    """
+    Parameters
+    ----------
+    calc: tax calculator object
+    year: year to run calculator for
+    var: the variable to return waited total of
+    """
+    calc.advance_to_year(year)
+    calc.calc_all()
+    total = calc.weighted_total(var) * 1e-9
+    return total
+
+
 def add_bins(
     dframe,
     income_measure,
@@ -526,10 +540,128 @@ def agg_liability_table(data, tax):
     cur_df.index = ["Current"]
     new_df.index = ["New"]
     final_df = pd.concat([cur_df, new_df])
-    diff = final_df.loc["Current"] - final_df.loc["New"]
+    diff = final_df.loc["New"] - final_df.loc["Current"]
     final_df.loc["Change"] = diff.round(1)
     pct_change = diff / final_df.loc["Current"] * 100
     final_df.loc["Pct Change"] = pct_change.round(2)
+    return final_df.to_markdown()
+
+
+def projection_table(data, category):
+    """
+    Creates a markdown table to display detailed projections
+    """
+    df = data[data["Category"].str.contains(category)].copy()
+    cur_df = df[df["Category"] == f"Current {category}"].copy()
+    new_df = df[df["Category"] == f"New {category}"].copy()
+    cur_df.drop("Category", axis=1, inplace=True)
+    new_df.drop("Category", axis=1, inplace=True)
+    cur_df = cur_df.set_index("Year").transpose().round(1)
+    new_df = new_df.set_index("Year").transpose().round(1)
+    diff = new_df - cur_df
+    diff = diff.round(1)
+    pct_change = diff / cur_df * 100
+    pct_change = pct_change.round(2)
+    cur_df.index = ["Current"]
+    new_df.index = ["New"]
+    diff.index = ["Change"]
+    pct_change.index = ["Pct Change"]
+    final_df = pd.concat([cur_df, new_df, diff, pct_change])
+
+    return final_df.to_markdown()
+
+def validation_table(df_tax_data, df_cbo, tax_data_category, cbo_category):
+    """
+    Creates a markdown table to display detailed validation between taxdata
+    new projections and CBO projections
+    """
+    df_taxdata = projection_table(df_tax_data, tax_data_category)
+    df_taxdata = df_taxdata.transpose()
+    df_taxdata_new = df_taxdata["New"]
+    df_taxdata_new.index = df_taxdata_new.index.map(str)
+    df_cbo = df_cbo.drop(columns=["2019", "2020", "2021", "2022", "2032"], axis=1, inplace=False)
+    df_cbo = df_cbo.transpose()
+    df_cbo_sal = df_cbo.loc[: ,df_cbo.columns.str.contains(cbo_category)].squeeze()
+    diff = df_taxdata_new - df_cbo_sal
+    pct_change = diff / df_taxdata_new * 100
+    pct_change = pct_change.round(2)
+    final_df = pd.DataFrame(dict(TaxData_projection=df_taxdata_new, CBO_projection=df_cbo_sal, 
+                                 difference=diff, percent_difference=pct_change))
+    
+    return final_df.to_markdown()
+
+
+def calculate_agi_share(calc, year):
+
+    calc.advance_to_year(year)
+    calc.calc_all()
+
+    vdf = calc.dataframe(['s006', 'c00100', 'expanded_income']).sort_values(by='expanded_income', ascending=False)
+    vdf = tc.add_quantile_table_row_variable(vdf, 'expanded_income', num_quantiles=100, pop_quantiles=False,
+                                                decile_details=False, weight_by_income_measure=False)
+    gbydf = vdf.groupby('table_row', as_index=False)
+
+    agi_share = 0
+    tot_agi = float((vdf['c00100'] * vdf['s006']).sum())
+    idx = 1
+    agi_brk = []
+
+    for grp_interval, grp in gbydf:
+        agi_item = (grp['c00100']*grp['s006']).sum()
+        agi_brk.append(agi_item)
+        idx += 1
+
+    agi_brk.reverse()
+
+    agi_q1 = 0
+    agi_q5 = 0
+    agi_q10 = 0
+    agi_q25 = 0
+    agi_q50 = 0
+
+    for i in range(0,1):
+        agi_q1 = agi_q1 + agi_brk[i]
+    for i in range(0,5):
+        agi_q5 = agi_q5 + agi_brk[i]
+    for i in range(0,10):
+        agi_q10 = agi_q10 + agi_brk[i]
+    for i in range(0,25):
+        agi_q25 = agi_q25 + agi_brk[i]
+    for i in range(0,50):
+        agi_q50 = agi_q50 + agi_brk[i]
+    
+    agi_s1 = (agi_q1 / tot_agi)*100
+    agi_s5 = (agi_q5 / tot_agi)*100
+    agi_s10 = (agi_q10 / tot_agi)*100
+    agi_s25 = (agi_q25 / tot_agi)*100
+    agi_s50 = (agi_q50 / tot_agi)*100
+    
+    return agi_s1, agi_s5, agi_s10, agi_s25, agi_s50
+
+
+def agi_share_table(data, incomegroup):
+    """
+    Creates a markdown table to display detailed agi share
+    """
+    df = data[data["Incomegroup"].str.contains(incomegroup)]
+    cur_df = df[df["Incomegroup"] == f"Current {incomegroup}"]
+    new_df = df[df["Incomegroup"] == f"New {incomegroup}"]
+    cur_df.drop('Incomegroup', axis=1, inplace=True)
+    new_df.drop('Incomegroup', axis=1, inplace=True)
+    cur_df = cur_df.set_index("Year").transpose().round(2)
+    new_df = new_df.set_index("Year").transpose().round(2)
+    
+    diff = new_df - cur_df
+    diff = diff.round(1)
+    pct_change = diff / cur_df * 100
+    pct_change = pct_change.round(2)
+
+    cur_df.index = ["Current"]
+    new_df.index = ["New"]
+    diff.index = ["Change"]
+    pct_change.index = ["Pct Change"]
+    final_df = pd.concat([cur_df, new_df, diff, pct_change])
+
     return final_df.to_markdown()
 
 
@@ -563,14 +695,116 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         plot.save(str(img_path))
         plot_paths.append(img_path)
         dist_plots.append(f"![]({str(img_path)})" + "{.center}")
-    template_args["cps_dist_plots"] = dist_plots
+    template_args[f"{name}_dist_plots"] = dist_plots
 
     # aggregate totals
     aggs = defaultdict(list)
+    aggs2 = defaultdict(list)
+    aggs3 = defaultdict(list)
     var_list = ["payrolltax", "iitax", "combined", "standard", "c04470"]
     for year in range(base.current_year, tc.Policy.LAST_BUDGET_YEAR + 1):
         base_aggs = run_calc(base, year, var_list)
         new_aggs = run_calc(new, year, var_list)
+        cur_salary_wage = run_calc_var(base, year, "e00200")
+        cur_taxable_interest_ordinary_divid = (
+            run_calc_var(base, year, "e00300")
+            + run_calc_var(base, year, "e00600")
+            - run_calc_var(base, year, "e00650")
+        )
+        cur_q_div = run_calc_var(base, year, "e00650")
+        cur_capital_g_l = (
+            run_calc_var(base, year, "e01100")
+            + run_calc_var(base, year, "e01200")
+            + run_calc_var(base, year, "c23650")
+        )
+        cur_business_inc = (
+            run_calc_var(base, year, "e00900")
+            + run_calc_var(base, year, "e02000")
+            + run_calc_var(base, year, "e02100")
+        )
+        cur_pension_annuities_IRAdis = run_calc_var(
+            base, year, "e01400"
+        ) + run_calc_var(base, year, "e01700")
+        cur_ssb = run_calc_var(base, year, "c02500")
+        cur_total_inc = run_calc_var(base, year, "c00100") + run_calc_var(
+            base, year, "c02900"
+        )
+        cur_stat_adj = run_calc_var(base, year, "c02900")
+        cur_total_agi = run_calc_var(base, year, "c00100")
+        cur_other_inc = (
+            cur_total_inc
+            - cur_salary_wage
+            - cur_taxable_interest_ordinary_divid
+            - cur_capital_g_l
+            - cur_pension_annuities_IRAdis
+            - cur_ssb
+        )
+        cur_sub_personal_expt = run_calc_var(base, year, "c04600")
+        cur_sub_std = run_calc_var(base, year, "standard")
+        cur_sub_tot_item = run_calc_var(base, year, "c04470")
+        cur_sub_qbid = run_calc_var(base, year, "qbided")
+        cur_sub_tot_expt = (
+            run_calc_var(base, year, "c04600")
+            + run_calc_var(base, year, "standard")
+            + run_calc_var(base, year, "c04470")
+            + run_calc_var(base, year, "qbided")
+        )
+        cur_taxable_inc = run_calc_var(base, year, "c04800")
+        cur_tot_inctax = run_calc_var(base, year, "c05800")
+        cur_tot_cdt = run_calc_var(base, year, "c07100")
+        cur_inctax_af_credit = run_calc_var(base, year, "c05800") - run_calc_var(
+            base, year, "c07100"
+        )
+        new_salary_wage = run_calc_var(new, year, "e00200")
+        new_taxable_interest_ordinary_divid = (
+            run_calc_var(new, year, "e00300")
+            + run_calc_var(new, year, "e00600")
+            - run_calc_var(new, year, "e00650")
+        )
+        new_q_div = run_calc_var(new, year, "e00650")
+        new_capital_g_l = (
+            run_calc_var(new, year, "e01100")
+            + run_calc_var(new, year, "e01200")
+            + run_calc_var(new, year, "c23650")
+        )
+        new_business_inc = (
+            run_calc_var(new, year, "e00900")
+            + run_calc_var(new, year, "e02000")
+            + run_calc_var(new, year, "e02100")
+        )
+        new_pension_annuities_IRAdis = run_calc_var(new, year, "e01400") + run_calc_var(
+            new, year, "e01700"
+        )
+        new_ssb = run_calc_var(new, year, "c02500")
+        new_total_inc = run_calc_var(new, year, "c00100") + run_calc_var(
+            new, year, "c02900"
+        )
+        new_stat_adj = run_calc_var(new, year, "c02900")
+        new_total_agi = run_calc_var(new, year, "c00100")
+        new_other_inc = (
+            new_total_inc
+            - new_salary_wage
+            - new_taxable_interest_ordinary_divid
+            - new_capital_g_l
+            - new_pension_annuities_IRAdis
+            - new_ssb
+        )
+        new_sub_personal_expt = run_calc_var(new, year, "c04600")
+        new_sub_std = run_calc_var(new, year, "standard")
+        new_sub_tot_item = run_calc_var(new, year, "c04470")
+        new_sub_qbid = run_calc_var(new, year, "qbided")
+        new_sub_tot_expt = (
+            run_calc_var(new, year, "c04600")
+            + run_calc_var(new, year, "standard")
+            + run_calc_var(new, year, "c04470")
+            + run_calc_var(new, year, "qbided")
+        )
+        new_taxable_inc = run_calc_var(new, year, "c04800")
+        new_tot_inctax = run_calc_var(new, year, "c05800")
+        new_tot_cdt = run_calc_var(new, year, "c07100")
+        new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
+            new, year, "c07100"
+        )
         aggs["Tax Liability"].append(base_aggs["payrolltax"])
         aggs["Tax"].append("Current Payroll")
         aggs["Year"].append(year)
@@ -589,7 +823,50 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs["Tax Liability"].append(new_aggs["combined"])
         aggs["Tax"].append("New Combined")
         aggs["Year"].append(year)
+
+        agi_list = [cur_salary_wage, new_salary_wage, cur_taxable_interest_ordinary_divid, 
+                               new_taxable_interest_ordinary_divid, cur_q_div, new_q_div,
+                               cur_capital_g_l, new_capital_g_l, cur_business_inc, new_business_inc,
+                               cur_pension_annuities_IRAdis, new_pension_annuities_IRAdis, cur_ssb, new_ssb, 
+                               cur_other_inc, new_other_inc, cur_total_inc, new_total_inc,
+                               cur_stat_adj, new_stat_adj, cur_total_agi, new_total_agi, 
+                               cur_sub_personal_expt, new_sub_personal_expt, cur_sub_std, new_sub_std,
+                               cur_sub_tot_item, new_sub_tot_item, cur_sub_qbid, new_sub_qbid,
+                               cur_sub_tot_expt, new_sub_tot_expt, cur_taxable_inc, new_taxable_inc, 
+                               cur_tot_inctax, new_tot_inctax, cur_tot_cdt, new_tot_cdt,
+                               cur_inctax_af_credit, new_inctax_af_credit]
+        agi_nlist = ["Current Salaries", "New Salaries", "Current Interests", "New Interests", 
+                    "Current Qdividends", "New Qdividends", "Current Capital", "New Capital", 
+                    "Current Business", "New Business", "Current Pensions", "New Pensions", 
+                    "Current Security", "New Security", "Current Other", "New Other", 
+                    "Current Totalincome", "New Totalincome", "Current Statutory", "New Statutory",
+                    "Current AGI", "New AGI", "Current Pexpt", "New Pexpt", "Current Standardded", "New Standardded", 
+                    "Current totitem", "New totitem", "Current qbid", "New qbid", "Current totalexpt", "New totalexpt", 
+                    "Current taxincome", "New taxincome", "Current totalinctax", "New totalinctax", 
+                    "Current totalcredit", "New totalcredit", "Current aftercdttax", "New aftercdttax"]
+        for ae, an in zip(agi_list, agi_nlist):
+            aggs2["Value"].append(ae)
+            aggs2["Category"].append(an)
+            aggs2["Year"].append(year)
+
+        base_agi_aggs = calculate_agi_share(base, year)
+        new_agi_aggs = calculate_agi_share(new, year)
+        share_list = [base_agi_aggs[0], new_agi_aggs[0], base_agi_aggs[1], 
+                               new_agi_aggs[1], base_agi_aggs[2], new_agi_aggs[2],
+                               base_agi_aggs[3], new_agi_aggs[3], base_agi_aggs[4],
+                               new_agi_aggs[4]]
+        share_nlist = ["Current Top1p", "New Top1p", "Current Top5p", "New Top5p", 
+                    "Current Top10p", "New Top10p", "Current Top25p", "New Top25p", 
+                    "Current Top50p", "New Top50p"]
+
+        for se, sn in zip(share_list, share_nlist):
+            aggs3["Shares of AGI"].append(se)
+            aggs3["Incomegroup"].append(sn)
+            aggs3["Year"].append(year)
+
     agg_df = pd.DataFrame(aggs)
+    agg2_df = pd.DataFrame(aggs2)
+    agg3_df = pd.DataFrame(aggs3)
 
     title = "Aggregate Tax Liability by Year"
     agg_chart = (
@@ -618,9 +895,35 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     plot_paths.append(img_path)
     template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
 
-    # create tax liability tables
+    # create tax liability and projection tables
     template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
     template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
     template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
+
+    agi_table_name_list = [f"{name}_salaries_and_wages_table",
+                   f"{name}_taxable_interest_and_ordinary_dividends_table",
+                   f"{name}_qualified_dividends_table", f"{name}_capital_table",
+                   f"{name}_business_table",f"{name}_pensions_annuities_IRA_distributions_table",
+                   f"{name}_Social_Security_benefits_table", f"{name}_all_other_income_table",
+                   f"{name}_total_income_table", f"{name}_statutory_Adjustments_table", 
+                   f"{name}_total_AGI_table", f"{name}_sub_peronal_expt_table", f"{name}_sub_std_table",
+                   f"{name}_sub_tot_item_table", f"{name}_sub_qbid_table", f"{name}_sub_tot_expt_table",
+                   f"{name}_taxable_inc_table", f"{name}_tot_inctax_table", f"{name}_tot_cdt_table",
+                   f"{name}_inctax_af_credit_table"]
+    agi_keyword_list = ["Salaries", "Interests", "Qdividends", "Capital", "Business", "Pensions", "Security",
+                    "Other", "Totalincome", "Statutory", "AGI", "Pexpt", "Standardded", "totitem", "qbid",
+                    "totalexpt", "taxincome", "totalinctax", "totalcredit", "aftercdttax"]
+    for table_name, keyword in zip(agi_table_name_list, agi_keyword_list):
+        template_args[table_name] = projection_table(agg2_df, keyword)
+
+    share_table_name_list = [f"{name}_Top1_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top5_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top10_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top25_percent_income_group_shares_of_AGI_table",
+                   f"{name}_Top50_percent_income_group_shares_of_AGI_table"]
+    share_keyword_list = ["Top1p", "Top5p", "Top10p", "Top25p", "Top50p"]
+    for table_name, keyword in zip(share_table_name_list, share_keyword_list):
+        template_args[table_name] = agi_share_table(agg3_df, keyword)
+
 
     return template_args, plot_paths
