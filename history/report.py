@@ -15,7 +15,13 @@ from report_utils import (
     compare_vars,
     cbo_bar_chart,
     agg_liability_table,
+    projection_table,
+    calculate_agi_share,
+    agi_share_table,
+    CBO_projections,
+    validation_table,
     compare_calcs,
+    CBO_validation
 )
 from pathlib import Path
 from datetime import datetime
@@ -181,6 +187,27 @@ def report():
         growth_rate_projections.append(f"![]({str(img_path)})" + "{.center}")
     template_args["growth_rate_projections"] = growth_rate_projections
 
+    # read CBO data
+    cbo_data_url = "https://www.cbo.gov/about/products/budget-economic-data"
+    session = HTMLSession()
+    r = session.get(cbo_data_url)
+    divs = r.html.find("div.view.view-recurring-data")
+    revprojections = divs[4]
+
+    assert "Revenue Projections" in revprojections.text
+    latest_revprojections = revprojections.find("div.views-col.col-1")[0]
+    rev_link = latest_revprojections.find("a")[0]
+    _rev_report = datetime.strptime(rev_link.text, "%b %Y")
+    rev_report = datetime.strftime(_rev_report, "%B %Y")
+    rev_url = rev_link.attrs["href"]
+    cbourl = "https://www.cbo.gov"
+    rev_url = cbourl + rev_url
+    
+    rev_proj = pd.read_excel(rev_url, sheet_name="3.Individual Income Tax Details", skiprows=8, index_col=[0, 1])
+    rev_proj = rev_proj.dropna(axis=0)
+
+    cbo_df = CBO_projections(rev_proj)
+
     # compare tax calculator projections
     # baseline CPS calculator
     base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
@@ -208,6 +235,35 @@ def report():
     template_args, plot_paths = compare_calcs(
         base_cps, new_cps, "cps", template_args, plot_paths
     )
+
+
+
+    # Validation with CBO tax model
+    # baseline CPS calculator
+    base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
+    base_cps.advance_to_year(first_year)
+    base_cps.calc_all()
+    # updated CPS calculator
+    cps = pd.read_csv(Path(CUR_PATH, "..", "data", "cps.csv.gz"), index_col=None)
+    cps_weights = pd.read_csv(
+        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"), index_col=None
+    )
+    gfactor_path_str = str(GROW_FACTORS_PATH)
+    gft = tc.GrowFactors(growfactors_filename=gfactor_path_str)
+    new_cps = tc.Calculator(
+        records=tc.Records(
+            data=cps,
+            weights=cps_weights,
+            adjust_ratios=None,
+            start_year=2014,
+            gfactors=gft,
+        ),
+        policy=tc.Policy(),
+    )
+    new_cps.advance_to_year(first_year)
+    new_cps.calc_all()
+    template_args = CBO_validation(cbo_df, new_cps, "cps", template_args)
+
 
     # PUF comparison
     if base_puf_path and PUF_AVAILABLE:
@@ -237,6 +293,32 @@ def report():
         template_args, plot_paths = compare_calcs(
             base_puf, new_puf, "puf", template_args, plot_paths
         )
+        # Validation
+        # base puf calculator
+        base_puf = tc.Calculator(
+            records=tc.Records(data=base_puf_path), policy=tc.Policy()
+        )
+        base_puf.advance_to_year(first_year)
+        base_puf.calc_all()
+        # updated puf calculator
+        puf_weights = pd.read_csv(
+            Path(CUR_PATH, "..", "puf_stage2", "puf_weights.csv.gz"), index_col=None
+        )
+        puf_ratios = pd.read_csv(
+            Path(CUR_PATH, "..", "puf_stage3", "puf_ratios.csv"), index_col=0
+        ).transpose()
+        new_records = tc.Records(
+            data=str(PUF_PATH),
+            weights=puf_weights,
+            adjust_ratios=puf_ratios,
+            gfactors=gft,
+        )
+        new_puf = tc.Calculator(records=new_records, policy=tc.Policy())
+        new_puf.advance_to_year(first_year)
+        new_puf.calc_all()
+        template_args = CBO_validation(cbo_df, new_puf, "puf", template_args)
+    
+    
     else:
         msg = "PUF comparisons are not included in this report."
         template_args["puf_msg"] = msg
