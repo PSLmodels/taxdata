@@ -95,6 +95,7 @@ def update_econproj(url, baseline, text_args):
     # pull all of the latest CBO reports and use them for needed updates
     session = HTMLSession()
     r = session.get(url)
+    cbo_pre_url = "https://www.cbo.gov"
     divs = r.html.find("div.view.view-recurring-data")
     revprojections = divs[4]
     # both assertions are there to throw errors if the order of sections change
@@ -104,7 +105,8 @@ def update_econproj(url, baseline, text_args):
     rev_link = latest_revprojections.find("a")[0]
     _rev_report = datetime.strptime(rev_link.text, "%b %Y")
     rev_report = datetime.strftime(_rev_report, "%B %Y")
-    rev_url = rev_link.attrs["href"]
+    rev_file_url = rev_link.attrs["href"]
+    rev_url = "".join([cbo_pre_url, rev_file_url])
 
     econprojections = divs[8]
     assert "10-Year Economic Projections" in econprojections.text
@@ -112,7 +114,8 @@ def update_econproj(url, baseline, text_args):
     econ_link = latest_econprojections.find("a")[0]
     _cbo_report = datetime.strptime(econ_link.text, "%b %Y")
     cbo_report = datetime.strftime(_cbo_report, "%B %Y")
-    econ_url = econ_link.attrs["href"]
+    econ_file_url = econ_link.attrs["href"]
+    econ_url = "".join([cbo_pre_url, econ_file_url])
 
     if cbo_report == text_args["current_cbo"]:
         print("\tNo new data since last update")
