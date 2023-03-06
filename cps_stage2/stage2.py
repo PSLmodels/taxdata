@@ -46,8 +46,7 @@ CUR_WEIGHTS = pd.read_csv(Path(CUR_PATH, "cps_weights.csv.gz"))
 
 
 def main():
-    """
-    """
+    """ """
     print("Reading Data")
     cps = pd.read_csv(
         Path(CUR_PATH, "..", "data", "cps_raw.csv.gz"), compression="gzip"
