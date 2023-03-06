@@ -21,7 +21,7 @@ from report_utils import (
     CBO_projections,
     validation_table,
     compare_calcs,
-    CBO_validation
+    CBO_validation,
 )
 from pathlib import Path
 from datetime import datetime
@@ -109,7 +109,7 @@ def report():
         url = f"https://github.com/PSLmodels/taxdata/pull/{pr}"
         # extract PR title
         r = session.get(url)
-        elm = r.html.find("span.js-issue-title")[0]
+        elm = r.html.find("bdi.js-issue-title")[0]
         title = elm.text
         prs.append(pull_str.format(pr, title, url))
     template_args["prs"] = prs
@@ -202,8 +202,13 @@ def report():
     rev_url = rev_link.attrs["href"]
     cbourl = "https://www.cbo.gov"
     rev_url = cbourl + rev_url
-    
-    rev_proj = pd.read_excel(rev_url, sheet_name="3.Individual Income Tax Details", skiprows=8, index_col=[0, 1])
+
+    rev_proj = pd.read_excel(
+        rev_url,
+        sheet_name="3.Individual Income Tax Details",
+        skiprows=8,
+        index_col=[0, 1],
+    )
     rev_proj = rev_proj.dropna(axis=0)
 
     cbo_df = CBO_projections(rev_proj)
@@ -236,8 +241,6 @@ def report():
         base_cps, new_cps, "cps", template_args, plot_paths
     )
 
-
-
     # Validation with CBO tax model
     # baseline CPS calculator
     base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
@@ -263,7 +266,6 @@ def report():
     new_cps.advance_to_year(first_year)
     new_cps.calc_all()
     template_args = CBO_validation(cbo_df, new_cps, "cps", template_args)
-
 
     # PUF comparison
     if base_puf_path and PUF_AVAILABLE:
@@ -317,8 +319,7 @@ def report():
         new_puf.advance_to_year(first_year)
         new_puf.calc_all()
         template_args = CBO_validation(cbo_df, new_puf, "puf", template_args)
-    
-    
+
     else:
         msg = "PUF comparisons are not included in this report."
         template_args["puf_msg"] = msg

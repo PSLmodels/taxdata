@@ -70,7 +70,7 @@ Current Document: February 2023
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: [May 2022](https://www.cbo.gov/system/files/2022-05/51138-2022-05-Revenue-Projections.xlsx)
+Previous: [February 2023](https://www.cbo.gov/system/files/2023-02/51138-2023-02-Revenue.xlsx)
 
 Current: [February 2023](https://www.cbo.gov/system/files/2023-02/51138-2023-02-Revenue.xlsx)
 
