@@ -1,48 +1,56 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Overview of Statistical Matching &#8212; taxdata</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
 
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=4ec06e9971c5264fbd345897d5258098f11cc577" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=8bf782fb4ee92b3d3646425e50f299c4e1fd152d"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -52,56 +60,436 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/methods/MatchingDocumentationRevised';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Extrapolation Methods" href="Stage1_Stage2_Methodology.html" />
     <link rel="prev" title="CPS Match File documentation" href="MATCH.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+  
 
-    <div class="container-xl">
-      <div class="row">
+
+<a class="navbar-brand logo" href="../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">taxdata</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing/CONTRIBUTING.html">
+                        TaxData Contributor Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/datasets.html">
+                        TaxData Dataset Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/about_puf_data.html">
+                        About IRS Public Use Data
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/puf_file_doc.html">
+                        Current Population Survey Tax Unit File Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/about_cps_data.html">
+                        About CPS Data
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/cps_file_doc.html">
+                        Current Population Survey Tax Unit File Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="CBO_Baseline_Updating_Instructions.html">
+                        Updating the CBO Baseline
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="SOI_Estimates_Updating_Instructions.html">
+                        Updating the SOI Estimates
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="MATCH.html">
+                        CPS Match File documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Overview of Statistical Matching
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="Stage1_Stage2_Methodology.html">
+                        Extrapolation Methods
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="Stage1_Stage2_2009PUF.html">
+                        Extrapolation of 2009 PUF
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="puf_stage3.html">
+                        Stage III Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../about/roadmap.html">
+                        Roadmap
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../about/LICENSE.html">
+                        CC0 1.0 Universal Summary
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+        <div class="navbar-end-item navbar-persistent--container">
           
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../../index.html">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
       
       
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
       
-      <h1 class="site-logo" id="site-title">taxdata</h1>
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
       
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    </div>
+  </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing/CONTRIBUTING.html">
+                        TaxData Contributor Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/datasets.html">
+                        TaxData Dataset Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/about_puf_data.html">
+                        About IRS Public Use Data
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/puf_file_doc.html">
+                        Current Population Survey Tax Unit File Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/about_cps_data.html">
+                        About CPS Data
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data/cps_file_doc.html">
+                        Current Population Survey Tax Unit File Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="CBO_Baseline_Updating_Instructions.html">
+                        Updating the CBO Baseline
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="SOI_Estimates_Updating_Instructions.html">
+                        Updating the SOI Estimates
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="MATCH.html">
+                        CPS Match File documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Overview of Statistical Matching
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="Stage1_Stage2_Methodology.html">
+                        Extrapolation Methods
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="Stage1_Stage2_2009PUF.html">
+                        Extrapolation of 2009 PUF
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="puf_stage3.html">
+                        Stage III Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../about/roadmap.html">
+                        Roadmap
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../about/LICENSE.html">
+                        CC0 1.0 Universal Summary
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item">
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">taxdata</p>
+  
+</a>
+    </div>
+    <div class="sidebar-start-items__item">
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -110,427 +498,263 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contributing to taxdata
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing to taxdata</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/CONTRIBUTING.html">
-   TaxData Contributor Guide
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/CONTRIBUTING.html">TaxData Contributor Guide</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  taxdata Data
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">taxdata Data</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../data/datasets.html">
-   TaxData Dataset Documentation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../data/about_puf_data.html">
-   About IRS Public Use Data
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../data/puf_file_doc.html">
-   Current Population Survey Tax Unit File Documentation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../data/about_cps_data.html">
-   About CPS Data
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../data/cps_file_doc.html">
-   Current Population Survey Tax Unit File Documentation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../data/datasets.html">TaxData Dataset Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/about_puf_data.html">About IRS Public Use Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/puf_file_doc.html">Current Population Survey Tax Unit File Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/about_cps_data.html">About CPS Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data/cps_file_doc.html">Current Population Survey Tax Unit File Documentation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  taxdata Methodology
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">taxdata Methodology</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="CBO_Baseline_Updating_Instructions.html">
-   Updating the CBO Baseline
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="SOI_Estimates_Updating_Instructions.html">
-   Updating the SOI Estimates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="MATCH.html">
-   CPS Match File documentation
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Overview of Statistical Matching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="Stage1_Stage2_Methodology.html">
-   Extrapolation Methods
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="Stage1_Stage2_2009PUF.html">
-   Extrapolation of 2009 PUF
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="puf_stage3.html">
-   Stage III Documentation
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="CBO_Baseline_Updating_Instructions.html">Updating the CBO Baseline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SOI_Estimates_Updating_Instructions.html">Updating the SOI Estimates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MATCH.html">CPS Match File documentation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Overview of Statistical Matching</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Stage1_Stage2_Methodology.html">Extrapolation Methods</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="Stage1_Stage2_2009PUF.html">Extrapolation of 2009 PUF</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="puf_stage3.html">Stage III Documentation</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  About
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../about/roadmap.html">
-   Roadmap
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../about/LICENSE.html">
-   CC0 1.0 Universal Summary
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../about/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/LICENSE.html">CC0 1.0 Universal Summary</a></li>
+
+
 </ul>
 
     </div>
-</nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
+</nav>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
+  </div>
+  
 
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
 
-          
+  
+  <div id="rtd-footer-container"></div>
 
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
+      </div>
+      <main id="main-content" class="bd-main">
         
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
 
 
 
 <div class="col py-1 d-flex header-article-main">
     <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
+        <label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" data-toggle="tooltip" data-placement="right" title="Toggle primary sidebar">
+            <span class="fa-solid fa-bars"></span>
+        </label>
     </div>
     <div class="header-article__right">
 <button onclick="toggleFullScreen()"
-  class="headerbtn"
+  class="btn btn-sm"
   data-toggle="tooltip"
 data-placement="bottom"
 title="Fullscreen mode"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+
+<div class="dropdown dropdown-repository-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/PSLmodels/taxdata"
-   class="headerbtn"
+  <ul class="dropdown-menu">
+      <li><a href="https://github.com/PSLmodels/taxdata" target="_blank"
+   class="btn btn-sm dropdown-item"
    data-toggle="tooltip"
 data-placement="left"
 title="Source repository"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
-<span class="headerbtn__text-container">repository</span>
+<span class="btn__text-container">repository</span>
 </a>
-
-      </li>
+</a>
       
-      <li>
-        <a href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/methods/MatchingDocumentationRevised.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
+      <li><a href="https://github.com/PSLmodels/taxdata/issues/new?title=Issue%20on%20page%20%2Fcontent/methods/MatchingDocumentationRevised.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm dropdown-item"
    data-toggle="tooltip"
 data-placement="left"
 title="Open an issue"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-lightbulb"></i>
   </span>
-<span class="headerbtn__text-container">open issue</span>
+<span class="btn__text-container">open issue</span>
 </a>
-
-      </li>
+</a>
       
-    </ul>
-  </div>
+  </ul>
 </div>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../../_sources/content/methods/MatchingDocumentationRevised.md"
-   class="headerbtn"
+  <ul class="dropdown-menu">
+      <li><a href="../../_sources/content/methods/MatchingDocumentationRevised.md" target="_blank"
+   class="btn btn-sm dropdown-item"
    data-toggle="tooltip"
 data-placement="left"
 title="Download source file"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.md</span>
+<span class="btn__text-container">.md</span>
 </a>
-
-      </li>
+</a>
       
       <li>
-        
 <button onclick="printPdf(this)"
-  class="headerbtn"
+  class="btn btn-sm dropdown-item"
   data-toggle="tooltip"
 data-placement="left"
 title="Print to PDF"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-file-pdf"></i>
   </span>
-<span class="headerbtn__text-container">.pdf</span>
+<span class="btn__text-container">.pdf</span>
 </button>
-
-      </li>
+</a>
       
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
-
-    </div>
-</div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Overview of Statistical Matching
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#constrained-vs-unconstrained-statistical-matching">
-     Constrained vs. Unconstrained Statistical Matching
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#unconstrained-matching">
-       <em>
-        Unconstrained Matching
-       </em>
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#constrained-matching">
-       <em>
-        Constrained Matching
-       </em>
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#methodological-approach">
-       <em>
-        Methodological Approach
-       </em>
-      </a>
-     </li>
-    </ul>
-   </li>
   </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#results">
-   Results
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#differences-between-pwc-match-and-tpc-match">
-   Differences Between PwC Match and TPC Match
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#description-of-the-sas-programs">
-   Description of the SAS Programs
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#appendix-b-brief-description-of-predictive-mean-matching">
-   APPENDIX B – Brief Description of Predictive Mean Matching
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary" data-toggle="tooltip" data-placement="left" title="Toggle secondary sidebar">
+            <span class="fa-solid fa-list"></span>
+        </label>
     </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Overview of Statistical Matching</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Overview of Statistical Matching
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#constrained-vs-unconstrained-statistical-matching">
-     Constrained vs. Unconstrained Statistical Matching
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#unconstrained-matching">
-       <em>
-        Unconstrained Matching
-       </em>
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#constrained-matching">
-       <em>
-        Constrained Matching
-       </em>
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#methodological-approach">
-       <em>
-        Methodological Approach
-       </em>
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#results">
-   Results
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#differences-between-pwc-match-and-tpc-match">
-   Differences Between PwC Match and TPC Match
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#description-of-the-sas-programs">
-   Description of the SAS Programs
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#appendix-b-brief-description-of-predictive-mean-matching">
-   APPENDIX B – Brief Description of Predictive Mean Matching
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
+</div>
             </div>
-            <main id="main-content" role="main">
-                
-              <div>
-                
+            
+            
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Overview of Statistical Matching</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Overview of Statistical Matching
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#constrained-vs-unconstrained-statistical-matching">
+     Constrained vs. Unconstrained Statistical Matching
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#unconstrained-matching">
+       <em>
+        Unconstrained Matching
+       </em>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#constrained-matching">
+       <em>
+        Constrained Matching
+       </em>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#methodological-approach">
+       <em>
+        Methodological Approach
+       </em>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#results">
+   Results
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#differences-between-pwc-match-and-tpc-match">
+   Differences Between PwC Match and TPC Match
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#description-of-the-sas-programs">
+   Description of the SAS Programs
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-b-brief-description-of-predictive-mean-matching">
+   APPENDIX B – Brief Description of Predictive Mean Matching
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+            <article class="bd-article" role="main">
+              
   <p>This memorandum documents the procedures, programs and results from performing a constrained statistical match between the 2004 SOI Public Use File (PUF) and the March 2005 Current Population Survey (CPS). First, we provide an overview of statistical matching and how this relates to the specific challenges of combining information from the SOI and CPS. Second, we describe the SAS programs we developed in the course of implementing the match. Finally, we present the results of the match performed in November 2009.</p>
 <section class="tex2jax_ignore mathjax_ignore" id="overview-of-statistical-matching">
-<span id="content-matchdoc"></span><h1>Overview of Statistical Matching<a class="headerlink" href="#overview-of-statistical-matching" title="Permalink to this headline">#</a></h1>
+<span id="content-matchdoc"></span><h1>Overview of Statistical Matching<a class="headerlink" href="#overview-of-statistical-matching" title="Permalink to this heading">#</a></h1>
 <p>In the standard statistical matching framework, one has observations from two data sets (File A and File B) on a set of common variables (X-variables). Additionally, records from File A contain information on another set of variables (Y-Variables) that are not available on File B. Similarly, File B contains information on a third set of variables (Z- Variables) that are not available on File A. Statistical matching involves creating a new data set (File C) containing information on X, Y and Z.</p>
 <p>Statistically matched data sets are used most extensively as inputs to microsimulation models [Cohen(1991)] where the impacts of a policy change are examined across various subgroups of the population where data limitations are often severe. For example, the SOI contains a great deal of detail on taxable income sources and certain expenditures (e.g., health-related costs and home mortgage interest expenses for those taxpayers who itemize) but very little information on transfer payments (e.g., food stamps and AFDC), employment-related fringe benefits (health insurance) and family composition. An ideal data set would combine information from both sources.</p>
 <p>From an historical perspective, the first statistically matched data file for use in microsimulation was created for tax policy analysis [Okner (1972)] and combined the SOI with the Survey of Economic Opportunity (SEO). An up-to-date survey of statistical matching methods and a description of how they are implemented in applied work is Cohen (1992).</p>
@@ -541,13 +765,13 @@ title="Print to PDF"
 <li><p>Provide documented computer algorithms and source code so the matches can be updated on a regular basis with minimal effort.</p></li>
 </ul>
 <section id="constrained-vs-unconstrained-statistical-matching">
-<h2>Constrained vs. Unconstrained Statistical Matching<a class="headerlink" href="#constrained-vs-unconstrained-statistical-matching" title="Permalink to this headline">#</a></h2>
-<p>Most authors distinguish between two types of statistical matching methods based on how the records in both files are combined. In constrained matching, all of the records in both data files are represented in the final matched data set (File C). In order to achieve this result, there are limits placed on the number of times a particular record in File B can be matched to a record in File A. Records on both files are often “split”, or used more than once, in a constrained match and the limits are enforced by making sure that the population weight attached to each record is “used-up” in the match. A necessary condition for performing a constrained match, but one that is difficult to meet in practice, is that both input files have the same weighted population totals.<a class="footnote-reference brackets" href="#footnote1" id="id1">1</a></p>
+<h2>Constrained vs. Unconstrained Statistical Matching<a class="headerlink" href="#constrained-vs-unconstrained-statistical-matching" title="Permalink to this heading">#</a></h2>
+<p>Most authors distinguish between two types of statistical matching methods based on how the records in both files are combined. In constrained matching, all of the records in both data files are represented in the final matched data set (File C). In order to achieve this result, there are limits placed on the number of times a particular record in File B can be matched to a record in File A. Records on both files are often “split”, or used more than once, in a constrained match and the limits are enforced by making sure that the population weight attached to each record is “used-up” in the match. A necessary condition for performing a constrained match, but one that is difficult to meet in practice, is that both input files have the same weighted population totals.<a class="footnote-reference brackets" href="#footnote1" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
 <p>Unconstrained matching does not require that all of the records in File B be used up the match, but it is almost always the case that each record in the Host file appears in the final matched file. In practice, certain limits are usually imposed on the number of times a Donor (File B) record can be used in an unconstrained match to ensure that the (weighted) distributions of the Z-variables “brought over” in the match are closely aligned with the distributions on the original file.</p>
 <p>Experience suggests that, of the two, unconstrained matching is the most popular choice for constructing microsimulation data sets since it makes fewer demands on system resources. On the other hand, there are advantages to be gained in constrained matching and with the advent of more powerful computers, cheaper memory and faster numerical algorithms, this method has become increasingly more common.</p>
 <p>A common criticism of statistical matching is that it relies on rather strong assumptions about the relationship between the Y- and Z-variables [Kadane (1978)]. In particular, an implicit assumption in statistical matching is that they are independent (or uncorrelated if normality is assumed) given an observation of X-variables. This Conditional Independence Assumption (CIA) is often violated in practice and has caused researchers to investigate alternative methods of combining data sets [Rubin (1986); Armstrong (1989); Singh et. al. (1993)].</p>
 <section id="unconstrained-matching">
-<h3><em>Unconstrained Matching</em><a class="headerlink" href="#unconstrained-matching" title="Permalink to this headline">#</a></h3>
+<h3><em>Unconstrained Matching</em><a class="headerlink" href="#unconstrained-matching" title="Permalink to this heading">#</a></h3>
 <p>Unconstrained statistical matching is probably the most popular type of matching being done today, at least with regard to microsimulation applications. Various approaches to unconstrained statistical matching are comparatively simple to implement, cost effective, easy to replicate and update, and intuitive.</p>
 <p>In unconstrained matching, one seeks a record in File B that resembles or is in some sense “close” to a record in File A. This presumes some sort of metric or distance function is introduced. One commonly used metric, the Euclidean distance normalized by the standard deviation, appears frequently in the literature.</p>
 <p>Let <span class="math notranslate nohighlight">\(X^A_{i1}\)</span>, <span class="math notranslate nohighlight">\(X^A_{i2}\)</span>, ….. <span class="math notranslate nohighlight">\(X^A_{in}\)</span> denote a set of X-variables from record i in File A used to construct the distance function and <span class="math notranslate nohighlight">\(X^B_{j1}\)</span>, <span class="math notranslate nohighlight">\(X^B_{j2}\)</span>, ……, <span class="math notranslate nohighlight">\(X^B_{jn}\)</span> be similar values of the <u>same</u> variables from record j in File B. Then the distance function is:</p>
@@ -559,7 +783,7 @@ d_{ij} = \left[\sum_{k}\left(\left(X^A_{ik}-X^B_{jk} / \sigma_k^2 \right)\right)
 <p>Minimum distance matching (or “nearest neighbor” matching) was probably the first large-scale statistical matching method to be performed for use in a microsimulation environment [see Okner (1972)]. It’s also very easy to describe: for each record in File A, select the record in File B that is “closest” in a minimum distance sense. Like all unconstrained matches, minimum distance matching suffers from the fact that the marginal distributions of the Z-variables in the matched file could be quite different than on the original file and it is important to check the validity of the results. In a sense, most unconstrained methods represent refinements of this procedure [Armstrong (1989)].</p>
 </section>
 <section id="constrained-matching">
-<h3><em>Constrained Matching</em><a class="headerlink" href="#constrained-matching" title="Permalink to this headline">#</a></h3>
+<h3><em>Constrained Matching</em><a class="headerlink" href="#constrained-matching" title="Permalink to this heading">#</a></h3>
 <p>Statistically matched data sets constructed by constrained matching have nice properties: means and variances of the X, Y and Z variables in both input files are preserved as a direct consequence of the constraints imposed on the weights occurring in the final matched data set. One drawback of constrained matching, however, is that records may end up being matched with an unacceptably large distance between the X-variables. Constrained matching can also make very large demands on system resources. Barr and Turner (1979, 1980) provide a concise and useful summary of the technical details of constrained matching as well as a discussion of many of the practical problems one encounters in applied work.</p>
 <p>In some implementations of fully constrained matching, one seeks to minimize the overall distance between records in File A and File B that appear in File C. Mathematically, one attempts to minimize:</p>
 <div class="math notranslate nohighlight">
@@ -570,7 +794,7 @@ d_{ij} = \left[\sum_{k}\left(\left(X^A_{ik}-X^B_{jk} / \sigma_k^2 \right)\right)
 \[
 \text{subject to: } \sum_{j} w_{ij} = a_i \text{ and } \sum_i w_{ij} = b_j
 \]</div>
-<p>where <span class="math notranslate nohighlight">\(a_i\)</span> and <span class="math notranslate nohighlight">\(b_j\)</span> are the original weights on File A and File B and <span class="math notranslate nohighlight">\(w_{ij}\)</span> is the weight on File C obtained from matching the ith record on File A with the jth record on File B.<a class="footnote-reference brackets" href="#footnote2" id="id2">2</a> This problem has the structure of the transportation (or transshipment) problem in network optimization theory. (Think of the records in File A as the “factories” (sources) and the records in File B as the “warehouses” (sinks). The constraints ensure all of the product (e.g., the weights) gets shipped. Bertsekas (1991) contains a nice discussion of the transportation problem. Figure 1 shows schematically how record are combined in constrained statistical matching.</p>
+<p>where <span class="math notranslate nohighlight">\(a_i\)</span> and <span class="math notranslate nohighlight">\(b_j\)</span> are the original weights on File A and File B and <span class="math notranslate nohighlight">\(w_{ij}\)</span> is the weight on File C obtained from matching the ith record on File A with the jth record on File B.<a class="footnote-reference brackets" href="#footnote2" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> This problem has the structure of the transportation (or transshipment) problem in network optimization theory. (Think of the records in File A as the “factories” (sources) and the records in File B as the “warehouses” (sinks). The constraints ensure all of the product (e.g., the weights) gets shipped. Bertsekas (1991) contains a nice discussion of the transportation problem. Figure 1 shows schematically how record are combined in constrained statistical matching.</p>
 <figure class="align-default" id="directive-fig">
 <a class="reference internal image-reference" href="content/methods/figure1.png"><img alt="content/methods/figure1.png" src="content/methods/figure1.png" style="height: 150px;" /></a>
 <figcaption>
@@ -580,32 +804,32 @@ d_{ij} = \left[\sum_{k}\left(\left(X^A_{ik}-X^B_{jk} / \sigma_k^2 \right)\right)
 <p>Paass (1985) and Rodgers (1984) favor constrained matching over unconstrained, nearest-neighbor methods. They believe that the additional cost (in terms of resources) are justified and outweigh the possibility of error introduced by unconstrained matching.</p>
 </section>
 <section id="methodological-approach">
-<h3><em>Methodological Approach</em><a class="headerlink" href="#methodological-approach" title="Permalink to this headline">#</a></h3>
-<p>The approach we will implement for this project is referred to as fully constrained, predictive mean matching. Constraining the match to utilize all records on both files ensures that the marginal distributions of the Z-variables will be carried over onto the matched file.<a class="footnote-reference brackets" href="#footnote3" id="id3">3</a> This is a desirable result. Predictive mean matching is a technique by which the correlation between the X-, Y- and Z- variables is exploited in the match by using predicted values to determine the nearest-neighbor match.<a class="footnote-reference brackets" href="#footnote5" id="id4">4</a> Predictive mean matching performs well in practice [Armstrong (1989)] and is straightforward to implement.</p>
-<p>We employ an extensive partitioning scheme on both input files to create equivalence classes where matches are only allowed within these classes. This procedure has the effect of narrowing the distance between records and allows for a tighter fit across the two data sets.<a class="footnote-reference brackets" href="#footnote5" id="id5">4</a> A more detailed description of the procedure is included as an attachment to this document.</p>
+<h3><em>Methodological Approach</em><a class="headerlink" href="#methodological-approach" title="Permalink to this heading">#</a></h3>
+<p>The approach we will implement for this project is referred to as fully constrained, predictive mean matching. Constraining the match to utilize all records on both files ensures that the marginal distributions of the Z-variables will be carried over onto the matched file.<a class="footnote-reference brackets" href="#footnote3" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> This is a desirable result. Predictive mean matching is a technique by which the correlation between the X-, Y- and Z- variables is exploited in the match by using predicted values to determine the nearest-neighbor match.<a class="footnote-reference brackets" href="#footnote5" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> Predictive mean matching performs well in practice [Armstrong (1989)] and is straightforward to implement.</p>
+<p>We employ an extensive partitioning scheme on both input files to create equivalence classes where matches are only allowed within these classes. This procedure has the effect of narrowing the distance between records and allows for a tighter fit across the two data sets.<a class="footnote-reference brackets" href="#footnote5" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> A more detailed description of the procedure is included as an attachment to this document.</p>
 </section>
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="results">
-<h1>Results<a class="headerlink" href="#results" title="Permalink to this headline">#</a></h1>
+<h1>Results<a class="headerlink" href="#results" title="Permalink to this heading">#</a></h1>
 <p>In the first step of the match, we construct tax units from the CPS file. We impose the constraint that there should be at least one tax unit in every household. We combine information from the household, family and person records to construct each tax unit. A summary of the March 2005 CPS records is contained in Tables 1A through 1D in Appendix A.</p>
-<p>Once person records in each household are combined to form tax units, we make an initial determination of whether that tax unit is legally required to file a federal income tax return based on filing thresholds in place for the Tax Year 2004, the most recent year for which a Public Use File (PUF) is available.<a class="footnote-reference brackets" href="#footnote6" id="id6">5</a> In this match, we used a slightly different methodology for choosing tax filers. In prior matches, we adjusted filing thresholds to get the approximate number of returns in broad, taxpayer classes. We modified this approach in the current match to more closely approximate what is done in the Tax Policy Center’s (TPC) model. That is, we randomly selected tax units that were initially determined to not be required to file a tax return and reclassified them as a tax filer. We did this across all taxpayer subgroups. Weighted and unweighted counts of CPS tax units are shown in Tables 2A through 2D. Similar counts from the 2004 PUF are shown in Tables 3A and 3B.</p>
+<p>Once person records in each household are combined to form tax units, we make an initial determination of whether that tax unit is legally required to file a federal income tax return based on filing thresholds in place for the Tax Year 2004, the most recent year for which a Public Use File (PUF) is available.<a class="footnote-reference brackets" href="#footnote6" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> In this match, we used a slightly different methodology for choosing tax filers. In prior matches, we adjusted filing thresholds to get the approximate number of returns in broad, taxpayer classes. We modified this approach in the current match to more closely approximate what is done in the Tax Policy Center’s (TPC) model. That is, we randomly selected tax units that were initially determined to not be required to file a tax return and reclassified them as a tax filer. We did this across all taxpayer subgroups. Weighted and unweighted counts of CPS tax units are shown in Tables 2A through 2D. Similar counts from the 2004 PUF are shown in Tables 3A and 3B.</p>
 <p>In the next step, we partition both files across several dimensions to ensure that matches are not done outside of a particular cell. We construct 18 cells to reflect: (i) dependency status, (ii) marital status, (iii) age, and (iv) the number of dependents. Our partition and the corresponding weighted and unweighted record counts are shown in Table 4.</p>
 <p>In our third step, we construct a distance metric by regressing taxable income on the PUF to a collection of independent variables that we believe are related to taxable income.</p>
 <p>These variables include: a indicator if the taxpayer is 65 years of age or older, various income sources (e.g., wages, interest, dividends), the share of total income attributable to capital and labor, respectively, and indicator variables if the taxpayer received either wages or self-employed income. We estimate 18 separate regressions, one for each cell, and construct fitted values on the CPS using the same set of predictor variables. The distance between records on the CPS and the PUF is then calculated as the square root of the (squared) difference between the fitted values. The methodology for matching records between the files is described in Appendix B. The regression coefficients and other measures of goodness-of-fit are shown in Tables C1 through C18 in Appendix C.</p>
 <p>In our final step, we evaluate the match by comparing means and standard errors for CPS variables added to the PUF on both the original CPS file and the final Match File. These results are reported in Table 5. The final column in Table 5 is a t-test to examine differences in means between the two files. (The null hypothesis is that the means are equal in the two files.) These results should be interpreted with caution as the values of the standard errors on the Match File are not adjusted for sample design.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="differences-between-pwc-match-and-tpc-match">
-<h1>Differences Between PwC Match and TPC Match<a class="headerlink" href="#differences-between-pwc-match-and-tpc-match" title="Permalink to this headline">#</a></h1>
-<p>We are aware of only two differences in the methodology reported here and the methodology described in TPC’s documentation.<a class="footnote-reference brackets" href="#footnote7" id="id7">6</a></p>
-<p><u>Partitioning</u>. TPC expanded the number of cells in the partition to include indicators if the tax unit had self-employed income or income from capital. This resulted in a much larger number of cells (49) in the TPC match. One drawback of expanding the number of cells in this way is that certain cells become “unbalanced” and in the process of adjusting the weights on the CPS file to match the weights on the PUF (this is necessary to perform a constrained statistical match) certain CPS variables might not be indicative of their true values.<a class="footnote-reference brackets" href="#footnote8" id="id8">7</a> The trade-off between more cells and a potentially large adjustment is more an art than a science. In any event, adding more cells to the PwC match is a simple extension.</p>
-<p><u>Non-filers</u>. TPC relied on a series of probit equations reported by Cilke (1998)<a class="footnote-reference brackets" href="#footnote9" id="id9">8</a> to identify potential CPS tax units that were not legally required to file a federal income tax return but did. Cilke related the probability of filing a return (given that the taxpayer was not legally required to do so) as a function of income and numerous demographic variables. These probabilities were then adjusted to approximate control totals for certain taxpayer groups. Incorporating this methodology, while somewhat time-consuming, is straightforward. Because this would have necessitated rerunning the match to include many more demographic variables, we approximated this approach by randomly selecting non-filers in specific taxpayer subgroups and re-classified them as filers so as to match SOI totals in that subgroup.</p>
+<h1>Differences Between PwC Match and TPC Match<a class="headerlink" href="#differences-between-pwc-match-and-tpc-match" title="Permalink to this heading">#</a></h1>
+<p>We are aware of only two differences in the methodology reported here and the methodology described in TPC’s documentation.<a class="footnote-reference brackets" href="#footnote7" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p>
+<p><u>Partitioning</u>. TPC expanded the number of cells in the partition to include indicators if the tax unit had self-employed income or income from capital. This resulted in a much larger number of cells (49) in the TPC match. One drawback of expanding the number of cells in this way is that certain cells become “unbalanced” and in the process of adjusting the weights on the CPS file to match the weights on the PUF (this is necessary to perform a constrained statistical match) certain CPS variables might not be indicative of their true values.<a class="footnote-reference brackets" href="#footnote8" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> The trade-off between more cells and a potentially large adjustment is more an art than a science. In any event, adding more cells to the PwC match is a simple extension.</p>
+<p><u>Non-filers</u>. TPC relied on a series of probit equations reported by Cilke (1998)<a class="footnote-reference brackets" href="#footnote9" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a> to identify potential CPS tax units that were not legally required to file a federal income tax return but did. Cilke related the probability of filing a return (given that the taxpayer was not legally required to do so) as a function of income and numerous demographic variables. These probabilities were then adjusted to approximate control totals for certain taxpayer groups. Incorporating this methodology, while somewhat time-consuming, is straightforward. Because this would have necessitated rerunning the match to include many more demographic variables, we approximated this approach by randomly selecting non-filers in specific taxpayer subgroups and re-classified them as filers so as to match SOI totals in that subgroup.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="description-of-the-sas-programs">
-<h1>Description of the SAS Programs<a class="headerlink" href="#description-of-the-sas-programs" title="Permalink to this headline">#</a></h1>
-<p>In this project, we perform a constrained statistical match between the 2004 SOI Public Use File (PUF) and March 2005 Current Population Survey (CPS).<a class="footnote-reference brackets" href="#footnote10" id="id10">9</a> The PUF plays the role of the Host file while the CPS is the Donor. Before we can perform the match, however, we must make sure both files represent the same observational unit. Because the PUF is a sample of tax returns, an important early step in this process is to construct tax returns, or tax units, from the CPS. Not all tax units constructed this way from the CPS will necessarily be legally required to file and individual income tax return and therefore will not be represented on the SOI. Our algorithms determine which CPS tax units are likely to file an income tax return and these will comprise our Donor file (e.g. the “filers”) for matching with the PUF. The remaining CPS tax units are not required to file an income tax return, but they are represented in our final matched data set (e.g., the “non-filers”).</p>
+<h1>Description of the SAS Programs<a class="headerlink" href="#description-of-the-sas-programs" title="Permalink to this heading">#</a></h1>
+<p>In this project, we perform a constrained statistical match between the 2004 SOI Public Use File (PUF) and March 2005 Current Population Survey (CPS).<a class="footnote-reference brackets" href="#footnote10" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a> The PUF plays the role of the Host file while the CPS is the Donor. Before we can perform the match, however, we must make sure both files represent the same observational unit. Because the PUF is a sample of tax returns, an important early step in this process is to construct tax returns, or tax units, from the CPS. Not all tax units constructed this way from the CPS will necessarily be legally required to file and individual income tax return and therefore will not be represented on the SOI. Our algorithms determine which CPS tax units are likely to file an income tax return and these will comprise our Donor file (e.g. the “filers”) for matching with the PUF. The remaining CPS tax units are not required to file an income tax return, but they are represented in our final matched data set (e.g., the “non-filers”).</p>
 <p>We perform the match by running seven (7) SAS programs in sequence. A brief description of these programs and their inputs and outputs follows.</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>CPS-PREP: This program prepares the CPS for processing. Person-level information is combined with family and household information to construct a composite record for each member of a CPS household. A statistical summary of the output files is produced.</p>
 <ul class="simple">
 <li><p>Input files: ASEC2005_PUBUSE.PUB (March 2005 CPS File in ASCII format.)</p></li>
@@ -652,12 +876,12 @@ level detail.)</p></li>
 </ol>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="appendix-b-brief-description-of-predictive-mean-matching">
-<h1>APPENDIX B – Brief Description of Predictive Mean Matching<a class="footnote-reference brackets" href="#footnote11" id="id11">10</a><a class="headerlink" href="#appendix-b-brief-description-of-predictive-mean-matching" title="Permalink to this headline">#</a></h1>
+<h1>APPENDIX B – Brief Description of Predictive Mean Matching<a class="footnote-reference brackets" href="#footnote11" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a><a class="headerlink" href="#appendix-b-brief-description-of-predictive-mean-matching" title="Permalink to this heading">#</a></h1>
 <ul class="simple">
 <li><p><u>Partitioning</u>: Attempt to keep (unweighted) cell sizes to a minimum of 30 and a maximum of 500. Check the weighted cell counts for each of the partitions and check for unbalanced cells.</p></li>
 <li><p><u>Estimation</u>: Fit a (weighted) linear model for two Y- and Z-variables as a function of the X-variables common to both files.</p></li>
 </ul>
-<table class="colwidths-auto table">
+<table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Host File: <span class="math notranslate nohighlight">\(A(X,Y)\)</span></p></th>
 <th class="head"><p>Donor File: <span class="math notranslate nohighlight">\(B(X,Z)\)</span></p></th>
@@ -675,7 +899,7 @@ level detail.)</p></li>
 <ul class="simple">
 <li><p><u>Predicted Values</u>: Calculate fitted values of all four variables on each file.</p></li>
 </ul>
-<table class="colwidths-auto table">
+<table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Host File: <span class="math notranslate nohighlight">\(A(X,Y)\)</span></p></th>
 <th class="head"><p>Donor File: <span class="math notranslate nohighlight">\(B(X,Z)\)</span></p></th>
@@ -695,38 +919,47 @@ level detail.)</p></li>
 <li><p><u>Perform Match</u>: Match each record in Host File to the closest Donor record, splitting records if necessary to ensure all the “weight” on the Donor records are used up.</p></li>
 </ul>
 <hr class="footnotes docutils" />
-<dl class="footnote brackets">
-<dt class="label" id="footnote1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>In applied work, it is often the case that the two input data sources are from surveys taken over different time frames so that the weighted population totals are slightly different across the two files. In this case, it is a common procedure to “scale” one of the files (usually the Donor file) so that the weighted population totals agree.</p>
-</dd>
-<dt class="label" id="footnote2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>Notice that this implies that the sum of the weights on File A must equal the sum of the weights on File B.</p>
-</dd>
-<dt class="label" id="footnote3"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
-<dd><p>This is only the case when the weighted totals are the same on both files. Partitioning of the input files can further distort the marginal distribution of the Z’s.</p>
-</dd>
-<dt class="label" id="footnote5"><span class="brackets">4</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id5">2</a>)</span></dt>
-<dd><p>A partitioning scheme can also be implicitly “induced” by the careful construction of a distance metric. Imposing an arbitrarily large penalty for matches between certain types of records can have much the same effect as partitioning. In this sense, partitioning is equivalent to assigning an infinite distance to matches between certain records.</p>
-</dd>
-<dt class="label" id="footnote6"><span class="brackets"><a class="fn-backref" href="#id6">5</a></span></dt>
-<dd><p>A PUF for tax year 2005 became available shortly after this project began, but because of differences in sample designs between the two years, we decided to rely on the 2004 PUF.</p>
-</dd>
-<dt class="label" id="footnote7"><span class="brackets"><a class="fn-backref" href="#id7">6</a></span></dt>
-<dd><p><em>The Urban-Brookings Tax Policy Center Microsimulation Model: Documentation and Methodology for Version 0304</em>, Rohaly et. al., January 10th, 2005.</p>
-</dd>
-<dt class="label" id="footnote8"><span class="brackets"><a class="fn-backref" href="#id8">7</a></span></dt>
-<dd><p>As measured by the ratio between the CPS and PUF weighted record counts, several CPS cells in the TPC match were on the order of 2.0 to 2.5 times the PUF value.</p>
-</dd>
-<dt class="label" id="footnote9"><span class="brackets"><a class="fn-backref" href="#id9">8</a></span></dt>
-<dd><p><em>A Profile of Non-Filers</em>, Office of Tax Analysis Paper 78, U.S. Department of Treasury, Washington, DC.</p>
-</dd>
-<dt class="label" id="footnote10"><span class="brackets"><a class="fn-backref" href="#id10">9</a></span></dt>
-<dd><p>The CPS is conducted in March of every calendar year and questions relating to the annual income of respondents refer to the <u>prior</u> year’s income. In contrast, the 2004 PUF reports income received during calendar year 2004.</p>
-</dd>
-<dt class="label" id="footnote11"><span class="brackets"><a class="fn-backref" href="#id11">10</a></span></dt>
-<dd><p>This material is from “Statistical Matching Meeting”, March 24th, 2003, <em>Urban-Brookings Tax Policy Center</em>.</p>
-</dd>
-</dl>
+<aside class="footnote brackets" id="footnote1" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>In applied work, it is often the case that the two input data sources are from surveys taken over different time frames so that the weighted population totals are slightly different across the two files. In this case, it is a common procedure to “scale” one of the files (usually the Donor file) so that the weighted population totals agree.</p>
+</aside>
+<aside class="footnote brackets" id="footnote2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Notice that this implies that the sum of the weights on File A must equal the sum of the weights on File B.</p>
+</aside>
+<aside class="footnote brackets" id="footnote3" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>This is only the case when the weighted totals are the same on both files. Partitioning of the input files can further distort the marginal distribution of the Z’s.</p>
+</aside>
+<aside class="footnote brackets" id="footnote5" role="note">
+<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id5">2</a>)</span>
+<p>A partitioning scheme can also be implicitly “induced” by the careful construction of a distance metric. Imposing an arbitrarily large penalty for matches between certain types of records can have much the same effect as partitioning. In this sense, partitioning is equivalent to assigning an infinite distance to matches between certain records.</p>
+</aside>
+<aside class="footnote brackets" id="footnote6" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">5</a><span class="fn-bracket">]</span></span>
+<p>A PUF for tax year 2005 became available shortly after this project began, but because of differences in sample designs between the two years, we decided to rely on the 2004 PUF.</p>
+</aside>
+<aside class="footnote brackets" id="footnote7" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">6</a><span class="fn-bracket">]</span></span>
+<p><em>The Urban-Brookings Tax Policy Center Microsimulation Model: Documentation and Methodology for Version 0304</em>, Rohaly et. al., January 10th, 2005.</p>
+</aside>
+<aside class="footnote brackets" id="footnote8" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">7</a><span class="fn-bracket">]</span></span>
+<p>As measured by the ratio between the CPS and PUF weighted record counts, several CPS cells in the TPC match were on the order of 2.0 to 2.5 times the PUF value.</p>
+</aside>
+<aside class="footnote brackets" id="footnote9" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">8</a><span class="fn-bracket">]</span></span>
+<p><em>A Profile of Non-Filers</em>, Office of Tax Analysis Paper 78, U.S. Department of Treasury, Washington, DC.</p>
+</aside>
+<aside class="footnote brackets" id="footnote10" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">9</a><span class="fn-bracket">]</span></span>
+<p>The CPS is conducted in March of every calendar year and questions relating to the annual income of respondents refer to the <u>prior</u> year’s income. In contrast, the 2004 PUF reports income received during calendar year 2004.</p>
+</aside>
+<aside class="footnote brackets" id="footnote11" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id11">10</a><span class="fn-bracket">]</span></span>
+<p>This material is from “Statistical Matching Meeting”, March 24th, 2003, <em>Urban-Brookings Tax Policy Center</em>.</p>
+</aside>
 </section>
 
     <script type="text/x-thebe-config">
@@ -749,50 +982,155 @@ level detail.)</p></li>
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
-              
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
+            </article>
+            
+
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="MATCH.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">CPS Match File documentation</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="Stage1_Stage2_Methodology.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Extrapolation Methods</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+  <a class='left-prev' id="prev-link" href="MATCH.html" title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">CPS Match File documentation</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="Stage1_Stage2_Methodology.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Extrapolation Methods</p>
+  </div>
+  <i class="fa-solid fa-angle-right"></i>
+  </a>
 </div>
             </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
   
-    By Anderson Frailey<br/>
-  
-      &copy; Copyright 2021.<br/>
-</p>
-        </footer>
-    </div>
-    
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Overview of Statistical Matching
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#constrained-vs-unconstrained-statistical-matching">
+     Constrained vs. Unconstrained Statistical Matching
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#unconstrained-matching">
+       <em>
+        Unconstrained Matching
+       </em>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#constrained-matching">
+       <em>
+        Constrained Matching
+       </em>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#methodological-approach">
+       <em>
+        Methodological Approach
+       </em>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#results">
+   Results
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#differences-between-pwc-match-and-tpc-match">
+   Differences Between PwC Match and TPC Match
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#description-of-the-sas-programs">
+   Description of the SAS Programs
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-b-brief-description-of-predictive-mean-matching">
+   APPENDIX B – Brief Description of Predictive Mean Matching
+  </a>
+ </li>
+</ul>
+
+</nav>
 </div>
 
-
-      </div>
-    </div>
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+<div class="bd-footer-content__inner container">
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <div class="footer-item">
+    
+<p class="component-author">
+By Anderson Frailey
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2021.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="last-updated">
+Last updated on None.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </div>
+        </footer>
+        
+
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
 
   </body>
 </html>
