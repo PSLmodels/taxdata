@@ -192,7 +192,7 @@ def update_econproj(url, baseline, text_args):
         )
         cg_proj.index = cg_proj[cg_proj.columns[0]]
         var = "Capital Gains Realizationsa"
-        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2032))]
+        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2033))]
         var_list = [cgns]
         var_names = ["CGNS"]
         df = pd.DataFrame(var_list, index=var_names).round(1)
