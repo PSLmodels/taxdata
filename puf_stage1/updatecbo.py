@@ -192,7 +192,9 @@ def update_econproj(url, baseline, text_args):
         )
         cg_proj.index = cg_proj[cg_proj.columns[0]]
         var = "Capital Gains Realizationsa"
-        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2033))]
+        # increase the CBO final year to (the last year + 1) for each update.
+        # e.g. when the CBO final year from CBO is 2033, make the update as range(2017,2034)
+        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2034))]
         var_list = [cgns]
         var_names = ["CGNS"]
         df = pd.DataFrame(var_list, index=var_names).round(1)
