@@ -576,18 +576,26 @@ def calculate_agi_share(calc, year):
     calc.advance_to_year(year)
     calc.calc_all()
 
-    vdf = calc.dataframe(['s006', 'c00100', 'expanded_income']).sort_values(by='expanded_income', ascending=False)
-    vdf = tc.add_quantile_table_row_variable(vdf, 'expanded_income', num_quantiles=100, pop_quantiles=False,
-                                                decile_details=False, weight_by_income_measure=False)
-    gbydf = vdf.groupby('table_row', as_index=False)
+    vdf = calc.dataframe(["s006", "c00100", "expanded_income"]).sort_values(
+        by="expanded_income", ascending=False
+    )
+    vdf = tc.add_quantile_table_row_variable(
+        vdf,
+        "expanded_income",
+        num_quantiles=100,
+        pop_quantiles=False,
+        decile_details=False,
+        weight_by_income_measure=False,
+    )
+    gbydf = vdf.groupby("table_row", as_index=False)
 
     agi_share = 0
-    tot_agi = float((vdf['c00100'] * vdf['s006']).sum())
+    tot_agi = float((vdf["c00100"] * vdf["s006"]).sum())
     idx = 1
     agi_brk = []
 
     for grp_interval, grp in gbydf:
-        agi_item = (grp['c00100']*grp['s006']).sum()
+        agi_item = (grp["c00100"] * grp["s006"]).sum()
         agi_brk.append(agi_item)
         idx += 1
 
@@ -599,23 +607,23 @@ def calculate_agi_share(calc, year):
     agi_q25 = 0
     agi_q50 = 0
 
-    for i in range(0,1):
+    for i in range(0, 1):
         agi_q1 = agi_q1 + agi_brk[i]
-    for i in range(0,5):
+    for i in range(0, 5):
         agi_q5 = agi_q5 + agi_brk[i]
-    for i in range(0,10):
+    for i in range(0, 10):
         agi_q10 = agi_q10 + agi_brk[i]
-    for i in range(0,25):
+    for i in range(0, 25):
         agi_q25 = agi_q25 + agi_brk[i]
-    for i in range(0,50):
+    for i in range(0, 50):
         agi_q50 = agi_q50 + agi_brk[i]
-    
-    agi_s1 = (agi_q1 / tot_agi)*100
-    agi_s5 = (agi_q5 / tot_agi)*100
-    agi_s10 = (agi_q10 / tot_agi)*100
-    agi_s25 = (agi_q25 / tot_agi)*100
-    agi_s50 = (agi_q50 / tot_agi)*100
-    
+
+    agi_s1 = (agi_q1 / tot_agi) * 100
+    agi_s5 = (agi_q5 / tot_agi) * 100
+    agi_s10 = (agi_q10 / tot_agi) * 100
+    agi_s25 = (agi_q25 / tot_agi) * 100
+    agi_s50 = (agi_q50 / tot_agi) * 100
+
     return agi_s1, agi_s5, agi_s10, agi_s25, agi_s50
 
 
@@ -626,11 +634,11 @@ def agi_share_table(data, incomegroup):
     df = data[data["Incomegroup"].str.contains(incomegroup)]
     cur_df = df[df["Incomegroup"] == f"Current {incomegroup}"]
     new_df = df[df["Incomegroup"] == f"New {incomegroup}"]
-    cur_df.drop('Incomegroup', axis=1, inplace=True)
-    new_df.drop('Incomegroup', axis=1, inplace=True)
+    cur_df.drop("Incomegroup", axis=1, inplace=True)
+    new_df.drop("Incomegroup", axis=1, inplace=True)
     cur_df = cur_df.set_index("Year").transpose().round(2)
     new_df = new_df.set_index("Year").transpose().round(2)
-    
+
     diff = new_df - cur_df
     diff = diff.round(1)
     pct_change = diff / cur_df * 100
@@ -650,42 +658,136 @@ def CBO_projections(rev_proj):
     Read CBO published projections values from the webpage 
     "https://www.cbo.gov/about/products/budget-economic-data"
     """
-    
-    # extract values for AGI rows in the excel file
-    salary_wage = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Salaries and wages"]
-    taxable_interest_ordinary_divid = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Taxable interest and ordinary dividends (excludes qualified dividends)"]
-    q_div = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Qualified dividends                                         "]
-    capital_g_l = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Capital gain or lossa"]
-    business_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Net business income (all income and loss reported on Schedules C, E, and F)b"]
-    pension_annuities_IRAdis = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Taxable pensions and annuities and IRA distributions"]
-    ssb = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Taxable Social Security benefits                  "]
-    other_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["All other sources of incomec"]
-    total_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Total income"]
-    stat_adj = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Subtract Statutory adjustments                       "]
-    total_agi = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc["Adjusted gross income               "]
-    sub_peronal_expt = rev_proj.loc["Calculation of Taxable Income"].loc["Subtract Personal exemption amount (after limit)"]
-    sub_std = rev_proj.loc["Calculation of Taxable Income"].loc["Subtract Standard deduction (non-itemizers only)"]
-    sub_tot_item = rev_proj.loc["Calculation of Taxable Income"].loc["Subtract Total itemized deductions (itemizers only) after limitsd"]
-    sub_qbid = rev_proj.loc["Calculation of Taxable Income"].loc["Subtract Qualified business income deduction"]
-    sub_tot_expt = rev_proj.loc["Calculation of Taxable Income"].loc["Total exemptions and deductions after limitse"]
-    taxable_inc = rev_proj.loc["Calculation of Taxable Income"].loc["Taxable incomef"]
-    tot_inctax = rev_proj.loc["Calculation of Income Tax Liability"].loc["Total income tax (including AMT) before credits"]
-    tot_cdt = rev_proj.loc["Calculation of Income Tax Liability"].loc["Total credits (refundable and nonrefundable)i"]
-    inctax_af_credit = rev_proj.loc["Calculation of Income Tax Liability"].loc["Income tax after creditsj"]
-    Top1p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc["Top 1 percent"]
-    Top5p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc["Top 5 percent"]
-    Top10p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc["Top 10 percent"]
-    Top25p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc["Top 25 percent"]
-    Top50p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc["Top 50 percent"]
 
-    var_list = [salary_wage, taxable_interest_ordinary_divid, q_div, capital_g_l, business_inc,
-                pension_annuities_IRAdis, ssb, other_inc, total_inc, stat_adj, total_agi,
-                sub_peronal_expt, sub_std, sub_tot_item, sub_qbid, sub_tot_expt, taxable_inc,
-                tot_inctax, tot_cdt, inctax_af_credit, Top1p, Top5p, Top10p, Top25p, Top50p]
-    var_names = ["Salaries", "Interests", "Qdividends", "Capital", "Business", "Pensions",
-                 "Security", "Other", "Totalincome", "Statutory", "AGI", "Pexpt", "Standardded", "totitem",
-                 "qbid", "totalexpt", "taxincome", "totalinctax", "totalcredit", "aftercdttax", "Top1p",
-                 "Top5p", "Top10p", "Top25p", "Top50p"]
+    # extract values for AGI rows in the excel file
+    salary_wage = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Salaries and wages"
+    ]
+    taxable_interest_ordinary_divid = rev_proj.loc[
+        "Calculation of Adjusted Gross Income (AGI)"
+    ].loc["Taxable interest and ordinary dividends (excludes qualified dividends)"]
+    q_div = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Qualified dividends                                         "
+    ]
+    capital_g_l = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Capital gain or lossa"
+    ]
+    business_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Net business income (all income and loss reported on Schedules C, E, and F)b"
+    ]
+    pension_annuities_IRAdis = rev_proj.loc[
+        "Calculation of Adjusted Gross Income (AGI)"
+    ].loc["Taxable pensions and annuities and IRA distributions"]
+    ssb = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Taxable Social Security benefits                  "
+    ]
+    other_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "All other sources of incomec"
+    ]
+    total_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Total income"
+    ]
+    stat_adj = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Subtract Statutory adjustments                       "
+    ]
+    total_agi = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+        "Adjusted gross income               "
+    ]
+    sub_peronal_expt = rev_proj.loc["Calculation of Taxable Income"].loc[
+        "Subtract Personal exemption amount (after limit)"
+    ]
+    sub_std = rev_proj.loc["Calculation of Taxable Income"].loc[
+        "Subtract Standard deduction (non-itemizers only)"
+    ]
+    sub_tot_item = rev_proj.loc["Calculation of Taxable Income"].loc[
+        "Subtract Total itemized deductions (itemizers only) after limitsd"
+    ]
+    sub_qbid = rev_proj.loc["Calculation of Taxable Income"].loc[
+        "Subtract Qualified business income deduction"
+    ]
+    sub_tot_expt = rev_proj.loc["Calculation of Taxable Income"].loc[
+        "Total exemptions and deductions after limitse"
+    ]
+    taxable_inc = rev_proj.loc["Calculation of Taxable Income"].loc["Taxable incomef"]
+    tot_inctax = rev_proj.loc["Calculation of Income Tax Liability"].loc[
+        "Total income tax (including AMT) before credits"
+    ]
+    tot_cdt = rev_proj.loc["Calculation of Income Tax Liability"].loc[
+        "Total credits (refundable and nonrefundable)i"
+    ]
+    inctax_af_credit = rev_proj.loc["Calculation of Income Tax Liability"].loc[
+        "Income tax after creditsj"
+    ]
+    Top1p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+        "Top 1 percent"
+    ]
+    Top5p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+        "Top 5 percent"
+    ]
+    Top10p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+        "Top 10 percent"
+    ]
+    Top25p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+        "Top 25 percent"
+    ]
+    Top50p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+        "Top 50 percent"
+    ]
+
+    var_list = [
+        salary_wage,
+        taxable_interest_ordinary_divid,
+        q_div,
+        capital_g_l,
+        business_inc,
+        pension_annuities_IRAdis,
+        ssb,
+        other_inc,
+        total_inc,
+        stat_adj,
+        total_agi,
+        sub_peronal_expt,
+        sub_std,
+        sub_tot_item,
+        sub_qbid,
+        sub_tot_expt,
+        taxable_inc,
+        tot_inctax,
+        tot_cdt,
+        inctax_af_credit,
+        Top1p,
+        Top5p,
+        Top10p,
+        Top25p,
+        Top50p,
+    ]
+    var_names = [
+        "Salaries",
+        "Interests",
+        "Qdividends",
+        "Capital",
+        "Business",
+        "Pensions",
+        "Security",
+        "Other",
+        "Totalincome",
+        "Statutory",
+        "AGI",
+        "Pexpt",
+        "Standardded",
+        "totitem",
+        "qbid",
+        "totalexpt",
+        "taxincome",
+        "totalinctax",
+        "totalcredit",
+        "aftercdttax",
+        "Top1p",
+        "Top5p",
+        "Top10p",
+        "Top25p",
+        "Top50p",
+    ]
     df = pd.DataFrame(var_list, index=var_names).round(1)
     df.columns = df.columns.astype(str)
     df_cols = set(df.columns)
@@ -703,16 +805,24 @@ def validation_table(df_tax_data, df_cbo, category):
     new_df = new_df.set_index("Year").round(1)
     new_df = new_df.rename_axis(index=None).squeeze()
     new_df.index = new_df.index.astype(str)
-    df_cbo = df_cbo.drop(columns=["2019", "2020", "2021", "2022", "2032"], axis=1, inplace=False)
+    df_cbo = df_cbo.drop(
+        columns=["2019", "2020", "2021", "2022", "2033"], axis=1, inplace=False
+    )
     df_cbo = df_cbo.transpose()
-    df_cbo_sal = df_cbo.loc[: ,df_cbo.columns.str.contains(category)].squeeze()
+    df_cbo_sal = df_cbo.loc[:, df_cbo.columns.str.contains(category)].squeeze()
     df_cbo_sal = df_cbo_sal.astype(float)
     diff = new_df - df_cbo_sal
     pct_change = diff / new_df * 100
     pct_change = pct_change.round(2)
-    final_df = pd.DataFrame(dict(TaxData_projection=new_df, CBO_projection=df_cbo_sal, 
-                                 difference=diff, percent_difference=pct_change))
-    
+    final_df = pd.DataFrame(
+        dict(
+            TaxData_projection=new_df,
+            CBO_projection=df_cbo_sal,
+            difference=diff,
+            percent_difference=pct_change,
+        )
+    )
+
     return final_df.to_markdown()
 
 
@@ -875,26 +985,90 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         aggs["Tax"].append("New Combined")
         aggs["Year"].append(year)
 
-        agi_list = [cur_salary_wage, new_salary_wage, cur_taxable_interest_ordinary_divid, 
-                               new_taxable_interest_ordinary_divid, cur_q_div, new_q_div,
-                               cur_capital_g_l, new_capital_g_l, cur_business_inc, new_business_inc,
-                               cur_pension_annuities_IRAdis, new_pension_annuities_IRAdis, cur_ssb, new_ssb, 
-                               cur_other_inc, new_other_inc, cur_total_inc, new_total_inc,
-                               cur_stat_adj, new_stat_adj, cur_total_agi, new_total_agi, 
-                               cur_sub_personal_expt, new_sub_personal_expt, cur_sub_std, new_sub_std,
-                               cur_sub_tot_item, new_sub_tot_item, cur_sub_qbid, new_sub_qbid,
-                               cur_sub_tot_expt, new_sub_tot_expt, cur_taxable_inc, new_taxable_inc, 
-                               cur_tot_inctax, new_tot_inctax, cur_tot_cdt, new_tot_cdt,
-                               cur_inctax_af_credit, new_inctax_af_credit]
-        agi_nlist = ["Current Salaries", "New Salaries", "Current Interests", "New Interests", 
-                    "Current Qdividends", "New Qdividends", "Current Capital", "New Capital", 
-                    "Current Business", "New Business", "Current Pensions", "New Pensions", 
-                    "Current Security", "New Security", "Current Other", "New Other", 
-                    "Current Totalincome", "New Totalincome", "Current Statutory", "New Statutory",
-                    "Current AGI", "New AGI", "Current Pexpt", "New Pexpt", "Current Standardded", "New Standardded", 
-                    "Current totitem", "New totitem", "Current qbid", "New qbid", "Current totalexpt", "New totalexpt", 
-                    "Current taxincome", "New taxincome", "Current totalinctax", "New totalinctax", 
-                    "Current totalcredit", "New totalcredit", "Current aftercdttax", "New aftercdttax"]
+        agi_list = [
+            cur_salary_wage,
+            new_salary_wage,
+            cur_taxable_interest_ordinary_divid,
+            new_taxable_interest_ordinary_divid,
+            cur_q_div,
+            new_q_div,
+            cur_capital_g_l,
+            new_capital_g_l,
+            cur_business_inc,
+            new_business_inc,
+            cur_pension_annuities_IRAdis,
+            new_pension_annuities_IRAdis,
+            cur_ssb,
+            new_ssb,
+            cur_other_inc,
+            new_other_inc,
+            cur_total_inc,
+            new_total_inc,
+            cur_stat_adj,
+            new_stat_adj,
+            cur_total_agi,
+            new_total_agi,
+            cur_sub_personal_expt,
+            new_sub_personal_expt,
+            cur_sub_std,
+            new_sub_std,
+            cur_sub_tot_item,
+            new_sub_tot_item,
+            cur_sub_qbid,
+            new_sub_qbid,
+            cur_sub_tot_expt,
+            new_sub_tot_expt,
+            cur_taxable_inc,
+            new_taxable_inc,
+            cur_tot_inctax,
+            new_tot_inctax,
+            cur_tot_cdt,
+            new_tot_cdt,
+            cur_inctax_af_credit,
+            new_inctax_af_credit,
+        ]
+        agi_nlist = [
+            "Current Salaries",
+            "New Salaries",
+            "Current Interests",
+            "New Interests",
+            "Current Qdividends",
+            "New Qdividends",
+            "Current Capital",
+            "New Capital",
+            "Current Business",
+            "New Business",
+            "Current Pensions",
+            "New Pensions",
+            "Current Security",
+            "New Security",
+            "Current Other",
+            "New Other",
+            "Current Totalincome",
+            "New Totalincome",
+            "Current Statutory",
+            "New Statutory",
+            "Current AGI",
+            "New AGI",
+            "Current Pexpt",
+            "New Pexpt",
+            "Current Standardded",
+            "New Standardded",
+            "Current totitem",
+            "New totitem",
+            "Current qbid",
+            "New qbid",
+            "Current totalexpt",
+            "New totalexpt",
+            "Current taxincome",
+            "New taxincome",
+            "Current totalinctax",
+            "New totalinctax",
+            "Current totalcredit",
+            "New totalcredit",
+            "Current aftercdttax",
+            "New aftercdttax",
+        ]
         for ae, an in zip(agi_list, agi_nlist):
             aggs2["Value"].append(ae)
             aggs2["Category"].append(an)
@@ -902,13 +1076,30 @@ def compare_calcs(base, new, name, template_args, plot_paths):
 
         base_agi_aggs = calculate_agi_share(base, year)
         new_agi_aggs = calculate_agi_share(new, year)
-        share_list = [base_agi_aggs[0], new_agi_aggs[0], base_agi_aggs[1], 
-                               new_agi_aggs[1], base_agi_aggs[2], new_agi_aggs[2],
-                               base_agi_aggs[3], new_agi_aggs[3], base_agi_aggs[4],
-                               new_agi_aggs[4]]
-        share_nlist = ["Current Top1p", "New Top1p", "Current Top5p", "New Top5p", 
-                    "Current Top10p", "New Top10p", "Current Top25p", "New Top25p", 
-                    "Current Top50p", "New Top50p"]
+        share_list = [
+            base_agi_aggs[0],
+            new_agi_aggs[0],
+            base_agi_aggs[1],
+            new_agi_aggs[1],
+            base_agi_aggs[2],
+            new_agi_aggs[2],
+            base_agi_aggs[3],
+            new_agi_aggs[3],
+            base_agi_aggs[4],
+            new_agi_aggs[4],
+        ]
+        share_nlist = [
+            "Current Top1p",
+            "New Top1p",
+            "Current Top5p",
+            "New Top5p",
+            "Current Top10p",
+            "New Top10p",
+            "Current Top25p",
+            "New Top25p",
+            "Current Top50p",
+            "New Top50p",
+        ]
 
         for se, sn in zip(share_list, share_nlist):
             aggs3["Shares of AGI"].append(se)
@@ -951,31 +1142,63 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
     template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
 
-    agi_table_name_list = [f"{name}_salaries_and_wages_table",
-                   f"{name}_taxable_interest_and_ordinary_dividends_table",
-                   f"{name}_qualified_dividends_table", f"{name}_capital_table",
-                   f"{name}_business_table",f"{name}_pensions_annuities_IRA_distributions_table",
-                   f"{name}_Social_Security_benefits_table", f"{name}_all_other_income_table",
-                   f"{name}_total_income_table", f"{name}_statutory_Adjustments_table", 
-                   f"{name}_total_AGI_table", f"{name}_sub_peronal_expt_table", f"{name}_sub_std_table",
-                   f"{name}_sub_tot_item_table", f"{name}_sub_qbid_table", f"{name}_sub_tot_expt_table",
-                   f"{name}_taxable_inc_table", f"{name}_tot_inctax_table", f"{name}_tot_cdt_table",
-                   f"{name}_inctax_af_credit_table"]
-    agi_keyword_list = ["Salaries", "Interests", "Qdividends", "Capital", "Business", "Pensions", "Security",
-                    "Other", "Totalincome", "Statutory", "AGI", "Pexpt", "Standardded", "totitem", "qbid",
-                    "totalexpt", "taxincome", "totalinctax", "totalcredit", "aftercdttax"]
+    agi_table_name_list = [
+        f"{name}_salaries_and_wages_table",
+        f"{name}_taxable_interest_and_ordinary_dividends_table",
+        f"{name}_qualified_dividends_table",
+        f"{name}_capital_table",
+        f"{name}_business_table",
+        f"{name}_pensions_annuities_IRA_distributions_table",
+        f"{name}_Social_Security_benefits_table",
+        f"{name}_all_other_income_table",
+        f"{name}_total_income_table",
+        f"{name}_statutory_Adjustments_table",
+        f"{name}_total_AGI_table",
+        f"{name}_sub_peronal_expt_table",
+        f"{name}_sub_std_table",
+        f"{name}_sub_tot_item_table",
+        f"{name}_sub_qbid_table",
+        f"{name}_sub_tot_expt_table",
+        f"{name}_taxable_inc_table",
+        f"{name}_tot_inctax_table",
+        f"{name}_tot_cdt_table",
+        f"{name}_inctax_af_credit_table",
+    ]
+    agi_keyword_list = [
+        "Salaries",
+        "Interests",
+        "Qdividends",
+        "Capital",
+        "Business",
+        "Pensions",
+        "Security",
+        "Other",
+        "Totalincome",
+        "Statutory",
+        "AGI",
+        "Pexpt",
+        "Standardded",
+        "totitem",
+        "qbid",
+        "totalexpt",
+        "taxincome",
+        "totalinctax",
+        "totalcredit",
+        "aftercdttax",
+    ]
     for table_name, keyword in zip(agi_table_name_list, agi_keyword_list):
         template_args[table_name] = projection_table(agg2_df, keyword)
 
-    share_table_name_list = [f"{name}_Top1_percent_income_group_shares_of_AGI_table",
-                   f"{name}_Top5_percent_income_group_shares_of_AGI_table",
-                   f"{name}_Top10_percent_income_group_shares_of_AGI_table",
-                   f"{name}_Top25_percent_income_group_shares_of_AGI_table",
-                   f"{name}_Top50_percent_income_group_shares_of_AGI_table"]
+    share_table_name_list = [
+        f"{name}_Top1_percent_income_group_shares_of_AGI_table",
+        f"{name}_Top5_percent_income_group_shares_of_AGI_table",
+        f"{name}_Top10_percent_income_group_shares_of_AGI_table",
+        f"{name}_Top25_percent_income_group_shares_of_AGI_table",
+        f"{name}_Top50_percent_income_group_shares_of_AGI_table",
+    ]
     share_keyword_list = ["Top1p", "Top5p", "Top10p", "Top25p", "Top50p"]
     for table_name, keyword in zip(share_table_name_list, share_keyword_list):
         template_args[table_name] = agi_share_table(agg3_df, keyword)
-
 
     return template_args, plot_paths
 
@@ -996,12 +1219,12 @@ def CBO_validation(cbo_df, new, name, template_args):
         raise ValueError(f"{name} is not valid. Must be `puf` or `cps`.")
     calcs = [new]
     calc_labels = [f"New {name.upper()}"]
-    
+
     # Tax Data projections
     aggs2 = defaultdict(list)
     aggs3 = defaultdict(list)
     var_list = ["payrolltax", "iitax", "combined", "standard", "c04470"]
-  
+
     for year in range(new.current_year, tc.Policy.LAST_BUDGET_YEAR + 1):
         new_salary_wage = run_calc_var(new, year, "e00200")
         new_taxable_interest_ordinary_divid = (
@@ -1053,25 +1276,71 @@ def CBO_validation(cbo_df, new, name, template_args):
         new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
             new, year, "c07100"
         )
-       
 
-        agi_list = [new_salary_wage, new_taxable_interest_ordinary_divid, new_q_div, new_capital_g_l, 
-                        new_business_inc, new_pension_annuities_IRAdis, new_ssb, new_other_inc, new_total_inc,
-                        new_stat_adj, new_total_agi, new_sub_personal_expt, new_sub_std, new_sub_tot_item, 
-                        new_sub_qbid, new_sub_tot_expt, new_taxable_inc, new_tot_inctax, new_tot_cdt, new_inctax_af_credit]
-        agi_nlist = ["New Salaries", "New Interests", "New Qdividends", "New Capital", "New Business", "New Pensions", 
-                        "New Security", "New Other", "New Totalincome", "New Statutory", "New AGI", "New Pexpt", 
-                        "New Standardded", "New totitem", "New qbid", "New totalexpt", "New taxincome", "New totalinctax", 
-                        "New totalcredit", "New aftercdttax"]
+        agi_list = [
+            new_salary_wage,
+            new_taxable_interest_ordinary_divid,
+            new_q_div,
+            new_capital_g_l,
+            new_business_inc,
+            new_pension_annuities_IRAdis,
+            new_ssb,
+            new_other_inc,
+            new_total_inc,
+            new_stat_adj,
+            new_total_agi,
+            new_sub_personal_expt,
+            new_sub_std,
+            new_sub_tot_item,
+            new_sub_qbid,
+            new_sub_tot_expt,
+            new_taxable_inc,
+            new_tot_inctax,
+            new_tot_cdt,
+            new_inctax_af_credit,
+        ]
+        agi_nlist = [
+            "New Salaries",
+            "New Interests",
+            "New Qdividends",
+            "New Capital",
+            "New Business",
+            "New Pensions",
+            "New Security",
+            "New Other",
+            "New Totalincome",
+            "New Statutory",
+            "New AGI",
+            "New Pexpt",
+            "New Standardded",
+            "New totitem",
+            "New qbid",
+            "New totalexpt",
+            "New taxincome",
+            "New totalinctax",
+            "New totalcredit",
+            "New aftercdttax",
+        ]
         for ae, an in zip(agi_list, agi_nlist):
             aggs2["Value"].append(ae)
             aggs2["Category"].append(an)
             aggs2["Year"].append(year)
 
-
         new_agi_aggs = calculate_agi_share(new, year)
-        share_list = [new_agi_aggs[0], new_agi_aggs[1], new_agi_aggs[2], new_agi_aggs[3], new_agi_aggs[4]]
-        share_nlist = ["New Top1p", "New Top5p", "New Top10p", "New Top25p", "New Top50p"]
+        share_list = [
+            new_agi_aggs[0],
+            new_agi_aggs[1],
+            new_agi_aggs[2],
+            new_agi_aggs[3],
+            new_agi_aggs[4],
+        ]
+        share_nlist = [
+            "New Top1p",
+            "New Top5p",
+            "New Top10p",
+            "New Top25p",
+            "New Top50p",
+        ]
 
         for se, sn in zip(share_list, share_nlist):
             aggs3["Shares of AGI"].append(se)
@@ -1081,32 +1350,64 @@ def CBO_validation(cbo_df, new, name, template_args):
     agg2_df = pd.DataFrame(aggs2)
     agg3_df = pd.DataFrame(aggs3)
 
-
     # create validation tables
-    agival_table_name_list = [f"{name}_validation_salaries_and_wages_table",
-                   f"{name}_validation_taxable_interest_and_ordinary_dividends_table",
-                   f"{name}_validation_qualified_dividends_table", f"{name}_validation_capital_table",
-                   f"{name}_validation_business_table",f"{name}_validation_pensions_annuities_IRA_distributions_table",
-                   f"{name}_validation_Social_Security_benefits_table", f"{name}_validation_all_other_income_table",
-                   f"{name}_validation_total_income_table", f"{name}_validation_statutory_Adjustments_table", 
-                   f"{name}_validation_total_AGI_table", f"{name}_validation_sub_peronal_expt_table", f"{name}_validation_sub_std_table",
-                   f"{name}_validation_sub_tot_item_table", f"{name}_validation_sub_qbid_table", f"{name}_validation_sub_tot_expt_table",
-                   f"{name}_validation_taxable_inc_table", f"{name}_validation_tot_inctax_table", f"{name}_validation_tot_cdt_table",
-                   f"{name}_validation_inctax_af_credit_table"]
-    agi_keyword_list = ["Salaries", "Interests", "Qdividends", "Capital", "Business", "Pensions", "Security",
-                    "Other", "Totalincome", "Statutory", "AGI", "Pexpt", "Standardded", "totitem", "qbid",
-                    "totalexpt", "taxincome", "totalinctax", "totalcredit", "aftercdttax"]
+    agival_table_name_list = [
+        f"{name}_validation_salaries_and_wages_table",
+        f"{name}_validation_taxable_interest_and_ordinary_dividends_table",
+        f"{name}_validation_qualified_dividends_table",
+        f"{name}_validation_capital_table",
+        f"{name}_validation_business_table",
+        f"{name}_validation_pensions_annuities_IRA_distributions_table",
+        f"{name}_validation_Social_Security_benefits_table",
+        f"{name}_validation_all_other_income_table",
+        f"{name}_validation_total_income_table",
+        f"{name}_validation_statutory_Adjustments_table",
+        f"{name}_validation_total_AGI_table",
+        f"{name}_validation_sub_peronal_expt_table",
+        f"{name}_validation_sub_std_table",
+        f"{name}_validation_sub_tot_item_table",
+        f"{name}_validation_sub_qbid_table",
+        f"{name}_validation_sub_tot_expt_table",
+        f"{name}_validation_taxable_inc_table",
+        f"{name}_validation_tot_inctax_table",
+        f"{name}_validation_tot_cdt_table",
+        f"{name}_validation_inctax_af_credit_table",
+    ]
+    agi_keyword_list = [
+        "Salaries",
+        "Interests",
+        "Qdividends",
+        "Capital",
+        "Business",
+        "Pensions",
+        "Security",
+        "Other",
+        "Totalincome",
+        "Statutory",
+        "AGI",
+        "Pexpt",
+        "Standardded",
+        "totitem",
+        "qbid",
+        "totalexpt",
+        "taxincome",
+        "totalinctax",
+        "totalcredit",
+        "aftercdttax",
+    ]
 
     for table_name, keyword in zip(agival_table_name_list, agi_keyword_list):
         template_args[table_name] = validation_table(agg2_df, cbo_df, keyword)
 
-    shareval_table_name_list = [f"{name}_validation_Top1_percent_income_group_shares_of_AGI_table",
-                   f"{name}_validation_Top5_percent_income_group_shares_of_AGI_table",
-                   f"{name}_validation_Top10_percent_income_group_shares_of_AGI_table",
-                   f"{name}_validation_Top25_percent_income_group_shares_of_AGI_table",
-                   f"{name}_validation_Top50_percent_income_group_shares_of_AGI_table"]
+    shareval_table_name_list = [
+        f"{name}_validation_Top1_percent_income_group_shares_of_AGI_table",
+        f"{name}_validation_Top5_percent_income_group_shares_of_AGI_table",
+        f"{name}_validation_Top10_percent_income_group_shares_of_AGI_table",
+        f"{name}_validation_Top25_percent_income_group_shares_of_AGI_table",
+        f"{name}_validation_Top50_percent_income_group_shares_of_AGI_table",
+    ]
     share_keyword_list = ["Top1p", "Top5p", "Top10p", "Top25p", "Top50p"]
     for table_name, keyword in zip(shareval_table_name_list, share_keyword_list):
         template_args[table_name] = validation_table(agg3_df, cbo_df, keyword)
-    
+
     return template_args
