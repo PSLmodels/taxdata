@@ -1272,7 +1272,7 @@ def CBO_validation(cbo_df, new, name, template_args):
         )
         new_taxable_inc = run_calc_var(new, year, "c04800")
         new_tot_inctax = run_calc_var(new, year, "c05800")
-        new_tot_cdt = run_calc_var(new, year, "c07100")
+        new_tot_cdt = run_calc_var(new, year, "c07100") + run_calc_var(new, year, "refund")
         new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
             new, year, "c07100"
         )
