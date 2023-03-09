@@ -25,4 +25,5 @@ dependencies:
 - pip
 - pip:
   - requests-html
+  - black
   - jupyter-book>=0.9.1
