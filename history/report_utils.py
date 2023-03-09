@@ -83,7 +83,7 @@ def add_bins(
     bin_width = cumsum_range / float(num_bins)
     bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
-    bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
+    bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observation00s
     if decile_details:
         assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
         bin_edges.insert(1, 1e-9)  # top of zeros
@@ -137,8 +137,7 @@ def percentile(
     result_type="avg",
     decile_details=False,
 ):
-    """
-    """
+    """ """
     qpdf = add_bins(
         pdf,
         income_measure=income_measure,
@@ -334,7 +333,7 @@ def distplot(
 
     assert result_type in ["pct", "sum"]
     pltdata = pd.DataFrame()
-    for (calc, label) in zip(calcs, calc_labels):
+    for calc, label in zip(calcs, calc_labels):
         agg, pct, index = getdata(calc, var, income_measure)
         if result_type == "pct":
             pltdata[label] = pct
@@ -572,7 +571,6 @@ def projection_table(data, category):
 
 
 def calculate_agi_share(calc, year):
-
     calc.advance_to_year(year)
     calc.calc_all()
 
@@ -655,7 +653,7 @@ def agi_share_table(data, incomegroup):
 
 def CBO_projections(rev_proj):
     """
-    Read CBO published projections values from the webpage 
+    Read CBO published projections values from the webpage
     "https://www.cbo.gov/about/products/budget-economic-data"
     """
 
@@ -796,7 +794,8 @@ def CBO_projections(rev_proj):
 
 def validation_table(df_tax_data, df_cbo, category):
     """
-    Creates a markdown table to display detailed validation between taxdata new projections and CBO projections
+    Creates a markdown table to display detailed validation between
+    taxdata new projections and CBO projections
     """
 
     df = df_tax_data[df_tax_data["Category"].str.contains(category)].copy()

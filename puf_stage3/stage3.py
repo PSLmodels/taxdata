@@ -49,7 +49,6 @@ def adjustment(agi, var, var_name, target, weights, blowup):
     # In each year find the ratios to get the correct distribution
     ratios_df = pd.DataFrame()
     for year in range(start_year, end_year + 1):
-
         goal_amts = goal_total[year][0] * distribution[year]
 
         wt_year = "WT{}".format(year)

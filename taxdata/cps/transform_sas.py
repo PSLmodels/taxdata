@@ -61,7 +61,6 @@ def parse_sas(sas):
 
 
 def main():
-
     master_dict = {}
     for year in CPS_META_DATA.keys():
         # read in file text

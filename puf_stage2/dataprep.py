@@ -2,7 +2,6 @@ import numpy as np
 
 
 def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
-
     print("Preparing coefficient matrix for year {} .....".format(year))
 
     s006 = np.where(
