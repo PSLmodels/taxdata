@@ -805,7 +805,7 @@ def validation_table(df_tax_data, df_cbo, category):
     new_df = new_df.rename_axis(index=None).squeeze()
     new_df.index = new_df.index.astype(str)
     df_cbo = df_cbo.drop(
-        columns=["2019", "2020", "2021", "2022", "2032"], axis=1, inplace=False
+        columns=["2019", "2020", "2021", "2022", "2033"], axis=1, inplace=False
     )
     df_cbo = df_cbo.transpose()
     df_cbo_sal = df_cbo.loc[:, df_cbo.columns.str.contains(category)].squeeze()
@@ -1271,7 +1271,9 @@ def CBO_validation(cbo_df, new, name, template_args):
         )
         new_taxable_inc = run_calc_var(new, year, "c04800")
         new_tot_inctax = run_calc_var(new, year, "c05800")
-        new_tot_cdt = run_calc_var(new, year, "c07100")
+        new_tot_cdt = run_calc_var(new, year, "c07100") + run_calc_var(
+            new, year, "refund"
+        )
         new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
             new, year, "c07100"
         )
