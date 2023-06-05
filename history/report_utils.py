@@ -805,7 +805,7 @@ def validation_table(df_tax_data, df_cbo, category):
     new_df = new_df.rename_axis(index=None).squeeze()
     new_df.index = new_df.index.astype(str)
     df_cbo = df_cbo.drop(
-        columns=["2019", "2020", "2021", "2022", "2033"], axis=1, inplace=False
+        columns=["2019", "2020", "2021", "2022"], axis=1, inplace=False
     )
     df_cbo = df_cbo.transpose()
     df_cbo_sal = df_cbo.loc[:, df_cbo.columns.str.contains(category)].squeeze()

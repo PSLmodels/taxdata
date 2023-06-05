@@ -195,7 +195,7 @@ def report():
     revprojections = divs[4]
 
     assert "Revenue Projections" in revprojections.text
-    latest_revprojections = revprojections.find("div.views-col.col-1")[0]
+    latest_revprojections = revprojections.find("div.views-col.col-1")[1]
     rev_link = latest_revprojections.find("a")[0]
     _rev_report = datetime.strptime(rev_link.text, "%b %Y")
     rev_report = datetime.strftime(_rev_report, "%B %Y")
