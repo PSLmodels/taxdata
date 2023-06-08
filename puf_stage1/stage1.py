@@ -145,7 +145,7 @@ for year in range(IRS_RET_YR + 1, EYR + 1):
     vals.append(return_growth_rate.Returns[str(IRS_RET_YR)])
     indicies.append(str(year))
 ret_growth_vals = pd.DataFrame({"Returns": vals}, index=indicies)
-return_growth_rate = return_growth_rate.append(ret_growth_vals)
+return_growth_rate = pd.concat([return_growth_rate, ret_growth_vals])
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
@@ -222,7 +222,7 @@ for i in range(SOI_YR, EYR):  # SOI Estimates loop
 
     current_year.columns = return_projection.columns
     current_year.index = [i + 1]
-    return_projection = return_projection.append(current_year)
+    return_projection = pd.concat([return_projection, current_year])
 
 # combine historical data with the newly blownup data
 Stage_II_targets = pd.concat([Stage_II_targets, return_projection], axis=1)
