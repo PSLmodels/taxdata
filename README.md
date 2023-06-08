@@ -35,6 +35,32 @@ sample data being used.  But the weights, ratios, and benefits files
 do depend on the data file, so they are different in the two sets of
 data files.
 
+Installation
+-----------
+
+Currently, the only way to install `taxdata` currently is to clone the git
+repo locally.
+```
+git clone https://github.com/PSLmodels/taxdata.git
+```
+Next navigate to the directory and install the `taxdata-dev` conda environment
+```
+cd taxdata
+conda env create -f environment.yml
+```
+
+After installing the conda environment, install `pre-commit` so that all the
+pre-commit hooks are run using:
+```bash
+pre-commit install
+```
+To run the scripts that produce `puf.csv` and `cps.csv.gz`, activate the
+`taxdata-dev` conda environment and follow the workflow laid out below.
+
+`Julia` must also be installed to solve for the PUF and CPS weights. You 
+can download `Julia` from their [website](https://julialang.org/downloads/)
+or by using `homebrew`. After installing Julia, you will need to also install
+these three packages: `JuMP, Cbc, NPZ`.
 
 Data-Preparation Documentation and Workflow
 -------------------------------------------
@@ -51,8 +77,8 @@ running the `make help` command.  If you want more background on the
 make utility and makefiles, search for Internet links with the
 keywords `makefile` and `automate`.
 
-Note that the stage2 linear program that generates the weights file is
-very long-running, taking five or more hours depending on your
+Note that the stage2 linear program that generates the weights file for the PUF
+is very long-running, taking five or more hours depending on your
 computer's CPU speed.  We are considering options for speeding up this
 stage2 work, but for the time being you can execute `make puf-files`
 and `make cps-files` in separate terminal windows to have the two
@@ -71,6 +97,14 @@ the corresponding files in the Tax-Calculator directory tree) without
 actually doing the file copies.  At the terminal command-prompt in the
 top-level taxdata directory, execute `./csvcopy.sh` to get help.
 
+### Example
+
+To create `cps.csv.gz`, run
+```
+conda activate taxdata-dev
+make cps-files
+```
+
 
 Contributing to taxdata Repository
 ----------------------------------
@@ -81,9 +115,33 @@ to make sure your proposed code is consistent with the repository's
 coding style and then run `make pytest` to ensure that all the tests
 pass.
 
+For information on contributing to TaxData, see the [contributor guide](CONTRIBUTING.md).
+
+Disclaimer
+----------
+
+`taxdata` is under continuous development. As such, results will change as the
+underlying data and logic improves.
+
 
 Contributors
 ------------
-- Anderson Frailey
-- John O'Hare
-- Amy Xu
+
+A full list of contributors on GitHub can be found 
+[here](https://github.com/PSLmodels/taxdata/graphs/contributors). John O'Hare
+of Quantria Strategies has also made significant contributions to the
+development of `taxdata`.
+
+Citing TaxData
+--------------
+
+Please cite the source of your analysis as "TaxData Release #.#.#, author's calculations".
+If you wish to provide a link, the preferred URL is https://github.com/PSLmodels/taxdata.
+Additionally, we strongly recommend that you describe the input data used, and 
+provide a link to the materials required to replicate your analysis or, at least, 
+note that those materials are available upon request.
+
+Release Notes and Change Log
+----------------------------
+
+Information on the changes included in new releases can be found in the [notes for each release](https://github.com/PSLmodels/taxdata/releases).
