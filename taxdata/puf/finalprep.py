@@ -69,7 +69,7 @@ def finalprep(data):
     data = data.round(0).astype("int64")
 
     # - Impute pension contributions:
-    data = impute_pension_contributions(data.copy())
+    data = impute_pension_contributions(data.copy(), max_flpdyr)
 
     # - Rename 'filer' to 'data_source'
     data = data.rename(columns={"filer": "data_source"})
