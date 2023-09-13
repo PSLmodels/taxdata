@@ -70,8 +70,8 @@ def targets(year):
     revised data specified here.  Also, the top two wage groups (5u10M and
     10u30M) are combined into a single group (5Mplus).
     """
-    cnt_df = pd.read_csv(Path(CURPATH, f'dcpentargetcnt{year}.csv'), index_col=0)
-    amt_df = pd.read_csv(Path(CURPATH, f'dcpentargetamt{year}.csv'), index_col=0)
+    cnt_df = pd.read_csv(Path(CURPATH, f"dcpentargetcnt{year}.csv"), index_col=0)
+    amt_df = pd.read_csv(Path(CURPATH, f"dcpentargetamt{year}.csv"), index_col=0)
     return cnt_df, amt_df
 
 
