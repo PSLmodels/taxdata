@@ -321,7 +321,7 @@ def _create_units(data, year, verbose=False, ctam_benefits=False):
     return [unit.output() for unit in units.values()]
 
 
-def pycps(cps: list, year: int, verbose: bool) -> pd.DataFrame:
+def pycps(cps: list, year: int, ctam_benefits: bool, verbose: bool) -> pd.DataFrame:
     """
     Core code for iterating through the households
     Parameters
@@ -330,8 +330,8 @@ def pycps(cps: list, year: int, verbose: bool) -> pd.DataFrame:
     """
     tax_units = []
     ctam_benefits = True
-    if year not in C_TAM_YEARS:
-        ctam_benefits = False
+    if year not in C_TAM_YEARS and ctam_benefits:
+        raise ValueError(f'C-TAM Benefits not available for year {year}')
     for hh in tqdm(cps):
         tax_units += create_units(hh, year - 1, ctam_benefits=ctam_benefits)
     # create a DataFrame of tax units with the new

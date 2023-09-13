@@ -176,7 +176,7 @@ def wage_group(row):
     for grp, underwage in enumerate(UNDER_WAGE):
         if row["wage"] < underwage:
             return grp
-    raise ValueError("illegal value of wage")
+    raise ValueError(f"illegal value of wage: {row['wage']}")
 
 
 # end of wage_group() function
@@ -283,6 +283,7 @@ def impute_pension_contributions(alldata):
     """
     # specify target DataFrames with total column and total row removed
     target_cnt, target_amt = targets()
+    print(target_cnt)
     target_cnt.drop(labels="total", axis="index", inplace=True)
     target_cnt.drop(labels="total", axis="columns", inplace=True)
     target_amt.drop(labels="total", axis="index", inplace=True)
