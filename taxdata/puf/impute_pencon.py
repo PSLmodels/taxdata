@@ -209,10 +209,10 @@ MIN_HIWAGE_GROUP = 11  # SF applied to wage groups no less than this MIN
 
 
 # specify maximum legal elective deferral amount for DC pensions in 2011
-MAX_PENCON_AMT = 16500
+MAX_PENCON_AMT = {2011: 16500, 2015: 1800}
 
 
-def impute(idata, target_cnt, target_amt):
+def impute(idata, target_cnt, target_amt, year):
     """
     Impute idata[pencon] given other idata variables and targets.
     """
@@ -254,7 +254,7 @@ def impute(idata, target_cnt, target_amt):
             num_iterations = 10
             for itr in range(0, num_iterations):
                 uncapped_amt = np.where(pos_pc, np.round(wage * rate0).astype(int), 0)
-                capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT)
+                capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT[year])
                 over_amt = uncapped_amt - capped_amt
                 over_tot = (over_amt * wgt).sum() * 1e-9
                 rate1 = min(1.0, (cell_target_amt + over_tot) / wgt_pos_pc_wages)
@@ -275,7 +275,7 @@ def impute(idata, target_cnt, target_amt):
 # end of impute() function
 
 
-def impute_pension_contributions(alldata):
+def impute_pension_contributions(alldata, year):
     """
     Main function in impute_pencon.py file.
     Argument: puf.csv DataFrame just before imputation is done.
@@ -351,12 +351,12 @@ def impute_pension_contributions(alldata):
     # do two imputations to construct gross wages for PUF records
     idata["wage"] = idata["e00200"]
     idata["wagegrp"] = idata.apply(wage_group, axis=1)
-    impute(idata, target_cnt, target_amt)
+    impute(idata, target_cnt, target_amt, year)
     idata["wage"] = np.where(
         idata["filer"] == 1, idata["e00200"] + idata["pencon"], idata["e00200"]
     )
     idata["wagegrp"] = idata.apply(wage_group, axis=1)  # gross wage group
-    impute(idata, target_cnt, target_amt)
+    impute(idata, target_cnt, target_amt, year)
     if DUMP0:
         cnt = (idata["weight"] * (idata["pencon"] > 0)).sum() * 1e-6
         print("wgt_pencon_cnt(#M)= {:.3f}".format(cnt))
