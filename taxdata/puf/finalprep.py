@@ -74,6 +74,9 @@ def finalprep(data):
     # - Rename 'filer' to 'data_source'
     data = data.rename(columns={"filer": "data_source"})
 
+    # - Sort columns to ensure every PUF is the same
+    data.sort_index(axis=1, inplace=True)
+
     return data
 
 
