@@ -327,13 +327,15 @@ def pycps(cps: list, year: int, ctam_benefits: bool, verbose: bool) -> pd.DataFr
     Parameters
     ----------
     cps: List where each element is a household in the CPS
+    year: CPS year to use
+    ctam_benefits: If true, attach C-TAM benefits to the CPS
+    verbose
     """
     tax_units = []
-    ctam_benefits = True
     if year not in C_TAM_YEARS and ctam_benefits:
         raise ValueError(f'C-TAM Benefits not available for year {year}')
     for hh in tqdm(cps):
-        tax_units += create_units(hh, year - 1, ctam_benefits=ctam_benefits)
+        tax_units += create_units(hh, year - 1, ctam_benefits=ctam_benefits, verbose=verbose)
     # create a DataFrame of tax units with the new
     tax_units_df = pd.DataFrame(tax_units)
 

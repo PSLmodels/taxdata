@@ -39,15 +39,9 @@ process twice.  See the impute_pension_contributions() function code
 for details.
 """
 from __future__ import print_function
-import sys
 import numpy as np
 import pandas as pd
 from pathlib import Path
-
-if sys.version_info[0] < 3:
-    from StringIO import StringIO
-else:
-    from io import StringIO
 
 
 CURPATH = Path(__file__).resolve().parent
@@ -96,7 +90,7 @@ UNDER_WAGE = [
     1e6,
     2e6,
     5e6,
-    30e6,
+    124e6,
 ]
 
 
@@ -156,7 +150,8 @@ MIN_HIWAGE_GROUP = 11  # SF applied to wage groups no less than this MIN
 # several times each with a different value of HIWAGE_PROB_SF.
 
 
-# specify maximum legal elective deferral amount for DC pensions in 2011
+# specify maximum legal elective deferral amount for DC pensions in each year
+# the PUF is supported
 MAX_PENCON_AMT = {2011: 16500, 2015: 1800}
 
 
