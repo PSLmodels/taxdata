@@ -11,7 +11,7 @@ CUR_PATH = Path(__file__).resolve().parent
 STAGE_1_PATH = Path(CUR_PATH, "..", "puf_stage1", "Stage_I_factors.csv")
 STAGE_2_PATH = Path(CUR_PATH, "..", "cps_stage1", "stage_2_targets.csv")
 START_YEAR = 2014
-END_YEAR = 2033
+END_YEAR = 2034
 
 # Read hashes used to see which years can be skipped
 with open(Path(CUR_PATH, "..", "datahashes.json")) as f:
