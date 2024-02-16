@@ -45,8 +45,8 @@ def update_cpim(baseline, text_args):
     # convert the values to floats so that the groupby mean only returns
     # the mean for the value
     df["value"] = df["value"].astype(float)
-    cpi_mean = df.groupby("year").mean().transpose().round(1)
-    cpi_mean.index = ["CPIM"]
+    cpi_mean = df.groupby("year")["value"].mean().round(1)
+    cpi_mean = cpi_mean.to_frame(name='CPIM').transpose()
 
     # open the current baseline to replace the values for the years pulled
     # from BLS
@@ -97,9 +97,11 @@ def update_econproj(url, baseline, text_args):
     r = session.get(url)
     cbo_pre_url = "https://www.cbo.gov"
     divs = r.html.find("div.view.view-recurring-data")
-    revprojections = divs[4]
+
+
     # both assertions are there to throw errors if the order of sections change
     # revenue projections used for capital gains projections
+    revprojections = divs[4]
     assert "Revenue Projections" in revprojections.text
     latest_revprojections = revprojections.find("div.views-col.col-1")[0]
     rev_link = latest_revprojections.find("a")[0]
@@ -109,7 +111,7 @@ def update_econproj(url, baseline, text_args):
     rev_url = "".join([cbo_pre_url, rev_file_url])
 
     econprojections = divs[8]
-    assert "10-Year Economic Projections" in econprojections.text
+    assert "Economic Projections" in econprojections.text
     latest_econprojections = econprojections.find("div.views-col.col-1")[0]
     econ_link = latest_econprojections.find("a")[0]
     _cbo_report = datetime.strptime(econ_link.text, "%b %Y")
@@ -127,24 +129,23 @@ def update_econproj(url, baseline, text_args):
         # extract values for needed rows in the excel file
         # some variables have a missing value in the multi-index. Use iloc
         # to extract needed variables from them.
-        gdp = econ_proj.loc["Output"].loc["Gross Domestic Product (GDP)"].iloc[0]
-        income = econ_proj.loc["Income"]
-        tpy = income.loc["Income, Personal"].iloc[0]
-        wages = income.loc["Wages and Salaries"].iloc[0]
         billions = "Billions of dollars"
+        gdp = econ_proj.loc["Gross domestic product (GDP)"].loc[billions].iloc[0]
+        tpy = econ_proj.loc["Income, personal"].loc[billions].iloc[0]
+        wages = econ_proj.loc["Wages and salaries"].loc[billions].iloc[0]
         var = "Proprietors' income, nonfarm, with IVA & CCAdj"
-        schc = income.loc["Nonwage Income"].loc[var].loc[billions]
+        schc = econ_proj.loc[var].loc[billions].iloc[0]
         var = "Proprietors' income, farm, with IVA & CCAdj"
-        schf = income.loc["Nonwage Income"].loc[var].loc[billions]
+        schf = econ_proj.loc[var].loc[billions].iloc[0]
         var = "Interest income, personal"
-        ints = income.loc["Nonwage Income"].loc[var].loc[billions]
+        ints = econ_proj.loc[var].loc[billions].iloc[0]
         var = "Dividend income, personal"
-        divs = income.loc["Nonwage Income"].loc[var].loc[billions]
+        divs = econ_proj.loc[var].loc[billions].iloc[0]
         var = "Income, rental, with CCAdj"
-        rents = income.loc["Nonwage Income"].loc[var].loc[billions]
-        book = income.loc["Profits, Corporate, With IVA & CCAdj"].iloc[0]
-        var = "Consumer Price Index, All Urban Consumers (CPI-U)"
-        cpiu = econ_proj.loc["Prices"].loc[var].iloc[0]
+        rents = econ_proj.loc[var].loc[billions].iloc[0]
+        book = econ_proj.loc["Profits, corporate, with IVA & CCAdj"].loc[billions].iloc[0]
+        var = "Consumer price index, all urban consumers (CPI-U)"
+        cpiu = econ_proj.loc[var].loc["1982-1984 = 100"].iloc[0]
         var_list = [gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu]
         var_names = [
             "GDP",
@@ -191,10 +192,10 @@ def update_econproj(url, baseline, text_args):
             header=[0, 1],
         )
         cg_proj.index = cg_proj[cg_proj.columns[0]]
-        var = "Capital Gains Realizationsa"
+        var = "Capital gains realizationsa"
         # increase the CBO final year to (the last year + 1) for each update.
-        # e.g. when the CBO final year from CBO is 2033, make the update as range(2017,2034)
-        cgns = cg_proj[var]["Billions of Dollars"].loc[list(range(2017, 2034))]
+        # e.g. when the CBO final year from CBO is 2034, make the update as range(2017,2035)
+        cgns = cg_proj[var]["Billions of dollars"].loc[list(range(2017, 2035))]
         var_list = [cgns]
         var_names = ["CGNS"]
         df = pd.DataFrame(var_list, index=var_names).round(1)
@@ -321,6 +322,7 @@ def update_rets(url, baseline, text_args):
     pct_change = projections.pct_change() + 1
     # extrapolate out to final year of other CBO projections
     factor = pct_change.iloc[-1]
+    projections.index = projections.index.astype(int)
     last_year = int(max(projections.index))
     cbo_last_year = int(max(baseline.columns))
     df_projections = pd.DataFrame(projections).transpose()
@@ -365,6 +367,8 @@ def update_ucomp(url, baseline, text_args):
             ucomp_years.append(datetime.strptime(date, "%Y-%m"))
     latest_year = max(ucomp_years)
     ucomp_url = ucomp_links[ucomp_years.index(latest_year)]
+    CBO_url = ("https://www.cbo.gov")
+    ucomp_url = CBO_url + ucomp_url
     report = datetime.strftime(latest_year, "%B %Y")
     if report == text_args["ucomp_cur_report"]:
         print("\tNo new data since last update")
