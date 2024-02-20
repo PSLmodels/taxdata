@@ -96,9 +96,9 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
+Previous: [2023 Report](https://www.ssa.gov/oact/TR/2023/VI_C_SRfyproj.html)
 
-Current: [2020 Report](https://www.ssa.gov/oact/TR/2020/VI_C_SRfyproj.html)
+Current: [2023 Report](https://www.ssa.gov/oact/TR/2023/VI_C_SRfyproj.html)
 
 Projections are taken directly from the `Scheduled Benefits: Intermediate Level`
 column of this table.
@@ -108,7 +108,7 @@ column of this table.
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
-Access Date: February 16 2024
+Access Date: 
 
 Manual Instructions:
 
@@ -124,7 +124,7 @@ Manual Instructions:
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [May 2022](https://www.cbo.gov/system/files/2022-05/51316-2022-05-unemployment.xlsx)
+Previous: [February 2024](https://www.cbo.gov/system/files/2024-02/51316-2024-02-unemployment.xlsx)
 
 Current: [February 2024](https://www.cbo.gov/system/files/2024-02/51316-2024-02-unemployment.xlsx)
 

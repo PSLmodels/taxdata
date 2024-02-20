@@ -237,19 +237,23 @@ def update_socsec(url, baseline, text_args):
     r = session.get(url)
     # we can determine the latest year by looking at all of the years availeble
     # in the first drop down and adding one.
-    selector = r.html.find("select#yh1")[0]
-    latest_yr = max([int(yr) for yr in selector.text.split()]) + 1
+    # selector = r.html.find("select#yh1")[0]
+    
+    # check https://www.ssa.gov/oact/TR/ for the latest year
+    latest_yr = 2023
+    #latest_yr = max([int(yr) for yr in selector.text.split()]) + 1
     report = f"{latest_yr} Report"
     if report == text_args["socsec_cur_report"]:
         print("\tNo new data since last update")
         return baseline, text_args
+
 
     socsec_url = f"https://www.ssa.gov/oact/TR/{latest_yr}/VI_C_SRfyproj.html"
     match_txt = "Operations of the OASI Trust Fund, Fiscal Years"
     html = pd.read_html(socsec_url, match=match_txt)[0]
     # merge the columns with years and data into one
     sub_data = pd.concat(
-        [html["Fiscal year", "Fiscal year.1"], html["Cost", "Sched-uled benefits"]],
+        [html["Fiscal year", "Fiscal year.1"], html["Cost", "Scheduled benefits"]],
         axis=1,
     )
     sub_data.columns = ["year", "cost"]
@@ -376,13 +380,18 @@ def update_ucomp(url, baseline, text_args):
     elif report == "February 2021":
         print("Latest data is from pandemic. Enter by hand")
         return baseline, text_args
-    data = pd.read_excel(ucomp_url, skiprows=3, index_col=0, thousands=",")
+    data = pd.read_excel(ucomp_url, skiprows=7, index_col=[0,1,2], thousands=",")
     try:
         benefits = data.loc["Budget Authority"].dropna().astype(int) / 1000
     except KeyError:
         benefits = data.loc["Budget Authority"].dropna().astype(int) / 1000
     benefits = benefits.round(1)
     df = pd.DataFrame(benefits).transpose()
+    # drop items whose index are not years
+    for indx in df.index:
+        if type(indx) != int:
+            df = df.drop(indx)
+    df = pd.DataFrame(df.values, index=df.index).transpose()
     df.index = ["UCOMP"]
     df.columns = df.columns.astype(str)
     baseline.update(df)
