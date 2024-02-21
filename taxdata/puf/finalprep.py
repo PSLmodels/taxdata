@@ -9,7 +9,10 @@ from pathlib import Path
 CUR_PATH = Path(__file__).resolve().parent
 USABLE_VARS = tc.Records(data=None).USABLE_READ_VARS
 USABLE_VARS.add("filer")
-
+USABLE_VARS.update(['e00100', 'e01000', 'e02500', 'e03260', 'e04600', 'e04800', 'e07180', 'e07200', 'e07230',
+                    'e08800', 'e09400', 'e09600', 'e11070', 'e19700', 'e20800', 'e21040', 'e25850', 'e25860', 'e25960',
+                    'e25980', 'e26180', 'e26190', 'e30400', 'e33000', 'e58950', 'e59560', 'e60000', 'e62100', 'P04470',
+                    'P65300', 'XOODEP', 'recid'])
 
 def finalprep(data):
     """
@@ -59,8 +62,28 @@ def finalprep(data):
 
     data["s006"] = data["matched_weight"] * 100
 
+    np.savetxt('var_before_filter.csv', list(data.columns), delimiter=',', fmt='%s')
+
+    np.savetxt('USable_vars.csv', list(USABLE_VARS), delimiter=',', fmt='%s')
+
     # - Remove variables not expected by Tax-Calculator:
-    data = data.filter(USABLE_VARS, axis=1)
+    # data = data.filter(USABLE_VARS, axis=1)
+    # extract the variables available in original puf and required for TAG
+    data = data[
+        ['e07180',  'DSI', 'n24', 'e03300', 'e00200p', 'e07400',
+         'MIDR', 'agi_bin', 'e02100s', 'f6251', 'e02500', 'e03260', 'e25980', 'e24518', 'e09600', 'e33000', 'e02000',
+         'e09700', 'age_head', 'e18400', 'e18500', 'e87521', 'e11070', 'blind_spouse', 'f2441', 'e24515', 'cmbtp',
+         'e26190', 's006', 'p65300', 'age_spouse', 'e59560', 'e02300', 'e62900', 'e58990', 'n21', 'e07300',
+         'e03220', 'FLPDYR', 'e02100p', 'e01000', 'e00700', 'e09400', 'elderly_dependents',
+         'e04600', 'e60000', 'e08800', 'e09900', 'e00900p', 'e20400', 'e26180', 'e25850', 'e17500',
+         'e27200', 'p22250', 'e20800', 'e09800', 'e03210', 'e03270', 'e07200', 'e01500', 'e00200s', 'e25860', 'xoodep',
+         'p23250', 'XTOT', 'h_seq', 'e00650', 'e03500', 'e11200', 'ffpos',
+         'filer', 'e32800', 'MARS', 'e07260', 'nu13', 'e20100', 'fips', 'e00600', 'e07600', 'e19800',
+         'blind_head', 'e26270', 'e30400', 'e01700', 'g20500', 'k1bx14s', 'p08000', 'e03290', 'EIC', 'nu18',
+         'e07230', 'RECID', 'e00900', 'e87530', 'nu06', 'e03400', 'e00200', 'e00900s', 'e21040', 'p04470', 'e58950',
+         'e25960', 'e00100', 'a_lineno', 'e01200', 'e03240', 'e00300', 'e01100', 'e02100', 'e62100', 'e07240', 'n1820',
+         'e02400', 'e19200', 'e03150', 'e01400', 'e00400',  'k1bx14p', 'e04800',
+         'e03230', 'e19700', 'e00800', 'FDED', 'e20500', 'recid_old']]
 
     data["blind_head"] = np.where(data["blind_head"] == 1, 1, 0)
     data["blind_spouse"] = np.where(data["blind_spouse"] == 1, 1, 0)
@@ -84,7 +107,10 @@ def create_new_recid(data):
     """
     Construct unique recid.
     """
+    #pass the old 'recid' column to 'recid_old'
+    data['recid_old'] = data['recid']
     data["recid"] = data.index + 1
+
     return data
 
 
