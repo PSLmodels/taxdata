@@ -92,10 +92,13 @@ def finalprep(data):
     data = data.round(0).astype("int64")
 
     # - Impute pension contributions:
-    data = impute_pension_contributions(data.copy())
+    data = impute_pension_contributions(data.copy(), max_flpdyr)
 
     # - Rename 'filer' to 'data_source'
     data = data.rename(columns={"filer": "data_source"})
+
+    # - Sort columns to ensure every PUF is the same
+    data.sort_index(axis=1, inplace=True)
 
     return data
 
