@@ -21,7 +21,7 @@ dependencies:
 - python-chromedriver-binary
 - tabulate
 - pre-commit
-- taxcalc>=3.0.0
+- taxcalc>=3.5.0
 - pip
 - pip:
   - requests-html
