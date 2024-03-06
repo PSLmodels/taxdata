@@ -346,8 +346,16 @@ def distplot(
     else:
         y_label = "Total (billions)"
         y_format = "$.3f"
-    plt = px.scatter(melted, x="index", y="value", labels={"index": "Expanded Income Bin", "value": y_label}, 
-                     color="variable", title=title, width=800, height=425)
+    plt = px.scatter(
+        melted,
+        x="index",
+        y="value",
+        labels={"index": "Expanded Income Bin", "value": y_label},
+        color="variable",
+        title=title,
+        width=800,
+        height=425,
+    )
     return plt
 
 
@@ -386,8 +394,16 @@ def cbo_bar_chart(cbo_data, var, title):
     title: title of the chart
     """
 
-    chart = px.bar(cbo_data, x="index", y=var, color="Projections", barmode="group", 
-                   labels={"index": "Year", var: title},  width=800, height=350)
+    chart = px.bar(
+        cbo_data,
+        x="index",
+        y=var,
+        color="Projections",
+        barmode="group",
+        labels={"index": "Year", var: title},
+        width=800,
+        height=350,
+    )
 
     return chart
 
@@ -440,10 +456,17 @@ def growth_scatter_plot(data, var):
     ----------
     data: growth factor data
     """
-    plot = px.scatter(data, x="YEAR", y=var, range_x=[2024,2035], range_y=[0.85,1.15],
-                     color ="Growth Factors",  width=800, height=350)
+    plot = px.scatter(
+        data,
+        x="YEAR",
+        y=var,
+        range_x=[2024, 2035],
+        range_y=[0.85, 1.15],
+        color="Growth Factors",
+        width=800,
+        height=350,
+    )
     return plot
-    
 
 
 def agg_liability_table(data, tax):
@@ -583,8 +606,8 @@ def CBO_projections(rev_proj):
     ]
 
     for indx in salary_wage.index:
-            if type(indx) != int:
-                salary_wage = salary_wage.drop(indx)
+        if type(indx) != int:
+            salary_wage = salary_wage.drop(indx)
 
     taxable_interest_ordinary_divid = rev_proj.loc[
         "Calculation of adjusted gross income (AGI)"
@@ -613,9 +636,11 @@ def CBO_projections(rev_proj):
     stat_adj = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Subtract statutory adjustments                       "
     ]
-    total_agi = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
-        "Adjusted gross income               "
-    ].iloc[0]
+    total_agi = (
+        rev_proj.loc["Calculation of adjusted gross income (AGI)"]
+        .loc["Adjusted gross income               "]
+        .iloc[0]
+    )
     sub_peronal_expt = rev_proj.loc["Calculation of taxable income"].loc[
         "Subtract personal exemption amount (after limit)"
     ]
@@ -631,7 +656,9 @@ def CBO_projections(rev_proj):
     sub_tot_expt = rev_proj.loc["Calculation of taxable income"].loc[
         "Total exemptions and deductions after limitse"
     ]
-    taxable_inc = rev_proj.loc["Calculation of taxable income"].loc["Taxable incomef"].iloc[0]
+    taxable_inc = (
+        rev_proj.loc["Calculation of taxable income"].loc["Taxable incomef"].iloc[0]
+    )
     tot_inctax = rev_proj.loc["Calculation of income tax liability"].loc[
         "Total income tax (including AMT) before credits"
     ]
@@ -653,9 +680,11 @@ def CBO_projections(rev_proj):
     Top25p = rev_proj.loc["Shares of AGI by income group (percent)o"].loc[
         "Top 25 percent"
     ]
-    Top50p = rev_proj.loc["Shares of AGI by income group (percent)o"].loc[
-        "Top 50 percent"
-    ].iloc[0]
+    Top50p = (
+        rev_proj.loc["Shares of AGI by income group (percent)o"]
+        .loc["Top 50 percent"]
+        .iloc[0]
+    )
 
     var_list = [
         salary_wage,
@@ -713,7 +742,7 @@ def CBO_projections(rev_proj):
     ]
 
     for var in var_list:
-        var = var.dropna()  
+        var = var.dropna()
 
     df = pd.DataFrame(var_list, index=var_names).round(1)
     df.columns = df.columns.astype(str)
@@ -733,9 +762,7 @@ def validation_table(df_tax_data, df_cbo, category):
     new_df = new_df.set_index("Year").round(1)
     new_df = new_df.rename_axis(index=None).squeeze()
     new_df.index = new_df.index.astype(str)
-    df_cbo = df_cbo.drop(
-        columns=["2019", "2022"], axis=1, inplace=False
-    )
+    df_cbo = df_cbo.drop(columns=["2019", "2022"], axis=1, inplace=False)
     df_cbo = df_cbo.transpose()
     df_cbo_sal = df_cbo.loc[:, df_cbo.columns.str.contains(category)].squeeze()
     df_cbo_sal = df_cbo_sal.astype(float)
@@ -1038,8 +1065,18 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     agg3_df = pd.DataFrame(aggs3)
 
     title = "Aggregate Tax Liability by Year"
-    agg_chart = px.line(agg_df, x="Year", y="Tax Liability", range_x=[2024,2035], range_y=[0,6500],
-                         color="Tax", line_shape="spline", width=800, height=425, title=title)
+    agg_chart = px.line(
+        agg_df,
+        x="Year",
+        y="Tax Liability",
+        range_x=[2024, 2035],
+        range_y=[0, 6500],
+        color="Tax",
+        line_shape="spline",
+        width=800,
+        height=425,
+        title=title,
+    )
     img_path = Path(CUR_PATH, f"{name}_agg_plot.png")
     agg_chart.write_image(str(img_path))
     plot_paths.append(img_path)

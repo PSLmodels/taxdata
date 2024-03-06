@@ -165,7 +165,7 @@ def report():
         new_grow["Growth Factors"] = "New"
         cur_grow["Growth Factors"] = "Current"
         growth_data = pd.concat([new_grow, cur_grow])
-        growth_list = list(cur_grow.columns) 
+        growth_list = list(cur_grow.columns)
         growth_list.remove("YEAR")
         growth_list.remove("Growth Factors")
         for var in growth_list:
@@ -197,7 +197,7 @@ def report():
         rev_url,
         sheet_name="3.Individual Income Tax Details",
         skiprows=8,
-        index_col=[0, 1]
+        index_col=[0, 1],
     )
     cbo_df = CBO_projections(rev_proj)
 

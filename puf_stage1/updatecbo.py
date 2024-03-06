@@ -46,7 +46,7 @@ def update_cpim(baseline, text_args):
     # the mean for the value
     df["value"] = df["value"].astype(float)
     cpi_mean = df.groupby("year")["value"].mean().round(1)
-    cpi_mean = cpi_mean.to_frame(name='CPIM').transpose()
+    cpi_mean = cpi_mean.to_frame(name="CPIM").transpose()
 
     # open the current baseline to replace the values for the years pulled
     # from BLS
@@ -98,7 +98,6 @@ def update_econproj(url, baseline, text_args):
     cbo_pre_url = "https://www.cbo.gov"
     divs = r.html.find("div.view.view-recurring-data")
 
-
     # both assertions are there to throw errors if the order of sections change
     # revenue projections used for capital gains projections
     revprojections = divs[4]
@@ -143,7 +142,9 @@ def update_econproj(url, baseline, text_args):
         divs = econ_proj.loc[var].loc[billions].iloc[0]
         var = "Income, rental, with CCAdj"
         rents = econ_proj.loc[var].loc[billions].iloc[0]
-        book = econ_proj.loc["Profits, corporate, with IVA & CCAdj"].loc[billions].iloc[0]
+        book = (
+            econ_proj.loc["Profits, corporate, with IVA & CCAdj"].loc[billions].iloc[0]
+        )
         var = "Consumer price index, all urban consumers (CPI-U)"
         cpiu = econ_proj.loc[var].loc["1982-1984 = 100"].iloc[0]
         var_list = [gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu]
@@ -238,15 +239,14 @@ def update_socsec(url, baseline, text_args):
     # we can determine the latest year by looking at all of the years availeble
     # in the first drop down and adding one.
     # selector = r.html.find("select#yh1")[0]
-    
+
     # check https://www.ssa.gov/oact/TR/ for the latest year
     latest_yr = 2023
-    #latest_yr = max([int(yr) for yr in selector.text.split()]) + 1
+    # latest_yr = max([int(yr) for yr in selector.text.split()]) + 1
     report = f"{latest_yr} Report"
     if report == text_args["socsec_cur_report"]:
         print("\tNo new data since last update")
         return baseline, text_args
-
 
     socsec_url = f"https://www.ssa.gov/oact/TR/{latest_yr}/VI_C_SRfyproj.html"
     match_txt = "Operations of the OASI Trust Fund, Fiscal Years"
@@ -371,7 +371,7 @@ def update_ucomp(url, baseline, text_args):
             ucomp_years.append(datetime.strptime(date, "%Y-%m"))
     latest_year = max(ucomp_years)
     ucomp_url = ucomp_links[ucomp_years.index(latest_year)]
-    CBO_url = ("https://www.cbo.gov")
+    CBO_url = "https://www.cbo.gov"
     ucomp_url = CBO_url + ucomp_url
     report = datetime.strftime(latest_year, "%B %Y")
     if report == text_args["ucomp_cur_report"]:
@@ -380,7 +380,7 @@ def update_ucomp(url, baseline, text_args):
     elif report == "February 2021":
         print("Latest data is from pandemic. Enter by hand")
         return baseline, text_args
-    data = pd.read_excel(ucomp_url, skiprows=7, index_col=[0,1,2], thousands=",")
+    data = pd.read_excel(ucomp_url, skiprows=7, index_col=[0, 1, 2], thousands=",")
     try:
         benefits = data.loc["Budget Authority"].dropna().astype(int) / 1000
     except KeyError:
