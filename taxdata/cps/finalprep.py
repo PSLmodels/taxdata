@@ -1,6 +1,7 @@
 """
 Clean up the CPS file and make it ready for Tax-Calculator
 """
+
 import numpy as np
 import pandas as pd
 import copy

@@ -1,6 +1,7 @@
 """
 Utility functions used by report.py
 """
+
 import pypandoc
 import pandas as pd
 import numpy as np

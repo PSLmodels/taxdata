@@ -1,6 +1,7 @@
 """
 State level targeting of certain income variables
 """
+
 import pandas as pd
 import numpy as np
 from .constants import FIPS_DICT

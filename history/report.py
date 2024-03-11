@@ -2,6 +2,7 @@
 Script used to automatically generate PDF report comparing TaxData outputs
 after updates
 """
+
 # flake8: noqa: E501
 import argparse
 import pandas as pd

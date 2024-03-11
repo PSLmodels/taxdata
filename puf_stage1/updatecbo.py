@@ -5,6 +5,7 @@ that format of the websites, spreadsheets, and API we access don't change. If
 there is a bug, it's probably because that assumption no longer holds true.
 When this happens, modify the code as needed to account for this.
 """
+
 import re
 import requests
 import pandas as pd

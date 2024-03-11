@@ -1,6 +1,7 @@
 """
 Scripts to clean up the raw PUF before matching
 """
+
 import numpy as np
 
 # RECIDs for aggregate variables by PUF year

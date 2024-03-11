@@ -1,6 +1,7 @@
 """
 Split up certain income variables
 """
+
 import numpy as np
 
 
