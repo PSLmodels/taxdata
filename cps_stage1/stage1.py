@@ -6,7 +6,7 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 def main(syr=2014):
     SYR = str(syr)  # Start year of CPS
-    EYR = 2033  # Last year in our extrapolation
+    EYR = 2034  # Last year in our extrapolation
 
     # Read in state SOI estimates
     soi_estimates = pd.read_csv(

@@ -1,6 +1,7 @@
 """
 Test PUF adjust-ratio file contents.
 """
+
 import pytest
 
 

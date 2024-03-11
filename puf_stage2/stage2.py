@@ -56,7 +56,7 @@ Stage_II_targets = pd.read_csv(stage2_path, index_col=0)
 puf.s006 = puf.matched_weight * 100
 
 # Dataprep
-year_list = [x for x in range(2012, 2033 + 1)]
+year_list = [x for x in range(2012, 2034 + 1)]
 skipped_years = []
 for i in year_list:
     try:

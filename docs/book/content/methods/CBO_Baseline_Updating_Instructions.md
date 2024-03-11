@@ -47,9 +47,9 @@ As previously mentioned, most of the variables we used can be found in the
 To manually update these variables download the latest file and copy/paste the 
 specific variables.
 
-Previous Document: May 2022
+Previous Document: February 2023
 
-Current Document: February 2023
+Current Document: February 2024
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -70,9 +70,9 @@ Current Document: February 2023
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: [February 2023](https://www.cbo.gov/system/files/2023-02/51138-2023-02-Revenue.xlsx)
+Previous: [February 2024](https://www.cbo.gov/system/files/2024-02/51138-2024-02-Revenue.xlsx)
 
-Current: [February 2023](https://www.cbo.gov/system/files/2023-02/51138-2023-02-Revenue.xlsx)
+Current: [February 2024](https://www.cbo.gov/system/files/2024-02/51138-2024-02-Revenue.xlsx)
 
 In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -81,9 +81,9 @@ tab under the `Capital Gains Realizations` column.
 
 Source: [IRS Publication 6187 Table 1B](https://www.irs.gov/statistics/projections-of-federal-tax-return-filings)
 
-Previous: [Fall 2021 Report](https://www.irs.gov/pub/irs-soi/21projpub6187tables.xls)
+Previous: [Fall 2022 Report](https://www.irs.gov/pub/irs-soi/22projpub6187tables.xlsx)
 
-Current: [Fall 2022 Report](https://www.irs.gov/pub/irs-soi/22projpub6187tables.xlsx)
+Current: [Fall 2023 Report](https://www.irs.gov/pub/irs-soi/23projpub6187tables.xlsx)
 
 The projections in the publication typically end a few years before the
 10-year projections do. We use the growth rate from the final year in the
@@ -96,9 +96,9 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2019 Report](https://www.ssa.gov/oact/TR/2019/tr2019.pdf)
+Previous: [2023 Report](https://www.ssa.gov/oact/TR/2023/VI_C_SRfyproj.html)
 
-Current: [2020 Report](https://www.ssa.gov/oact/TR/2020/VI_C_SRfyproj.html)
+Current: [2023 Report](https://www.ssa.gov/oact/TR/2023/VI_C_SRfyproj.html)
 
 Projections are taken directly from the `Scheduled Benefits: Intermediate Level`
 column of this table.
@@ -108,7 +108,7 @@ column of this table.
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
-Access Date: March 07 2023
+Access Date: 
 
 Manual Instructions:
 
@@ -124,9 +124,9 @@ Manual Instructions:
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
-Previous: [March 2020](https://www.cbo.gov/system/files/2020-03/51316-2020-03-unemployment.pdf)
+Previous: [February 2024](https://www.cbo.gov/system/files/2024-02/51316-2024-02-unemployment.xlsx)
 
-Current: [May 2022](https://www.cbo.gov/system/files/2022-05/51316-2022-05-unemployment.xlsx)
+Current: [February 2024](https://www.cbo.gov/system/files/2024-02/51316-2024-02-unemployment.xlsx)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars

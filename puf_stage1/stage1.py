@@ -4,7 +4,7 @@ import os
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 SYR = 2011  # calendar year used to normalize factors
 BEN_SYR = 2014  # calendar year used just for the benefit start year
-EYR = 2033  # last calendar year we have data for
+EYR = 2034  # last calendar year we have data for
 SOI_YR = 2017  # most recently available SOI estimates
 IRS_RET_YR = 2022  # most recently available IRS return projections
 

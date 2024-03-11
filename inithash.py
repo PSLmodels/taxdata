@@ -1,6 +1,7 @@
 """
 This script creates the initial hashes for each stage 2 file
 """
+
 import json
 import hashlib
 from pathlib import Path

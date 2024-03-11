@@ -1,6 +1,7 @@
 """
 Test CPS and PUF weights file contents.
 """
+
 import pytest
 import numpy as np
 

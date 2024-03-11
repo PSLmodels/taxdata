@@ -2,6 +2,7 @@
 Transform Stage_I_factors.csv (written by the stage1.py script) and
 benefit_growth_rates.csv into growfactors.csv (used by Tax-Calculator).
 """
+
 import pandas as pd
 import os
 

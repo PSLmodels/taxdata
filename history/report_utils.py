@@ -1,15 +1,15 @@
 """
 Utility functions used by report.py
 """
+
 import pypandoc
 import pandas as pd
 import numpy as np
-import altair as alt
 import taxcalc as tc
 from jinja2 import Template
 from pathlib import Path
 from collections import defaultdict
-
+import plotly.express as px
 
 CUR_PATH = Path(__file__).resolve().parent
 EPSILON = 1e-9
@@ -347,35 +347,15 @@ def distplot(
     else:
         y_label = "Total (billions)"
         y_format = "$.3f"
-    plt = (
-        alt.Chart(melted, title=title)
-        .mark_circle(size=50)
-        .encode(
-            alt.X(
-                "index:O",
-                sort=index,
-                axis=alt.Axis(
-                    title="Expanded Income Bin",
-                    labelAngle=-90,
-                    labelFontSize=15,
-                    titleFontSize=20,
-                ),
-            ),
-            alt.Y(
-                "value",
-                axis=alt.Axis(
-                    format=y_format, title=y_label, labelFontSize=15, titleFontSize=20
-                ),
-            ),
-            color=alt.Color(
-                "variable",
-                legend=alt.Legend(
-                    title="File", symbolSize=150, labelFontSize=15, titleFontSize=20
-                ),
-            ),
-        )
-        .properties(width=width, height=height)
-        .configure_title(fontSize=24)
+    plt = px.scatter(
+        melted,
+        x="index",
+        y="value",
+        labels={"index": "Expanded Income Bin", "value": y_label},
+        color="variable",
+        title=title,
+        width=800,
+        height=425,
     )
     return plt
 
@@ -404,7 +384,7 @@ def write_page(pathout, template_path, **kwargs):
     )
 
 
-def cbo_bar_chart(cbo_data, var, title, bar_width=30, width=600, height=250):
+def cbo_bar_chart(cbo_data, var, title):
     """
     Creates a bar chart comparing the current and new CBO projections
     Parameters
@@ -413,31 +393,19 @@ def cbo_bar_chart(cbo_data, var, title, bar_width=30, width=600, height=250):
         concatenated together
     var: Y-axis variable
     title: title of the chart
-    bar_width: width of the bars in the plot
-    width: width of the chart
-    height: height of the chart
     """
-    # we divide up total width equally among facets of the chart
-    _width = width / len(cbo_data["index"].value_counts())
-    chart = (
-        alt.Chart(cbo_data, title=title)
-        .mark_bar(width=bar_width)
-        .encode(
-            x=alt.X(
-                "Projections",
-                axis=alt.Axis(title=None, labels=False, ticks=False, labelFontSize=15),
-            ),
-            y=alt.Y(var, axis=alt.Axis(labelFontSize=10, titleFontSize=15)),
-            color=alt.Color("Projections"),
-            column=alt.Column(
-                "index", header=alt.Header(title=None, labelOrient="bottom")
-            ),
-        )
-        .properties(height=height, width=_width)
-        .configure_view(stroke="transparent")
-        .configure_facet(spacing=0)
-        .configure_title(fontSize=20)
+
+    chart = px.bar(
+        cbo_data,
+        x="index",
+        y=var,
+        color="Projections",
+        barmode="group",
+        labels={"index": "Year", var: title},
+        width=800,
+        height=350,
     )
+
     return chart
 
 
@@ -482,47 +450,24 @@ def compare_vars(cur_meta, new_meta, file_):
     return added_vars, removed_vars
 
 
-def growth_scatter_plot(data, rows, point_size=150, width=600, height=300, columns=2):
+def growth_scatter_plot(data, var):
     """
     Create a scatter plot to show changes in growth factors
     Parameters
     ----------
     data: growth factor data
-    factor: factor we"re plotting
     """
-    max_val = data.max().drop(index=["YEAR", "Growth Factors"]).max()
-    min_val = data.min().drop(index=["YEAR", "Growth Factors"]).min()
-    chart = (
-        alt.Chart(data)
-        .mark_circle(size=point_size, filled=True)
-        .encode(
-            x=alt.X(
-                "YEAR",
-                type="ordinal",
-                axis=alt.Axis(labelAngle=-45, labelFontSize=25, titleFontSize=30),
-            ),
-            y=alt.Y(
-                alt.repeat(),
-                type="quantitative",
-                scale=alt.Scale(domain=[min_val, max_val]),
-                axis=alt.Axis(labelFontSize=25, titleFontSize=30),
-            ),
-            color=alt.Color(
-                "Growth Factors",
-                legend=alt.Legend(
-                    symbolSize=300,
-                    labelFontSize=20,
-                    titleFontSize=25,
-                    direction="horizontal",
-                    orient="top",
-                ),
-            ),
-        )
-        .properties(width=width, height=height)
-        .repeat(rows, columns=columns)
-        .configure_legend(labelLimit=0, titleLimit=0)
+    plot = px.scatter(
+        data,
+        x="YEAR",
+        y=var,
+        range_x=[2024, 2035],
+        range_y=[0.85, 1.15],
+        color="Growth Factors",
+        width=800,
+        height=350,
     )
-    return chart
+    return plot
 
 
 def agg_liability_table(data, tax):
@@ -656,81 +601,91 @@ def CBO_projections(rev_proj):
     Read CBO published projections values from the webpage
     "https://www.cbo.gov/about/products/budget-economic-data"
     """
-
     # extract values for AGI rows in the excel file
-    salary_wage = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    salary_wage = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Salaries and wages"
     ]
+
+    for indx in salary_wage.index:
+        if type(indx) != int:
+            salary_wage = salary_wage.drop(indx)
+
     taxable_interest_ordinary_divid = rev_proj.loc[
-        "Calculation of Adjusted Gross Income (AGI)"
+        "Calculation of adjusted gross income (AGI)"
     ].loc["Taxable interest and ordinary dividends (excludes qualified dividends)"]
-    q_div = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    q_div = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Qualified dividends                                         "
     ]
-    capital_g_l = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    capital_g_l = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Capital gain or lossa"
     ]
-    business_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    business_inc = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Net business income (all income and loss reported on Schedules C, E, and F)b"
     ]
     pension_annuities_IRAdis = rev_proj.loc[
-        "Calculation of Adjusted Gross Income (AGI)"
+        "Calculation of adjusted gross income (AGI)"
     ].loc["Taxable pensions and annuities and IRA distributions"]
-    ssb = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    ssb = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Taxable Social Security benefits                  "
     ]
-    other_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    other_inc = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "All other sources of incomec"
     ]
-    total_inc = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
+    total_inc = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Total income"
     ]
-    stat_adj = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
-        "Subtract Statutory adjustments                       "
+    stat_adj = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
+        "Subtract statutory adjustments                       "
     ]
-    total_agi = rev_proj.loc["Calculation of Adjusted Gross Income (AGI)"].loc[
-        "Adjusted gross income               "
+    total_agi = (
+        rev_proj.loc["Calculation of adjusted gross income (AGI)"]
+        .loc["Adjusted gross income               "]
+        .iloc[0]
+    )
+    sub_peronal_expt = rev_proj.loc["Calculation of taxable income"].loc[
+        "Subtract personal exemption amount (after limit)"
     ]
-    sub_peronal_expt = rev_proj.loc["Calculation of Taxable Income"].loc[
-        "Subtract Personal exemption amount (after limit)"
+    sub_std = rev_proj.loc["Calculation of taxable income"].loc[
+        "Subtract standard deduction (non-itemizers only)"
     ]
-    sub_std = rev_proj.loc["Calculation of Taxable Income"].loc[
-        "Subtract Standard deduction (non-itemizers only)"
+    sub_tot_item = rev_proj.loc["Calculation of taxable income"].loc[
+        "Subtract total itemized deductions (itemizers only) after limitsd"
     ]
-    sub_tot_item = rev_proj.loc["Calculation of Taxable Income"].loc[
-        "Subtract Total itemized deductions (itemizers only) after limitsd"
+    sub_qbid = rev_proj.loc["Calculation of taxable income"].loc[
+        "Subtract qualified business income deduction"
     ]
-    sub_qbid = rev_proj.loc["Calculation of Taxable Income"].loc[
-        "Subtract Qualified business income deduction"
-    ]
-    sub_tot_expt = rev_proj.loc["Calculation of Taxable Income"].loc[
+    sub_tot_expt = rev_proj.loc["Calculation of taxable income"].loc[
         "Total exemptions and deductions after limitse"
     ]
-    taxable_inc = rev_proj.loc["Calculation of Taxable Income"].loc["Taxable incomef"]
-    tot_inctax = rev_proj.loc["Calculation of Income Tax Liability"].loc[
+    taxable_inc = (
+        rev_proj.loc["Calculation of taxable income"].loc["Taxable incomef"].iloc[0]
+    )
+    tot_inctax = rev_proj.loc["Calculation of income tax liability"].loc[
         "Total income tax (including AMT) before credits"
     ]
-    tot_cdt = rev_proj.loc["Calculation of Income Tax Liability"].loc[
+    tot_cdt = rev_proj.loc["Calculation of income tax liability"].loc[
         "Total credits (refundable and nonrefundable)i"
     ]
-    inctax_af_credit = rev_proj.loc["Calculation of Income Tax Liability"].loc[
+    inctax_af_credit = rev_proj.loc["Calculation of income tax liability"].loc[
         "Income tax after creditsj"
     ]
-    Top1p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+    Top1p = rev_proj.loc["Shares of AGI by income group (percent)o"].loc[
         "Top 1 percent"
     ]
-    Top5p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+    Top5p = rev_proj.loc["Shares of AGI by income group (percent)o"].loc[
         "Top 5 percent"
     ]
-    Top10p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+    Top10p = rev_proj.loc["Shares of AGI by income group (percent)o"].loc[
         "Top 10 percent"
     ]
-    Top25p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
+    Top25p = rev_proj.loc["Shares of AGI by income group (percent)o"].loc[
         "Top 25 percent"
     ]
-    Top50p = rev_proj.loc["Shares of AGI by Income Group (Percent)o"].loc[
-        "Top 50 percent"
-    ]
+    Top50p = (
+        rev_proj.loc["Shares of AGI by income group (percent)o"]
+        .loc["Top 50 percent"]
+        .iloc[0]
+    )
 
     var_list = [
         salary_wage,
@@ -786,6 +741,10 @@ def CBO_projections(rev_proj):
         "Top25p",
         "Top50p",
     ]
+
+    for var in var_list:
+        var = var.dropna()
+
     df = pd.DataFrame(var_list, index=var_names).round(1)
     df.columns = df.columns.astype(str)
     df_cols = set(df.columns)
@@ -804,9 +763,7 @@ def validation_table(df_tax_data, df_cbo, category):
     new_df = new_df.set_index("Year").round(1)
     new_df = new_df.rename_axis(index=None).squeeze()
     new_df.index = new_df.index.astype(str)
-    df_cbo = df_cbo.drop(
-        columns=["2019", "2020", "2021", "2022"], axis=1, inplace=False
-    )
+    df_cbo = df_cbo.drop(columns=["2019", "2022"], axis=1, inplace=False)
     df_cbo = df_cbo.transpose()
     df_cbo_sal = df_cbo.loc[:, df_cbo.columns.str.contains(category)].squeeze()
     df_cbo_sal = df_cbo_sal.astype(float)
@@ -821,7 +778,6 @@ def validation_table(df_tax_data, df_cbo, category):
             percent_difference=pct_change,
         )
     )
-
     return final_df.to_markdown()
 
 
@@ -852,7 +808,7 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     for var, title in dist_vars:
         plot = distplot(calcs, calc_labels, var, title=title)
         img_path = Path(CUR_PATH, f"{name}_{var}_dist.png")
-        plot.save(str(img_path))
+        plot.write_image(str(img_path))
         plot_paths.append(img_path)
         dist_plots.append(f"![]({str(img_path)})" + "{.center}")
     template_args[f"{name}_dist_plots"] = dist_plots
@@ -1110,29 +1066,20 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     agg3_df = pd.DataFrame(aggs3)
 
     title = "Aggregate Tax Liability by Year"
-    agg_chart = (
-        alt.Chart(agg_df, title=title)
-        .mark_line()
-        .encode(
-            x=alt.X(
-                "Year:O",
-                axis=alt.Axis(labelAngle=0, titleFontSize=20, labelFontSize=15),
-            ),
-            y=alt.Y(
-                "Tax Liability",
-                title="Tax Liability (Billions)",
-                axis=alt.Axis(titleFontSize=20, labelFontSize=15),
-            ),
-            color=alt.Color(
-                "Tax",
-                legend=alt.Legend(symbolSize=150, labelFontSize=15, titleFontSize=20),
-            ),
-        )
-        .properties(width=800, height=350)
-        .configure_title(fontSize=24)
+    agg_chart = px.line(
+        agg_df,
+        x="Year",
+        y="Tax Liability",
+        range_x=[2024, 2035],
+        range_y=[0, 6500],
+        color="Tax",
+        line_shape="spline",
+        width=800,
+        height=425,
+        title=title,
     )
     img_path = Path(CUR_PATH, f"{name}_agg_plot.png")
-    agg_chart.save(str(img_path))
+    agg_chart.write_image(str(img_path))
     plot_paths.append(img_path)
     template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
 
@@ -1410,5 +1357,4 @@ def CBO_validation(cbo_df, new, name, template_args):
     share_keyword_list = ["Top1p", "Top5p", "Top10p", "Top25p", "Top50p"]
     for table_name, keyword in zip(shareval_table_name_list, share_keyword_list):
         template_args[table_name] = validation_table(agg3_df, cbo_df, keyword)
-
     return template_args

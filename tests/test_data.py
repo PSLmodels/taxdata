@@ -1,6 +1,7 @@
 """
 Test CPS and PUF data file contents.
 """
+
 import os
 import pytest
 import numpy as np
