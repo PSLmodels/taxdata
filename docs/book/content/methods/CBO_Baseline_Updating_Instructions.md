@@ -47,9 +47,9 @@ As previously mentioned, most of the variables we used can be found in the
 To manually update these variables download the latest file and copy/paste the 
 specific variables.
 
-Previous Document: February 2023
+Previous Document: February 2024
 
-Current Document: February 2024
+Current Document: June 2024
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -70,9 +70,9 @@ Current Document: February 2024
 
 Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/products/budget-economic-data#7)
 
-Previous: [February 2024](https://www.cbo.gov/system/files/2024-02/51138-2024-02-Revenue.xlsx)
+Previous: [June 2024](https://www.cbo.gov/system/files/2024-06/51138-2024-06-Revenue.xlsx)
 
-Current: [February 2024](https://www.cbo.gov/system/files/2024-02/51138-2024-02-Revenue.xlsx)
+Current: [June 2024](https://www.cbo.gov/system/files/2024-06/51138-2024-06-Revenue.xlsx)
 
 In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -108,7 +108,7 @@ column of this table.
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
-Access Date: 
+Access Date: August 16 2024
 
 Manual Instructions:
 
@@ -126,7 +126,7 @@ Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/pr
 
 Previous: [February 2024](https://www.cbo.gov/system/files/2024-02/51316-2024-02-unemployment.xlsx)
 
-Current: [February 2024](https://www.cbo.gov/system/files/2024-02/51316-2024-02-unemployment.xlsx)
+Current: [June 2024](https://www.cbo.gov/system/files/2024-06/51316-2024-06-unemployment.xlsx)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars
