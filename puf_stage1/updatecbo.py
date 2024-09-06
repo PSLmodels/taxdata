@@ -130,24 +130,24 @@ def update_econproj(url, baseline, text_args):
         # some variables have a missing value in the multi-index. Use iloc
         # to extract needed variables from them.
         billions = "Billions of dollars"
-        gdp = econ_proj.loc["Gross domestic product (GDP)"].loc[billions].iloc[0]
-        tpy = econ_proj.loc["Income, personal"].loc[billions].iloc[0]
-        wages = econ_proj.loc["Wages and salaries"].loc[billions].iloc[0]
+        gdp = econ_proj.loc["Output"].loc["Gross Domestic Product (GDP)"].iloc[0]
+        tpy = econ_proj.loc["Income"].loc["Income, Personal"].iloc[0]
+        wages = econ_proj.loc["Income"].loc["Wages and Salaries"].iloc[0]
         var = "Proprietors' income, nonfarm, with IVA & CCAdj"
-        schc = econ_proj.loc[var].loc[billions].iloc[0]
+        schc = econ_proj.loc["Income"].loc["Nonwage Income"].loc[var].iloc[0]
         var = "Proprietors' income, farm, with IVA & CCAdj"
-        schf = econ_proj.loc[var].loc[billions].iloc[0]
+        schf = econ_proj.loc["Income"].loc["Nonwage Income"].loc[var].iloc[0]
         var = "Interest income, personal"
-        ints = econ_proj.loc[var].loc[billions].iloc[0]
+        ints = econ_proj.loc["Income"].loc["Nonwage Income"].loc[var].iloc[0]
         var = "Dividend income, personal"
-        divs = econ_proj.loc[var].loc[billions].iloc[0]
+        divs = econ_proj.loc["Income"].loc["Nonwage Income"].loc[var].iloc[0]
         var = "Income, rental, with CCAdj"
-        rents = econ_proj.loc[var].loc[billions].iloc[0]
+        rents = econ_proj.loc["Income"].loc["Nonwage Income"].loc[var].iloc[0]
         book = (
-            econ_proj.loc["Profits, corporate, with IVA & CCAdj"].loc[billions].iloc[0]
+            econ_proj.loc["Income"].loc["Profits, Corporate, With IVA & CCAdj"].iloc[0]
         )
-        var = "Consumer price index, all urban consumers (CPI-U)"
-        cpiu = econ_proj.loc[var].loc["1982-1984 = 100"].iloc[0]
+        var = "Consumer Price Index, All Urban Consumers (CPI-U)"
+        cpiu = econ_proj.loc["Prices"].loc[var].iloc[0]
         var_list = [gdp, tpy, wages, schc, schf, ints, divs, rents, book, cpiu]
         var_names = [
             "GDP",
@@ -189,7 +189,7 @@ def update_econproj(url, baseline, text_args):
         # Extract capital gains data
         cg_proj = pd.read_excel(
             rev_url,
-            sheet_name="6. Capital Gains Realizations",
+            sheet_name="6. Capital Gains Realization",
             skiprows=7,
             header=[0, 1],
         )
