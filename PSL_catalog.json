@@ -1,58 +1,24 @@
 {
-    "project_one_line": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": "html",
-        "data": "<p>The TaxData project prepares microdata files to be used by Tax-Calculator</p>"
-    },
-    "project_overview": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/taxdata/blob/master/README.md\">TaxData Overview</a>"
-    },
-    "core_maintainers": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": "html",
-        "data": "<ul><li>Anderson Frailey</li></ul>"
-    },
-    "user_documentation": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/taxdata/tree/master/doc\"></a>"
-    },
-    "contributor_overview": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/taxdata/blob/master/CONTRIBUTING.md\"></a>"
-    },
-    "user_changelog": {
-        "start_header": null,
-        "end_header": null,
-        "source": "https://github.com/PSLmodels/taxdata/releases",
-        "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/taxdata/releases\">https://github.com/PSLmodels/taxdata/releases</a>"
-    },
-    "user_changelog_recent": {
-        "start_header": null,
-        "end_header": null,
-        "source": "https://github.com/PSLmodels/taxdata/releases",
-        "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/taxdata/releases\"></a>"
-    },
-    "link_to_webapp": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": null,
-        "data": null
+    "name": "taxdata",
+    "img": "",
+    "banner_title": "taxdata",
+    "banner_subtitle": "A Python package to prepare tax microsimulation data",
+    "detailed_description": "The TaxData project prepares microdata for use with the Tax-Calculator microsimulation project.",
+    "policy_area": "Tax Microsimulation, Revenue Estimation, Distributional Analysis",
+    "geography": "United States",
+    "language": "Python",
+    "maintainers": [
+        {
+            "name": "Anderson Frailey",
+            "image": "https://avatars.githubusercontent.com/u/20684675?v=4",
+            "link": "https://github.com/andersonfrailey"
+        }
+    ],
+    "links": {
+      "code_repository": "https://github.com/PSLmodels/taxdata",
+      "user_documentation": "http://pslmodels.github.io/taxdata/",
+      "contributor_documentation": "http://pslmodels.github.io/taxdata/content/contributing/CONTRIBUTING.html",
+      "webapp": "",
+      "recent_changes": "https://github.com/PSLmodels/taxdata/releases"
     }
 }
