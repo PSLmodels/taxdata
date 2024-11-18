@@ -108,7 +108,7 @@ column of this table.
 Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
 
 Series ID: CUSR0000SAM
-Access Date: August 16 2024
+Access Date: November 04 2024
 
 Manual Instructions:
 
