@@ -17,11 +17,15 @@ dependencies:
 - pulp
 - paramtools
 - pypandoc
+- openpyxl
+- lxml_html_clean
+- plotly
+- kaleido
 - selenium
 - python-chromedriver-binary
 - tabulate
 - pre-commit
-- taxcalc>=3.5.0
+- taxcalc>=5.3.0
 - pip
 - pip:
   - requests-html
