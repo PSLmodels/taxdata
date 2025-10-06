@@ -38,9 +38,11 @@ def impute_PT_binc_w2_wages(data):
     Argument: puf.csv DataFrame just before imputation is done.
     Returns: puf.csv DataFrame with imputed W-2 wage share variable.
     """
-    # add the qualified business income variable, to be noticed the self employment 
+    # add the qualified business income variable, to be noticed the self employment
     # part is not included, to simplyfy calculation.
-    data["qbinc"] = data["e00900"] + data["e26270"] + data["e02100"] + data["e27200"]
+    data["qbinc"] = (
+        data["e00900"] + data["e26270"] + data["e02100"] + data["e27200"]
+    )
     # solve for W-2 wage share in QBI
     w2_ratio = opt_ratio(data)
     data["PT_binc_w2_wages"] = w2_ratio * data["qbinc"]

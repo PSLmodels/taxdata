@@ -37,9 +37,13 @@ def min_max(data, meta, dataname):
         if dataname not in availability:
             in_data = False
         if in_data:
-            m = "{}-{} contains values less than min value".format(dataname, var)
+            m = "{}-{} contains values less than min value".format(
+                dataname, var
+            )
             assert np.all(data[var] >= min_value), m
-            m = "{}-{} contains values greater than max value".format(dataname, var)
+            m = "{}-{} contains values greater than max value".format(
+                dataname, var
+            )
             assert np.all(data[var] <= max_value), m
 
 
@@ -131,7 +135,9 @@ def variable_check(test_path, data, dataname):
         expected_max[var] = int(split[3])
 
     # loop through each column in the dataset and check sum, min, max
-    actual_txt = "{:20}{:>15}{:>15}{:>15}\n".format("VARIABLE", "SUM", "MIN", "MAX")
+    actual_txt = "{:20}{:>15}{:>15}{:>15}\n".format(
+        "VARIABLE", "SUM", "MIN", "MAX"
+    )
     var_inform = "{:20}{:15d}{:15d}{:15d}\n"
     diffs = False
     diff_list_str = ""  # string to hold all of the variables with errors
@@ -196,7 +202,17 @@ def check_cps_benefits(data, expect_ben_stat):
     and average value for each of the benefits in the CPS. That information
     can be found in cps_benefits_metadata.json
     """
-    BNAMES = ["mcare", "mcaid", "ssi", "snap", "wic", "tanf", "housing", "vet", "other"]
+    BNAMES = [
+        "mcare",
+        "mcaid",
+        "ssi",
+        "snap",
+        "wic",
+        "tanf",
+        "housing",
+        "vet",
+        "other",
+    ]
     # # compare actual and expected benefit statistics
     error_msg = ""
     wgt = data["s006"] * 0.01

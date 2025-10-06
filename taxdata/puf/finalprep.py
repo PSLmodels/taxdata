@@ -35,7 +35,9 @@ def finalprep(data):
     medical_limit = np.maximum(
         zero, data["e17500"] - np.maximum(zero, data["e00100"]) * 0.075
     )
-    med_adj = np.minimum(medical_limit, 0.025 * np.maximum(zero, data["e00100"]))
+    med_adj = np.minimum(
+        medical_limit, 0.025 * np.maximum(zero, data["e00100"])
+    )
     stx_adj = np.maximum(zero, data["e18400"])
     cmbtp_itemizer = (
         cmbtp_standard
@@ -230,9 +232,9 @@ def split_earnings_variables(data, data_year):
     # split wage-and-salary earnings subject to FICA taxation
     # the two e00200x variables come from the CPS. We'll use them just for
     # the wage ratio that we split up the PUF wages from
-    total = np.where(data["MARS"] == 2, data["e00200p"] + data["e00200s"], 0).astype(
-        float
-    )
+    total = np.where(
+        data["MARS"] == 2, data["e00200p"] + data["e00200s"], 0
+    ).astype(float)
     frac_p = np.where(total != 0, data["e00200p"] / total, 1.0)
     frac_s = 1.0 - frac_p
     data["e00200p"] = np.around(frac_p * data["e00200"], 2)
@@ -323,8 +325,9 @@ def replace_20500(data):
     (gross loss values less than 10% AGI are unknown and assumed to be zero)
     """
     gross = np.where(
-        data.e20500 > 0.0, data.e20500 + 0.10 * np.maximum(0.0, data.e00100), 0.0
+        data.e20500 > 0.0,
+        data.e20500 + 0.10 * np.maximum(0.0, data.e00100),
+        0.0,
     )
     data["g20500"] = np.int_(gross.round())
     return data
-

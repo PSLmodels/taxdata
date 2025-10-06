@@ -31,7 +31,9 @@ def find_person(data: list, lineno: int) -> dict:
     raise ValueError(msg)
 
 
-def eic_eligible(person: dict, age_head: int, age_spouse: int, mars: int) -> int:
+def eic_eligible(
+    person: dict, age_head: int, age_spouse: int, mars: int
+) -> int:
     """
     Function to determine if a dependent is an EIC eligible child
     df: DataFrame of just dependents
@@ -62,7 +64,9 @@ def eic_eligible(person: dict, age_head: int, age_spouse: int, mars: int) -> int
     return eligible
 
 
-def find_claimer(claimerno: int, head_lineno: int, a_lineno: int, data: list) -> bool:
+def find_claimer(
+    claimerno: int, head_lineno: int, a_lineno: int, data: list
+) -> bool:
     """
     Determine if an individual is the dependent of the head of
     the tax unit
@@ -79,7 +83,9 @@ def find_claimer(claimerno: int, head_lineno: int, a_lineno: int, data: list) ->
         return True
     # see if person is dependent or spouse of head
     claimer = find_person(data, claimerno)
-    spouse_dep = claimer["a_spouse"] == claimerno | claimer["dep_stat"] == claimerno
+    spouse_dep = (
+        claimer["a_spouse"] == claimerno | claimer["dep_stat"] == claimerno
+    )
     if spouse_dep:
         return True
     # follow any potential spouse/dependent trails to find the one
@@ -251,7 +257,9 @@ def create_units(data, year, verbose=False, ctam_benefits=True):
         if filer:
             if verbose:
                 print("dep filer", person["a_lineno"])
-            tu = TaxUnit(person, year, dep_status=True, ctam_benefits=ctam_benefits)
+            tu = TaxUnit(
+                person, year, dep_status=True, ctam_benefits=ctam_benefits
+            )
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
             if verbose:
@@ -300,7 +308,9 @@ def _create_units(data, year, verbose=False, ctam_benefits=False):
                 if person["a_lineno"] == _person["dep_stat"]:
                     if verbose:
                         print("adding dependent", _person["a_lineno"])
-                    _eic = eic_eligible(_person, tu.age_head, tu.age_spouse, tu.mars)
+                    _eic = eic_eligible(
+                        _person, tu.age_head, tu.age_spouse, tu.mars
+                    )
                     tu.add_dependent(_person, _eic)
                     dependents.append(_person)
             units[person["a_lineno"]] = tu
@@ -311,7 +321,9 @@ def _create_units(data, year, verbose=False, ctam_benefits=False):
         if person["filestat"] != 6:
             if verbose:
                 print("dep filer", person["a_lineno"])
-            tu = TaxUnit(person, year, dep_status=True, ctam_benefits=ctam_benefits)
+            tu = TaxUnit(
+                person, year, dep_status=True, ctam_benefits=ctam_benefits
+            )
             # remove dependent from person claiming them
             units[person["claimer"]].remove_dependent(person)
             if verbose:

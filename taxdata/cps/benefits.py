@@ -49,16 +49,18 @@ def merge_benefits(cps, year, data_path, export=True):
     wic_infants = read_ben(
         WIC_STR.format("infants"), ["peridnum", "WIC_impute"]
     ).rename(columns={"WIC_impute": "wic_infants"})
-    wic_women = read_ben(WIC_STR.format("women"), ["peridnum", "WIC_impute"]).rename(
-        columns={"WIC_impute": "wic_women"}
-    )
+    wic_women = read_ben(
+        WIC_STR.format("women"), ["peridnum", "WIC_impute"]
+    ).rename(columns={"WIC_impute": "wic_women"})
 
     # combine all WIC imputation into one variable
     wic = reduce(
         lambda left, right: pd.merge(left, right, on="peridnum"),
         [wic_children, wic_infants, wic_women],
     )
-    wic["wic_impute"] = wic[["wic_women", "wic_infants", "wic_children"]].sum(axis=1)
+    wic["wic_impute"] = wic[["wic_women", "wic_infants", "wic_children"]].sum(
+        axis=1
+    )
 
     # merge housing and snap
     cps_merged = cps.merge(housing, on=["fh_seq", "ffpos"], how="left")
@@ -72,7 +74,9 @@ def merge_benefits(cps, year, data_path, export=True):
 
     if export:
         print("Saving {} Data".format(year))
-        cps_merged.to_csv(Path(data_path, f"cpsmar{year}_ben.csv"), index=False)
+        cps_merged.to_csv(
+            Path(data_path, f"cpsmar{year}_ben.csv"), index=False
+        )
 
     del mcaid, mcare, vb, ssi, ss, tanf, ui, wic, housing, snap
     # assert that no additional rows have been introduced by bad merges
@@ -114,7 +118,9 @@ def distribute_benefits(data, other_ben):
     # Distribute other benefits
     data["dist_ben"] = data[["mcaid_ben", "ssi_ben", "snap_ben"]].sum(axis=1)
     data["ratio"] = (
-        data["dist_ben"] * data["s006"] / (data["dist_ben"] * data["s006"]).sum()
+        data["dist_ben"]
+        * data["s006"]
+        / (data["dist_ben"] * data["s006"]).sum()
     )
     # ... remove TANF and WIC from other_ben total
     tanf_total = (data["tanf_ben"] * data["s006"]).sum()

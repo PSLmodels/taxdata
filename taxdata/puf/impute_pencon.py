@@ -71,8 +71,12 @@ def targets(year):
     revised data specified here.  Also, the top two wage groups (5u10M and
     10u30M) are combined into a single group (5Mplus).
     """
-    cnt_df = pd.read_csv(Path(CURPATH, f"dcpentargetcnt{year}.csv"), index_col=0)
-    amt_df = pd.read_csv(Path(CURPATH, f"dcpentargetamt{year}.csv"), index_col=0)
+    cnt_df = pd.read_csv(
+        Path(CURPATH, f"dcpentargetcnt{year}.csv"), index_col=0
+    )
+    amt_df = pd.read_csv(
+        Path(CURPATH, f"dcpentargetamt{year}.csv"), index_col=0
+    )
     return cnt_df, amt_df
 
 
@@ -183,7 +187,9 @@ def impute(idata, target_cnt, target_amt):
             if wgrp >= MIN_HIWAGE_GROUP:
                 prob *= HIWAGE_PROB_SF
             if DUMP1 and prob > 1.0:
-                print("agrp={};wgrp={} ==> prob= {:.3f}".format(agrp, wgrp, prob))
+                print(
+                    "agrp={};wgrp={} ==> prob= {:.3f}".format(agrp, wgrp, prob)
+                )
             cell_idata["pencon"] = np.where(cell_idata["urn"] < prob, 1, 0)
             pos_pc = cell_idata["pencon"] > 0
             if pos_pc.sum() == 0:  # no positive pension contributions in cell
@@ -198,15 +204,23 @@ def impute(idata, target_cnt, target_amt):
             cell_target_amt = target_amt.iloc[wgrp, agrp]
             rate0 = min(1.0, cell_target_amt / wgt_pos_pc_wages)
             if DUMP2:
-                print("agrp={};wgrp={} ==> rate0= {:.4f}".format(agrp, wgrp, rate0))
+                print(
+                    "agrp={};wgrp={} ==> rate0= {:.4f}".format(
+                        agrp, wgrp, rate0
+                    )
+                )
             # iteratively raise non-capped deferral rate to hit target_amt
             num_iterations = 10
             for itr in range(0, num_iterations):
-                uncapped_amt = np.where(pos_pc, np.round(wage * rate0).astype(int), 0)
+                uncapped_amt = np.where(
+                    pos_pc, np.round(wage * rate0).astype(int), 0
+                )
                 capped_amt = np.minimum(uncapped_amt, MAX_PENCON_AMT)
                 over_amt = uncapped_amt - capped_amt
                 over_tot = (over_amt * wgt).sum() * 1e-9
-                rate1 = min(1.0, (cell_target_amt + over_tot) / wgt_pos_pc_wages)
+                rate1 = min(
+                    1.0, (cell_target_amt + over_tot) / wgt_pos_pc_wages
+                )
                 if np.allclose([rate1], [rate0]):
                     if DUMP2 and itr > 0:
                         print("  iter={} ==> rate= {:.4f}".format(itr, rate0))
@@ -238,10 +252,14 @@ def impute_pension_contributions(alldata, year):
     target_amt.drop(labels="total", axis="columns", inplace=True)
     if DUMP0:
         print(
-            "target_cnt.shape={} and size={}".format(target_cnt.shape, target_cnt.size)
+            "target_cnt.shape={} and size={}".format(
+                target_cnt.shape, target_cnt.size
+            )
         )
         print(
-            "target_amt.shape={} and size={}".format(target_amt.shape, target_amt.size)
+            "target_amt.shape={} and size={}".format(
+                target_amt.shape, target_amt.size
+            )
         )
         print("len(UNDER_AGE)={}".format(len(UNDER_AGE)))
         print("len(UNDER_WAGE)={}".format(len(UNDER_WAGE)))
@@ -267,7 +285,9 @@ def impute_pension_contributions(alldata, year):
     idata_s["spouse"] = np.ones(len(idata_s.index), dtype=np.int8)
     idata_s["weight"] = alldata["s006"] * 0.01
     idata_s.rename(
-        {"age_spouse": "age", "e00200s": "e00200"}, axis="columns", inplace=True
+        {"age_spouse": "age", "e00200s": "e00200"},
+        axis="columns",
+        inplace=True,
     )
     # ... combine the _p and _s DataFrames
     idata = pd.concat([idata_p, idata_s], copy=True)

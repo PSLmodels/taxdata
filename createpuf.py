@@ -49,13 +49,18 @@ def dataprep(data):
     """
     # we use a slightly modified version of mars for matching.
     # _mars = 1 if single, 3 if HoH, 2 any type of joint filer
-    data["_mars"] = np.where(data["mars"] == 1, 1, np.where(data["mars"] == 4, 3, 2))
+    data["_mars"] = np.where(
+        data["mars"] == 1, 1, np.where(data["mars"] == 4, 3, 2)
+    )
     data["const"] = 1
     data["bil"] = np.maximum(0, data["e00900"])
     data["fil"] = np.maximum(0, data["e02100"])
     data["tpi"] = data[INC_VARS].sum(axis=1)
     data["wage_share"] = np.divide(
-        data["e00200"], data["tpi"], out=np.zeros(data.shape[0]), where=data["tpi"] != 0
+        data["e00200"],
+        data["tpi"],
+        out=np.zeros(data.shape[0]),
+        where=data["tpi"] != 0,
     )
     data["cap_inc"] = data[CAP_VARS].sum(axis=1)
     data["cap_share"] = np.divide(
@@ -73,17 +78,23 @@ def dataprep(data):
         ),
         0,
     )
-    data["people"] = np.where(data["_mars"] == 2, data["depne"] + 2, data["depne"] + 1)
+    data["people"] = np.where(
+        data["_mars"] == 2, data["depne"] + 2, data["depne"] + 1
+    )
     data["people"] = np.minimum(5, data["people"])
     wage_flag = (data["e00200"] != 0).astype(int)
     # self employment flag
-    se_flag = np.logical_or(data["e00900"] != 0, data["e02100"] != 0).astype(int)
+    se_flag = np.logical_or(data["e00900"] != 0, data["e02100"] != 0).astype(
+        int
+    )
     # income source flags
     data["se1"] = np.where(wage_flag & ~se_flag, 1, 0)
     data["se2"] = np.where(~wage_flag & se_flag, 1, 0)
     data["se3"] = np.where(wage_flag & se_flag, 1, 0)
     data["_depne"] = np.where(
-        np.logical_and(data["mars"] == 3, data["_depne"] == 0), 1, data["_depne"]
+        np.logical_and(data["mars"] == 3, data["_depne"] == 0),
+        1,
+        data["_depne"],
     )
 
     return data
@@ -91,7 +102,9 @@ def dataprep(data):
 
 # create CPS tax units
 print("Creating CPS tax units")
-raw_cps = cps.create(DATA_PATH, exportpkl=True, cps_files=[CPS_YEAR], benefits=False)
+raw_cps = cps.create(
+    DATA_PATH, exportpkl=True, cps_files=[CPS_YEAR], benefits=False
+)
 # minor PUF prep
 print("Prepping PUF")
 puf2011 = pd.read_csv(Path(DATA_PATH, "puf2011.csv"))
@@ -158,7 +171,9 @@ match_index = statmatch.match(
 
 # merge all the data together
 print("Merging matched data")
-data = pd.merge(raw_puf, match_index, how="inner", left_on="recid", right_on="recip")
+data = pd.merge(
+    raw_puf, match_index, how="inner", left_on="recid", right_on="recip"
+)
 data = pd.merge(
     data,
     filers,

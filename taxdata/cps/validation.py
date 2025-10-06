@@ -74,7 +74,11 @@ def compare(data, cps, h_seq, year):
     # elderly people in the household
     if elderly_deps_data > elderly_deps_cps:
         record_error(
-            "elderly_dependents", h_seq, elderly_deps_data, elderly_deps_cps, year
+            "elderly_dependents",
+            h_seq,
+            elderly_deps_data,
+            elderly_deps_cps,
+            year,
         )
         num_errors += 1
 

@@ -71,9 +71,13 @@ def match(
     # get cell counts and ID's if they partition
     if groupby:
         d_count = counts(donor, groupby, donor_wt)
-        d_count.rename(columns={"count": "d_count", "wt": "d_wt"}, inplace=True)
+        d_count.rename(
+            columns={"count": "d_count", "wt": "d_wt"}, inplace=True
+        )
         r_count = counts(recipient, groupby, recipient_wt)
-        r_count.rename(columns={"count": "r_count", "wt": "r_wt"}, inplace=True)
+        r_count.rename(
+            columns={"count": "r_count", "wt": "r_wt"}, inplace=True
+        )
         full_count = pd.merge(r_count, d_count, on=groupby, how="inner")
         full_count["cellid"] = full_count.index + 1
         full_count["factor"] = full_count["r_wt"] / full_count["d_wt"]
@@ -90,7 +94,9 @@ def match(
 
     # run regression on each cell id
     gdf = recipient.groupby("cellid", as_index=False)
-    params = gdf.apply(reg, dep_var=predict_var, indep_vars=match_on, wt=recipient_wt)
+    params = gdf.apply(
+        reg, dep_var=predict_var, indep_vars=match_on, wt=recipient_wt
+    )
     params = params.add_prefix("param_")
     params["cellid"] = params.index + 1
     donor = pd.merge(donor, params, on="cellid", how="inner")

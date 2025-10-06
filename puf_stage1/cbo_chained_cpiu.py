@@ -149,7 +149,9 @@ def read_check_spreadsheet(fname):
         sys.stderr.write(f"STRUCT: {msg}\n")
         ok_years = False
     lby = taxcalc.Policy.LAST_BUDGET_YEAR
-    valid_lby = range(CBO_YEAR["first"]["year"] + 2, CBO_YEAR["last"]["year"] + 1)
+    valid_lby = range(
+        CBO_YEAR["first"]["year"] + 2, CBO_YEAR["last"]["year"] + 1
+    )
     if lby not in valid_lby:
         msg = f"Policy.LAST_BUDGET_YEAR={lby} inconsistent with CBO_YEAR info"
         sys.stderr.write(f"STRUCT: {msg}\n")

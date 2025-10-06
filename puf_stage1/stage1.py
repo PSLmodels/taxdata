@@ -23,7 +23,9 @@ SENIOR = 65
 #   <http://www.census.gov/popest/data/intercensal/national/nat2010.html>
 
 # projection for 2014+
-pop_projection = pd.read_csv(os.path.join(CUR_PATH, "NP2014_D1.csv"), index_col="year")
+pop_projection = pd.read_csv(
+    os.path.join(CUR_PATH, "NP2014_D1.csv"), index_col="year"
+)
 pop_projection = pop_projection[
     (pop_projection.sex == 0)
     & (pop_projection.race == 0)
@@ -39,12 +41,16 @@ pop_projection = pop_projection.drop(pop_projection.index[:1], axis=0)
 # data for 2010-2014
 historical1 = pd.read_csv(os.path.join(CUR_PATH, "NC-EST2014-AGESEX-RES.csv"))
 historical1 = historical1[historical1.SEX == 0]
-historical1 = historical1.drop(["SEX", "CENSUS2010POP", "ESTIMATESBASE2010"], axis=1)
+historical1 = historical1.drop(
+    ["SEX", "CENSUS2010POP", "ESTIMATESBASE2010"], axis=1
+)
 
 pop_dep1 = historical1[historical1.AGE <= DEP].sum()
 pop_dep1 = pop_dep1.drop(["AGE"], axis=0)
 
-pop_snr1 = historical1[(historical1.AGE >= SENIOR) & (historical1.AGE < TOTES)].sum()
+pop_snr1 = historical1[
+    (historical1.AGE >= SENIOR) & (historical1.AGE < TOTES)
+].sum()
 pop_snr1 = pop_snr1.drop(["AGE"], axis=0)
 
 total_pop1 = historical1[historical1.AGE == TOTES]
@@ -53,7 +59,9 @@ total_pop1 = total_pop1.drop(["AGE"], axis=1)
 # data for 2008-2009
 historical2 = pd.read_csv(os.path.join(CUR_PATH, "US-EST00INT-ALLDATA.csv"))
 historical2 = historical2[
-    (historical2.MONTH == 7) & (historical2.YEAR >= 2008) & (historical2.YEAR < 2010)
+    (historical2.MONTH == 7)
+    & (historical2.YEAR >= 2008)
+    & (historical2.YEAR < 2010)
 ]
 historical2 = historical2.drop(historical2.columns[4:], axis=1)
 historical2 = historical2.drop(historical2.columns[0], axis=1)
@@ -65,10 +73,14 @@ pop_dep2.append(historical2.TOT_POP[year08under19].sum())
 pop_dep2.append(historical2.TOT_POP[year09under19].sum())
 
 year08over65 = (
-    (historical2.YEAR == 2008) & (historical2.AGE >= SENIOR) & (historical2.AGE < TOTES)
+    (historical2.YEAR == 2008)
+    & (historical2.AGE >= SENIOR)
+    & (historical2.AGE < TOTES)
 )
 year09over65 = (
-    (historical2.YEAR == 2009) & (historical2.AGE >= SENIOR) & (historical2.AGE < TOTES)
+    (historical2.YEAR == 2009)
+    & (historical2.AGE >= SENIOR)
+    & (historical2.AGE < TOTES)
 )
 pop_snr2 = []
 pop_snr2.append(historical2.TOT_POP[year08over65].sum())
@@ -120,16 +132,30 @@ pop_growth_rates["POPSNR"] = Stage_II_targets.POP_SNR.pct_change() + 1.0
 pop_growth_rates = pop_growth_rates.drop(pop_growth_rates.index[0], axis=0)
 
 # import CBO baseline projection
-cbo_baseline = pd.read_csv(os.path.join(CUR_PATH, "CBO_baseline.csv"), index_col=0)
+cbo_baseline = pd.read_csv(
+    os.path.join(CUR_PATH, "CBO_baseline.csv"), index_col=0
+)
 cbobase = cbo_baseline.transpose()
 cbobase.index = index
 cbobase = cbobase.astype(float)
-Stage_I_factors["AGDPN"] = pd.DataFrame(cbobase.GDP / cbobase.GDP[SYR], index=index)
-Stage_I_factors["ATXPY"] = pd.DataFrame(cbobase.TPY / cbobase.TPY[SYR], index=index)
-Stage_I_factors["ASCHF"] = pd.DataFrame(cbobase.SCHF / cbobase.SCHF[SYR], index=index)
-Stage_I_factors["ABOOK"] = pd.DataFrame(cbobase.BOOK / cbobase.BOOK[SYR], index=index)
-Stage_I_factors["ACPIU"] = pd.DataFrame(cbobase.CPIU / cbobase.CPIU[SYR], index=index)
-Stage_I_factors["ACPIM"] = pd.DataFrame(cbobase.CPIM / cbobase.CPIM[SYR], index=index)
+Stage_I_factors["AGDPN"] = pd.DataFrame(
+    cbobase.GDP / cbobase.GDP[SYR], index=index
+)
+Stage_I_factors["ATXPY"] = pd.DataFrame(
+    cbobase.TPY / cbobase.TPY[SYR], index=index
+)
+Stage_I_factors["ASCHF"] = pd.DataFrame(
+    cbobase.SCHF / cbobase.SCHF[SYR], index=index
+)
+Stage_I_factors["ABOOK"] = pd.DataFrame(
+    cbobase.BOOK / cbobase.BOOK[SYR], index=index
+)
+Stage_I_factors["ACPIU"] = pd.DataFrame(
+    cbobase.CPIU / cbobase.CPIU[SYR], index=index
+)
+Stage_I_factors["ACPIM"] = pd.DataFrame(
+    cbobase.CPIM / cbobase.CPIM[SYR], index=index
+)
 cbo_growth_rates = cbobase.pct_change() + 1.0
 cbo_growth_rates = cbo_growth_rates.drop(cbo_growth_rates.index[0], axis=0)
 
@@ -149,7 +175,9 @@ return_growth_rate = pd.concat([return_growth_rate, ret_growth_vals])
 return_growth_rate.Returns.index = index
 
 # read SOI estimates for 2008+
-soi_estimates = pd.read_csv(os.path.join(CUR_PATH, "SOI_estimates.csv"), index_col=0)
+soi_estimates = pd.read_csv(
+    os.path.join(CUR_PATH, "SOI_estimates.csv"), index_col=0
+)
 soi_estimates = soi_estimates.transpose()
 historical_index = list(range(2008, SOI_YR + 1))
 soi_estimates.index = historical_index
@@ -161,7 +189,9 @@ for i in range(SOI_YR, EYR):  # SOI Estimates loop
     Joint = return_projection.Joint[i] * return_growth_rate.Returns[i + 1]
     HH = return_projection.HH[i] * return_growth_rate.Returns[i + 1]
     SS_return = return_projection.SS_return[i] * pop_growth_rates.POPSNR[i + 1]
-    Dep_return = return_projection.Dep_return[i] * pop_growth_rates.POPDEP[i + 1]
+    Dep_return = (
+        return_projection.Dep_return[i] * pop_growth_rates.POPDEP[i + 1]
+    )
     INTS = return_projection.INTS[i] * cbo_growth_rates.INTS[i + 1]
     DIVS = return_projection.DIVS[i] * cbo_growth_rates.DIVS[i + 1]
     SCHCI = return_projection.SCHCI[i] * cbo_growth_rates.SCHC[i + 1]
@@ -238,23 +268,34 @@ Stage_I_factors["ARETS"] = total_return / total_return.ARETS[SYR]
 
 Stage_I_factors["AWAGE"] = total_wage / total_wage.AWAGE[SYR]
 
-Stage_I_factors["ASCHCI"] = Stage_II_targets.SCHCI / Stage_II_targets.SCHCI[SYR]
-Stage_I_factors["ASCHCL"] = Stage_II_targets.SCHCL / Stage_II_targets.SCHCL[SYR]
+Stage_I_factors["ASCHCI"] = (
+    Stage_II_targets.SCHCI / Stage_II_targets.SCHCI[SYR]
+)
+Stage_I_factors["ASCHCL"] = (
+    Stage_II_targets.SCHCL / Stage_II_targets.SCHCL[SYR]
+)
 
-Stage_I_factors["ASCHEI"] = Stage_II_targets.SCHEI / Stage_II_targets.SCHEI[SYR]
-Stage_I_factors["ASCHEL"] = Stage_II_targets.SCHEL / Stage_II_targets.SCHEL[SYR]
+Stage_I_factors["ASCHEI"] = (
+    Stage_II_targets.SCHEI / Stage_II_targets.SCHEI[SYR]
+)
+Stage_I_factors["ASCHEL"] = (
+    Stage_II_targets.SCHEL / Stage_II_targets.SCHEL[SYR]
+)
 
 Stage_I_factors["AINTS"] = Stage_II_targets.INTS / Stage_II_targets.INTS[SYR]
 Stage_I_factors["ADIVS"] = Stage_II_targets.DIVS / Stage_II_targets.DIVS[SYR]
 Stage_I_factors["ACGNS"] = Stage_II_targets.CGNS / Stage_II_targets.CGNS[SYR]
 
 Stage_I_factors["ASOCSEC"] = Stage_II_targets.SS / Stage_II_targets.SS[SYR]
-Stage_I_factors["AUCOMP"] = Stage_II_targets.UCOMP / Stage_II_targets.UCOMP[SYR]
+Stage_I_factors["AUCOMP"] = (
+    Stage_II_targets.UCOMP / Stage_II_targets.UCOMP[SYR]
+)
 Stage_I_factors["AIPD"] = Stage_II_targets.IPD / Stage_II_targets.IPD[SYR]
 
 # Add benefit growth rates to Stage 1 factors
 benefit_programs = pd.read_csv(
-    os.path.join(CUR_PATH, "../taxdata/cps/benefitprograms.csv"), index_col="Program"
+    os.path.join(CUR_PATH, "../taxdata/cps/benefitprograms.csv"),
+    index_col="Program",
 )
 benefit_sums = benefit_programs[benefit_programs.columns[2:]].apply(sum)
 # Find growth rate between 2020 and 2021 and extrapolate out to EYR
@@ -263,7 +304,9 @@ for year in range(2022, EYR + 1):
     prev_year = year - 1
     prev_value = benefit_sums["{}_cost".format(prev_year)]
     benefit_sums["{}_cost".format(year)] = prev_value * gr
-ABENEFITS = (benefit_sums / benefit_sums["{}_cost".format(BEN_SYR)]).transpose()
+ABENEFITS = (
+    benefit_sums / benefit_sums["{}_cost".format(BEN_SYR)]
+).transpose()
 benefit_factors = pd.DataFrame()
 for year in range(SYR, EYR + 1):
     if year <= BEN_SYR:

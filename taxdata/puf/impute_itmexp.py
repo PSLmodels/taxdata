@@ -46,7 +46,12 @@ CALIBRATING = False
 
 
 def impute(
-    ievar, logit_prob_af, log_amount_af, exogenous_vars, itemizer_data, nonitemizer_data
+    ievar,
+    logit_prob_af,
+    log_amount_af,
+    exogenous_vars,
+    itemizer_data,
+    nonitemizer_data,
 ):
     """
     Function that estimates imputation equations for ievar with itemizer_data
@@ -78,7 +83,8 @@ def impute(
     # with the Heckman sample selection problems present in this imputation
     # process.
     tpi_data = itemizer_data[
-        (itemizer_data[ievar] > 0) & (itemizer_data[ievar] < itemizer_data["stdded"])
+        (itemizer_data[ievar] > 0)
+        & (itemizer_data[ievar] < itemizer_data["stdded"])
     ]
     ols_y = np.log(tpi_data[ievar])
     ols_x = tpi_data[exogenous_vars]
@@ -208,8 +214,12 @@ def impute_itemized_expenses(alldata):
         print("PUF fraction of ALL = {:.4f}".format(data["filer"].mean()))
         ier = data["itemizer"]
         print("ALL itemizer mean = {:.4f}".format(ier.mean()))
-        print("PUF itemizer mean = {:.4f}".format(ier[data["filer"] == 1].mean()))
-        print("CPS itemizer mean = {:.4f}".format(ier[data["filer"] == 0].mean()))
+        print(
+            "PUF itemizer mean = {:.4f}".format(ier[data["filer"] == 1].mean())
+        )
+        print(
+            "CPS itemizer mean = {:.4f}".format(ier[data["filer"] == 0].mean())
+        )
         for iev in iev_names:
             var = itemizer_data[iev]
             varpos = var > 0
@@ -227,7 +237,11 @@ def impute_itemized_expenses(alldata):
         for iev in iev_names:
             var = nonitemizer_data[iev]
             varpos = var > 0
-            print("frac of non-itemizers with {}>0 = {:.4f}".format(iev, varpos.mean()))
+            print(
+                "frac of non-itemizers with {}>0 = {:.4f}".format(
+                    iev, varpos.mean()
+                )
+            )
 
     # specify 2011 JCT count/amount targets for nonitemizers
     # (When JCX-75-15 Table 2 contains more than one line item for a
@@ -336,7 +350,9 @@ def impute_itemized_expenses(alldata):
     if DUMP2:
         r_a = nonitemizer_data[iev_names].sum(axis=1) / stdded
         print(
-            "AFTER: num of nonitemizers with sum>stdded = {}".format(len(r_a[r_a > 1]))
+            "AFTER: num of nonitemizers with sum>stdded = {}".format(
+                len(r_a[r_a > 1])
+            )
         )
         print(
             "AFTER: frac of nonitemizers with sum>stdded = {:.4f}".format(
