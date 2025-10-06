@@ -99,7 +99,11 @@ for i in year_list:
 
 # Write all weights (rounded to nearest integer) to puf_weights.csv file
 z = z.round(0).astype("int64")
-z.to_csv(os.path.join(CUR_PATH, "puf_weights.csv.gz"), index=False, compression="gzip")
+z.to_csv(
+    os.path.join(CUR_PATH, "puf_weights.csv.gz"),
+    index=False,
+    compression="gzip",
+)
 
 # remove all .npz (numpy array) files
 for file in glob.glob("*.npz"):

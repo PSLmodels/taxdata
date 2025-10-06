@@ -113,8 +113,12 @@ def adjust_helper(agi, var, target, weight, agi_bin):
     bin_8 = np.where((agi >= 40000) & (agi < 50000), var * weight, 0).sum()
     bin_9 = np.where((agi >= 50000) & (agi < 75000), var * weight, 0).sum()
     bin_10 = np.where((agi >= 75000) & (agi < 100_000), var * weight, 0).sum()
-    bin_11 = np.where((agi >= 100_000) & (agi < 200_000), var * weight, 0).sum()
-    bin_12 = np.where((agi >= 200_000) & (agi < 500_000), var * weight, 0).sum()
+    bin_11 = np.where(
+        (agi >= 100_000) & (agi < 200_000), var * weight, 0
+    ).sum()
+    bin_12 = np.where(
+        (agi >= 200_000) & (agi < 500_000), var * weight, 0
+    ).sum()
     bin_13 = np.where((agi >= 500_000) & (agi < 1e6), var * weight, 0).sum()
     bin_14 = np.where((agi >= 1e6) & (agi < 1.5e6), var * weight, 0).sum()
     bin_15 = np.where((agi >= 1.5e6) & (agi < 2e6), var * weight, 0).sum()

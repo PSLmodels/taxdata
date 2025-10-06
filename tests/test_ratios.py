@@ -43,7 +43,11 @@ def test_ratios(
     for col in ratios:
         if ratios[col].min() < min_ratio:
             msg = "{} ratios[{}].min()={} < {}"
-            raise ValueError(msg.format(kind, col, ratios[col].min(), min_ratio))
+            raise ValueError(
+                msg.format(kind, col, ratios[col].min(), min_ratio)
+            )
         if ratios[col].max() > max_ratio:
             msg = "{} ratios[{}].max()={} > {}"
-            raise ValueError(msg.format(kind, col, ratios[col].max(), max_ratio))
+            raise ValueError(
+                msg.format(kind, col, ratios[col].max(), max_ratio)
+            )

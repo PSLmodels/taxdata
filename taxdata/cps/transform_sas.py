@@ -77,7 +77,11 @@ def main():
         person = parse_sas(sas)
         sas.close()
 
-        master_dict[year] = {"household": household, "family": family, "person": person}
+        master_dict[year] = {
+            "household": household,
+            "family": family,
+            "person": person,
+        }
 
     with Path(CUR_PATH, "master_cps_dict.pkl").open("wb") as f:
         pickle.dump(master_dict, f)

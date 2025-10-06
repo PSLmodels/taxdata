@@ -38,7 +38,14 @@ def person_details(record, benefits, h_seq, fhseq, ffpos, year):
 
     # calculate earned and unearned income
     EARNED_INC_VARS = ["wsal_val", "semp_val", "frse_val", "rnt_val"]
-    UNEARNED_INC_VARS = ["int_val", "div_val", "rtm_val", "alimony", "uc_val", "ss_val"]
+    UNEARNED_INC_VARS = [
+        "int_val",
+        "div_val",
+        "rtm_val",
+        "alimony",
+        "uc_val",
+        "ss_val",
+    ]
     record["earned_inc"] = sum([record[var] for var in EARNED_INC_VARS])
     record["unearned_inc"] = sum([record[var] for var in UNEARNED_INC_VARS])
     record["tot_inc"] = record["earned_inc"] + record["unearned_inc"]

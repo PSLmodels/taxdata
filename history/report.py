@@ -174,7 +174,9 @@ def report():
             img_path = Path(CUR_PATH, f"{var}.png")
             plot.write_image(str(img_path))
             plot_paths.append(img_path)
-            growth_rate_projections.append(f"![]({str(img_path)})" + "{.center}")
+            growth_rate_projections.append(
+                f"![]({str(img_path)})" + "{.center}"
+            )
 
     template_args["growth_rate_projections"] = growth_rate_projections
 
@@ -204,13 +206,18 @@ def report():
 
     # compare tax calculator projections
     # baseline CPS calculator
-    base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
+    base_cps = tc.Calculator(
+        records=tc.Records.cps_constructor(), policy=tc.Policy()
+    )
     base_cps.advance_to_year(first_year)
     base_cps.calc_all()
     # updated CPS calculator
-    cps = pd.read_csv(Path(CUR_PATH, "..", "data", "cps.csv.gz"), index_col=None)
+    cps = pd.read_csv(
+        Path(CUR_PATH, "..", "data", "cps.csv.gz"), index_col=None
+    )
     cps_weights = pd.read_csv(
-        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"), index_col=None
+        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"),
+        index_col=None,
     )
     gfactor_path_str = str(GROW_FACTORS_PATH)
     gft = tc.GrowFactors(growfactors_filename=gfactor_path_str)
@@ -232,13 +239,18 @@ def report():
 
     # Validation with CBO tax model
     # baseline CPS calculator
-    base_cps = tc.Calculator(records=tc.Records.cps_constructor(), policy=tc.Policy())
+    base_cps = tc.Calculator(
+        records=tc.Records.cps_constructor(), policy=tc.Policy()
+    )
     base_cps.advance_to_year(first_year)
     base_cps.calc_all()
     # updated CPS calculator
-    cps = pd.read_csv(Path(CUR_PATH, "..", "data", "cps.csv.gz"), index_col=None)
+    cps = pd.read_csv(
+        Path(CUR_PATH, "..", "data", "cps.csv.gz"), index_col=None
+    )
     cps_weights = pd.read_csv(
-        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"), index_col=None
+        Path(CUR_PATH, "..", "cps_stage2", "cps_weights.csv.gz"),
+        index_col=None,
     )
     gfactor_path_str = str(GROW_FACTORS_PATH)
     gft = tc.GrowFactors(growfactors_filename=gfactor_path_str)
@@ -267,7 +279,8 @@ def report():
         base_puf.calc_all()
         # updated puf calculator
         puf_weights = pd.read_csv(
-            Path(CUR_PATH, "..", "puf_stage2", "puf_weights.csv.gz"), index_col=None
+            Path(CUR_PATH, "..", "puf_stage2", "puf_weights.csv.gz"),
+            index_col=None,
         )
         puf_ratios = pd.read_csv(
             Path(CUR_PATH, "..", "puf_stage3", "puf_ratios.csv"), index_col=0
@@ -293,7 +306,8 @@ def report():
         base_puf.calc_all()
         # updated puf calculator
         puf_weights = pd.read_csv(
-            Path(CUR_PATH, "..", "puf_stage2", "puf_weights.csv.gz"), index_col=None
+            Path(CUR_PATH, "..", "puf_stage2", "puf_weights.csv.gz"),
+            index_col=None,
         )
         puf_ratios = pd.read_csv(
             Path(CUR_PATH, "..", "puf_stage3", "puf_ratios.csv"), index_col=0
@@ -317,7 +331,9 @@ def report():
         template_args["puf_income_table"] = None
         template_args["puf_payroll_table"] = None
         template_args["puf_salaries_and_wages_table"] = None
-        template_args["puf_taxable_interest_and_ordinary_dividends_table"] = None
+        template_args["puf_taxable_interest_and_ordinary_dividends_table"] = (
+            None
+        )
         template_args["puf_qualified_dividends_table"] = None
         template_args["puf_capital_table"] = None
         template_args["puf_business_table"] = None

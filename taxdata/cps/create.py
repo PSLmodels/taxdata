@@ -83,11 +83,15 @@ def create(
             cps_dfs[year] = pickle.load(pkl_path.open("rb"))
         else:
             # check if .dat file exists, and, if not, download it
-            data_file = Path(os.path.join(datapath, "asec" + str(year) + "_pubuse.dat"))
+            data_file = Path(
+                os.path.join(datapath, "asec" + str(year) + "_pubuse.dat")
+            )
             if data_file.exists():
                 pass
             else:
-                cpsmar_url = "http://data.nber.org/cps/cpsmar" + str(year) + ".zip"
+                cpsmar_url = (
+                    "http://data.nber.org/cps/cpsmar" + str(year) + ".zip"
+                )
                 r = requests.get(cpsmar_url)
                 z = zipfile.ZipFile(io.BytesIO(r.content))
                 z.extractall(datapath)

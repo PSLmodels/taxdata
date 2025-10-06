@@ -21,7 +21,13 @@ TABLE14COLS = [
         "Unnamed: 69_level_2",
         "Number of\nreturns",
     ),
-    ("INTS", "Taxable interest", "Unnamed: 8_level_1", "Unnamed: 8_level_2", "Amount"),
+    (
+        "INTS",
+        "Taxable interest",
+        "Unnamed: 8_level_1",
+        "Unnamed: 8_level_2",
+        "Amount",
+    ),
     (
         "DIVS",
         "Ordinary dividends",
@@ -29,8 +35,20 @@ TABLE14COLS = [
         "Unnamed: 12_level_2",
         "Amount",
     ),
-    ("SCHCI", "Business or profession", "Net\nincome", "Unnamed: 20_level_2", "Amount"),
-    ("SCHCL", "Business or profession", "Net\nloss", "Unnamed: 22_level_2", "Amount"),
+    (
+        "SCHCI",
+        "Business or profession",
+        "Net\nincome",
+        "Unnamed: 20_level_2",
+        "Amount",
+    ),
+    (
+        "SCHCL",
+        "Business or profession",
+        "Net\nloss",
+        "Unnamed: 22_level_2",
+        "Amount",
+    ),
     (
         "CGNS",
         "Sales of capital assets reported on Form 1040, Schedule D [2]",
@@ -38,7 +56,13 @@ TABLE14COLS = [
         "Unnamed: 26_level_2",
         "Amount",
     ),
-    ("Pension", "Pensions and\nannuities", "Unnamed: 38_level_1", "Taxable", "Amount"),
+    (
+        "Pension",
+        "Pensions and\nannuities",
+        "Unnamed: 38_level_1",
+        "Taxable",
+        "Amount",
+    ),
     (
         "SCHEI",
         "Total rental and royalty",
@@ -53,8 +77,20 @@ TABLE14COLS = [
         "Unnamed: 56_level_2",
         "Amount",
     ),
-    ("SCHEI", "Estate and trust", "Net\nincome", "Unnamed: 60_level_2", "Amount"),
-    ("SCHEL", "Total rental and royalty", "Net\nloss", "Unnamed: 54_level_2", "Amount"),
+    (
+        "SCHEI",
+        "Estate and trust",
+        "Net\nincome",
+        "Unnamed: 60_level_2",
+        "Amount",
+    ),
+    (
+        "SCHEL",
+        "Total rental and royalty",
+        "Net\nloss",
+        "Unnamed: 54_level_2",
+        "Amount",
+    ),
     (
         "SCHEL",
         "Partnership and S corporation",
@@ -62,8 +98,20 @@ TABLE14COLS = [
         "Unnamed: 58_level_2",
         "Amount",
     ),
-    ("SCHEL", "Estate and trust", "Net\nloss", "Unnamed: 62_level_2", "Amount"),
-    ("SS", "Social security benefits", "Total [1]", "Unnamed: 70_level_2", "Amount"),
+    (
+        "SCHEL",
+        "Estate and trust",
+        "Net\nloss",
+        "Unnamed: 62_level_2",
+        "Amount",
+    ),
+    (
+        "SS",
+        "Social security benefits",
+        "Total [1]",
+        "Unnamed: 70_level_2",
+        "Amount",
+    ),
     (
         "UCOMP",
         "Unemployment compensation",
@@ -88,7 +136,16 @@ PUFWAGES = [
     (15, 15),
     (17, 20),
 ]
-CPSWAGES = [(2, 4), (5, 6), (7, 8), (9, 9), (10, 10), (11, 11), (12, 12), (13, 20)]
+CPSWAGES = [
+    (2, 4),
+    (5, 6),
+    (7, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+    (13, 20),
+]
 
 
 def update_soi(year, datapath, wage_indicies, file_):
@@ -174,7 +231,9 @@ def table21(year, datapath):
     datapath: path to the directory holding the SOI files
     """
     file_ = f"{str(year)[-2:]}in21id.xls"
-    data = pd.read_excel(Path(datapath, file_), header=[2, 3, 4, 5, 6], index_col=0)
+    data = pd.read_excel(
+        Path(datapath, file_), header=[2, 3, 4, 5, 6], index_col=0
+    )
     itemded = "Itemized deductions"
     ipd = "Interest paid deduction"
     un = "Unnamed: 83_level_3"
@@ -209,7 +268,9 @@ def table14_wages(data, indicies):
     """
     was = []
     assert len(data) == 21  # they sometimes change up the wage bins they use
-    data = data["Salaries and wages"]["Unnamed: 6_level_1"]["Unnamed: 6_level_2"]
+    data = data["Salaries and wages"]["Unnamed: 6_level_1"][
+        "Unnamed: 6_level_2"
+    ]
     for i, j in indicies:
         val = data.iloc[i : j + 1].sum()[0].astype(int)
         was.append(val)
@@ -227,7 +288,9 @@ def table14(year, wage_indicies, datapath):
     datapath: path to directory where the SOI data is stored
     """
     data = pd.read_excel(
-        Path(datapath, f"{str(year)[-2:]}in14ar.xls"), header=[2, 3, 4, 5], index_col=0
+        Path(datapath, f"{str(year)[-2:]}in14ar.xls"),
+        header=[2, 3, 4, 5],
+        index_col=0,
     )
     data = data.iloc[:21]
     nonwages = table14_nonwages(data, TABLE14COLS)
@@ -239,7 +302,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("year", help="Year of the update", type=str)
     parser.add_argument(
-        "path", help="Path to a directory with all of the SOI files needed", type=str
+        "path",
+        help="Path to a directory with all of the SOI files needed",
+        type=str,
     )
     args = parser.parse_args()
     year = args.year
