@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>TaxData Contributor Guide &#8212; taxdata</title>
   
@@ -15,52 +14,49 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'content/contributing/CONTRIBUTING';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,19 +71,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -109,12 +109,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -129,6 +137,9 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../../index.html">
@@ -137,10 +148,22 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     <p class="title logo__title">taxdata</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -202,7 +225,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -211,14 +234,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -340,26 +363,28 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -403,10 +428,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="taxdata-contributor-guide">
-<span id="content-contributing"></span><h1>TaxData Contributor Guide<a class="headerlink" href="#taxdata-contributor-guide" title="Permalink to this heading">#</a></h1>
+<span id="content-contributing"></span><h1>TaxData Contributor Guide<a class="headerlink" href="#taxdata-contributor-guide" title="Link to this heading">#</a></h1>
 <p>Contributions to TaxData are always welcome. This document aims to serve as a
 guide to setting up your developer environment, and requesting
 and contributing new features, and reporting bugs. It assumes familiarity with
@@ -415,41 +440,41 @@ the Conda package manager, Git, and GitHub.</p>
 More information about Conda can be found <a class="reference external" href="https://docs.conda.io/en/latest/">here</a>.</p>
 <p><strong>Contents</strong></p>
 <ul class="simple">
-<li><p><span class="xref myst">TaxData Contributor Guide</span></p>
+<li><p><a class="reference internal" href="#taxdata-contributor-guide"><span class="xref myst">TaxData Contributor Guide</span></a></p>
 <ul>
-<li><p><span class="xref myst">Feature Requests</span></p></li>
-<li><p><span class="xref myst">Bug Reports</span></p></li>
-<li><p><span class="xref myst">Developer Set Up</span></p></li>
-<li><p><span class="xref myst">About the Data</span></p></li>
-<li><p><span class="xref myst">Common Contributions</span></p>
+<li><p><a class="reference internal" href="#feature-requests"><span class="xref myst">Feature Requests</span></a></p></li>
+<li><p><a class="reference internal" href="#bug-reports"><span class="xref myst">Bug Reports</span></a></p></li>
+<li><p><a class="reference internal" href="#developer-set-up"><span class="xref myst">Developer Set Up</span></a></p></li>
+<li><p><a class="reference internal" href="#about-the-data"><span class="xref myst">About the Data</span></a></p></li>
+<li><p><a class="reference internal" href="#common-contributions"><span class="xref myst">Common Contributions</span></a></p>
 <ul>
-<li><p><span class="xref myst">Updating CBO Projections</span></p></li>
-<li><p><span class="xref myst">Updating SOI Estimates</span></p></li>
-<li><p><span class="xref myst">Adding and Removing Variables</span></p></li>
+<li><p><a class="reference internal" href="#updating-cbo-projections"><span class="xref myst">Updating CBO Projections</span></a></p></li>
+<li><p><a class="reference internal" href="#updating-soi-estimates"><span class="xref myst">Updating SOI Estimates</span></a></p></li>
+<li><p><a class="reference internal" href="#adding-and-removing-variables"><span class="xref myst">Adding and Removing Variables</span></a></p></li>
 </ul>
 </li>
-<li><p><span class="xref myst">Testing</span></p></li>
-<li><p><span class="xref myst">Workflow</span></p></li>
-<li><p><span class="xref myst">Issuing New Releases</span></p></li>
-<li><p><span class="xref myst">IMPORTANT NOTE</span></p></li>
+<li><p><a class="reference internal" href="#testing"><span class="xref myst">Testing</span></a></p></li>
+<li><p><a class="reference internal" href="#workflow"><span class="xref myst">Workflow</span></a></p></li>
+<li><p><a class="reference internal" href="#issuing-new-releases"><span class="xref myst">Issuing New Releases</span></a></p></li>
+<li><p><a class="reference internal" href="#important-note"><span class="xref myst">IMPORTANT NOTE</span></a></p></li>
 </ul>
 </li>
 </ul>
 <section id="feature-requests">
-<h2>Feature Requests<a class="headerlink" href="#feature-requests" title="Permalink to this heading">#</a></h2>
+<h2>Feature Requests<a class="headerlink" href="#feature-requests" title="Link to this heading">#</a></h2>
 <p>To request a new feature, variable, etc. in TaxData, open up an <a class="reference external" href="https://github.com/PSLmodels/taxdata">issue</a>
 detailing your request. If your request is to include a new variable in either
 <code class="docutils literal notranslate"><span class="pre">cps.csv.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>, please include a description of how that variable will
 be used.</p>
 </section>
 <section id="bug-reports">
-<h2>Bug Reports<a class="headerlink" href="#bug-reports" title="Permalink to this heading">#</a></h2>
+<h2>Bug Reports<a class="headerlink" href="#bug-reports" title="Link to this heading">#</a></h2>
 <p>If you find an error in the final datasets or in the code used to produce our
 datasets, please open up an <a class="reference external" href="https://github.com/PSLmodels/taxdata">issue</a> with
 details about the bug and what you believe the solution should be.</p>
 </section>
 <section id="developer-set-up">
-<h2>Developer Set Up<a class="headerlink" href="#developer-set-up" title="Permalink to this heading">#</a></h2>
+<h2>Developer Set Up<a class="headerlink" href="#developer-set-up" title="Link to this heading">#</a></h2>
 <p>All development must be done in the <code class="docutils literal notranslate"><span class="pre">taxdata-dev</span></code> conda environment. To set up
 the environment, first <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">install conda</a>
 locally. Next, fork the TaxData repository and activate the conda environment:</p>
@@ -462,7 +487,7 @@ $<span class="w"> </span>conda<span class="w"> </span>activate<span class="w"> <
 environment, you’re ready to start contributing.</p>
 </section>
 <section id="about-the-data">
-<h2>About the Data<a class="headerlink" href="#about-the-data" title="Permalink to this heading">#</a></h2>
+<h2>About the Data<a class="headerlink" href="#about-the-data" title="Link to this heading">#</a></h2>
 <p>The two data sources we currently use are the <a class="reference external" href="https://data.nber.org/data/current-population-survey-data.html">CPS March Supplements</a>
 and <a class="reference external" href="https://www.irs.gov/statistics/soi-tax-stats-individual-public-use-microdata-files">IRS SOI Public Use File (PUF)</a>.
 The CPS supplements are publicly available while the PUF must be purchased from
@@ -476,7 +501,7 @@ the future. Documentation on our extrapolation methods can be found <a class="re
 Documentation on <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/blob/master/puf_stage3/doc/puf_stage3.md">here</a>.</p>
 </section>
 <section id="common-contributions">
-<h2>Common Contributions<a class="headerlink" href="#common-contributions" title="Permalink to this heading">#</a></h2>
+<h2>Common Contributions<a class="headerlink" href="#common-contributions" title="Link to this heading">#</a></h2>
 <p>Contributions typically fall into two categories:</p>
 <ol class="arabic simple">
 <li><p>Updating the CBO forecasts and IRS-SOI estimates that we use during our extrapolation
@@ -484,7 +509,7 @@ routines.</p></li>
 <li><p>Adding or removing variables from <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">cps.csv.gz</span></code>.</p></li>
 </ol>
 <section id="updating-cbo-projections">
-<h3>Updating CBO Projections<a class="headerlink" href="#updating-cbo-projections" title="Permalink to this heading">#</a></h3>
+<h3>Updating CBO Projections<a class="headerlink" href="#updating-cbo-projections" title="Link to this heading">#</a></h3>
 <p>We use data from the CBO 10-Year economic projections, revenue projections, and
 unemployment compensation projections, in conjunction with data from IRS
 publication 6187, OASI Trust Fund Annual Trustees Report, and BLS and the basis
@@ -496,11 +521,11 @@ changes will be written over. The template can be found at
 <code class="docutils literal notranslate"><span class="pre">taxdata/puf_stage1/doc/cbo_instructions_template.md</span></code>.</p>
 </section>
 <section id="updating-soi-estimates">
-<h3>Updating SOI Estimates<a class="headerlink" href="#updating-soi-estimates" title="Permalink to this heading">#</a></h3>
+<h3>Updating SOI Estimates<a class="headerlink" href="#updating-soi-estimates" title="Link to this heading">#</a></h3>
 <p>Documentation for updating the SOI estimates can be found <a class="reference external" href="https://github.com/PSLmodels/taxdata/blob/master/doc/SOI_Estimates_Updating_Instructions.md">here</a>.</p>
 </section>
 <section id="adding-and-removing-variables">
-<h3>Adding and Removing Variables<a class="headerlink" href="#adding-and-removing-variables" title="Permalink to this heading">#</a></h3>
+<h3>Adding and Removing Variables<a class="headerlink" href="#adding-and-removing-variables" title="Link to this heading">#</a></h3>
 <p>Before you start to add new variables, open up an <a class="reference external" href="https://github.com/PSLmodels/taxdata">issue</a>
 to explain what the new variables is, why it’s needed, how it will be used by
 Tax-Calculator, etc. Once you’ve done that, all of the code used to create the
@@ -571,7 +596,7 @@ its metadata from <code class="docutils literal notranslate"><span class="pre">r
 </section>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">#</a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
 <p>TaxData has a robust test suite used to validate all of the data it produces
 before it is merged into Tax-Calculator. All of these tests are run from the
 commmand line by navigating to the top of the <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> directory and entering</p>
@@ -590,7 +615,7 @@ contents of the <code class="docutils literal notranslate"><span class="pre">{fi
 not include the <code class="docutils literal notranslate"><span class="pre">{file}_actual.txt</span></code> files to your Git commits.</p>
 </section>
 <section id="workflow">
-<h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this heading">#</a></h2>
+<h2>Workflow<a class="headerlink" href="#workflow" title="Link to this heading">#</a></h2>
 <p>A typical workflow is</p>
 <ol class="arabic simple">
 <li><p>Update your local master branch</p></li>
@@ -640,7 +665,7 @@ associated with the CPS file. <code class="docutils literal notranslate"><span c
 </ol>
 </section>
 <section id="issuing-new-releases">
-<h2>Issuing New Releases<a class="headerlink" href="#issuing-new-releases" title="Permalink to this heading">#</a></h2>
+<h2>Issuing New Releases<a class="headerlink" href="#issuing-new-releases" title="Link to this heading">#</a></h2>
 <p>As of now, all TaxData releases will only be stored on GitHub. To create a new
 release simply navigate to the <a class="reference external" href="https://github.com/PSLmodels/taxdata/releases">releases page</a>
 and click “Draft a new release”. When you issue a new release, be sure to include
@@ -673,7 +698,7 @@ fleshed out python package. We will revist our release procedures when this
 happens.</p>
 </section>
 <section id="important-note">
-<h2>IMPORTANT NOTE<a class="headerlink" href="#important-note" title="Permalink to this heading">#</a></h2>
+<h2>IMPORTANT NOTE<a class="headerlink" href="#important-note" title="Link to this heading">#</a></h2>
 <p>Never ever ever include <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">cps_matched_puf.csv</span></code>, or any other file
 containing non-aggregated data from the PUF in your Git commits. We have
 included them in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file to help prevent this from happening. Do
@@ -706,11 +731,10 @@ not change that. Ever.</p>
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="../../index.html"
@@ -730,10 +754,7 @@ not change that. Ever.</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -741,6 +762,7 @@ not change that. Ever.</p>
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -783,6 +805,7 @@ By Anderson Frailey
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2021.
@@ -809,8 +832,8 @@ By Anderson Frailey
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
