@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import taxcalc as tc
 from .impute_pencon import impute_pension_contributions
+from .impute_qbid_w2 import impute_PT_binc_w2_wages
 from .constants import UNUSED_READ_VARS
 from pathlib import Path
 
@@ -58,6 +59,9 @@ def finalprep(data):
 
     # - Replace e20500 with g20500:
     data = replace_20500(data)
+
+    # - Impute PT_binc_w2_wages:
+    data = impute_PT_binc_w2_wages(data)
 
     data["s006"] = data["matched_weight"] * 100
 
