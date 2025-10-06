@@ -83,7 +83,9 @@ def add_bins(
     bin_width = cumsum_range / float(num_bins)
     bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
-    bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observation00s
+    bin_edges[0] = (
+        -9e99
+    )  # lower bottom of 1st bin to include all observation00s
     if decile_details:
         assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
         bin_edges.insert(1, 1e-9)  # top of zeros
@@ -164,42 +166,53 @@ def distribution(item, weight, agi):
     total = (item * weight).sum()
     agi_1 = (item[agi < 0] * weight[agi < 0]).sum()
     pct1 = round(agi_1 / total, 2)
-    agi_2 = (item[(agi > 1) & (agi < 5000)] * weight[(agi > 1) & (agi < 5000)]).sum()
+    agi_2 = (
+        item[(agi > 1) & (agi < 5000)] * weight[(agi > 1) & (agi < 5000)]
+    ).sum()
     pct2 = round(agi_1 / total, 2)
     agi_3 = (
-        item[(agi > 5000) & (agi < 10000)] * weight[(agi > 5000) & (agi < 10000)]
+        item[(agi > 5000) & (agi < 10000)]
+        * weight[(agi > 5000) & (agi < 10000)]
     ).sum()
     pct3 = round(agi_3 / total, 2)
     agi_4 = (
-        item[(agi > 10000) & (agi < 15000)] * weight[(agi > 10000) & (agi < 15000)]
+        item[(agi > 10000) & (agi < 15000)]
+        * weight[(agi > 10000) & (agi < 15000)]
     ).sum()
     pct4 = round(agi_4 / total, 2)
     agi_5 = (
-        item[(agi > 15000) & (agi < 20000)] * weight[(agi > 15000) & (agi < 20000)]
+        item[(agi > 15000) & (agi < 20000)]
+        * weight[(agi > 15000) & (agi < 20000)]
     ).sum()
     pct5 = round(agi_5 / total, 2)
     agi_6 = (
-        item[(agi > 20000) & (agi < 25000)] * weight[(agi > 20000) & (agi < 25000)]
+        item[(agi > 20000) & (agi < 25000)]
+        * weight[(agi > 20000) & (agi < 25000)]
     ).sum()
     pct6 = round(agi_6 / total, 2)
     agi_7 = (
-        item[(agi > 25000) & (agi < 30000)] * weight[(agi > 25000) & (agi < 30000)]
+        item[(agi > 25000) & (agi < 30000)]
+        * weight[(agi > 25000) & (agi < 30000)]
     ).sum()
     pct7 = round(agi_7 / total, 2)
     agi_8 = (
-        item[(agi > 30000) & (agi < 40000)] * weight[(agi > 30000) & (agi < 40000)]
+        item[(agi > 30000) & (agi < 40000)]
+        * weight[(agi > 30000) & (agi < 40000)]
     ).sum()
     pct8 = round(agi_8 / total, 2)
     agi_9 = (
-        item[(agi > 40000) & (agi < 50000)] * weight[(agi > 40000) & (agi < 50000)]
+        item[(agi > 40000) & (agi < 50000)]
+        * weight[(agi > 40000) & (agi < 50000)]
     ).sum()
     pct9 = round(agi_9 / total, 2)
     agi_10 = (
-        item[(agi > 50000) & (agi < 75000)] * weight[(agi > 50000) & (agi < 75000)]
+        item[(agi > 50000) & (agi < 75000)]
+        * weight[(agi > 50000) & (agi < 75000)]
     ).sum()
     pct10 = round(agi_10 / total, 2)
     agi_11 = (
-        item[(agi > 75000) & (agi < 100_000)] * weight[(agi > 75000) & (agi < 100_000)]
+        item[(agi > 75000) & (agi < 100_000)]
+        * weight[(agi > 75000) & (agi < 100_000)]
     ).sum()
     pct11 = round(agi_11 / total, 2)
     agi_12 = (
@@ -434,8 +447,12 @@ def compare_vars(cur_meta, new_meta, file_):
         msg = "'file' must be either 'cps' or 'puf'"
         raise ValueError(msg)
     _file = f"taxdata_{file_}"
-    cur_avail = set(cur_meta[cur_meta["availability"].str.contains(_file)].index)
-    new_avail = set(new_meta[new_meta["availability"].str.contains(_file)].index)
+    cur_avail = set(
+        cur_meta[cur_meta["availability"].str.contains(_file)].index
+    )
+    new_avail = set(
+        new_meta[new_meta["availability"].str.contains(_file)].index
+    )
     _added_vars = new_avail - cur_avail
     _removed_vars = cur_avail - new_avail
     # get detailed information
@@ -602,9 +619,9 @@ def CBO_projections(rev_proj):
     "https://www.cbo.gov/about/products/budget-economic-data"
     """
     # extract values for AGI rows in the excel file
-    salary_wage = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
-        "Salaries and wages"
-    ]
+    salary_wage = rev_proj.loc[
+        "Calculation of adjusted gross income (AGI)"
+    ].loc["Salaries and wages"]
 
     for indx in salary_wage.index:
         if type(indx) != int:
@@ -612,14 +629,18 @@ def CBO_projections(rev_proj):
 
     taxable_interest_ordinary_divid = rev_proj.loc[
         "Calculation of adjusted gross income (AGI)"
-    ].loc["Taxable interest and ordinary dividends (excludes qualified dividends)"]
+    ].loc[
+        "Taxable interest and ordinary dividends (excludes qualified dividends)"
+    ]
     q_div = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
         "Qualified dividends                                         "
     ]
-    capital_g_l = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
-        "Capital gain or lossa"
-    ]
-    business_inc = rev_proj.loc["Calculation of adjusted gross income (AGI)"].loc[
+    capital_g_l = rev_proj.loc[
+        "Calculation of adjusted gross income (AGI)"
+    ].loc["Capital gain or lossa"]
+    business_inc = rev_proj.loc[
+        "Calculation of adjusted gross income (AGI)"
+    ].loc[
         "Net business income (all income and loss reported on Schedules C, E, and F)b"
     ]
     pension_annuities_IRAdis = rev_proj.loc[
@@ -658,7 +679,9 @@ def CBO_projections(rev_proj):
         "Total exemptions and deductions after limitsf"
     ]
     taxable_inc = (
-        rev_proj.loc["Calculation of taxable income"].loc["Taxable incomeg"].iloc[0]
+        rev_proj.loc["Calculation of taxable income"]
+        .loc["Taxable incomeg"]
+        .iloc[0]
     )
     tot_inctax = rev_proj.loc["Calculation of income tax liability"].loc[
         "Total income tax (including AMT) before credits"
@@ -868,9 +891,9 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         cur_taxable_inc = run_calc_var(base, year, "c04800")
         cur_tot_inctax = run_calc_var(base, year, "c05800")
         cur_tot_cdt = run_calc_var(base, year, "c07100")
-        cur_inctax_af_credit = run_calc_var(base, year, "c05800") - run_calc_var(
-            base, year, "c07100"
-        )
+        cur_inctax_af_credit = run_calc_var(
+            base, year, "c05800"
+        ) - run_calc_var(base, year, "c07100")
         new_salary_wage = run_calc_var(new, year, "e00200")
         new_taxable_interest_ordinary_divid = (
             run_calc_var(new, year, "e00300")
@@ -888,9 +911,9 @@ def compare_calcs(base, new, name, template_args, plot_paths):
             + run_calc_var(new, year, "e02000")
             + run_calc_var(new, year, "e02100")
         )
-        new_pension_annuities_IRAdis = run_calc_var(new, year, "e01400") + run_calc_var(
-            new, year, "e01700"
-        )
+        new_pension_annuities_IRAdis = run_calc_var(
+            new, year, "e01400"
+        ) + run_calc_var(new, year, "e01700")
         new_ssb = run_calc_var(new, year, "c02500")
         new_total_inc = run_calc_var(new, year, "c00100") + run_calc_var(
             new, year, "c02900"
@@ -918,9 +941,9 @@ def compare_calcs(base, new, name, template_args, plot_paths):
         new_taxable_inc = run_calc_var(new, year, "c04800")
         new_tot_inctax = run_calc_var(new, year, "c05800")
         new_tot_cdt = run_calc_var(new, year, "c07100")
-        new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
-            new, year, "c07100"
-        )
+        new_inctax_af_credit = run_calc_var(
+            new, year, "c05800"
+        ) - run_calc_var(new, year, "c07100")
         aggs["Tax Liability"].append(base_aggs["payrolltax"])
         aggs["Tax"].append("Current Payroll")
         aggs["Year"].append(year)
@@ -1084,9 +1107,15 @@ def compare_calcs(base, new, name, template_args, plot_paths):
     template_args[f"{name}_agg_plot"] = f"![]({str(img_path)})" + "{.center}"
 
     # create tax liability and projection tables
-    template_args[f"{name}_combined_table"] = agg_liability_table(agg_df, "Combined")
-    template_args[f"{name}_payroll_table"] = agg_liability_table(agg_df, "Payroll")
-    template_args[f"{name}_income_table"] = agg_liability_table(agg_df, "Income")
+    template_args[f"{name}_combined_table"] = agg_liability_table(
+        agg_df, "Combined"
+    )
+    template_args[f"{name}_payroll_table"] = agg_liability_table(
+        agg_df, "Payroll"
+    )
+    template_args[f"{name}_income_table"] = agg_liability_table(
+        agg_df, "Income"
+    )
 
     agi_table_name_list = [
         f"{name}_salaries_and_wages_table",
@@ -1189,9 +1218,9 @@ def CBO_validation(cbo_df, new, name, template_args):
             + run_calc_var(new, year, "e02000")
             + run_calc_var(new, year, "e02100")
         )
-        new_pension_annuities_IRAdis = run_calc_var(new, year, "e01400") + run_calc_var(
-            new, year, "e01700"
-        )
+        new_pension_annuities_IRAdis = run_calc_var(
+            new, year, "e01400"
+        ) + run_calc_var(new, year, "e01700")
         new_ssb = run_calc_var(new, year, "c02500")
         new_total_inc = run_calc_var(new, year, "c00100") + run_calc_var(
             new, year, "c02900"
@@ -1221,9 +1250,9 @@ def CBO_validation(cbo_df, new, name, template_args):
         new_tot_cdt = run_calc_var(new, year, "c07100") + run_calc_var(
             new, year, "refund"
         )
-        new_inctax_af_credit = run_calc_var(new, year, "c05800") - run_calc_var(
-            new, year, "c07100"
-        )
+        new_inctax_af_credit = run_calc_var(
+            new, year, "c05800"
+        ) - run_calc_var(new, year, "c07100")
 
         agi_list = [
             new_salary_wage,
@@ -1355,6 +1384,8 @@ def CBO_validation(cbo_df, new, name, template_args):
         f"{name}_validation_Top50_percent_income_group_shares_of_AGI_table",
     ]
     share_keyword_list = ["Top1p", "Top5p", "Top10p", "Top25p", "Top50p"]
-    for table_name, keyword in zip(shareval_table_name_list, share_keyword_list):
+    for table_name, keyword in zip(
+        shareval_table_name_list, share_keyword_list
+    ):
         template_args[table_name] = validation_table(agg3_df, cbo_df, keyword)
     return template_args

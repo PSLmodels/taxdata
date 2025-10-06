@@ -17,13 +17,16 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
     hh_return = np.where((puf.mars == 4) & (puf.filer == 1), s006, 0)
     return_w_SS = np.where((puf.e02400 > 0) & (puf.filer == 1), s006, 0)
 
-    dependent_exempt_num = (puf.xocah + puf.xocawh + puf.xoodep + puf.xopar) * s006
+    dependent_exempt_num = (
+        puf.xocah + puf.xocawh + puf.xoodep + puf.xopar
+    ) * s006
     interest = puf.e00300 * s006
     dividend = puf.e00600 * s006
     biz_income = np.where(puf.e00900 > 0, puf.e00900, 0) * s006
     biz_loss = np.where(puf.e00900 < 0, -puf.e00900, 0) * s006
     cap_gain = (
-        np.where((puf.p23250 + puf.p22250) > 0, puf.p23250 + puf.p22250, 0) * s006
+        np.where((puf.p23250 + puf.p22250) > 0, puf.p23250 + puf.p22250, 0)
+        * s006
     )
     annuity_pension = puf.e01700 * s006
     sch_e_income = np.where(puf.e02000 > 0, puf.e02000, 0) * s006
@@ -33,33 +36,47 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
 
     # Wage distribution
     wage_1 = np.where(puf.e00100 <= 0, puf.e00200, 0) * s006
-    wage_2 = np.where((puf.e00100 > 0) & (puf.e00100 <= 10000), puf.e00200, 0) * s006
+    wage_2 = (
+        np.where((puf.e00100 > 0) & (puf.e00100 <= 10000), puf.e00200, 0)
+        * s006
+    )
     wage_3 = (
-        np.where((puf.e00100 > 10000) & (puf.e00100 <= 20000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 10000) & (puf.e00100 <= 20000), puf.e00200, 0)
+        * s006
     )
     wage_4 = (
-        np.where((puf.e00100 > 20000) & (puf.e00100 <= 30000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 20000) & (puf.e00100 <= 30000), puf.e00200, 0)
+        * s006
     )
     wage_5 = (
-        np.where((puf.e00100 > 30000) & (puf.e00100 <= 40000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 30000) & (puf.e00100 <= 40000), puf.e00200, 0)
+        * s006
     )
     wage_6 = (
-        np.where((puf.e00100 > 40000) & (puf.e00100 <= 50000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 40000) & (puf.e00100 <= 50000), puf.e00200, 0)
+        * s006
     )
     wage_7 = (
-        np.where((puf.e00100 > 50000) & (puf.e00100 <= 75000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 50000) & (puf.e00100 <= 75000), puf.e00200, 0)
+        * s006
     )
     wage_8 = (
-        np.where((puf.e00100 > 75000) & (puf.e00100 <= 100000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 75000) & (puf.e00100 <= 100000), puf.e00200, 0)
+        * s006
     )
     wage_9 = (
-        np.where((puf.e00100 > 100000) & (puf.e00100 <= 200000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 100000) & (puf.e00100 <= 200000), puf.e00200, 0)
+        * s006
     )
     wage_10 = (
-        np.where((puf.e00100 > 200000) & (puf.e00100 <= 500000), puf.e00200, 0) * s006
+        np.where((puf.e00100 > 200000) & (puf.e00100 <= 500000), puf.e00200, 0)
+        * s006
     )
     wage_11 = (
-        np.where((puf.e00100 > 500000) & (puf.e00100 <= 1000000), puf.e00200, 0) * s006
+        np.where(
+            (puf.e00100 > 500000) & (puf.e00100 <= 1000000), puf.e00200, 0
+        )
+        * s006
     )
     wage_12 = np.where(puf.e00100 > 1000000, puf.e00200, 0) * s006
 
@@ -118,7 +135,10 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
 
     AINTS = Stage_I_factors[year]["AINTS"]
     INTEREST = (
-        Stage_II_targets[ystr]["Taxable Interest Income"] * APOPN / AINTS * 1000
+        Stage_II_targets[ystr]["Taxable Interest Income"]
+        * APOPN
+        / AINTS
+        * 1000
         - interest.sum()
     )
 
@@ -130,19 +150,28 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
 
     ASCHCI = Stage_I_factors[year]["ASCHCI"]
     BIZ_INCOME = (
-        Stage_II_targets[ystr]["Business Income (Schedule C)"] * APOPN / ASCHCI * 1000
+        Stage_II_targets[ystr]["Business Income (Schedule C)"]
+        * APOPN
+        / ASCHCI
+        * 1000
         - biz_income.sum()
     )
 
     ASCHCL = Stage_I_factors[year]["ASCHCL"]
     BIZ_LOSS = (
-        Stage_II_targets[ystr]["Business Loss (Schedule C)"] * APOPN / ASCHCL * 1000
+        Stage_II_targets[ystr]["Business Loss (Schedule C)"]
+        * APOPN
+        / ASCHCL
+        * 1000
         - biz_loss.sum()
     )
 
     ACGNS = Stage_I_factors[year]["ACGNS"]
     CAP_GAIN = (
-        Stage_II_targets[ystr]["Net Capital Gains in AGI"] * APOPN / ACGNS * 1000
+        Stage_II_targets[ystr]["Net Capital Gains in AGI"]
+        * APOPN
+        / ACGNS
+        * 1000
         - cap_gain.sum()
     )
 
@@ -156,12 +185,16 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
     ASCHEI = Stage_I_factors[year]["ASCHEI"]
     target_name = "Supplemental Income (Schedule E)"
     SCH_E_INCOME = (
-        Stage_II_targets[ystr][target_name] * APOPN / ASCHEI * 1000 - sch_e_income.sum()
+        Stage_II_targets[ystr][target_name] * APOPN / ASCHEI * 1000
+        - sch_e_income.sum()
     )
 
     ASCHEL = Stage_I_factors[year]["ASCHEL"]
     SCH_E_LOSS = (
-        Stage_II_targets[ystr]["Supplemental Loss (Schedule E)"] * APOPN / ASCHEL * 1000
+        Stage_II_targets[ystr]["Supplemental Loss (Schedule E)"]
+        * APOPN
+        / ASCHEL
+        * 1000
         - sch_e_loss.sum()
     )
 
@@ -177,35 +210,74 @@ def dataprep(puf, Stage_I_factors, Stage_II_targets, year):
 
     AUCOMP = Stage_I_factors[year]["AUCOMP"]
     UNEMPLOYMENT_COMP = (
-        Stage_II_targets[ystr]["Unemployment Compensation"] * APOPN / AUCOMP * 1000
+        Stage_II_targets[ystr]["Unemployment Compensation"]
+        * APOPN
+        / AUCOMP
+        * 1000
         - unemployment_comp.sum()
     )
 
     AWAGE = Stage_I_factors[year]["AWAGE"]
     target_name = "Wages and Salaries: Zero or Less"
-    WAGE_1 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_1.sum()
+    WAGE_1 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_1.sum()
+    )
     target_name = "Wages and Salaries: $1 Less Than $10,000"
-    WAGE_2 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_2.sum()
+    WAGE_2 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_2.sum()
+    )
     target_name = "Wages and Salaries: $10,000 Less Than $20,000"
-    WAGE_3 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_3.sum()
+    WAGE_3 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_3.sum()
+    )
     target_name = "Wages and Salaries: $20,000 Less Than $30,000"
-    WAGE_4 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_4.sum()
+    WAGE_4 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_4.sum()
+    )
     target_name = "Wages and Salaries: $30,000 Less Than $40,000"
-    WAGE_5 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_5.sum()
+    WAGE_5 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_5.sum()
+    )
     target_name = "Wages and Salaries: $40,000 Less Than $50,000"
-    WAGE_6 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_6.sum()
+    WAGE_6 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_6.sum()
+    )
     target_name = "Wages and Salaries: $50,000 Less Than $75,000"
-    WAGE_7 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_7.sum()
+    WAGE_7 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_7.sum()
+    )
     target_name = "Wages and Salaries: $75,000 Less Than $100,000"
-    WAGE_8 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_8.sum()
+    WAGE_8 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_8.sum()
+    )
     target_name = "Wages and Salaries: $100,000 Less Than $200,000"
-    WAGE_9 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_9.sum()
+    WAGE_9 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_9.sum()
+    )
     target_name = "Wages and Salaries: $200,000 Less Than $500,000"
-    WAGE_10 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_10.sum()
+    WAGE_10 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_10.sum()
+    )
     target_name = "Wages and Salaries: $500,000 Less Than $1 Million"
-    WAGE_11 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_11.sum()
+    WAGE_11 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_11.sum()
+    )
     target_name = "Wages and Salaries: $1 Million and Over"
-    WAGE_12 = Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000 - wage_12.sum()
+    WAGE_12 = (
+        Stage_II_targets[ystr][target_name] * APOPN / AWAGE * 1000
+        - wage_12.sum()
+    )
 
     temp = [
         INTEREST,

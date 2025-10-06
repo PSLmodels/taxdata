@@ -50,10 +50,14 @@ def test_weights(
     for col in weights:
         if weights[col].min() <= MIN_WEIGHT:
             msg = "{} weights[{}].min()={} <= {}"
-            raise ValueError(msg.format(kind, col, weights[col].min(), MIN_WEIGHT))
+            raise ValueError(
+                msg.format(kind, col, weights[col].min(), MIN_WEIGHT)
+            )
         if weights[col].max() > MAX_WEIGHT:
             msg = "{} weights[{}].max()={} > {}"
-            raise ValueError(msg.format(kind, col, weights[col].max(), MAX_WEIGHT))
+            raise ValueError(
+                msg.format(kind, col, weights[col].max(), MAX_WEIGHT)
+            )
     # test sum of weights (in millions) for each year
     MIN_WEIGHT_SUM = 144
     MAX_WEIGHT_SUM = 258

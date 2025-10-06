@@ -63,7 +63,9 @@ def main():
     for year in range(START_YEAR, END_YEAR + 1):
         try:
             factor_match = _factors[year].equals(CUR_FACTORS[year])
-            target_match = stage_2_targets[f"{year}"].equals(CUR_TARGETS[f"{year}"])
+            target_match = stage_2_targets[f"{year}"].equals(
+                CUR_TARGETS[f"{year}"]
+            )
             if files_match and factor_match and target_match:
                 print(f"Skipping {year}")
                 skipped_years.append(year)

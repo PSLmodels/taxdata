@@ -123,7 +123,10 @@ def update_econproj(url, baseline, text_args):
     else:
         # read in economic projections
         econ_proj = pd.read_excel(
-            econ_url, sheet_name="2. Calendar Year", skiprows=6, index_col=[0, 1, 2, 3]
+            econ_url,
+            sheet_name="2. Calendar Year",
+            skiprows=6,
+            index_col=[0, 1, 2, 3],
         )
         # extract values for needed rows in the excel file
         # some variables have a missing value in the multi-index. Use iloc
@@ -250,7 +253,10 @@ def update_socsec(url, baseline, text_args):
     html = pd.read_html(socsec_url, match=match_txt)[0]
     # merge the columns with years and data into one
     sub_data = pd.concat(
-        [html["Fiscal year", "Fiscal year.1"], html["Cost", "Scheduled benefits"]],
+        [
+            html["Fiscal year", "Fiscal year.1"],
+            html["Cost", "Scheduled benefits"],
+        ],
         axis=1,
     )
     sub_data.columns = ["year", "cost"]
@@ -317,7 +323,9 @@ def update_rets(url, baseline, text_args):
         if re.match(pattern, link):
             spreadsheet_url = link
             break
-    data = pd.read_excel(spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2)
+    data = pd.read_excel(
+        spreadsheet_url, sheet_name="1B-BOD", index_col=0, header=2
+    )
     projections = data.loc["Forms 1040 and 1040-SR, Total"]
     projections /= 1_000_000  # convert units
     pct_change = projections.pct_change() + 1
@@ -412,7 +420,9 @@ def fill_text_args(text):
     Provide initial values for all text arguments
     """
     text_args = {}
-    previous_cbo_doc = re.search(r"Previous Document: ([\w \d]+)", text).groups()[0]
+    previous_cbo_doc = re.search(
+        r"Previous Document: ([\w \d]+)", text
+    ).groups()[0]
     cur_cbo_doc = re.search(r"Current Document: ([\w \d]+)", text).groups()[0]
     text_args["previous_cbo"] = previous_cbo_doc
     text_args["current_cbo"] = cur_cbo_doc
@@ -450,16 +460,16 @@ def update_cbo():
         "methods",
         "CBO_Baseline_Updating_Instructions.md",
     )
-    template_str = Path(CUR_PATH, "doc", "cbo_instructions_template.md").open().read()
+    template_str = (
+        Path(CUR_PATH, "doc", "cbo_instructions_template.md").open().read()
+    )
     current_text = out_path.open().read()
     text_args = fill_text_args(current_text)
     baseline = pd.read_csv(Path(CUR_PATH, "CBO_baseline.csv"), index_col=0)
     CBO_URL = "https://www.cbo.gov/about/products/budget-economic-data"
     SOCSEC_URL = "https://www.ssa.gov/oact/TR/"
     RETS_URL = "https://www.irs.gov/statistics/soi-tax-stats-calendar-year-projections-publication-6187"
-    UCOMP_URL = (
-        "https://www.cbo.gov/about/products/baseline-projections-selected-programs"
-    )
+    UCOMP_URL = "https://www.cbo.gov/about/products/baseline-projections-selected-programs"
 
     baseline, text_args = update_econproj(CBO_URL, baseline, text_args)
     baseline, text_args = update_cpim(baseline, text_args)

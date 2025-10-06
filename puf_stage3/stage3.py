@@ -66,8 +66,12 @@ def adjustment(agi, var, var_name, target, weights, blowup):
         bin_8 = np.where((agi >= 40000) & (agi < 50000), var * s006, 0).sum()
         bin_9 = np.where((agi >= 50000) & (agi < 75000), var * s006, 0).sum()
         bin_10 = np.where((agi >= 75000) & (agi < 100000), var * s006, 0).sum()
-        bin_11 = np.where((agi >= 100000) & (agi < 200000), var * s006, 0).sum()
-        bin_12 = np.where((agi >= 200000) & (agi < 500000), var * s006, 0).sum()
+        bin_11 = np.where(
+            (agi >= 100000) & (agi < 200000), var * s006, 0
+        ).sum()
+        bin_12 = np.where(
+            (agi >= 200000) & (agi < 500000), var * s006, 0
+        ).sum()
         bin_13 = np.where((agi >= 500000) & (agi < 1e6), var * s006, 0).sum()
         bin_14 = np.where((agi >= 1e6) & (agi < 1.5e6), var * s006, 0).sum()
         bin_15 = np.where((agi >= 1.5e6) & (agi < 2e6), var * s006, 0).sum()
@@ -133,9 +137,13 @@ def adjustment(agi, var, var_name, target, weights, blowup):
 
 # Read all necessary files
 puf = pd.read_csv(os.path.join(CUR_PATH, "../data/cps-matched-puf.csv"))
-targets = pd.read_csv(os.path.join(CUR_PATH, "stage3_targets.csv"), index_col=0)
+targets = pd.read_csv(
+    os.path.join(CUR_PATH, "stage3_targets.csv"), index_col=0
+)
 wght = pd.read_csv(os.path.join(CUR_PATH, "../puf_stage2/puf_weights.csv.gz"))
-bf = pd.read_csv(os.path.join(CUR_PATH, "../puf_stage1/growfactors.csv"), index_col=0)
+bf = pd.read_csv(
+    os.path.join(CUR_PATH, "../puf_stage1/growfactors.csv"), index_col=0
+)
 
 # Call adjustment function for each variable being adjusted
 ints = adjustment(puf.e00100, puf.e00300, "INT", targets, wght, bf.AINTS)

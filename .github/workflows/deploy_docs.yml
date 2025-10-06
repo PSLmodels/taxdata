@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: taxdata-dev
           environment-file: environment.yml
-          python-version: 3.7
+          python-version: 3.13
           auto-activate-base: false
 
       - name: Build # Build Jupyter Book

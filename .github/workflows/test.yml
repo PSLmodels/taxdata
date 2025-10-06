@@ -1,13 +1,15 @@
-name: Test data
+name: Test source code
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.7]
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12', '3.13']
+
     steps:
       - name: checkout
         uses: actions/checkout@master
@@ -15,7 +17,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Miniconda using Python ${{ matrix.python-version }}
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: taxdata-dev
           environment-file: environment.yml

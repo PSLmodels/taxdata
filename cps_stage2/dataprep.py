@@ -24,10 +24,16 @@ def dataprep(data, factors, targets, year, weights=None):
         weights * factors["APOPSNR"][year],
         weights * factors["ARETS"][year],
     )
-    single_returns = np.where((data["mars"] == 1) & (data["filer"] == 1), s006, 0)
-    joint_returns = np.where((data["mars"] == 2) & (data["filer"] == 1), s006, 0)
+    single_returns = np.where(
+        (data["mars"] == 1) & (data["filer"] == 1), s006, 0
+    )
+    joint_returns = np.where(
+        (data["mars"] == 2) & (data["filer"] == 1), s006, 0
+    )
     hh_returns = np.where((data["mars"] == 4) & (data["filer"] == 1), s006, 0)
-    returns_w_ss = np.where((data["e02400"] > 0) & (data["filer"] == 1), s006, 0)
+    returns_w_ss = np.where(
+        (data["e02400"] > 0) & (data["filer"] == 1), s006, 0
+    )
     dep_exemptions = (
         np.where(data["mars"] == 2, data["XTOT"] - 2, data["XTOT"] - 1) * s006
     )
@@ -45,27 +51,39 @@ def dataprep(data, factors, targets, year, weights=None):
     # wage distribution
     wage1 = np.where(data["agi"] <= 10000, data["e00200"], 0) * s006
     wage2 = (
-        np.where((data["agi"] > 10000) & (data["agi"] <= 20000), data["e00200"], 0)
+        np.where(
+            (data["agi"] > 10000) & (data["agi"] <= 20000), data["e00200"], 0
+        )
         * s006
     )
     wage3 = (
-        np.where((data["agi"] > 20000) & (data["agi"] <= 30000), data["e00200"], 0)
+        np.where(
+            (data["agi"] > 20000) & (data["agi"] <= 30000), data["e00200"], 0
+        )
         * s006
     )
     wage4 = (
-        np.where((data["agi"] > 30000) & (data["agi"] <= 40000), data["e00200"], 0)
+        np.where(
+            (data["agi"] > 30000) & (data["agi"] <= 40000), data["e00200"], 0
+        )
         * s006
     )
     wage5 = (
-        np.where((data["agi"] > 40000) & (data["agi"] <= 50000), data["e00200"], 0)
+        np.where(
+            (data["agi"] > 40000) & (data["agi"] <= 50000), data["e00200"], 0
+        )
         * s006
     )
     wage6 = (
-        np.where((data["agi"] > 50000) & (data["agi"] <= 75000), data["e00200"], 0)
+        np.where(
+            (data["agi"] > 50000) & (data["agi"] <= 75000), data["e00200"], 0
+        )
         * s006
     )
     wage7 = (
-        np.where((data["agi"] > 75000) & (data["agi"] <= 100_000), data["e00200"], 0)
+        np.where(
+            (data["agi"] > 75000) & (data["agi"] <= 100_000), data["e00200"], 0
+        )
         * s006
     )
     wage8 = np.where(data["agi"] > 100_000, data["e00200"], 0) * s006
@@ -118,15 +136,27 @@ def dataprep(data, factors, targets, year, weights=None):
     target_name = "SS_return"
     rhs_vars["returns_w_ss"] = targets[year][target_name] - returns_w_ss.sum()
     target_name = "Dep_return"
-    rhs_vars["dep_exemptions"] = targets[year][target_name] - dep_exemptions.sum()
-    rhs_vars["interest"] = target(targets[year]["INTS"], apopn, aints, interest.sum())
-    rhs_vars["dividend"] = target(targets[year]["DIVS"], apopn, adivs, dividend.sum())
+    rhs_vars["dep_exemptions"] = (
+        targets[year][target_name] - dep_exemptions.sum()
+    )
+    rhs_vars["interest"] = target(
+        targets[year]["INTS"], apopn, aints, interest.sum()
+    )
+    rhs_vars["dividend"] = target(
+        targets[year]["DIVS"], apopn, adivs, dividend.sum()
+    )
     rhs_vars["biz_income"] = target(
         targets[year]["SCHCI"], apopn, aschci, biz_income.sum()
     )
-    rhs_vars["biz_loss"] = target(targets[year]["SCHCL"], apopn, aschcl, biz_loss.sum())
-    rhs_vars["cap_gain"] = target(targets[year]["CGNS"], apopn, acgns, cap_gain.sum())
-    rhs_vars["pension"] = target(targets[year]["Pension"], apopn, atxpy, pension.sum())
+    rhs_vars["biz_loss"] = target(
+        targets[year]["SCHCL"], apopn, aschcl, biz_loss.sum()
+    )
+    rhs_vars["cap_gain"] = target(
+        targets[year]["CGNS"], apopn, acgns, cap_gain.sum()
+    )
+    rhs_vars["pension"] = target(
+        targets[year]["Pension"], apopn, atxpy, pension.sum()
+    )
     rhs_vars["sch_e_income"] = target(
         targets[year]["SCHEI"], apopn, aschei, sch_e_income.sum()
     )
@@ -136,15 +166,33 @@ def dataprep(data, factors, targets, year, weights=None):
     rhs_vars["ss_income"] = target(
         targets[year]["SS"], apopsnr, asocsec, ss_income.sum()
     )
-    rhs_vars["ucomp"] = target(targets[year]["UCOMP"], apopn, aucomp, ucomp.sum())
-    rhs_vars["wage1"] = target(targets[year]["wage1"], apopn, awage, wage1.sum())
-    rhs_vars["wage2"] = target(targets[year]["wage2"], apopn, awage, wage2.sum())
-    rhs_vars["wage3"] = target(targets[year]["wage3"], apopn, awage, wage3.sum())
-    rhs_vars["wage4"] = target(targets[year]["wage4"], apopn, awage, wage4.sum())
-    rhs_vars["wage5"] = target(targets[year]["wage5"], apopn, awage, wage5.sum())
-    rhs_vars["wage6"] = target(targets[year]["wage6"], apopn, awage, wage6.sum())
-    rhs_vars["wage7"] = target(targets[year]["wage7"], apopn, awage, wage7.sum())
-    rhs_vars["wage8"] = target(targets[year]["wage8"], apopn, awage, wage8.sum())
+    rhs_vars["ucomp"] = target(
+        targets[year]["UCOMP"], apopn, aucomp, ucomp.sum()
+    )
+    rhs_vars["wage1"] = target(
+        targets[year]["wage1"], apopn, awage, wage1.sum()
+    )
+    rhs_vars["wage2"] = target(
+        targets[year]["wage2"], apopn, awage, wage2.sum()
+    )
+    rhs_vars["wage3"] = target(
+        targets[year]["wage3"], apopn, awage, wage3.sum()
+    )
+    rhs_vars["wage4"] = target(
+        targets[year]["wage4"], apopn, awage, wage4.sum()
+    )
+    rhs_vars["wage5"] = target(
+        targets[year]["wage5"], apopn, awage, wage5.sum()
+    )
+    rhs_vars["wage6"] = target(
+        targets[year]["wage6"], apopn, awage, wage6.sum()
+    )
+    rhs_vars["wage7"] = target(
+        targets[year]["wage7"], apopn, awage, wage7.sum()
+    )
+    rhs_vars["wage8"] = target(
+        targets[year]["wage8"], apopn, awage, wage8.sum()
+    )
 
     model_vars = [
         "single_returns",

@@ -84,9 +84,13 @@ def imputation(data, logit_betas, ols_betas):
     data["joint_filer"] = np.where(data["mars"] == 2, 1, 0)
     # cap family size at 5 to match with the PUF
     data["fam_size"] = np.minimum(data["XTOT"], 5)
-    data["agede"] = (data["age_head"] >= filingparams.elderly_age[cps_yr_idx]).astype(
+    data["agede"] = (
+        data["age_head"] >= filingparams.elderly_age[cps_yr_idx]
+    ).astype(int) + (
+        data["age_spouse"] >= filingparams.elderly_age[cps_yr_idx]
+    ).astype(
         int
-    ) + (data["age_spouse"] >= filingparams.elderly_age[cps_yr_idx]).astype(int)
+    )
     data["constant"] = np.ones(len(data))
 
     np.random.seed(5410)  # set random seed before imputations
@@ -174,8 +178,12 @@ def imputation(data, logit_betas, ols_betas):
     # tobit models
     TOBIT_XVARS = ["lntot_inc", "joint_filer", "fam_size", "agede", "constant"]
 
-    data["CHARITABLE"] = tobit(data, ols_betas["char_ols"], TOBIT_XVARS, 48765.45, 1.0)
-    data["MISCITEM"] = tobit(data, ols_betas["misc_ols"], TOBIT_XVARS, 14393.99, 0.3)
+    data["CHARITABLE"] = tobit(
+        data, ols_betas["char_ols"], TOBIT_XVARS, 48765.45, 1.0
+    )
+    data["MISCITEM"] = tobit(
+        data, ols_betas["misc_ols"], TOBIT_XVARS, 14393.99, 0.3
+    )
 
     # add imputed capital gains and IRA distributions to total income
     data["tot_inc"] += data["CGAGIX"] + data["TIRAD"]
@@ -195,7 +203,9 @@ def imputation(data, logit_betas, ols_betas):
         1_000_000,
         np.inf,
     ]
-    dpad_bin = pd.cut(data["tot_inc"], DPAD_BINS, labels=np.arange(1, 10), right=False)
+    dpad_bin = pd.cut(
+        data["tot_inc"], DPAD_BINS, labels=np.arange(1, 10), right=False
+    )
     DPAD_probs = [
         0.01524,
         0.00477,
@@ -208,10 +218,14 @@ def imputation(data, logit_betas, ols_betas):
         0.54408,
     ]
     dpad_prob_dict = {x: prob for x, prob in zip(range(1, 10), DPAD_probs)}
-    dpad_prob = pd.Series([dpad_prob_dict[x] for x in dpad_bin]) * dpad_indicator
+    dpad_prob = (
+        pd.Series([dpad_prob_dict[x] for x in dpad_bin]) * dpad_indicator
+    )
     DPAD_bases = [20686, 1784, 2384, 2779, 3312, 4827, 10585, 24358, 116_275]
     dpad_base_dict = {x: base for x, base in zip(range(1, 10), DPAD_bases)}
-    dpad_base = pd.Series([dpad_base_dict[x] for x in dpad_bin]) * dpad_indicator
+    dpad_base = (
+        pd.Series([dpad_base_dict[x] for x in dpad_bin]) * dpad_indicator
+    )
 
     _prob = dpad_prob * 0.7
     z1 = np.random.uniform(0, 1, len(dpad_prob))
