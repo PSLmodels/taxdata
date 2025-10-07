@@ -20,7 +20,7 @@ dependencies:
 - openpyxl
 - lxml_html_clean
 - plotly
-- kaleido
+- python-kaleido
 - selenium
 - python-chromedriver-binary
 - tabulate
