@@ -47,9 +47,9 @@ As previously mentioned, most of the variables we used can be found in the
 To manually update these variables download the latest file and copy/paste the 
 specific variables.
 
-Previous Document: February 2023
+Previous Document: January 2025
 
-Current Document: January 2025
+Current Document: February 2026
 
 | Variable | Name In CBO Document                                |
 |----------|-----------------------------------------------------|
@@ -72,7 +72,7 @@ Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/produ
 
 Previous: [January 2025](https://www.cbo.gov/system/files/2025-01/51138-2025-01-Revenue-Projections.xlsx)
 
-Current: [January 2025](https://www.cbo.gov/system/files/2025-01/51138-2025-01-Revenue-Projections.xlsx)
+Current: [February 2025](https://www.cbo.gov/system/files/2026-02/51138-2026-02-Revenue.xlsx)
 
 In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -83,7 +83,7 @@ Source: [IRS Publication 6187 Table 1B](https://www.irs.gov/statistics/projectio
 
 Previous: [Fall 2022 Report](https://www.irs.gov/pub/irs-soi/22projpub6187tables.xlsx)
 
-Current: [Publication 6187 Report](https://www.irs.gov/pub/irs-soi/24projpub6187tables.xlsx)
+Current: [Publication 6187 Report](https://www.irs.gov/pub/irs-soi/25projpub6187tables.xlsx)
 
 The projections in the publication typically end a few years before the
 10-year projections do. We use the growth rate from the final year in the
@@ -96,16 +96,19 @@ Source: [OASI Trust Fund Annual Trustees Report](https://www.ssa.gov/oact/TR/)
 Table VI.C4. Operations of the OASI Trust Fund, Table VI.C4, Column:
 `Scheduled Benefits: Intermediate Level`
 
-Previous: [2023 Report](https://www.ssa.gov/oact/TR/2023/VI_C_SRfyproj.html)
+Previous: [2024 Report](https://www.ssa.gov/oact/TR/2024/VI_C_SRfyproj.html)
 
-Current: [2024 Report](https://www.ssa.gov/oact/TR/2024/VI_C_SRfyproj.html)
+Current: [2025 Report](https://www.ssa.gov/oact/TR/2025/VI_C_SRfyproj.html)
 
 Projections are taken directly from the `Scheduled Benefits: Intermediate Level`
 column of this table.
 
 ### CPIM (CPI Medical Care)
 
-Source: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
+Previous: [BLS Database](http://data.bls.gov/timeseries/CUSR0000SAM?output_view=pct_1mth)
+
+Current: [CBO Economic Projections](https://www.cbo.gov/system/files/2026-02/51135-2026-02-Economic-Projections.xlsx)
+
 
 Series ID: CUSR0000SAM
 Access Date: 
@@ -120,13 +123,15 @@ Manual Instructions:
 6. Find the average difference between CPI-U from the CBO 10-Year projections
 7. Add this average difference to the CBO CPI-U projections
 
+NOTE: The latest CBO Economic Projections contain forecasts for the CPI-U Medical Care. This is now used in CBO_baseline.csv for CPIM 
+
 ### UCOMP
 
 Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/products/baseline-projections-selected-programs#24)
 
 Previous: [January 2025](https://www.cbo.gov/system/files/2025-01/51316-2025-01-unemployment.xlsx)
 
-Current: [January 2025](https://www.cbo.gov/system/files/2025-01/51316-2025-01-unemployment.xlsx)
+Current: [February 2025](https://www.cbo.gov/system/files/2026-02/51316-2026-02-unemployment.xlsx)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars
