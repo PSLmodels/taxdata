@@ -72,7 +72,7 @@ Source: [Revenue Projections, By Category (CBO)](https://www.cbo.gov/about/produ
 
 Previous: [January 2025](https://www.cbo.gov/system/files/2025-01/51138-2025-01-Revenue-Projections.xlsx)
 
-Current: [February 2025](https://www.cbo.gov/system/files/2026-02/51138-2026-02-Revenue.xlsx)
+Current: [February 2026](https://www.cbo.gov/system/files/2026-02/51138-2026-02-Revenue.xlsx)
 
 In the revenue projections file, the data is in the `Capital Gains Realizations`
 tab under the `Capital Gains Realizations` column.
@@ -131,7 +131,7 @@ Source: [CBO Unemployment Compensation projections](https://www.cbo.gov/about/pr
 
 Previous: [January 2025](https://www.cbo.gov/system/files/2025-01/51316-2025-01-unemployment.xlsx)
 
-Current: [February 2025](https://www.cbo.gov/system/files/2026-02/51316-2026-02-unemployment.xlsx)
+Current: [February 2026](https://www.cbo.gov/system/files/2026-02/51316-2026-02-unemployment.xlsx)
 
 Note: Change the `Total Benefits` number from the table to be in terms of
 billions rather than millions of dollars
