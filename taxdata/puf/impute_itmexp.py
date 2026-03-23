@@ -38,7 +38,6 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-
 DUMP0 = False
 DUMP1 = False
 DUMP2 = False

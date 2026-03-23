@@ -15,7 +15,6 @@ from .benefits import distribute_benefits
 from .cps_meta import CPS_META_DATA, C_TAM_YEARS
 from .cpsmar import create_cps
 
-
 CUR_PATH = Path(__file__).resolve().parent
 _DATA_PATH = Path(CUR_PATH, "data")
 with Path(CUR_PATH, "master_cps_dict.pkl").open("rb") as f:

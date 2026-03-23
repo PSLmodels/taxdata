@@ -4,7 +4,6 @@ import pytest
 import pandas as pd
 from pathlib import Path
 
-
 # TODO: revise the following constants when using new or revised CPS/PUF data
 CPS_START_YEAR = 2014
 PUF_START_YEAR = 2011

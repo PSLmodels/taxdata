@@ -39,7 +39,6 @@ import argparse
 import pandas
 import taxcalc
 
-
 # Data on the expected CBO spreadsheet structure:
 CBO_SHEET = 1  # the sheet called "1. Tax Parameters"
 CBO_STR_COLS = [0, 1, 2, 3]  # expect columns A:D are strings; others numeric

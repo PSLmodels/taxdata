@@ -5,7 +5,6 @@ from .helpers import (
     CPS_BENEFIT_TUPLES,
 )
 
-
 INCOME_TUPLES = [
     ("wsal_val", "e00200"),
     ("int_val", "interest"),

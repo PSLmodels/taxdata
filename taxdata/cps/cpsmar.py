@@ -5,7 +5,6 @@ from tqdm import tqdm
 from pathlib import Path
 from .helpers import read_benefits
 
-
 CUR_PATH = Path(__file__).resolve().parent
 DATA_PATH = Path(CUR_PATH, "data")
 
