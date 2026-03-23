@@ -3,7 +3,6 @@ import pandas as pd
 from pathlib import Path
 from collections import defaultdict
 
-
 CUR_PATH = Path(__file__).resolve().parent
 
 # these are all of the columns used in the table 1.4 spreadsheet. The pattern

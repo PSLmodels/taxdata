@@ -7,7 +7,6 @@ import pandas as pd
 from pathlib import Path
 from dataprep import dataprep
 
-
 CUR_PATH = Path(__file__).resolve().parent
 
 # Read hashes used to see which years can be skipped

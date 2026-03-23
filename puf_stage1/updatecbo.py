@@ -14,7 +14,6 @@ from pathlib import Path
 from datetime import datetime
 from jinja2 import Template
 
-
 CUR_PATH = Path(__file__).resolve().parent
 
 

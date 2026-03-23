@@ -2,7 +2,6 @@ import subprocess
 from taxdata import cps
 from pathlib import Path
 
-
 CUR_PATH = Path(__file__).resolve().parent
 DATA_PATH = Path(CUR_PATH, "data")
 

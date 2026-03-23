@@ -3,7 +3,6 @@ import copy
 import numpy as np
 import pandas as pd
 
-
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 start_year = 2011
 end_year = 2036

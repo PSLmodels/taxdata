@@ -9,7 +9,6 @@ from pathlib import Path
 from .helpers import CUR_PATH
 from .constants import USEABLE_VARS
 
-
 ADJ_TARGETS = pd.read_csv(Path(CUR_PATH, "adjustment_targets.csv"))
 
 

@@ -7,7 +7,6 @@ import pickle
 from pathlib import Path
 from .cps_meta import CPS_META_DATA
 
-
 CUR_PATH = Path(__file__).resolve().parent
 
 
