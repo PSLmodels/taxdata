@@ -5,7 +5,6 @@ Test CPS and PUF weights file contents.
 import pytest
 import numpy as np
 
-
 DUMP_WEIGHTS = False  # normally set to False; True implies dump with test fail
 
 

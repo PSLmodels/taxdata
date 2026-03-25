@@ -14,7 +14,6 @@ from pathlib import Path
 from datetime import datetime
 from jinja2 import Template
 
-
 CUR_PATH = Path(__file__).resolve().parent
 
 
@@ -354,13 +353,13 @@ def update_ucomp(url, baseline, text_args):
     Parameters
     ----------
     url: URL linking to IRS website with projections of federal tax filings
-    baseline: CBO baseline we're updaint
+    baseline: CBO baseline we're updating
     text_args: Dictionary containing the arguments that will be passed to
         the documentation template
     Returns
     -------
     baseline: Updated baseline numbers
-    text_args: Updated dictionary with text aruments to fill in the template
+    text_args: Updated dictionary with text arguments to fill in the template
     """
     print("Updating Unemployment Projections")
     session = HTMLSession()

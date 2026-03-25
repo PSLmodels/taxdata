@@ -5,7 +5,6 @@ from .impute_pencon import impute_pension_contributions
 from .constants import UNUSED_READ_VARS
 from pathlib import Path
 
-
 CUR_PATH = Path(__file__).resolve().parent
 USABLE_VARS = tc.Records(data=None).USABLE_READ_VARS
 USABLE_VARS.add("filer")

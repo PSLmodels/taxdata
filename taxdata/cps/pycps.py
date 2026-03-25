@@ -5,7 +5,6 @@ from .taxunit import TaxUnit
 from .helpers import filingparams, cps_yr_idx
 from .cps_meta import C_TAM_YEARS
 
-
 INCOME_VARS = [
     "wsal_val",
     "int_val",

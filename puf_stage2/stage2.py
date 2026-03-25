@@ -7,7 +7,6 @@ import pandas as pd
 from pathlib import Path
 from dataprep import dataprep
 
-
 CUR_PATH = Path(__file__).resolve().parent
 
 # Read hashes used to see which years can be skipped
@@ -56,7 +55,7 @@ Stage_II_targets = pd.read_csv(stage2_path, index_col=0)
 puf.s006 = puf.matched_weight * 100
 
 # Dataprep
-year_list = [x for x in range(2012, 2035 + 1)]
+year_list = [x for x in range(2012, 2036 + 1)]
 skipped_years = []
 for i in year_list:
     try:
